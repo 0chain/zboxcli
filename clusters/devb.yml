@@ -1,0 +1,12 @@
+---
+miners:
+- http://peda.devb.testnet-0chain.net:7071
+- http://pedb.devb.testnet-0chain.net:7071
+- http://vira.devb.testnet-0chain.net:7071
+- http://virb.devb.testnet-0chain.net:7071
+sharders:
+- http://peda.devb.testnet-0chain.net:7171
+- http://vira.devb.testnet-0chain.net:7171
+signature_scheme: ed25519
+num_of_keys: 1
+...

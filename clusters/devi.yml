@@ -1,0 +1,11 @@
+---
+miners:
+- http://ohio.devi.testnet-0chain.net:7071
+- http://ohio.devi.testnet-0chain.net:7072
+- http://ohio.devi.testnet-0chain.net:7073
+- http://ohio.devi.testnet-0chain.net:7074
+sharders:
+- http://ohio.devi.testnet-0chain.net:7171
+signature_scheme: bls0chain
+num_of_keys: 1
+...
