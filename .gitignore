@@ -10,3 +10,9 @@
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+
+zboxcmd
+sample/zboxcmd
+sample/download
+sample/upload
+sample/cmdlog.log
