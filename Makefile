@@ -1,6 +1,10 @@
 ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
-ZBOXCMD=zboxcmd
+SAMPLE_DIR:=$(ROOT_DIR)/sample
+
+ZBOXCLI=zboxcli
+
+.PHONY:
 
 GOMODCORE           := $(GOMODBASE)/zcncore
 VERSION_FILE        := $(ROOT_DIR)/core/version/version.go
@@ -21,28 +25,32 @@ gomod-download:
 gomod-clean:
 	go clean -i -r -x -modcache  ./...
 
-build: gomod-download
-	go build -x -v -tags bn256 -o $(ZBOXCMD) main.go
+zboxcli: gomod-download
+	go build -x -v -tags bn256 -o $(ZBOXCLI) main.go
 
-zboxcmd-test:
+zboxcli-test:
 	go test -tags bn256 ./...
 
 install: build
-	cp $(ZBOXCMD) $(ROOT_DIR)/sample
+	cp $(ZBOXCLI) $(ROOT_DIR)/sample
 
-clean:
-	@rm -rf $(OUTDIR)
-
-show:
-	@echo "GOPATH=$(GOPATH)"
-	@echo "GOROOT=$(GOROOT)"
-	@echo "BLS git branch=$(bls_branch)"
-	@echo "MCL git branch=$(mcl_branch)"
+clean: gomod-clean
+	@rm -rf $(ROOT_DIR)/$(ZBOXCLI)
 
 help:
+	@echo "Environment: "
+	@echo "\tGOPATH=$(GOPATH)"
+	@echo "\tGOROOT=$(GOROOT)"
+	@echo ""
 	@echo "Supported commands:"
-	@ecgo "\tmake show              - Display environment and make variables"
-	@echo "\tmake install       - Install all build and project dependencies"
-	@echo "\tmake gosdk-all         - Install GO modules and packages"
-	@echo "\tmake herumi-all        - Download, build and install HERUMI packages"
-	@echo "\tmake clean             - Deletes all the built output files"
+	@echo "\tmake help              - display environment and make targets"
+	@echo ""
+	@echo "Install"
+	@echo "\tmake install           - build, test and install zboxcli"
+	@echo "\tmake zboxcli           - installs the zboxcli"
+	@echo "\tmake zboxcli-test      - run zboxcli test"
+	@echo ""
+	@echo "Clean:"
+	@echo "\tmake clean             - deletes all build output files"
+	@echo "\tmake gomod-download    - download the go modules"
+	@echo "\tmake gomod-clean       - clean the go modules"

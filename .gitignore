@@ -11,8 +11,8 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-zboxcmd
-sample/zboxcmd
+zboxcli
+sample/zboxcli
 sample/download
 sample/upload
 sample/cmdlog.log

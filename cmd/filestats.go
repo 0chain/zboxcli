@@ -5,7 +5,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/0chain/zboxcmd/util"
+	"github.com/0chain/zboxcli/util"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
 )
