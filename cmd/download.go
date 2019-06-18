@@ -23,8 +23,9 @@ var downloadCmd = &cobra.Command{
 
 		remotepath := cmd.Flag("remotepath").Value.String()
 		authticket := cmd.Flag("authticket").Value.String()
-		if len(remotepath) == 0 && len(authticket) == 0 {
-			fmt.Println("Error: remotepath / authticket flag is missing")
+		lookuphash := cmd.Flag("lookuphash").Value.String()
+		if len(remotepath) == 0 && (len(authticket) == 0 || len(lookuphash) == 0) {
+			fmt.Println("Error: remotepath / authticket / lookuphash flag is missing")
 			return
 		}
 
@@ -51,7 +52,13 @@ var downloadCmd = &cobra.Command{
 				fmt.Println("Error fetching the allocation", err)
 				return
 			}
-			err = allocationObj.DownloadFromAuthTicket(localpath, authticket, statusBar)
+			at := sdk.InitAuthTicket(authticket)
+			filename, err := at.GetFileName()
+			if err != nil {
+				fmt.Println("Error getting the filename from authticket", err)
+				return
+			}
+			err = allocationObj.DownloadFromAuthTicket(localpath, authticket, lookuphash, filename, statusBar)
 		}
 
 		if err == nil {
@@ -69,6 +76,7 @@ func init() {
 	downloadCmd.PersistentFlags().String("remotepath", "", "Remote path to download")
 	downloadCmd.PersistentFlags().String("localpath", "", "Local path of file to download")
 	downloadCmd.PersistentFlags().String("authticket", "", "Auth ticket fot the file to download if you dont own it")
+	downloadCmd.PersistentFlags().String("lookuphash", "", "The remote lookuphash of the object retrieved from the list")
 	downloadCmd.MarkFlagRequired("allocation")
 	downloadCmd.MarkFlagRequired("localpath")
 }

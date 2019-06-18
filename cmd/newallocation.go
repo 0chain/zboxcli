@@ -11,6 +11,7 @@ import (
 
 var datashards, parityshards *int
 var size *int64
+var allocationFileName *string
 
 // newallocationCmd represents the new allocation command
 var newallocationCmd = &cobra.Command{
@@ -29,6 +30,7 @@ var newallocationCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		fmt.Println("Allocation created : " + allocationID)
+		storeAllocation(allocationID)
 		return
 	},
 }
@@ -38,7 +40,25 @@ func init() {
 	datashards = newallocationCmd.PersistentFlags().Int("data", 2, "--data 2")
 	parityshards = newallocationCmd.PersistentFlags().Int("parity", 2, "--parity 2")
 	size = newallocationCmd.PersistentFlags().Int64("size", 2147483648, "--size 10000")
+	allocationFileName = newallocationCmd.PersistentFlags().String("allocationFileName", "allocation.txt", "--allocationFileName allocation.txt")
+
 	newallocationCmd.MarkFlagRequired("data")
 	newallocationCmd.MarkFlagRequired("parity")
 	newallocationCmd.MarkFlagRequired("size")
+	newallocationCmd.MarkFlagRequired("allocationFileName")
+}
+
+func storeAllocation(allocationID string) {
+
+	allocFilePath := getConfigDir() + "/" + *allocationFileName
+
+	file, err := os.Create(allocFilePath)
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
+	defer file.Close()
+	//Only one allocation ID per file.
+	fmt.Fprintf(file, allocationID)
+
 }

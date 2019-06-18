@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"fmt"
+	"path/filepath"
 
+	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
 )
@@ -30,7 +32,9 @@ var shareCmd = &cobra.Command{
 			return
 		}
 		remotepath := cmd.Flag("remotepath").Value.String()
-		ref, err := allocationObj.GetAuthTicketForShare(remotepath, "")
+		var fileName string
+		_, fileName = filepath.Split(remotepath)
+		ref, err := allocationObj.GetAuthTicketForShare(remotepath, fileName, fileref.FILE, "")
 		if err != nil {
 			fmt.Println(err.Error())
 			return

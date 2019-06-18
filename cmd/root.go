@@ -22,6 +22,7 @@ var walletFile string
 var sharders []string
 var miners []string
 var clientConfig string
+var configDir string
 
 var rootCmd = &cobra.Command{
 	Use:   "zbox",
@@ -47,7 +48,7 @@ func Execute() {
 
 func initConfig() {
 	nodeConfig := viper.New()
-	var configDir string
+
 	// Find home directory.
 	home, err := homedir.Dir()
 	if err != nil {
@@ -136,4 +137,8 @@ func initConfig() {
 		fmt.Println("Error in sdk init", err)
 		os.Exit(1)
 	}
+}
+
+func getConfigDir() string {
+	return configDir
 }

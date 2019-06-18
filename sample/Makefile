@@ -1,9 +1,8 @@
 SAMPLE_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
-ZBOXCMD_EXE=$(SAMPLE_DIR)/zboxcmd
+ZBOXCLI=$(SAMPLE_DIR)/zboxcli
 
 SCHEME?=ed25519
-#SCHEME?=bls0chain
 
 include $(SAMPLE_DIR)/scheme/$(SCHEME).mk
 
@@ -13,17 +12,17 @@ CONFIG:=--config $(cluster)
 
 CLIENT:=--wallet $(client)
 
-ZBOXCMD:=$(ZBOXCMD_EXE) $(CONFIG)
+ZBOXCLI_CMD:=$(ZBOXCLI) $(CONFIG)
 
 UPLOAD_DIR=$(SAMPLE_DIR)/upload
 DOWNLOAD_DIR=$(SAMPLE_DIR)/download
 
-CLIENT_FILE=random5.txt
+CLIENT_FILE=random.txt
 LOCAL_FILE:=$(UPLOAD_DIR)/$(CLIENT_FILE)
 LOCAL_PATH=--localpath $(LOCAL_FILE)
 REMOTE_PATH=--remotepath /0chain/$(CLIENT_FILE)
 
-ALLOCATION:=--allocation 613feccd592f894fea1d83dd53b62848832cdac32e1bef4851a494869683d869
+ALLOCATION:=--allocation ae5b9040bac6d102c149ca1262b8f9c7baf0b13ff01e7a773b969d4044d690a7
 
 ZCN_DIR=$(HOME)/.zcn
 
@@ -33,23 +32,24 @@ setup:
 	cp $(CLUSTERS)/*.yml $(ZCN_DIR)
 
 generate-local:
-	dd if=/dev/urandom of=$(LOCAL_FILE) bs=16k count=16
+	base64 /dev/urandom | dd of=$(LOCAL_FILE) bs=16k count=10
+	#dd if=/dev/urandom of=$(LOCAL_FILE) bs=16k count=16
 
 register:
-	$(ZBOXCMD) $(CLIENT) register
+	$(ZBOXCLI_CMD) $(CLIENT) register
 
 newallocation:
-	$(ZBOXCMD) $(CLIENT) newallocation
+	$(ZBOXCLI_CMD) $(CLIENT) newallocation
 
 upload-file:
 	@echo "Upload local=$(LOCAL_PATH) remote=$(REMOTE_PATH)"
-	$(ZBOXCMD) $(CLIENT) upload $(ALLOCATION) $(LOCAL_PATH) $(REMOTE_PATH)
+	$(ZBOXCLI_CMD) $(CLIENT) upload $(ALLOCATION) $(LOCAL_PATH) $(REMOTE_PATH)
 
 update-file:
-	$(ZBOXCMD) $(CLIENT) update $(ALLOCATION) $(LOCAL_PATH) $(REMOTE_PATH)
+	$(ZBOXCLI_CMD) $(CLIENT) update $(ALLOCATION) $(LOCAL_PATH) $(REMOTE_PATH)
 
 stats:
-	$(ZBOXCMD) $(CLIENT) stats $(ALLOCATION) $(REMOTE_PATH)
+	$(ZBOXCLI_CMD) $(CLIENT) stats $(ALLOCATION) $(REMOTE_PATH)
 
 clean:
 

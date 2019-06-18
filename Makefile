@@ -31,7 +31,7 @@ zboxcli: gomod-download
 zboxcli-test:
 	go test -tags bn256 ./...
 
-install: build
+install: zboxcli zboxcli-test
 	cp $(ZBOXCLI) $(ROOT_DIR)/sample
 
 clean: gomod-clean
