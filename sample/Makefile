@@ -22,9 +22,12 @@ LOCAL_FILE:=$(UPLOAD_DIR)/$(CLIENT_FILE)
 LOCAL_PATH=--localpath $(LOCAL_FILE)
 REMOTE_PATH=--remotepath /0chain/$(CLIENT_FILE)
 
-ALLOCATION:=--allocation ae5b9040bac6d102c149ca1262b8f9c7baf0b13ff01e7a773b969d4044d690a7
-
 ZCN_DIR=$(HOME)/.zcn
+
+ALLOCATION_FILE=allocation.txt
+ALLOCATION=--allocationFileName $(ALLOCATION_FILE)
+ALLOCATION_ID=`cat $(HOME)/.zcn/$(ALLOCATION_FILE)`
+ALLOCATION_ID_OPTION=--allocation $(ALLOCATION_ID)
 
 setup:
 	brew install jq || brew upgrade jq || true
@@ -33,24 +36,36 @@ setup:
 
 generate-local:
 	base64 /dev/urandom | dd of=$(LOCAL_FILE) bs=16k count=10
-	#dd if=/dev/urandom of=$(LOCAL_FILE) bs=16k count=16
 
 register:
 	$(ZBOXCLI_CMD) $(CLIENT) register
 
 newallocation:
-	$(ZBOXCLI_CMD) $(CLIENT) newallocation
+	$(ZBOXCLI_CMD) $(CLIENT) $(ALLOCATION) newallocation
 
 upload-file:
 	@echo "Upload local=$(LOCAL_PATH) remote=$(REMOTE_PATH)"
-	$(ZBOXCLI_CMD) $(CLIENT) upload $(ALLOCATION) $(LOCAL_PATH) $(REMOTE_PATH)
+	$(ZBOXCLI_CMD) $(CLIENT) upload $(ALLOCATION_ID_OPTION) $(LOCAL_PATH) $(REMOTE_PATH)
 
 update-file:
-	$(ZBOXCLI_CMD) $(CLIENT) update $(ALLOCATION) $(LOCAL_PATH) $(REMOTE_PATH)
+	$(ZBOXCLI_CMD) $(CLIENT) update $(ALLOCATION_ID_OPTION) $(LOCAL_PATH) $(REMOTE_PATH)
 
 stats:
-	$(ZBOXCLI_CMD) $(CLIENT) stats $(ALLOCATION) $(REMOTE_PATH)
+	$(ZBOXCLI_CMD) $(CLIENT) stats $(ALLOCATION_ID_OPTION) $(REMOTE_PATH)
 
 clean:
+	@rm -rf $(LOCAL_FILE)
 
-
+help:
+	@echo "Environment:"
+	@echo "\tScheme            : $(SCHEME)"
+	@echo "\tClient            : $(client)"
+	@echo "\tCluster Config    : $(HOME)/.zcn/$(cluster)"
+	@echo ""
+	@echo "Supported Targets:"
+	@echo "\tmake register       : Initialize Wallets"
+	@echo "\tmake generate-local : Generate local file with random text data"
+	@echo "\tmake newallocation  : New allocation for storage"
+	@echo "\tmake upload-file    : Upload a new file"
+	@echo "\tmake update-file    : Update contents of an existing file"
+	@echo "\tmake stats          : Display statistics for the remote file"
