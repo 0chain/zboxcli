@@ -1,6 +1,8 @@
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 github.com/0chain/gosdk v1.0.4 h1:5x7cEe5605W+z34cdTz8iyJ3pHuqUTeonoTWnBKHEIQ=
 github.com/0chain/gosdk v1.0.4/go.mod h1:8dwF8GDU3X6FfKMVYfwW+L3ooBJjR6GnFr0IfEuaJC0=
+github.com/0chain/gosdk v1.0.5 h1:l25jTg6Udno4xBa31vnrCp5zJi5tQqf7hLjNSLlFBvo=
+github.com/0chain/gosdk v1.0.5/go.mod h1:c7gSIDQgRBmf/lmj8Xy3hu+NA6IhDrm840F5SBm/9+M=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/alecthomas/template v0.0.0-20160405071501-a0175ee3bccc/go.mod h1:LOuyumcjzFXgccqObfd/Ljyb9UuFJ6TxHnclSeseNhc=
@@ -49,6 +51,8 @@ github.com/hashicorp/hcl v1.0.0 h1:0Anlzjpi4vEasTeNFn2mLJgTSwt0+6sfsiTG8qcWGx4=
 github.com/hashicorp/hcl v1.0.0/go.mod h1:E5yfLk+7swimpb2L/Alb/PJmXilQ/rhwaUYs4T20WEQ=
 github.com/herumi/bls v0.0.0-20190607023536-90ce041aecd9 h1:qc/53giNU6qHXoYhYzG96reucL5igubRcuucUS9yJwU=
 github.com/herumi/bls v0.0.0-20190607023536-90ce041aecd9/go.mod h1:i4wRNUUFF1nNmYFHM9UDl13MGoxEQkMVCLAd82qZz4s=
+github.com/herumi/bls v0.0.0-20190618074831-058f18ee12f6 h1:mOxyBz45OFF4OXdGpkujprbb6v1QxAgVczGhqFt943U=
+github.com/herumi/bls v0.0.0-20190618074831-058f18ee12f6/go.mod h1:i4wRNUUFF1nNmYFHM9UDl13MGoxEQkMVCLAd82qZz4s=
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=
 github.com/jonboulle/clockwork v0.1.0/go.mod h1:Ii8DK3G1RaLaWxj9trq07+26W01tbo22gdxWY5EU2bo=
 github.com/julienschmidt/httprouter v1.2.0/go.mod h1:SYymIcj16QtmaHHD7aYtjjsJG7VTCxuUUipMqKk8s4w=
