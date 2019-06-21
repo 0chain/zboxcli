@@ -15,7 +15,7 @@ ZBox Command-line utility provides a self-explaining "help" option that lists ou
 ## How to get it?
 You can clone ZBox Command-line Interface from github repo [Here](https://github.com/0chain/zboxcli)
 ## Pre-requisites
-* zbox Command-line Interface needs Go V1.12 or higher. You can download it from [here](https://golang.org/dl/)
+* zbox Command-line Interface needs Go V1.12 or higher. You need to clone the gosdk from [here](https://github.com/0chain/gosdk)
 ## How to Build the code?
 1. Make sure you've Go SDK 1.12 or higher and Go configurations are set and working on your system.
 2. Clone [zboxcli](https://github.com/0chain/zboxcli)
