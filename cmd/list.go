@@ -27,7 +27,7 @@ var listCmd = &cobra.Command{
 		remotepath := cmd.Flag("remotepath").Value.String()
 		authticket := cmd.Flag("authticket").Value.String()
 		lookuphash := cmd.Flag("lookuphash").Value.String()
-		if len(remotepath) == 0 && (len(authticket) == 0 || len(lookuphash) == 0) {
+		if len(remotepath) == 0 && (len(authticket) == 0) {
 			fmt.Println("Error: remotepath / authticket / lookuphash flag is missing")
 			return
 		}
@@ -65,6 +65,20 @@ var listCmd = &cobra.Command{
 				fmt.Println("Error fetching the allocation", err)
 				return
 			}
+			at := sdk.InitAuthTicket(authticket)
+			isDir, err := at.IsDir()
+			if isDir && len(lookuphash) == 0 {
+				lookuphash, err = at.GetLookupHash()
+				if err != nil {
+					fmt.Println("Error getting the lookuphash from authticket", err)
+					return
+				}
+			}
+			if !isDir {
+				fmt.Println("Invalid operation. Auth ticket is not for a directory")
+				return
+			}
+
 			ref, err := allocationObj.ListDirFromAuthTicket(authticket, lookuphash)
 			if err != nil {
 				fmt.Println(err.Error())
@@ -90,7 +104,7 @@ func init() {
 	rootCmd.AddCommand(listCmd)
 	listCmd.PersistentFlags().String("allocation", "", "Allocation ID")
 	listCmd.PersistentFlags().String("remotepath", "", "Remote path to list from")
-	downloadCmd.PersistentFlags().String("authticket", "", "Auth ticket fot the file to download if you dont own it")
-	downloadCmd.PersistentFlags().String("lookuphash", "", "The remote lookuphash of the object retrieved from the list")
+	listCmd.PersistentFlags().String("authticket", "", "Auth ticket fot the file to download if you dont own it")
+	listCmd.PersistentFlags().String("lookuphash", "", "The remote lookuphash of the object retrieved from the list")
 	listCmd.MarkFlagRequired("allocation")
 }

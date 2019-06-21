@@ -32,9 +32,26 @@ var shareCmd = &cobra.Command{
 			return
 		}
 		remotepath := cmd.Flag("remotepath").Value.String()
+		refType := fileref.FILE
+		statsMap, err := allocationObj.GetFileStats(remotepath)
+		if err != nil {
+			fmt.Println("Error in getting information about the object." + err.Error())
+			return
+		}
+		isFile := false
+		for _, v := range statsMap {
+			if v != nil {
+				isFile = true
+				break
+			}
+		}
+		if !isFile {
+			refType = fileref.DIRECTORY
+		}
+
 		var fileName string
 		_, fileName = filepath.Split(remotepath)
-		ref, err := allocationObj.GetAuthTicketForShare(remotepath, fileName, fileref.FILE, "")
+		ref, err := allocationObj.GetAuthTicketForShare(remotepath, fileName, refType, "")
 		if err != nil {
 			fmt.Println(err.Error())
 			return

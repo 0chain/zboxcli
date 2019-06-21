@@ -81,10 +81,11 @@ func initConfig() {
 	} else {
 		walletFilePath = configDir + "/wallet.txt"
 	}
-	zcncore.InitZCNSDK(miners, sharders, signScheme)
 	//set the log file
-	zcncore.SetLogFile("cmdlog.log", true)
-	sdk.SetLogFile("cmdlog.log", true)
+	zcncore.SetLogFile("cmdlog.log", false)
+	sdk.SetLogFile("cmdlog.log", false)
+
+	zcncore.InitZCNSDK(miners, sharders, signScheme)
 	if _, err := os.Stat(walletFilePath); os.IsNotExist(err) {
 		wg := &sync.WaitGroup{}
 		statusBar := &ZCNStatus{wg: wg}

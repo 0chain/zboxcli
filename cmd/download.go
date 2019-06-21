@@ -24,8 +24,8 @@ var downloadCmd = &cobra.Command{
 		remotepath := cmd.Flag("remotepath").Value.String()
 		authticket := cmd.Flag("authticket").Value.String()
 		lookuphash := cmd.Flag("lookuphash").Value.String()
-		if len(remotepath) == 0 && (len(authticket) == 0 || len(lookuphash) == 0) {
-			fmt.Println("Error: remotepath / authticket / lookuphash flag is missing")
+		if len(remotepath) == 0 && len(authticket) == 0 {
+			fmt.Println("Error: remotepath / authticket flag is missing")
 			return
 		}
 
@@ -33,7 +33,7 @@ var downloadCmd = &cobra.Command{
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
-		var err error
+		var errE error
 		if len(remotepath) > 0 {
 			if fflags.Changed("allocation") == false { // check if the flag "path" is set
 				fmt.Println("Error: allocation flag is missing") // If not, we'll let the user know
@@ -45,7 +45,7 @@ var downloadCmd = &cobra.Command{
 				fmt.Println("Error fetching the allocation", err)
 				return
 			}
-			err = allocationObj.DownloadFile(localpath, remotepath, statusBar)
+			errE = allocationObj.DownloadFile(localpath, remotepath, statusBar)
 		} else if len(authticket) > 0 {
 			allocationObj, err := sdk.GetAllocationFromAuthTicket(authticket)
 			if err != nil {
@@ -58,13 +58,26 @@ var downloadCmd = &cobra.Command{
 				fmt.Println("Error getting the filename from authticket", err)
 				return
 			}
-			err = allocationObj.DownloadFromAuthTicket(localpath, authticket, lookuphash, filename, statusBar)
+			isDir, err := at.IsDir()
+			if isDir && len(lookuphash) == 0 {
+				fmt.Println("Auth ticket is for a directory and hence lookup hash flag is necessary")
+				return
+			}
+			if !isDir && len(lookuphash) == 0 {
+				lookuphash, err = at.GetLookupHash()
+				if err != nil {
+					fmt.Println("Error getting the lookuphash from authticket", err)
+					return
+				}
+			}
+
+			errE = allocationObj.DownloadFromAuthTicket(localpath, authticket, lookuphash, filename, statusBar)
 		}
 
-		if err == nil {
+		if errE == nil {
 			wg.Wait()
 		} else {
-			fmt.Println(err.Error())
+			fmt.Println(errE.Error())
 		}
 		return
 	},
