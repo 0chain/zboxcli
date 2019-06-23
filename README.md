@@ -1,5 +1,5 @@
 # zbox Command-line Interface for 0Box Storage
-zbox Command-line Interface is useful for quickly demonstrate and understand the capabilities of 0Box Storage. The utility is built using 0Chain's ClientSDK library written in Go V1.12.
+zbox Command-line Interface is useful for quickly demonstrate and understand the capabilities of 0Box Storage. The utility is built using 0Chain's ClientSDK library written in Go V1.12. Check out this [video](https://drive.google.com/file/d/1Ter6v4dsXUxX2oGNy_P1S7f1ayH1e8OK/view) on how to use the CLI and SDK to create an allocation, upload, download, update, delete, and share a file to blobbers on the 0Chain testnet platform.
 ##Features 
 zbox supports following features
 1. Register a Wallet
