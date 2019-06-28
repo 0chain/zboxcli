@@ -19,7 +19,10 @@ DOWNLOAD_DIR=$(SAMPLE_DIR)/download
 
 CLIENT_FILE=random.txt
 LOCAL_FILE:=$(UPLOAD_DIR)/$(CLIENT_FILE)
+DOWNLOAD_FILE:=$(DOWNLOAD_DIR)/$(CLIENT_FILE)
 LOCAL_PATH=--localpath $(LOCAL_FILE)
+DOWNLOAD_PATH=--localpath $(DOWNLOAD_FILE)
+
 REMOTE_PATH=--remotepath /0chain/$(CLIENT_FILE)
 
 ZCN_DIR=$(HOME)/.zcn
@@ -50,8 +53,29 @@ upload-file:
 update-file:
 	$(ZBOXCLI_CMD) $(CLIENT) update $(ALLOCATION_ID_OPTION) $(LOCAL_PATH) $(REMOTE_PATH)
 
+download-file:
+	@rm -rf $(DOWNLOAD_FILE)
+	$(ZBOXCLI_CMD) $(CLIENT) download $(ALLOCATION_ID_OPTION) $(DOWNLOAD_PATH) $(REMOTE_PATH)
+
+compare-file:
+	@echo "Local file......: $(LOCAL_FILE)"
+	@echo "Download file...: $(DOWNLOAD_FILE)"
+	@diff -s $(LOCAL_FILE) $(DOWNLOAD_FILE)
+
 stats:
 	$(ZBOXCLI_CMD) $(CLIENT) stats $(ALLOCATION_ID_OPTION) $(REMOTE_PATH)
+
+all-test:
+	$(MAKE) setup
+	$(MAKE) register
+	$(MAKE) generate-local
+	$(MAKE) newallocation
+	$(MAKE) upload-file
+	$(MAKE) generate-local
+	$(MAKE) update-file
+	$(MAKE) download-file
+	$(MAKE) compare-file
+	$(MAKE) stats
 
 clean:
 	@rm -rf $(LOCAL_FILE)
@@ -63,10 +87,13 @@ help:
 	@echo "\tCluster Config    : $(HOME)/.zcn/$(cluster)"
 	@echo ""
 	@echo "ZBOXCLI - Test Steps:"
-	@echo "\t1. make setup          : Copy cluster setup to $(HOME)/.zcn"
-	@echo "\t2. make register       : Initialize Wallets"
-	@echo "\t3. make generate-local : Generate local file with random text data"
-	@echo "\t4. make newallocation  : New allocation for storage"
-	@echo "\t5. make upload-file    : Upload a new file"
-	@echo "\t6. make update-file    : Update contents of an existing file"
-	@echo "\t7. make stats          : Display statistics for the remote file"
+	@echo "\t01. make setup          : Copy cluster setup to $(HOME)/.zcn"
+	@echo "\t02. make register       : Initialize Wallets"
+	@echo "\t03. make generate-local : Generate local file with random text data"
+	@echo "\t04. make newallocation  : New allocation for storage"
+	@echo "\t05. make upload-file    : Upload a new file"
+	@echo "\t06. make update-file    : Update contents of an existing file"
+	@echo "\t07. make download-file  : Download file"
+	@echo "\t08. make compare-file   : Compare local and downloaded file"
+	@echo "\t09. make stats          : Display statistics for the remote file"
+	@echo "\t99. make all-test       : Run all the above tests"

@@ -1,5 +1,5 @@
 # zbox Command-line Interface for 0Box Storage
-zbox Command-line Interface is useful for quickly demonstrate and understand the capabilities of 0Box Storage. The utility is built using 0Chain's ClientSDK library written in Go V1.12.
+zbox Command-line Interface is useful for quickly demonstrate and understand the capabilities of 0Box Storage. The utility is built using 0Chain's ClientSDK library written in Go V1.12. Check out this [video](https://youtu.be/TPrkRjdaHrY) on how to use the CLI and SDK to create an allocation, upload, download, update, delete, and share a file to blobbers on the 0Chain testnet platform.
 ##Features 
 zbox supports following features
 1. Register a Wallet
@@ -13,18 +13,20 @@ zbox supports following features
 
 ZBox Command-line utility provides a self-explaining "help" option that lists out the commands it supports and the parameters each command needs to perform the intended action
 ## How to get it?
-You can clone ZBox Command-line Interface from github repo [Here](https://github.com/0chain/zboxcli)
+You can clone ZBox Command-liviewne Interface from github repo [Here](https://github.com/0chain/zboxcli)
 ## Pre-requisites
-* zbox Command-line Interface needs Go V1.12 or higher. You need to clone the gosdk from [here](https://github.com/0chain/gosdk)
+* zbox Command-line Interface needs Go V1.12 or higher. 
+* 0Chain's [gosdk](https://github.com/0chain/gosdk)
 ## How to Build the code?
 1. Make sure you've Go SDK 1.12 or higher and Go configurations are set and working on your system.
-2. Clone [zboxcli](https://github.com/0chain/zboxcli)
-3. Go to the root directory of the local repo
-4. Run the following command:
+2.  Clone [gosdk](https://github.com/0chain/gosdk) and follow steps in Build and Installation section.
+3. Clone [zboxcli](https://github.com/0chain/zboxcli)
+4. Go to the root directory of the local repo
+5. Run the following command:
 
         go build -tags bn256 -o zbox
 
-5. zbox application is built in the local folder. 
+6. zbox application is built in the local folder. 
 ## Getting started with zbox
 ### Before you start
 Before you start playing with zbox, you need to know how to access the blockchain and blobbers and what encryption scheme is supported. Both of that information is stored in a configuration files under sample/clusters folder under repo. Choose the suitable one based on your needs.
