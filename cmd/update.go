@@ -36,10 +36,16 @@ var updateCmd = &cobra.Command{
 		}
 		remotepath := cmd.Flag("remotepath").Value.String()
 		localpath := cmd.Flag("localpath").Value.String()
+		thumbnailpath := cmd.Flag("thumbnailpath").Value.String()
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
-		allocationObj.UpdateFile(localpath, remotepath, statusBar)
+		if len(thumbnailpath) > 0 {
+			allocationObj.UpdateFileWithThumbnail(localpath, remotepath, thumbnailpath, statusBar)
+		} else {
+			allocationObj.UpdateFile(localpath, remotepath, statusBar)
+		}
+
 		wg.Wait()
 		return
 	},
@@ -50,6 +56,7 @@ func init() {
 	updateCmd.PersistentFlags().String("allocation", "", "Allocation ID")
 	updateCmd.PersistentFlags().String("remotepath", "", "Remote path to upload")
 	updateCmd.PersistentFlags().String("localpath", "", "Local path of file to upload")
+	updateCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
 	updateCmd.MarkFlagRequired("allocation")
 	updateCmd.MarkFlagRequired("localpath")
 	updateCmd.MarkFlagRequired("remotepath")
