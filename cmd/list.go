@@ -88,9 +88,6 @@ var listCmd = &cobra.Command{
 			data := make([][]string, len(ref.Children))
 			for idx, child := range ref.Children {
 				size := strconv.FormatInt(child.Size, 10)
-				if child.Type == fileref.DIRECTORY {
-					size = ""
-				}
 				data[idx] = []string{child.Type, child.Name, size, strconv.FormatInt(child.NumBlocks, 10), child.LookupHash}
 			}
 			util.WriteTable(os.Stdout, header, []string{}, data)
