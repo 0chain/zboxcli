@@ -25,7 +25,7 @@ func saveCache(allocationObj *sdk.Allocation, path string, exclPath []string) {
 	if len(path) > 0 {
 		err := allocationObj.SaveRemoteSnapshot(path, exclPath)
 		if err != nil {
-			fmt.Println("Failed to save local cache. %v", err)
+			fmt.Println("Failed to save local cache.", err)
 			return
 		}
 		fmt.Println("Local cache saved.")
