@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"fmt"
+	"os"
 	"sync"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
@@ -17,22 +17,22 @@ var updateCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags()
 		if fflags.Changed("allocation") == false {
-			fmt.Println("Error: allocation flag is missing")
-			return
+			PrintError("Error: allocation flag is missing")
+			os.Exit(1)
 		}
 		if fflags.Changed("remotepath") == false {
-			fmt.Println("Error: remotepath flag is missing")
-			return
+			PrintError("Error: remotepath flag is missing")
+			os.Exit(1)
 		}
 		if fflags.Changed("localpath") == false {
-			fmt.Println("Error: localpath flag is missing")
-			return
+			PrintError("Error: localpath flag is missing")
+			os.Exit(1)
 		}
 		allocationID := cmd.Flag("allocation").Value.String()
 		allocationObj, err := sdk.GetAllocation(allocationID)
 		if err != nil {
-			fmt.Println("Error fetching the allocation", err)
-			return
+			PrintError("Error fetching the allocation", err)
+			os.Exit(1)
 		}
 		remotepath := cmd.Flag("remotepath").Value.String()
 		localpath := cmd.Flag("localpath").Value.String()

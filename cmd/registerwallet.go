@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"sync"
 
 	"github.com/0chain/gosdk/zcncore"
@@ -16,8 +17,8 @@ var registerWalletCmd = &cobra.Command{
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		if clientWallet == nil {
-			fmt.Println("Invalid wallet. Wallet not initialized in sdk")
-			return
+			PrintError("Invalid wallet. Wallet not initialized in sdk")
+			os.Exit(1)
 		}
 		wg := &sync.WaitGroup{}
 		statusBar := &ZCNStatus{wg: wg}
@@ -27,9 +28,9 @@ var registerWalletCmd = &cobra.Command{
 		if statusBar.success {
 			fmt.Println("Wallet registered")
 		} else {
-			fmt.Println("Wallet registration failed. " + statusBar.errMsg)
+			PrintError("Wallet registration failed. " + statusBar.errMsg)
+			os.Exit(1)
 		}
-		return
 	},
 }
 

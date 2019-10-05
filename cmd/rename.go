@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
@@ -16,30 +17,30 @@ var renameCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags()                      // fflags is a *flag.FlagSet
 		if fflags.Changed("allocation") == false { // check if the flag "path" is set
-			fmt.Println("Error: allocation flag is missing") // If not, we'll let the user know
-			return                                           // and return
+			PrintError("Error: allocation flag is missing") // If not, we'll let the user know
+			os.Exit(1)                                      // and os.Exit(1)
 		}
 		if fflags.Changed("remotepath") == false {
-			fmt.Println("Error: remotepath flag is missing")
-			return
+			PrintError("Error: remotepath flag is missing")
+			os.Exit(1)
 		}
 
 		if fflags.Changed("destname") == false {
-			fmt.Println("Error: destname flag is missing")
-			return
+			PrintError("Error: destname flag is missing")
+			os.Exit(1)
 		}
 		allocationID := cmd.Flag("allocation").Value.String()
 		allocationObj, err := sdk.GetAllocation(allocationID)
 		if err != nil {
-			fmt.Println("Error fetching the allocation", err)
-			return
+			PrintError("Error fetching the allocation", err)
+			os.Exit(1)
 		}
 		remotepath := cmd.Flag("remotepath").Value.String()
 		destname := cmd.Flag("destname").Value.String()
 		err = allocationObj.RenameObject(remotepath, destname)
 		if err != nil {
-			fmt.Println(err.Error())
-			return
+			PrintError(err.Error())
+			os.Exit(1)
 		}
 		fmt.Println(remotepath + " renamed")
 		return

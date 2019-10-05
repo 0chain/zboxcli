@@ -25,8 +25,8 @@ func saveCache(allocationObj *sdk.Allocation, path string, exclPath []string) {
 	if len(path) > 0 {
 		err := allocationObj.SaveRemoteSnapshot(path, exclPath)
 		if err != nil {
-			fmt.Println("Failed to save local cache.", err)
-			return
+			PrintError("Failed to save local cache.", err)
+			os.Exit(1)
 		}
 		fmt.Println("Local cache saved.")
 	}
@@ -41,20 +41,20 @@ var syncCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags() // fflags is a *flag.FlagSet
 		if fflags.Changed("localpath") == false {
-			fmt.Println("Error: localpath flag is missing")
-			return
+			PrintError("Error: localpath flag is missing")
+			os.Exit(1)
 		}
 
 		localpath := cmd.Flag("localpath").Value.String()
 
 		if len(localpath) == 0 {
-			fmt.Println("Error: localpath flag is missing")
-			return
+			PrintError("Error: localpath flag is missing")
+			os.Exit(1)
 		}
 
 		if fflags.Changed("allocation") == false { // check if the flag "path" is set
-			fmt.Println("Error: allocation flag is missing") // If not, we'll let the user know
-			return                                           // and return
+			PrintError("Error: allocation flag is missing") // If not, we'll let the user know
+			os.Exit(1)                                      // and os.Exit(1)
 		}
 		allocationID := cmd.Flag("allocation").Value.String()
 
@@ -69,16 +69,16 @@ var syncCmd = &cobra.Command{
 
 		allocationObj, err := sdk.GetAllocation(allocationID)
 		if err != nil {
-			fmt.Println("Error fetching the allocation", err)
-			return
+			PrintError("Error fetching the allocation", err)
+			os.Exit(1)
 		}
 
 		// Create filter
 		filter := []string{".DS_Store", ".git"}
 		lDiff, err := allocationObj.GetAllocationDiff(localcache, localpath, filter, exclPath)
 		if err != nil {
-			fmt.Println("Error getting diff.", err)
-			return
+			PrintError("Error getting diff.", err)
+			os.Exit(1)
 		}
 		if len(lDiff) > 0 {
 			printTable(lDiff)
@@ -107,7 +107,7 @@ var syncCmd = &cobra.Command{
 				fmt.Printf("Deleting remote %s...\n", f.Path)
 				err = allocationObj.DeleteFile(f.Path)
 				if err != nil {
-					fmt.Println("Error deleting remote file,", err.Error())
+					PrintError("Error deleting remote file,", err.Error())
 				}
 				continue
 			case sdk.LocalDelete:
@@ -115,14 +115,14 @@ var syncCmd = &cobra.Command{
 				fmt.Printf("Deleting local %s...\n", lPath)
 				err = os.Remove(lPath)
 				if err != nil {
-					fmt.Println("Error deleting local file.", err.Error())
+					PrintError("Error deleting local file.", err.Error())
 				}
 				continue
 			}
 			if err == nil {
 				wg.Wait()
 			} else {
-				fmt.Println(err.Error())
+				PrintError(err.Error())
 			}
 		}
 		fmt.Println("\nSync Complete")

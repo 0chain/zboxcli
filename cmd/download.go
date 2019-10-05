@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"fmt"
+	"os"
 	"sync"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
@@ -17,8 +17,8 @@ var downloadCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags() // fflags is a *flag.FlagSet
 		if fflags.Changed("remotepath") == false && fflags.Changed("authticket") == false {
-			fmt.Println("Error: remotepath / authticket flag is missing")
-			return
+			PrintError("Error: remotepath / authticket flag is missing")
+			os.Exit(1)
 		}
 
 		remotepath := cmd.Flag("remotepath").Value.String()
@@ -26,8 +26,8 @@ var downloadCmd = &cobra.Command{
 		lookuphash := cmd.Flag("lookuphash").Value.String()
 		thumbnail, _ := cmd.Flags().GetBool("thumbnail")
 		if len(remotepath) == 0 && len(authticket) == 0 {
-			fmt.Println("Error: remotepath / authticket flag is missing")
-			return
+			PrintError("Error: remotepath / authticket flag is missing")
+			os.Exit(1)
 		}
 
 		localpath := cmd.Flag("localpath").Value.String()
@@ -37,14 +37,14 @@ var downloadCmd = &cobra.Command{
 		var errE error
 		if len(remotepath) > 0 {
 			if fflags.Changed("allocation") == false { // check if the flag "path" is set
-				fmt.Println("Error: allocation flag is missing") // If not, we'll let the user know
-				return                                           // and return
+				PrintError("Error: allocation flag is missing") // If not, we'll let the user know
+				os.Exit(1)                                      // and return
 			}
 			allocationID := cmd.Flag("allocation").Value.String()
 			allocationObj, err := sdk.GetAllocation(allocationID)
 			if err != nil {
-				fmt.Println("Error fetching the allocation", err)
-				return
+				PrintError("Error fetching the allocation", err)
+				os.Exit(1)
 			}
 			if thumbnail {
 				errE = allocationObj.DownloadThumbnail(localpath, remotepath, statusBar)
@@ -54,25 +54,25 @@ var downloadCmd = &cobra.Command{
 		} else if len(authticket) > 0 {
 			allocationObj, err := sdk.GetAllocationFromAuthTicket(authticket)
 			if err != nil {
-				fmt.Println("Error fetching the allocation", err)
-				return
+				PrintError("Error fetching the allocation", err)
+				os.Exit(1)
 			}
 			at := sdk.InitAuthTicket(authticket)
 			filename, err := at.GetFileName()
 			if err != nil {
-				fmt.Println("Error getting the filename from authticket", err)
-				return
+				PrintError("Error getting the filename from authticket", err)
+				os.Exit(1)
 			}
 			isDir, err := at.IsDir()
 			if isDir && len(lookuphash) == 0 {
-				fmt.Println("Auth ticket is for a directory and hence lookup hash flag is necessary")
-				return
+				PrintError("Auth ticket is for a directory and hence lookup hash flag is necessary")
+				os.Exit(1)
 			}
 			if !isDir && len(lookuphash) == 0 {
 				lookuphash, err = at.GetLookupHash()
 				if err != nil {
-					fmt.Println("Error getting the lookuphash from authticket", err)
-					return
+					PrintError("Error getting the lookuphash from authticket", err)
+					os.Exit(1)
 				}
 			}
 			if thumbnail {
@@ -85,7 +85,8 @@ var downloadCmd = &cobra.Command{
 		if errE == nil {
 			wg.Wait()
 		} else {
-			fmt.Println(errE.Error())
+			PrintError(errE.Error())
+			os.Exit(1)
 		}
 		return
 	},

@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 
 	. "github.com/0chain/gosdk/zboxcore/logger"
 	"github.com/0chain/gosdk/zboxcore/sdk"
@@ -18,15 +19,15 @@ var getallocationCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags()                      // fflags is a *flag.FlagSet
 		if fflags.Changed("allocation") == false { // check if the flag "path" is set
-			fmt.Println("Error: allocation flag is missing") // If not, we'll let the user know
-			return                                           // and return
+			PrintError("Error: allocation flag is missing") // If not, we'll let the user know
+			os.Exit(1)                                      // and os.Exit(1)
 		}
 		allocationID := cmd.Flag("allocation").Value.String()
 		allocationObj, err := sdk.GetAllocation(allocationID)
 		if err != nil {
 			Logger.Error("Error fetching the allocation", err)
-			fmt.Println("Error fetching/verifying the allocation")
-			return
+			PrintError("Error fetching/verifying the allocation")
+			os.Exit(1)
 		}
 		stats := allocationObj.GetStats()
 		statsBytes, _ := json.Marshal(stats)
