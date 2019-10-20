@@ -113,7 +113,7 @@ var syncCmd = &cobra.Command{
 			case sdk.LocalDelete:
 				// TODO: User confirm??
 				fmt.Printf("Deleting local %s...\n", lPath)
-				err = os.Remove(lPath)
+				err = os.RemoveAll(lPath)
 				if err != nil {
 					PrintError("Error deleting local file.", err.Error())
 				}

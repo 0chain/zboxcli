@@ -16,3 +16,4 @@ sample/zboxcli
 sample/download
 sample/upload
 sample/cmdlog.log
+.DS_Store

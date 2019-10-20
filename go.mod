@@ -4,7 +4,7 @@ go 1.12
 
 require (
 	cloud.google.com/go v0.41.0 // indirect
-	github.com/0chain/gosdk v1.0.20-0.20190920032535-cd2228dbb2e0
+	github.com/0chain/gosdk v1.0.21
 	github.com/coreos/bbolt v1.3.3 // indirect
 	github.com/coreos/etcd v3.3.13+incompatible // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
