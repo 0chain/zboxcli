@@ -21,12 +21,12 @@ var newallocationCmd = &cobra.Command{
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		if datashards == nil || parityshards == nil || size == nil {
-			fmt.Println("Invalid allocation parameters.")
+			PrintError("Invalid allocation parameters.")
 			os.Exit(1)
 		}
 		allocationID, err := sdk.CreateAllocation(*datashards, *parityshards, *size, common.Now()+7776000)
 		if err != nil {
-			fmt.Println("Error creating allocation." + err.Error())
+			PrintError("Error creating allocation." + err.Error())
 			os.Exit(1)
 		}
 		fmt.Println("Allocation created : " + allocationID)
@@ -54,7 +54,7 @@ func storeAllocation(allocationID string) {
 
 	file, err := os.Create(allocFilePath)
 	if err != nil {
-		fmt.Println(err.Error())
+		PrintError(err.Error())
 		os.Exit(1)
 	}
 	defer file.Close()

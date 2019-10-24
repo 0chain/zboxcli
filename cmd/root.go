@@ -71,7 +71,10 @@ func initConfig() {
 	sharders = nodeConfig.GetStringSlice("sharders")
 	miners = nodeConfig.GetStringSlice("miners")
 	signScheme := nodeConfig.GetString("signature_scheme")
+<<<<<<< HEAD
 	//numKeys := nodeConfig.GetInt("num_of_keys")
+=======
+>>>>>>> 03ef3e3a9fcea1a6957e12cc893879f0a07d2af8
 	chainID := nodeConfig.GetString("chain_id")
 
 	//TODO: move the private key storage to the keychain or secure storage

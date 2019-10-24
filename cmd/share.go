@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 
 	"github.com/0chain/gosdk/zboxcore/fileref"
@@ -18,25 +19,25 @@ var shareCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags()                      // fflags is a *flag.FlagSet
 		if fflags.Changed("allocation") == false { // check if the flag "path" is set
-			fmt.Println("Error: allocation flag is missing") // If not, we'll let the user know
-			return                                           // and return
+			PrintError("Error: allocation flag is missing") // If not, we'll let the user know
+			os.Exit(1)                                      // and os.Exit(1)
 		}
 		if fflags.Changed("remotepath") == false {
-			fmt.Println("Error: remotepath flag is missing")
-			return
+			PrintError("Error: remotepath flag is missing")
+			os.Exit(1)
 		}
 		allocationID := cmd.Flag("allocation").Value.String()
 		allocationObj, err := sdk.GetAllocation(allocationID)
 		if err != nil {
-			fmt.Println("Error fetching the allocation", err)
-			return
+			PrintError("Error fetching the allocation", err)
+			os.Exit(1)
 		}
 		remotepath := cmd.Flag("remotepath").Value.String()
 		refType := fileref.FILE
 		statsMap, err := allocationObj.GetFileStats(remotepath)
 		if err != nil {
-			fmt.Println("Error in getting information about the object." + err.Error())
-			return
+			PrintError("Error in getting information about the object." + err.Error())
+			os.Exit(1)
 		}
 		isFile := false
 		for _, v := range statsMap {
@@ -53,8 +54,8 @@ var shareCmd = &cobra.Command{
 		_, fileName = filepath.Split(remotepath)
 		ref, err := allocationObj.GetAuthTicketForShare(remotepath, fileName, refType, "")
 		if err != nil {
-			fmt.Println(err.Error())
-			return
+			PrintError(err.Error())
+			os.Exit(1)
 		}
 		fmt.Println("Auth token :" + ref)
 

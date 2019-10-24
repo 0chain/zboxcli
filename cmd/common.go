@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"sync"
 
 	"gopkg.in/cheggaaa/pb.v1"
@@ -26,6 +27,7 @@ func (s *StatusBar) Completed(allocationId, filePath string, filename string, mi
 	if s.b != nil {
 		s.b.Finish()
 	}
+	s.success = true
 	defer s.wg.Done()
 	fmt.Println("Status completed callback. Type = " + mimetype + ". Name = " + filename)
 }
@@ -34,13 +36,15 @@ func (s *StatusBar) Error(allocationID string, filePath string, op int, err erro
 	if s.b != nil {
 		s.b.Finish()
 	}
+	s.success = false
 	defer s.wg.Done()
-	fmt.Println("Error in file upload." + err.Error())
+	PrintError("Error in file upload." + err.Error())
 }
 
 type StatusBar struct {
-	b  *pb.ProgressBar
-	wg *sync.WaitGroup
+	b       *pb.ProgressBar
+	wg      *sync.WaitGroup
+	success bool
 }
 
 type ZCNStatus struct {
@@ -62,4 +66,8 @@ func (zcn *ZCNStatus) OnWalletCreateComplete(status int, wallet string, err stri
 	zcn.errMsg = ""
 	zcn.walletString = wallet
 	return
+}
+
+func PrintError(v ...interface{}) {
+	fmt.Fprintln(os.Stderr, v...)
 }

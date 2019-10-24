@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"strconv"
 
@@ -20,34 +19,34 @@ var filemetaCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags() // fflags is a *flag.FlagSet
 		if fflags.Changed("remotepath") == false && fflags.Changed("authticket") == false {
-			fmt.Println("Error: remotepath / authticket flag is missing")
-			return
+			PrintError("Error: remotepath / authticket flag is missing")
+			os.Exit(1)
 		}
 
 		remotepath := cmd.Flag("remotepath").Value.String()
 		authticket := cmd.Flag("authticket").Value.String()
 		lookuphash := cmd.Flag("lookuphash").Value.String()
 		if len(remotepath) == 0 && (len(authticket) == 0) {
-			fmt.Println("Error: remotepath / authticket / lookuphash flag is missing")
-			return
+			PrintError("Error: remotepath / authticket / lookuphash flag is missing")
+			os.Exit(1)
 		}
 
 		if len(remotepath) > 0 {
 			if fflags.Changed("allocation") == false { // check if the flag "path" is set
-				fmt.Println("Error: allocation flag is missing") // If not, we'll let the user know
-				return                                           // and return
+				PrintError("Error: allocation flag is missing") // If not, we'll let the user know
+				os.Exit(1)                                      // and return
 			}
 			allocationID := cmd.Flag("allocation").Value.String()
 			allocationObj, err := sdk.GetAllocation(allocationID)
 			if err != nil {
-				fmt.Println("Error fetching the allocation", err)
-				return
+				PrintError("Error fetching the allocation", err)
+				os.Exit(1)
 			}
 			remotepath := cmd.Flag("remotepath").Value.String()
 			ref, err := allocationObj.GetFileMeta(remotepath)
 			if err != nil {
-				fmt.Println(err.Error())
-				return
+				PrintError(err.Error())
+				os.Exit(1)
 			}
 			header := []string{"Type", "Name", "Path", "Lookup Hash"}
 			data := make([][]string, 1)
@@ -63,22 +62,22 @@ var filemetaCmd = &cobra.Command{
 		} else if len(authticket) > 0 {
 			allocationObj, err := sdk.GetAllocationFromAuthTicket(authticket)
 			if err != nil {
-				fmt.Println("Error fetching the allocation", err)
-				return
+				PrintError("Error fetching the allocation", err)
+				os.Exit(1)
 			}
 			at := sdk.InitAuthTicket(authticket)
 			if len(lookuphash) == 0 {
 				lookuphash, err = at.GetLookupHash()
 				if err != nil {
-					fmt.Println("Error getting the lookuphash from authticket", err)
-					return
+					PrintError("Error getting the lookuphash from authticket", err)
+					os.Exit(1)
 				}
 			}
 
 			ref, err := allocationObj.GetFileMetaFromAuthTicket(authticket, lookuphash)
 			if err != nil {
-				fmt.Println(err.Error())
-				return
+				PrintError(err.Error())
+				os.Exit(1)
 			}
 			header := []string{"Type", "Name", "Lookup Hash"}
 			data := make([][]string, 1)
