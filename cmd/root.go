@@ -71,7 +71,7 @@ func initConfig() {
 	sharders = nodeConfig.GetStringSlice("sharders")
 	miners = nodeConfig.GetStringSlice("miners")
 	signScheme := nodeConfig.GetString("signature_scheme")
-	numKeys := nodeConfig.GetInt("num_of_keys")
+	//numKeys := nodeConfig.GetInt("num_of_keys")
 	chainID := nodeConfig.GetString("chain_id")
 
 	//TODO: move the private key storage to the keychain or secure storage
@@ -90,7 +90,7 @@ func initConfig() {
 		wg := &sync.WaitGroup{}
 		statusBar := &ZCNStatus{wg: wg}
 		wg.Add(1)
-		err = zcncore.CreateWallet(numKeys, statusBar)
+		err = zcncore.CreateWallet(statusBar)
 		if err == nil {
 			wg.Wait()
 		} else {

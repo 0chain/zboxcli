@@ -37,13 +37,23 @@ var updateCmd = &cobra.Command{
 		remotepath := cmd.Flag("remotepath").Value.String()
 		localpath := cmd.Flag("localpath").Value.String()
 		thumbnailpath := cmd.Flag("thumbnailpath").Value.String()
+		encrypt, _ := cmd.Flags().GetBool("encrypt")
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
 		if len(thumbnailpath) > 0 {
-			allocationObj.UpdateFileWithThumbnail(localpath, remotepath, thumbnailpath, statusBar)
+			if encrypt {
+				allocationObj.EncryptAndUpdateFileWithThumbnail(localpath, remotepath, thumbnailpath, statusBar)
+			} else {
+				allocationObj.UpdateFileWithThumbnail(localpath, remotepath, thumbnailpath, statusBar)
+			}
+
 		} else {
-			allocationObj.UpdateFile(localpath, remotepath, statusBar)
+			if encrypt {
+				allocationObj.EncryptAndUpdateFile(localpath, remotepath, statusBar)
+			} else {
+				allocationObj.UpdateFile(localpath, remotepath, statusBar)
+			}
 		}
 
 		wg.Wait()
@@ -57,6 +67,7 @@ func init() {
 	updateCmd.PersistentFlags().String("remotepath", "", "Remote path to upload")
 	updateCmd.PersistentFlags().String("localpath", "", "Local path of file to upload")
 	updateCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
+	updateCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
 	updateCmd.MarkFlagRequired("allocation")
 	updateCmd.MarkFlagRequired("localpath")
 	updateCmd.MarkFlagRequired("remotepath")
