@@ -4,7 +4,7 @@ go 1.12
 
 require (
 	cloud.google.com/go v0.41.0 // indirect
-	github.com/0chain/gosdk v1.0.23
+	github.com/0chain/gosdk v1.0.24
 	github.com/coreos/bbolt v1.3.3 // indirect
 	github.com/coreos/etcd v3.3.13+incompatible // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
@@ -42,5 +42,3 @@ require (
 	gopkg.in/cheggaaa/pb.v1 v1.0.28
 	honnef.co/go/tools v0.0.0-20190614002413-cb51c254f01b // indirect
 )
-
-replace github.com/0chain/zboxcli => ../zboxcli
