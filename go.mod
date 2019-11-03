@@ -4,7 +4,7 @@ go 1.12
 
 require (
 	cloud.google.com/go v0.41.0 // indirect
-	github.com/0chain/gosdk v1.0.26
+	github.com/0chain/gosdk v1.0.25-0.20191103004053-7e259a9d3663
 	github.com/coreos/bbolt v1.3.3 // indirect
 	github.com/coreos/etcd v3.3.13+incompatible // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
@@ -15,6 +15,7 @@ require (
 	github.com/gosuri/uilive v0.0.3 // indirect
 	github.com/gosuri/uiprogress v0.0.1 // indirect
 	github.com/grpc-ecosystem/grpc-gateway v1.9.4 // indirect
+	github.com/herumi/bls v0.0.0-20190618074831-058f18ee12f6 // indirect
 	github.com/kisielk/errcheck v1.2.0 // indirect
 	github.com/klauspost/cpuid v1.2.1 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
