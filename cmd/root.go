@@ -137,6 +137,7 @@ func initConfig() {
 		fmt.Println("Error in sdk init", err)
 		os.Exit(1)
 	}
+	sdk.SetNumBlockDownloads(10)
 }
 
 func getConfigDir() string {

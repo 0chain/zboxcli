@@ -16,6 +16,7 @@ sample/zboxcli
 sample/download
 sample/upload
 sample/cmdlog.log
+*.zip
 *.jpg
 .DS_Store
 cmdlog.log
