@@ -18,6 +18,7 @@ import (
 
 var cfgFile string
 var walletFile string
+var bVerbose bool
 
 var sharders []string
 var miners []string
@@ -37,6 +38,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.zcn/nodes.yaml)")
 	rootCmd.PersistentFlags().StringVar(&walletFile, "wallet", "", "wallet file (default is $HOME/.zcn/wallet.txt)")
+	rootCmd.PersistentFlags().BoolVar(&bVerbose, "verbose", false, "prints sdk log in stdio (default false)")
 }
 
 func Execute() {
@@ -81,8 +83,8 @@ func initConfig() {
 		walletFilePath = configDir + "/wallet.txt"
 	}
 	//set the log file
-	zcncore.SetLogFile("cmdlog.log", false)
-	sdk.SetLogFile("cmdlog.log", false)
+	zcncore.SetLogFile("cmdlog.log", bVerbose)
+	sdk.SetLogFile("cmdlog.log", bVerbose)
 
 	zcncore.InitZCNSDK(miners, sharders, signScheme)
 	if _, err := os.Stat(walletFilePath); os.IsNotExist(err) {
