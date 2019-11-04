@@ -16,13 +16,8 @@ github.com/0chain/gosdk v1.0.23 h1:Ic21EVxXxB+2dXiGSEFy6qWogr/Z+IjOVq4HMSn0JTg=
 github.com/0chain/gosdk v1.0.23/go.mod h1:CS/YkXqSXlfKD19Y0ZGdmEIZUX1DMu1n2cilcdH3L2E=
 github.com/0chain/gosdk v1.0.24 h1:Rvg+pHvuy+5NLOmeaXDx1cr8HFhEkN7KinTirSWJhmU=
 github.com/0chain/gosdk v1.0.24/go.mod h1:CS/YkXqSXlfKD19Y0ZGdmEIZUX1DMu1n2cilcdH3L2E=
-<<<<<<< HEAD
 github.com/0chain/gosdk v1.0.25 h1:aADeM3f65GN458+/2wR4g0m90PlneaTFcWmJOGDHbLY=
 github.com/0chain/gosdk v1.0.25/go.mod h1:CS/YkXqSXlfKD19Y0ZGdmEIZUX1DMu1n2cilcdH3L2E=
-=======
-github.com/0chain/gosdk v1.0.25-0.20191103004053-7e259a9d3663 h1:sZUE1niZ5SBtXpCGFK8UxtPk+pPUKthtCzXN5uZ6AeE=
-github.com/0chain/gosdk v1.0.25-0.20191103004053-7e259a9d3663/go.mod h1:CS/YkXqSXlfKD19Y0ZGdmEIZUX1DMu1n2cilcdH3L2E=
->>>>>>> b0aba012bc7d4a3abc9483701193a3b6dd52aea9
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
