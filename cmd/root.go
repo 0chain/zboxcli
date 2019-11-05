@@ -16,6 +16,8 @@ import (
 	"github.com/0chain/gosdk/zcncore"
 )
 
+var VersionStr string
+
 var cfgFile string
 var walletFile string
 var bVerbose bool
@@ -26,7 +28,7 @@ var clientConfig string
 var configDir string
 
 var rootCmd = &cobra.Command{
-	Use:   "zbox",
+	Use:   "zboxcli",
 	Short: "0Box is a decentralized storage application written on the 0Chain platform",
 	Long: `0Box is a decentralized storage application written on the 0Chain platform.
 			Complete documentation is available at https://0chain.net`,

@@ -26,7 +26,10 @@ gomod-clean:
 	go clean -i -r -x -modcache  ./...
 
 zboxcli: gomod-download
-	go build -x -v -tags bn256 -o $(ZBOXCLI) main.go
+	$(eval VERSION=$(shell git describe --tags --dirty --always))
+	$(eval VERSION=$(VERSION)-$(shell git rev-list -1 HEAD --abbrev-commit))
+	go build -x -v -tags bn256 -ldflags "-X main.VersionStr=$(VERSION)" -o $(ZBOXCLI) main.go
+
 
 zboxcli-test:
 	go test -tags bn256 ./...
