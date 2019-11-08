@@ -27,7 +27,6 @@ gomod-clean:
 
 zboxcli: gomod-download
 	$(eval VERSION=$(shell git describe --tags --dirty --always))
-	$(eval VERSION=$(VERSION)-$(shell git rev-list -1 HEAD --abbrev-commit))
 	go build -x -v -tags bn256 -ldflags "-X main.VersionStr=$(VERSION)" -o $(ZBOXCLI) main.go
 
 
