@@ -31,6 +31,11 @@ var downloadCmd = &cobra.Command{
 		}
 
 		localpath := cmd.Flag("localpath").Value.String()
+		numBlocks, _ := cmd.Flags().GetInt("blockspermarker")
+		if numBlocks == 0 {
+			numBlocks = 10
+		}
+		sdk.SetNumBlockDownloads(numBlocks)
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
@@ -42,6 +47,7 @@ var downloadCmd = &cobra.Command{
 			}
 			allocationID := cmd.Flag("allocation").Value.String()
 			allocationObj, err := sdk.GetAllocation(allocationID)
+
 			if err != nil {
 				PrintError("Error fetching the allocation", err)
 				os.Exit(1)
@@ -100,6 +106,7 @@ func init() {
 	downloadCmd.PersistentFlags().String("authticket", "", "Auth ticket fot the file to download if you dont own it")
 	downloadCmd.PersistentFlags().String("lookuphash", "", "The remote lookuphash of the object retrieved from the list")
 	downloadCmd.Flags().BoolP("thumbnail", "t", false, "pass this option to download only the thumbnail")
+	downloadCmd.Flags().IntP("blockspermarker", "bpm", 10, "pass this option to download multiple blocks per marker")
 	downloadCmd.MarkFlagRequired("allocation")
 	downloadCmd.MarkFlagRequired("localpath")
 }
