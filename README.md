@@ -1,6 +1,6 @@
 # zbox Command-line Interface for 0Box Storage
 zbox Command-line Interface is useful for quickly demonstrate and understand the capabilities of 0Box Storage. The utility is built using 0Chain's ClientSDK library written in Go V1.12. Check out this [video](https://youtu.be/TPrkRjdaHrY) on how to use the CLI and SDK to create an allocation, upload, download, update, delete, and share a file to blobbers on the 0Chain testnet platform.
-##Features 
+##Features
 zbox supports following features
 1. Register a Wallet
 2. Create an allocation
@@ -15,18 +15,22 @@ ZBox Command-line utility provides a self-explaining "help" option that lists ou
 ## How to get it?
 You can clone ZBox Command-liviewne Interface from github repo [Here](https://github.com/0chain/zboxcli)
 ## Pre-requisites
-* zbox Command-line Interface needs Go V1.12 or higher. 
+* zbox Command-line Interface needs Go V1.12 or higher.
 * 0Chain's [gosdk](https://github.com/0chain/gosdk)
 ## How to Build the code?
 1. Make sure you've Go SDK 1.12 or higher and Go configurations are set and working on your system.
-2.  Clone [gosdk](https://github.com/0chain/gosdk) and follow steps in Build and Installation section.
-3. Clone [zboxcli](https://github.com/0chain/zboxcli)
-4. Go to the root directory of the local repo
-5. Run the following command:
+2. Clone [zboxcli](https://github.com/0chain/zboxcli)
+3. Go to the root directory of the local repo
+4. Run the following command:
 
-        go build -tags bn256 -o zbox
+        make install
 
-6. zbox application is built in the local folder. 
+6. zboxcli application is built in the local sample folder.
+
+        <clone dir>/sample/zboxcli
+
+**Note**: zbox is an alias of zboxcli
+
 ## Getting started with zbox
 ### Before you start
 Before you start playing with zbox, you need to know how to access the blockchain and blobbers and what encryption scheme is supported. Both of that information is stored in a configuration files under sample/clusters folder under repo. Choose the suitable one based on your needs.
@@ -49,28 +53,34 @@ Command
 Response
 
     0Box is a decentralized storage application written on the 0Chain platform.
-                Complete documentation is available at https://0chain.net
+                        Complete documentation is available at https://0chain.net
 
     Usage:
-
     zbox [command]
 
     Available Commands:
-    delete        delete file from blobbers
-    download      download file from blobbers
-    get           Gets the allocation info
-    help          Help about any command
-    list          list files from blobbers
-    newallocation Creates a new allocation
-    register      Registers the wallet with the blockchain
-    share         share files from blobbers
-    stats         stats for file from blobbers
-    update        update file to blobbers
-    upload        upload file to blobbers
+    copy            copy an object(file/folder) to another folder on blobbers
+    delete          delete file from blobbers
+    download        download file from blobbers
+    get             Gets the allocation info
+    help            Help about any command
+    list            list files from blobbers
+    listallocations List allocations for the client
+    meta            get meta data of files from blobbers
+    newallocation   Creates a new allocation
+    register        Registers the wallet with the blockchain
+    rename          rename an object(file/folder) on blobbers
+    share           share files from blobbers
+    stats           stats for file from blobbers
+    sync            Sync files to/from blobbers
+    update          update file to blobbers
+    upload          upload file to blobbers
+    version         Prints version information
 
     Flags:
         --config string   config file (default is $HOME/.zcn/nodes.yaml)
     -h, --help            help for zbox
+        --verbose         prints sdk log in stdio (default false)
         --wallet string   wallet file (default is $HOME/.zcn/wallet.txt)
 
     Use "zbox [command] --help" for more information about a command.
@@ -112,7 +122,7 @@ Response
     Global Flags:
         --config string   config file (default is $HOME/.zcn/nodes.yaml)
         --wallet string   wallet file (default is $HOME/.zcn/wallet.txt)
-As you can see the newallocation command takes allocationFileName where the allocation information is stored locally, data and parity are used for redundancy factor, size is self-explanatory. All the parameters have default values. 
+As you can see the newallocation command takes allocationFileName where the allocation information is stored locally, data and parity are used for redundancy factor, size is self-explanatory. All the parameters have default values.
 
 #### newallocation.
 Create a new allocation with default values.
@@ -156,7 +166,7 @@ Use command get to get the information about the allocation like  total size of 
 
 Command
 
-    ./zbox get --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac 
+    ./zbox get --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
 
 Response
 
@@ -194,5 +204,27 @@ Command
 #### update
 Use update command to update content of an existing file in the remote path. See upload command
 
+#### sync
+sync command helps to sync all files in localfolder recursively to remote.
 
+Command help
+
+    Sync all files to/from blobbers from/to a localpath
+
+    Usage:
+    zbox sync [flags]
+
+    Flags:
+        --allocation string         Allocation ID
+        --excludepath stringArray   Remote folder paths exclude to sync
+    -h, --help                      help for sync
+        --localcache string         Local cache of remote snapshot.
+                                    If file exists, this will be used for comparison with remote.
+                                    After sync complete, remote snapshot will be updated to the same file for next use.
+        --localpath string          Local dir path to sync
+
+    Global Flags:
+        --config string   config file (default is $HOME/.zcn/nodes.yaml)
+        --verbose         prints sdk log in stdio (default false)
+        --wallet string   wallet file (default is $HOME/.zcn/wallet.txt)
 

@@ -32,6 +32,8 @@ ALLOCATION=--allocationFileName $(ALLOCATION_FILE)
 ALLOCATION_ID=`cat $(HOME)/.zcn/$(ALLOCATION_FILE)`
 ALLOCATION_ID_OPTION=--allocation $(ALLOCATION_ID)
 
+default: help
+
 setup:
 	brew install jq || brew upgrade jq || true
 	@mkdir -p $(ZCN_DIR) $(UPLOAD_DIR) $(DOWNLOAD_DIR) || true

@@ -13,8 +13,8 @@ var versionCmd = &cobra.Command{
 	Long:  `Prints version information`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Version info:")
-		fmt.Println("\tzboxcli..: ", VersionStr)
-		fmt.Println("\tgosdk....: ", zcncore.GetVersion())
+		fmt.Println("\tzbox....: ", VersionStr)
+		fmt.Println("\tgosdk...: ", zcncore.GetVersion())
 		return
 	},
 }

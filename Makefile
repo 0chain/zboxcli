@@ -2,6 +2,7 @@ ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 SAMPLE_DIR:=$(ROOT_DIR)/sample
 
+ZBOX=zbox
 ZBOXCLI=zboxcli
 
 .PHONY:
@@ -25,19 +26,22 @@ gomod-download:
 gomod-clean:
 	go clean -i -r -x -modcache  ./...
 
-zboxcli: gomod-download
+$(ZBOX): gomod-download
 	$(eval VERSION=$(shell git describe --tags --dirty --always))
-	go build -x -v -tags bn256 -ldflags "-X main.VersionStr=$(VERSION)" -o $(ZBOXCLI) main.go
-
+	go build -x -v -tags bn256 -ldflags "-X main.VersionStr=$(VERSION)" -o $(ZBOX) main.go
 
 zboxcli-test:
 	go test -tags bn256 ./...
 
-install: zboxcli zboxcli-test
-	cp $(ZBOXCLI) $(ROOT_DIR)/sample
+install: $(ZBOX) zboxcli-test
+	@echo ""
+	@cp -f $(ROOT_DIR)/$(ZBOX) $(ROOT_DIR)/sample/
+	@cp -f $(ROOT_DIR)/$(ZBOX) $(ROOT_DIR)/sample/$(ZBOXCLI)
+	@echo "Installed binaries to $(ROOT_DIR)/sample/..."
+	@echo ""
 
 clean: gomod-clean
-	@rm -rf $(ROOT_DIR)/$(ZBOXCLI)
+	@rm -rf $(ROOT_DIR)/$(ZBOX)
 
 help:
 	@echo "Environment: "
@@ -49,7 +53,7 @@ help:
 	@echo ""
 	@echo "Install"
 	@echo "\tmake install           - build, test and install zboxcli"
-	@echo "\tmake zboxcli           - installs the zboxcli"
+	@echo "\tmake zbox              - installs the zboxcli"
 	@echo "\tmake zboxcli-test      - run zboxcli test"
 	@echo ""
 	@echo "Clean:"

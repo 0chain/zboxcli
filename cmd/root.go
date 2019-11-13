@@ -28,7 +28,7 @@ var clientConfig string
 var configDir string
 
 var rootCmd = &cobra.Command{
-	Use:   "zboxcli",
+	Use:   "zbox",
 	Short: "0Box is a decentralized storage application written on the 0Chain platform",
 	Long: `0Box is a decentralized storage application written on the 0Chain platform.
 			Complete documentation is available at https://0chain.net`,
