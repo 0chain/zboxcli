@@ -18,5 +18,7 @@ sample/cmdlog.log
 *.jpg
 .DS_Store
 cmdlog.log
+zbox
+zboxcli
 sample/zbox
 sample/zboxcli
