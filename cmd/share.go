@@ -52,13 +52,14 @@ var shareCmd = &cobra.Command{
 
 		var fileName string
 		_, fileName = filepath.Split(remotepath)
-		ref, err := allocationObj.GetAuthTicketForShare(remotepath, fileName, refType, "")
+		refereeClientID := cmd.Flag("clientid").Value.String()
+		encryptionpublickey := cmd.Flag("encryptionpublickey").Value.String()
+		ref, err := allocationObj.GetAuthTicket(remotepath, fileName, refType, refereeClientID, encryptionpublickey)
 		if err != nil {
 			PrintError(err.Error())
 			os.Exit(1)
 		}
 		fmt.Println("Auth token :" + ref)
-
 		return
 	},
 }
@@ -67,6 +68,8 @@ func init() {
 	rootCmd.AddCommand(shareCmd)
 	shareCmd.PersistentFlags().String("allocation", "", "Allocation ID")
 	shareCmd.PersistentFlags().String("remotepath", "", "Remote path to share")
+	shareCmd.PersistentFlags().String("clientid", "", "ClientID of the user to share with. Leave blank for public share")
+	shareCmd.PersistentFlags().String("encryptionpublickey", "", "Encryption public key of the client you want to share with. Can be retrieved by the getwallet command")
 	shareCmd.MarkFlagRequired("allocation")
 	shareCmd.MarkFlagRequired("remotepath")
 }

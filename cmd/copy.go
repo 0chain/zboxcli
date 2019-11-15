@@ -49,7 +49,7 @@ var copyCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(copyCmd)
 	copyCmd.PersistentFlags().String("allocation", "", "Allocation ID")
-	copyCmd.PersistentFlags().String("remotepath", "", "Remote path of file to delete")
+	copyCmd.PersistentFlags().String("remotepath", "", "Remote path of object to copy")
 	copyCmd.PersistentFlags().String("destpath", "", "Destination path for the object")
 	copyCmd.MarkFlagRequired("allocation")
 	copyCmd.MarkFlagRequired("remotepath")

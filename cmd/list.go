@@ -48,14 +48,22 @@ var listCmd = &cobra.Command{
 				PrintError(err.Error())
 				os.Exit(1)
 			}
-			header := []string{"Type", "Name", "Path", "Size", "Num Blocks", "Lookup Hash"}
+			header := []string{"Type", "Name", "Path", "Size", "Num Blocks", "Lookup Hash", "Is Encrypted"}
 			data := make([][]string, len(ref.Children))
 			for idx, child := range ref.Children {
 				size := strconv.FormatInt(child.Size, 10)
 				if child.Type == fileref.DIRECTORY {
 					size = ""
 				}
-				data[idx] = []string{child.Type, child.Name, child.Path, size, strconv.FormatInt(child.NumBlocks, 10), child.LookupHash}
+				isEncrypted := ""
+				if child.Type == fileref.FILE {
+					if len(child.EncryptionKey) > 0 {
+						isEncrypted = "YES"
+					} else {
+						isEncrypted = "NO"
+					}
+				}
+				data[idx] = []string{child.Type, child.Name, child.Path, size, strconv.FormatInt(child.NumBlocks, 10), child.LookupHash, isEncrypted}
 			}
 			util.WriteTable(os.Stdout, header, []string{}, data)
 		} else if len(authticket) > 0 {
@@ -83,11 +91,19 @@ var listCmd = &cobra.Command{
 				PrintError(err.Error())
 				os.Exit(1)
 			}
-			header := []string{"Type", "Name", "Size", "Num Blocks", "Lookup Hash"}
+			header := []string{"Type", "Name", "Size", "Num Blocks", "Lookup Hash", "Is Encrypted"}
 			data := make([][]string, len(ref.Children))
 			for idx, child := range ref.Children {
 				size := strconv.FormatInt(child.Size, 10)
-				data[idx] = []string{child.Type, child.Name, size, strconv.FormatInt(child.NumBlocks, 10), child.LookupHash}
+				isEncrypted := ""
+				if child.Type == fileref.FILE {
+					if len(child.EncryptionKey) > 0 {
+						isEncrypted = "YES"
+					} else {
+						isEncrypted = "NO"
+					}
+				}
+				data[idx] = []string{child.Type, child.Name, size, strconv.FormatInt(child.NumBlocks, 10), child.LookupHash, isEncrypted}
 			}
 			util.WriteTable(os.Stdout, header, []string{}, data)
 		}

@@ -50,8 +50,8 @@ var renameCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(renameCmd)
 	renameCmd.PersistentFlags().String("allocation", "", "Allocation ID")
-	renameCmd.PersistentFlags().String("remotepath", "", "Remote path of file to delete")
-	renameCmd.PersistentFlags().String("destname", "", "New Name for the object")
+	renameCmd.PersistentFlags().String("remotepath", "", "Remote path of object to rename")
+	renameCmd.PersistentFlags().String("destname", "", "New Name for the object. Include the file extension as well if applicable")
 	renameCmd.MarkFlagRequired("allocation")
 	renameCmd.MarkFlagRequired("remotepath")
 	renameCmd.MarkFlagRequired("destname")

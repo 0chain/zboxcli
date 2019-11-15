@@ -44,7 +44,7 @@ var deleteCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(deleteCmd)
 	deleteCmd.PersistentFlags().String("allocation", "", "Allocation ID")
-	deleteCmd.PersistentFlags().String("remotepath", "", "Remote path of file to delete")
+	deleteCmd.PersistentFlags().String("remotepath", "", "Remote path of the object to delete")
 	deleteCmd.MarkFlagRequired("allocation")
 	deleteCmd.MarkFlagRequired("remotepath")
 }

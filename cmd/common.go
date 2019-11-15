@@ -38,7 +38,7 @@ func (s *StatusBar) Error(allocationID string, filePath string, op int, err erro
 	}
 	s.success = false
 	defer s.wg.Done()
-	PrintError("Error in file upload." + err.Error())
+	PrintError("Error in file operation." + err.Error())
 }
 
 type StatusBar struct {
