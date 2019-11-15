@@ -50,7 +50,7 @@ func init() {
 	rootCmd.AddCommand(copyCmd)
 	copyCmd.PersistentFlags().String("allocation", "", "Allocation ID")
 	copyCmd.PersistentFlags().String("remotepath", "", "Remote path of object to copy")
-	copyCmd.PersistentFlags().String("destpath", "", "Destination path for the object")
+	copyCmd.PersistentFlags().String("destpath", "", "Destination path for the object. Existing directory the object should be copied to")
 	copyCmd.MarkFlagRequired("allocation")
 	copyCmd.MarkFlagRequired("remotepath")
 	copyCmd.MarkFlagRequired("destpath")
