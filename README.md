@@ -7,9 +7,12 @@ zbox supports following features
 3. Upload a file to 0Box
 4. Download the uploaded file from 0Box
 5. Update the uploaded file on 0Box
-5. Delete the uploaded file on 0Box
-6. Share the uploaded file on 0Box
-7. List the uploaded files and folders
+6. Delete the uploaded file on 0Box
+7. Share the uploaded file on 0Box
+8. List the uploaded files and folders
+9. Copy uploaded files to another folder path
+10. Upload Encrypted Files to 0Box
+11. Share Encrypted Files using PRE
 
 ZBox Command-line utility provides a self-explaining "help" option that lists out the commands it supports and the parameters each command needs to perform the intended action
 ## How to get it?
@@ -17,6 +20,102 @@ You can clone ZBox Command-liviewne Interface from github repo [Here](https://gi
 ## Pre-requisites
 * zbox Command-line Interface needs Go V1.12 or higher.
 * 0Chain's [gosdk](https://github.com/0chain/gosdk)
+
+### Linux (64-bit only) Specific Build Requirements
+#### Linux (Common) to obtain go
+    wget https://dl.google.com/go/go1.13.linux-amd64.tar.gz
+    tar -C /usr/local -xzf go1.13.linux-amd64.tar.gz
+    rm go1.13.linux-amd64.tar.gz
+#### Linux (Common) add go binary to path (alternatively, add to .profile)
+    export PATH=$PATH:/usr/local/go/bin
+#### Linux - APT based Ubuntu18+ e.g. Ubuntu 18, Mint 19
+    sudo apt update
+    sudo apt install build-essentials
+    sudo apt install git
+#### Linux - YUM based RHEL7+ e.g. Centos 7
+    yum update -y
+    yum install -y openssl-devel
+    yum groupinstall -y "Development Tools"
+    yum install -y git
+    yum install -y wget
+    yum install -y make
+    yum install -y g++
+#### Linux (Common) to build zboxcli
+    mkdir go
+    cd go
+    git clone https://github.com/0chain/zboxcli.git
+    cd zboxcli
+    make install
+#### Linux (Common) Make .zcn folder and copy sample yaml file (will change at betanet)
+    mkdir $HOME/.zcn
+    cp sample/config/devb.yml $HOME/.zcn/nodes.yaml
+#### Linux (Common) test it
+    ./zbox
+    
+* The help for the zbox command should appear!
+
+
+### Windows Specific Build Requirements
+Windows 64bit (tested on Windows 10)
+#### Make (e.g. gnuwin32 on sourceforge)
+* Install executables make3.8.1 binary & make3.8.1 dependencies
+
+        http://gnuwin32.sourceforge.net/packages/make.htm
+    
+* The 3 files from the bin folder of above two packages (make.exe and 2xDLLs) need to be copied into a windows folder such as Windows/system, the zboxcli folder, or a folder of your choosing and the path added to windows system path
+
+        Windows System > Control Panel > System and Security > System > Advanced System Settings > Environment Variables > (System Variables - Path > Edit ) > New [add your chosen path]
+        
+#### Compiler tools via MinGW-W64
+    https://sourceforge.net/projects/mingw-w64/
+    
+* Will install required compiler tools for you;
+* Select Architecture x86_64, leave other options as is;
+* Once again, you may need to manually add the mingw64 binaries path to your system path
+* for whatever path has been installed on your system e.g.
+
+        Windows System > Control Panel > System and Security > System > Advanced System Settings > Environment Variables > (System Variables - Path > Edit ) > New C:\Program Files\mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0\mingw64\bin
+        
+#### Git for Windows (Optional)
+* Installer should handle defaults for you
+
+        gitforwindows.org
+
+
+#### Golang for Windows
+* Via Installer (Windows Amd64 msi) should handle defaults and perform windows path updates for you
+
+        https://golang.org/dl/
+
+* Any Open Command (Terminal) Windows may need to be restarted to 'see' any paths updated above
+
+#### zboxcli
+        md go
+        cd go
+        git clone https://github.com/0chain/zboxcli.git
+        cd zboxcli
+        make install
+
+(As an alternative to the git clone command, you can manually download and extract from the github website, 0chain/zboxcli)
+If you get as far as this;
+
+        process_begin: CreateProcess(NULL, cp -f zwallet /sample/zwallet, ...) failed.
+        make (e=2): The system cannot find the file specified.
+        make: *** [install] Error 2
+        
+Dont worry, its built fine, just rename the file to an .exe like
+
+        rename zbox zbox.exe
+        
+* Locate your home folder, like \Users\<username>
+* Make a folder called .zcn
+* copy devb.yml file from zboxcli\samples\config to the new .zcn folder
+* Also move zbox.exe to that folder if desired.
+* You should now be able to run the command and get the help menu
+
+        zbox
+
+
 ## How to Build the code?
 1. Make sure you've Go SDK 1.12 or higher and Go configurations are set and working on your system.
 2. Clone [zboxcli](https://github.com/0chain/zboxcli)
@@ -63,6 +162,7 @@ Response
     delete          delete file from blobbers
     download        download file from blobbers
     get             Gets the allocation info
+    getwallet       Get wallet information
     help            Help about any command
     list            list files from blobbers
     listallocations List allocations for the client
@@ -140,7 +240,10 @@ Also, the allocation information is stored under $Home/.zcn/allocation.txt
 Use upload command to upload a file. By using help for this command, you will see it takes parameters:
 * --allocation -- the allocation id from the newallocation command
 * --localpath -- absolute path to the file on your local system
-* -- remote path -- remote path where you want to store. It should start with "/"
+* --remote path -- remote path where you want to store. It should start with "/"
+* --thumbnailpath -- Local thumbnail path of file to upload
+* --encrypt -- [OPTIONAL] pass this option to encrypt and upload the file
+
 
 Command
 
@@ -149,9 +252,27 @@ Command
 Response
 
     Status completed callback. Type = application/octet-stream. Name = hello.txt
+    
+    
+#### upload --encrypt
+Use upload command with optional encrypt parameter to upload a file in encrypted format. This can be downloaded as normal from same wallet/allocation or utilize Proxy Re-Encryption facility (see download command).
+
+
+Command
+
+    ./zbox upload --encrypt --localpath <absolute path to file>/sensitivedata.txt --remotepath /myfiles/sensitivedata.txt --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
+
+Response
+
+    Status completed callback. Type =    
 
 #### list
-Use command "list" to list the files and detailed information of each file in the allocation.
+Use list command to list files in given path. By using help for this command, you will see it takes parameters:
+      --allocation string   Allocation ID
+      --remotepath string   Remote path to list from (Required for --allocation)
+      --authticket string   Auth ticket fot the file to download if you dont own it
+      --lookuphash string   The remote lookuphash of the object retrieved from the list
+
 
 Command
 
@@ -159,7 +280,8 @@ Command
 
 Response
 
-Response will be a json string with array of filenames, it's path and more information about the folders and files. Amongst them lookuphash is useful later during download
+Response will be a list with information for each file/folder in the given path. The information includes lookuphash which is require for download via authticket
+(Optional file list in json format)
 
 #### get
 Use command get to get the information about the allocation like  total size of the allocation, used size, number of challenges and the result of that, etc.
@@ -172,8 +294,23 @@ Response
 
 Response will have information about blobbers allocated and stats for the allocation. Stats contain important information about the size of the allocation, size used, number of write markers, and challenges passed/failed/open/redeemed
 
+#### getwallet
+Use command get to get additional wallet information including Encryption Public Key required for Proxy Re-Encryption. 
+
+Command
+
+    ./zbox getwallet
+
+Response
+
+Response will give details for current selected wallet (or wallet file specified by optional --wallet parameter)
+
 #### share
 Use share command to generate an authtoken that provides authorization to the holder to the specified file on the remotepath.
+      --allocation string            Allocation ID
+      --clientid string              ClientID of the user to share with. Leave blank for public share
+      --encryptionpublickey string   Encryption public key of the client you want to share with (from getwallet command)
+
 
 Command
 
@@ -185,6 +322,12 @@ Response contains auth token an encrypted string that can be shared.
 
 #### download
 Use download command to download your own or a shared file.
+      --allocation string     Allocation ID
+      --authticket string     Auth ticket fot the file to download if you dont own it
+      --localpath string      Local path of file to download
+      --lookuphash string     The remote lookuphash of the object retrieved from the list
+      --remotepath string     Remote path to download
+  -t, --thumbnail             pass this option to download only the thumbnail
 
 Command
 
