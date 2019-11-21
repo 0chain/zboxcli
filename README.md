@@ -1,36 +1,37 @@
-# zbox Command-line Interface for 0Box Storage
-zbox Command-line Interface is useful for quickly demonstrate and understand the capabilities of 0Box Storage. The utility is built using 0Chain's ClientSDK library written in Go V1.12. Check out this [video](https://youtu.be/TPrkRjdaHrY) on how to use the CLI and SDK to create an allocation, upload, download, update, delete, and share a file to blobbers on the 0Chain testnet platform.
+# zbox - a CLI for 0Chain dStorage
+zbox is a command line interface (CLI) tool to understand the capabilities of 0Chain dStorage and prototype your app. The utility is built using 0Chain's ClientSDK library written in Go. Check out a [video](https://youtu.be/TPrkRjdaHrY) on how to use the CLI to create an allocation (storage volume) and upload, download, update, delete, and share files and folders to dStor on the 0Chain dStorage platform.
 ##Features
-zbox supports following features
+zbox supports the following features
 1. Register a Wallet
 2. Create an allocation
-3. Upload a file to 0Box
-4. Download the uploaded file from 0Box
-5. Update the uploaded file on 0Box
-6. Delete the uploaded file on 0Box
-7. Share the uploaded file on 0Box
+3. Upload a file to dStorage
+4. Download the uploaded file from dStorage
+5. Update the uploaded file on dStorage
+6. Delete the uploaded file on dStorage
+7. Share the uploaded file on dStorage to the public
 8. List the uploaded files and folders
-9. Copy uploaded files to another folder path
-10. Upload Encrypted Files to 0Box
-11. Share Encrypted Files using PRE
+9. Copy uploaded files to another folder path on dStorage
+10. Upload encrypted files to dStorage
+11. Share an encrypted file using proxy re-encryption (PRE) with your friend
 
-ZBox Command-line utility provides a self-explaining "help" option that lists out the commands it supports and the parameters each command needs to perform the intended action
+zbox CLI provides a self-explaining "help" option that lists commands and parameters they need to perform the intended action
 ## How to get it?
     git clone https://github.com/0chain/zboxcli.git
 ## Pre-requisites
-* zbox Command-line Interface needs Go V1.12 or higher.
-### Linux (64-bit only) Specific Build Requirements
-#### Linux (Common) to obtain go
+    Go V1.12 or higher.
+### How to install Go on Linux 
+    All build requirements here for 64-bit only.
+#### Using wget
     wget https://dl.google.com/go/go1.13.linux-amd64.tar.gz
     tar -C /usr/local -xzf go1.13.linux-amd64.tar.gz
     rm go1.13.linux-amd64.tar.gz
-#### Linux (Common) add go binary to path (alternatively, add to .profile)
+Add Go to path (alternatively, add to .profile)
     export PATH=$PATH:/usr/local/go/bin
-#### Linux - APT based Ubuntu18+ e.g. Ubuntu 18, Mint 19
+#### Using apt on Ubuntu18+ e.g. Ubuntu 18, Mint 19
     sudo apt update
     sudo apt install build-essentials
     sudo apt install git
-#### Linux - YUM based RHEL7+ e.g. Centos 7
+#### Using yum on RHEL7+ e.g. Centos 7
     yum update -y
     yum install -y openssl-devel
     yum groupinstall -y "Development Tools"
@@ -38,23 +39,17 @@ ZBox Command-line utility provides a self-explaining "help" option that lists ou
     yum install -y wget
     yum install -y make
     yum install -y g++
-#### Linux (Common) to build zboxcli
-    mkdir go
-    cd go
+### How to build zboxcli on Linux
     git clone https://github.com/0chain/zboxcli.git
     cd zboxcli
     make install
-#### Linux (Common) Make .zcn folder and copy sample yaml file (will change at betanet)
+Make a .zcn folder and copy a sample yaml file that represents the dStorage network. Currently it is devb.yaml 
     mkdir $HOME/.zcn
-    cp sample/config/devb.yml $HOME/.zcn/nodes.yaml
-#### Linux (Common) test it
-    ./zbox
-    
-* The help for the zbox command should appear!
+    cp sample/config/devb.yaml $HOME/.zcn/nodes.yaml
+Type ./zbox and you should see the help list appear!
 
-
-### Windows Specific Build Requirements
-Windows 64bit (tested on Windows 10)
+### How to build on Windows
+Windows 64bit (tested with Windows 10)
 #### Make (e.g. gnuwin32 on sourceforge)
 * Install executables make3.8.1 binary & make3.8.1 dependencies
 
@@ -109,26 +104,18 @@ Dont worry, its built fine, just rename the file to an .exe like
 * Make a folder called .zcn
 * copy devb.yml file from zboxcli\samples\config to the new .zcn folder
 * Also move zbox.exe to that folder if desired.
-* You should now be able to run the command and get the help menu
+* You should now be able to run the "zbox" command and get the help menu
 
-        zbox
-
-
-## How to Build the code?
-Run the following command:
-
-        make install
-
-zbox application will be built in the current folder.
-
-**Note**: zbox is an alias of zboxcli
 
 ## Getting started with zbox
 ### Before you start
-Before you start playing with zbox, you need to access the blockchain. Go to sample/clusters folder in the repo, and choose a suitable cluster to copy to your ~/.zcn folder and then rename it as nodes.yaml file.  
+Before you start playing with zbox, you need to access the blockchain. Go to sample/clusters folder in the repo, and choose a  network. Copy it to your ~/.zcn folder and then rename it as nodes.yaml file.  
+
+    mkdir ~/.zcn
+    cp ~/.zcn/devB.yaml ~/.zcn/nodes.yaml
 
 ### Setup
-The zbox command line uses the ~/.zcn/nodes.yaml file at runtime to point to the cluster specified in that file. 
+The zbox command line uses the ~/.zcn/nodes.yaml file at runtime to point to the network specified in that file. 
 
 ### Commands
 Note in this document, we will show only the commands, response will vary depending on your usage, so may not be provided in all places.
@@ -177,7 +164,7 @@ Response
     Use "zbox [command] --help" for more information about a command.
 
 #### register
-Command register registers a wallet that will be used both by the blockchain and blobbers.
+Command register registers a wallet that will be used both by the blockchain and blobbers, and is created in the ~/.zcn directory. If you have created a wallet with another network, you will need to remove and recreate it. If you want to create multiple wallets with multiple allocations, make sure you store the wallet information. zbox uses the keys in ~/.zcn/wallet.txt when it executes the commands.
 
 Command
 
@@ -190,7 +177,7 @@ Response
 
 
 #### newallocation with help
-Command newallocation reserves harddisk space on blobbers. Let's see the parameters it takes by using --help
+Command newallocation reserves hard disk space on the blobbers. Let's see the parameters it takes by using --help
 
 Command
 
@@ -213,10 +200,10 @@ Response
     Global Flags:
         --config string   config file (default is $HOME/.zcn/nodes.yaml)
         --wallet string   wallet file (default is $HOME/.zcn/wallet.txt)
-As you can see the newallocation command takes allocationFileName where the allocation information is stored locally, data and parity are used for redundancy factor, size is self-explanatory. All the parameters have default values.
+As you can see the newallocation command takes allocationFileName where the volume information is stored locally. All the parameters have default values. With more data shards, you can upload or download files faster. With more parity shards, you have higher availability.
 
 #### newallocation.
-Create a new allocation with default values.
+Create a new allocation with default values. If you have not registered a wallet, it will automatically create a wallet. 
 Command
 
     ./zbox newallocation
