@@ -16,11 +16,9 @@ zbox supports following features
 
 ZBox Command-line utility provides a self-explaining "help" option that lists out the commands it supports and the parameters each command needs to perform the intended action
 ## How to get it?
-You can clone ZBox Command-liviewne Interface from github repo [Here](https://github.com/0chain/zboxcli)
+    git clone https://github.com/0chain/zboxcli.git
 ## Pre-requisites
 * zbox Command-line Interface needs Go V1.12 or higher.
-* 0Chain's [gosdk](https://github.com/0chain/gosdk)
-
 ### Linux (64-bit only) Specific Build Requirements
 #### Linux (Common) to obtain go
     wget https://dl.google.com/go/go1.13.linux-amd64.tar.gz
@@ -117,30 +115,23 @@ Dont worry, its built fine, just rename the file to an .exe like
 
 
 ## How to Build the code?
-1. Make sure you've Go SDK 1.12 or higher and Go configurations are set and working on your system.
-2. Clone [zboxcli](https://github.com/0chain/zboxcli)
-3. Go to the root directory of the local repo
-4. Run the following command:
+Run the following command:
 
         make install
 
-6. zboxcli application is built in the local sample folder.
-
-        <clone dir>/sample/zboxcli
+zbox application will be built in the current folder.
 
 **Note**: zbox is an alias of zboxcli
 
 ## Getting started with zbox
 ### Before you start
-Before you start playing with zbox, you need to know how to access the blockchain and blobbers and what encryption scheme is supported. Both of that information is stored in a configuration files under sample/clusters folder under repo. Choose the suitable one based on your needs.
-
+Before you start playing with zbox, you need to access the blockchain. Go to sample/clusters folder in the repo, and choose a suitable cluster to copy to your ~/.zcn folder and then rename it as nodes.yaml file.  
 
 ### Setup
-zbox Command-line Interface needs to know the configuration at runtime. By default, configuration files are assumed to be under $Home/.zcn folder. So, create $Home/.zcn folder and store the chosen yml files from clusters folder as nodes.yaml file there.
-### Commands
-To run the commands, cd to the folder where zbox is located.
+The zbox command line uses the ~/.zcn/nodes.yaml file at runtime to point to the cluster specified in that file. 
 
-Let's go over all the available commands and play with it. Note in this document, we will show only the commands, response will vary depending on your usage, so may not be provided in all places.
+### Commands
+Note in this document, we will show only the commands, response will vary depending on your usage, so may not be provided in all places.
 
 #### command with no arguments
 When you run zbox with no arguments, it will list all the supported commands.
