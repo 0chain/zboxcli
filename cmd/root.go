@@ -16,8 +16,6 @@ import (
 	"github.com/0chain/gosdk/zcncore"
 )
 
-var VersionStr string
-
 var cfgFile string
 var walletFile string
 var bVerbose bool

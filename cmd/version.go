@@ -7,6 +7,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var VersionStr string
+
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Prints version information",

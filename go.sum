@@ -3,6 +3,8 @@ github.com/0chain/gosdk v1.0.27 h1:xch/XpLMgPCzpUgSwEmeVg4/VaHiyI1kThw98k0sPkI=
 github.com/0chain/gosdk v1.0.27/go.mod h1:p3VmmRoxmICjf7FmdI4ZeCtufZEcCm3VSdYOY69LLrQ=
 github.com/0chain/gosdk v1.0.28 h1:FMI58V/vQ/lFxs6Vs3ID/C6y+FOv/EBAF/qxR5FcO/M=
 github.com/0chain/gosdk v1.0.28/go.mod h1:p3VmmRoxmICjf7FmdI4ZeCtufZEcCm3VSdYOY69LLrQ=
+github.com/0chain/gosdk v1.0.29 h1:qy/YTpqpSDgi8u2OmdpndGgYZV182m2Fmf3MtWKeayc=
+github.com/0chain/gosdk v1.0.29/go.mod h1:TF9Yf4Z2dwYvAoqRACWK4rApeMFV+llAnYGlXTq7wjY=
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
@@ -61,6 +63,8 @@ github.com/herumi/bls-go-binary v0.0.0-20191107070404-83b77219e5e7 h1:XBYypxVBk7
 github.com/herumi/bls-go-binary v0.0.0-20191107070404-83b77219e5e7/go.mod h1:uTBfU/n3h1aOYIl5nNTbLn5dUfNkF1P97JTaz3bdvro=
 github.com/herumi/bls-go-binary v0.0.0-20191107070741-75fba508bb59 h1:yOl+7YoztB3QTkwXnq4Y0hYZqCC3FSSLf4fuvP3sqj0=
 github.com/herumi/bls-go-binary v0.0.0-20191107070741-75fba508bb59/go.mod h1:uTBfU/n3h1aOYIl5nNTbLn5dUfNkF1P97JTaz3bdvro=
+github.com/herumi/bls-go-binary v0.0.0-20191119080710-898950e1a520 h1:3ek8BJos3JW72rvPzGAWZwJ/iXjOyPSCUI4nAFnTPvg=
+github.com/herumi/bls-go-binary v0.0.0-20191119080710-898950e1a520/go.mod h1:uTBfU/n3h1aOYIl5nNTbLn5dUfNkF1P97JTaz3bdvro=
 github.com/inconshreveable/mousetrap v1.0.0 h1:Z8tu5sraLXCXIcARxBp/8cbvlwVa7Z1NHg9XEKhtSvM=
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=
 github.com/jonboulle/clockwork v0.1.0 h1:VKV+ZcuP6l3yW9doeqz6ziZGgcynBVQO+obU0+0hcPo=
