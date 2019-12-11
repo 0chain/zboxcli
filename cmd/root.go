@@ -18,12 +18,15 @@ import (
 
 var cfgFile string
 var walletFile string
+var cDir string
 var bVerbose bool
 
 var sharders []string
 var miners []string
 var clientConfig string
-var configDir string
+var minSubmit int
+var minCfm int
+var CfmChainLength int
 
 var rootCmd = &cobra.Command{
 	Use:   "zbox",
@@ -36,9 +39,10 @@ var clientWallet *zcncrypto.Wallet
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.zcn/nodes.yaml)")
-	rootCmd.PersistentFlags().StringVar(&walletFile, "wallet", "", "wallet file (default is $HOME/.zcn/wallet.txt)")
-	rootCmd.PersistentFlags().BoolVar(&bVerbose, "verbose", false, "prints sdk log in stdio (default false)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is config.yaml)")
+	rootCmd.PersistentFlags().StringVar(&walletFile, "wallet", "", "wallet file (default is wallet.txt)")
+	rootCmd.PersistentFlags().StringVar(&cDir, "configDir", "", "configuration directory (default is $HOME/.zcn)")
+	rootCmd.PersistentFlags().BoolVar(&bVerbose, "verbose", false, "prints sdk log in stderr (default false)")
 }
 
 func Execute() {
@@ -48,9 +52,11 @@ func Execute() {
 	}
 }
 
-func initConfig() {
-	nodeConfig := viper.New()
-
+func getConfigDir() string {
+	if cDir != "" {
+		return cDir
+	}
+	var configDir string
 	// Find home directory.
 	home, err := homedir.Dir()
 	if err != nil {
@@ -58,12 +64,23 @@ func initConfig() {
 		os.Exit(1)
 	}
 	configDir = home + "/.zcn"
+	return configDir
+}
+
+func initConfig() {
+	nodeConfig := viper.New()
+	var configDir string
+	if cDir != "" {
+		configDir = cDir
+	} else {
+		configDir = getConfigDir()
+	}
 	// Search config in home directory with name ".cobra" (without extension).
 	nodeConfig.AddConfigPath(configDir)
 	if &cfgFile != nil && len(cfgFile) > 0 {
 		nodeConfig.SetConfigName(cfgFile)
 	} else {
-		nodeConfig.SetConfigName("nodes")
+		nodeConfig.SetConfigName("config")
 	}
 
 	if err := nodeConfig.ReadInConfig(); err != nil {
@@ -74,6 +91,9 @@ func initConfig() {
 	miners = nodeConfig.GetStringSlice("miners")
 	signScheme := nodeConfig.GetString("signature_scheme")
 	chainID := nodeConfig.GetString("chain_id")
+	minSubmit = nodeConfig.GetInt("min_submit")
+	minCfm = nodeConfig.GetInt("min_confirmation")
+	CfmChainLength = nodeConfig.GetInt("confirmation_chain_length")
 
 	//TODO: move the private key storage to the keychain or secure storage
 	var walletFilePath string
@@ -86,8 +106,16 @@ func initConfig() {
 	zcncore.SetLogFile("cmdlog.log", bVerbose)
 	sdk.SetLogFile("cmdlog.log", bVerbose)
 
-	zcncore.InitZCNSDK(miners, sharders, signScheme)
-	if _, err := os.Stat(walletFilePath); os.IsNotExist(err) {
+	err := zcncore.InitZCNSDK(miners, sharders, signScheme,
+		zcncore.WithChainID(chainID),
+		zcncore.WithMinSubmit(minSubmit),
+		zcncore.WithMinConfirmation(minCfm),
+		zcncore.WithConfirmationChainLength(CfmChainLength))
+	if err != nil {
+		fmt.Println("Error initializing core SDK.", err)
+		os.Exit(1)
+	}
+	if _, err = os.Stat(walletFilePath); os.IsNotExist(err) {
 		wg := &sync.WaitGroup{}
 		statusBar := &ZCNStatus{wg: wg}
 		wg.Add(1)
@@ -140,8 +168,4 @@ func initConfig() {
 		os.Exit(1)
 	}
 	sdk.SetNumBlockDownloads(10)
-}
-
-func getConfigDir() string {
-	return configDir
 }

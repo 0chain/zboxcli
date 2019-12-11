@@ -1,12 +1,14 @@
 ---
 miners:
+- http://virb.devb.testnet-0chain.net:7071
+- http://vira.devb.testnet-0chain.net:7071
 - http://cala.devb.testnet-0chain.net:7071
 - http://calb.devb.testnet-0chain.net:7071
-- http://vira.devb.testnet-0chain.net:7071
-- http://virb.devb.testnet-0chain.net:7071
 sharders:
 - http://cala.devb.testnet-0chain.net:7171
 - http://vira.devb.testnet-0chain.net:7171
 signature_scheme: bls0chain
-num_of_keys: 1
+min_submit: 50 # in percentage
+min_confirmation: 50 # in percentage
+confirmation_chain_length: 6
 ...

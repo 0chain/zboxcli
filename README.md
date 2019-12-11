@@ -19,7 +19,7 @@ zbox CLI provides a self-explaining "help" option that lists commands and parame
     git clone https://github.com/0chain/zboxcli.git
 ## Pre-requisites
     Go V1.12 or higher.
-### How to install Go on Linux 
+### How to install Go on Linux
     All build requirements here for 64-bit only.
 #### Using wget
     wget https://dl.google.com/go/go1.13.linux-amd64.tar.gz
@@ -43,7 +43,7 @@ Add Go to path (alternatively, add to .profile)
     git clone https://github.com/0chain/zboxcli.git
     cd zboxcli
     make install
-Make a .zcn folder and copy a sample yaml file that represents the dStorage network. Currently it is devb.yaml 
+Make a .zcn folder and copy a sample yaml file that represents the dStorage network. Currently it is devb.yaml
     mkdir $HOME/.zcn
     cp sample/config/devb.yaml $HOME/.zcn/nodes.yaml
 Type ./zbox and you should see the help list appear!
@@ -54,21 +54,21 @@ Windows 64bit (tested with Windows 10)
 * Install executables make3.8.1 binary & make3.8.1 dependencies
 
         http://gnuwin32.sourceforge.net/packages/make.htm
-    
+
 * The 3 files from the bin folder of above two packages (make.exe and 2xDLLs) need to be copied into a windows folder such as Windows/system, the zboxcli folder, or a folder of your choosing and the path added to windows system path
 
         Windows System > Control Panel > System and Security > System > Advanced System Settings > Environment Variables > (System Variables - Path > Edit ) > New [add your chosen path]
-        
+
 #### Compiler tools via MinGW-W64
     https://sourceforge.net/projects/mingw-w64/
-    
+
 * Will install required compiler tools for you;
 * Select Architecture x86_64, leave other options as is;
 * Once again, you may need to manually add the mingw64 binaries path to your system path
 * for whatever path has been installed on your system e.g.
 
         Windows System > Control Panel > System and Security > System > Advanced System Settings > Environment Variables > (System Variables - Path > Edit ) > New C:\Program Files\mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0\mingw64\bin
-        
+
 #### Git for Windows (Optional)
 * Installer should handle defaults for you
 
@@ -95,11 +95,11 @@ If you get as far as this;
         process_begin: CreateProcess(NULL, cp -f zwallet /sample/zwallet, ...) failed.
         make (e=2): The system cannot find the file specified.
         make: *** [install] Error 2
-        
+
 Dont worry, its built fine, just rename the file to an .exe like
 
         rename zbox zbox.exe
-        
+
 * Locate your home folder, like \Users\<username>
 * Make a folder called .zcn
 * copy devb.yml file from zboxcli\samples\config to the new .zcn folder
@@ -109,13 +109,28 @@ Dont worry, its built fine, just rename the file to an .exe like
 
 ## Getting started with zbox
 ### Before you start
-Before you start playing with zbox, you need to access the blockchain. Go to sample/clusters folder in the repo, and choose a  network. Copy it to your ~/.zcn folder and then rename it as nodes.yaml file.  
+Before you start playing with zbox, you need to access the blockchain. Go to sample/clusters folder in the repo, and choose a  network. Copy it to your ~/.zcn folder and then rename it as config.yaml file.
 
     mkdir ~/.zcn
-    cp ~/.zcn/devB.yaml ~/.zcn/nodes.yaml
+    cp ~/.zcn/devb.yaml ~/.zcn/config.yaml
+
+Sample config.yaml
+
+      miners:
+      - http://virb.devb.testnet-0chain.net:7071
+      - http://vira.devb.testnet-0chain.net:7071
+      - http://cala.devb.testnet-0chain.net:7071
+      - http://calb.devb.testnet-0chain.net:7071
+      sharders:
+      - http://cala.devb.testnet-0chain.net:7171
+      - http://vira.devb.testnet-0chain.net:7171
+      signature_scheme: bls0chain
+      min_submit: 50 # in percentage
+      min_confirmation: 50 # in percentage
+      confirmation_chain_length: 6
 
 ### Setup
-The zbox command line uses the ~/.zcn/nodes.yaml file at runtime to point to the network specified in that file. 
+The zbox command line uses the ~/.zcn/nodes.yaml file at runtime to point to the network specified in that file.
 
 ### Commands
 Note in this document, we will show only the commands, response will vary depending on your usage, so may not be provided in all places.
@@ -203,7 +218,7 @@ Response
 As you can see the newallocation command takes allocationFileName where the volume information is stored locally. All the parameters have default values. With more data shards, you can upload or download files faster. With more parity shards, you have higher availability.
 
 #### newallocation.
-Create a new allocation with default values. If you have not registered a wallet, it will automatically create a wallet. 
+Create a new allocation with default values. If you have not registered a wallet, it will automatically create a wallet.
 Command
 
     ./zbox newallocation
@@ -230,8 +245,8 @@ Command
 Response
 
     Status completed callback. Type = application/octet-stream. Name = hello.txt
-    
-    
+
+
 #### upload --encrypt
 Use upload command with optional encrypt parameter to upload a file in encrypted format. This can be downloaded as normal from same wallet/allocation or utilize Proxy Re-Encryption facility (see download command).
 
@@ -242,7 +257,7 @@ Command
 
 Response
 
-    Status completed callback. Type =    
+    Status completed callback. Type =
 
 #### list
 Use list command to list files in given path. By using help for this command, you will see it takes parameters:
@@ -273,7 +288,7 @@ Response
 Response will have information about blobbers allocated and stats for the allocation. Stats contain important information about the size of the allocation, size used, number of write markers, and challenges passed/failed/open/redeemed
 
 #### getwallet
-Use command get to get additional wallet information including Encryption Public Key required for Proxy Re-Encryption. 
+Use command get to get additional wallet information including Encryption Public Key required for Proxy Re-Encryption.
 
 Command
 
