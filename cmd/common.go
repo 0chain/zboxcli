@@ -1,10 +1,12 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"sync"
 
+	"github.com/0chain/gosdk/zboxcore/sdk"
 	"gopkg.in/cheggaaa/pb.v1"
 )
 
@@ -70,4 +72,19 @@ func (zcn *ZCNStatus) OnWalletCreateComplete(status int, wallet string, err stri
 
 func PrintError(v ...interface{}) {
 	fmt.Fprintln(os.Stderr, v...)
+}
+
+func PrintInfo(v ...interface{}) {
+	fmt.Fprintln(os.Stdin, v...)
+}
+
+func commitMetaTxn(path, crudOp string, a *sdk.Allocation) {
+	metaTxnData, err := a.CommitMetaTransaction(path, crudOp)
+	if err != nil {
+		PrintError("Commit failed.", err)
+		os.Exit(1)
+	}
+	metaDataBytes, _ := json.Marshal(metaTxnData.MetaData)
+	PrintInfo("TxnID :", metaTxnData.TxnID)
+	PrintInfo("MetaData :", string(metaDataBytes))
 }

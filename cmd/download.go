@@ -25,6 +25,7 @@ var downloadCmd = &cobra.Command{
 		authticket := cmd.Flag("authticket").Value.String()
 		lookuphash := cmd.Flag("lookuphash").Value.String()
 		thumbnail, _ := cmd.Flags().GetBool("thumbnail")
+		commit, _ := cmd.Flags().GetBool("commit")
 		if len(remotepath) == 0 && len(authticket) == 0 {
 			PrintError("Error: remotepath / authticket flag is missing")
 			os.Exit(1)
@@ -39,14 +40,15 @@ var downloadCmd = &cobra.Command{
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
-		var errE error
+		var errE, err error
+		var allocationObj *sdk.Allocation
 		if len(remotepath) > 0 {
 			if fflags.Changed("allocation") == false { // check if the flag "path" is set
 				PrintError("Error: allocation flag is missing") // If not, we'll let the user know
 				os.Exit(1)                                      // and return
 			}
 			allocationID := cmd.Flag("allocation").Value.String()
-			allocationObj, err := sdk.GetAllocation(allocationID)
+			allocationObj, err = sdk.GetAllocation(allocationID)
 
 			if err != nil {
 				PrintError("Error fetching the allocation", err)
@@ -58,7 +60,7 @@ var downloadCmd = &cobra.Command{
 				errE = allocationObj.DownloadFile(localpath, remotepath, statusBar)
 			}
 		} else if len(authticket) > 0 {
-			allocationObj, err := sdk.GetAllocationFromAuthTicket(authticket)
+			allocationObj, err = sdk.GetAllocationFromAuthTicket(authticket)
 			if err != nil {
 				PrintError("Error fetching the allocation", err)
 				os.Exit(1)
@@ -91,8 +93,14 @@ var downloadCmd = &cobra.Command{
 		if errE == nil {
 			wg.Wait()
 		} else {
-			PrintError(errE.Error())
+			PrintError("Download failed.", err.Error())
 			os.Exit(1)
+		}
+		if !statusBar.success {
+			os.Exit(1)
+		}
+		if commit {
+			commitMetaTxn(remotepath, "Download", allocationObj)
 		}
 		return
 	},
@@ -106,6 +114,7 @@ func init() {
 	downloadCmd.PersistentFlags().String("authticket", "", "Auth ticket fot the file to download if you dont own it")
 	downloadCmd.PersistentFlags().String("lookuphash", "", "The remote lookuphash of the object retrieved from the list")
 	downloadCmd.Flags().BoolP("thumbnail", "t", false, "pass this option to download only the thumbnail")
+	downloadCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
 	downloadCmd.Flags().IntP("blockspermarker", "b", 10, "pass this option to download multiple blocks per marker")
 	downloadCmd.MarkFlagRequired("allocation")
 	downloadCmd.MarkFlagRequired("localpath")

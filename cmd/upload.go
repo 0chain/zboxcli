@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"os"
+	"path/filepath"
 	"sync"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
@@ -38,6 +39,7 @@ var uploadCmd = &cobra.Command{
 		localpath := cmd.Flag("localpath").Value.String()
 		thumbnailpath := cmd.Flag("thumbnailpath").Value.String()
 		encrypt, _ := cmd.Flags().GetBool("encrypt")
+		commit, _ := cmd.Flags().GetBool("commit")
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
@@ -63,6 +65,12 @@ var uploadCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
+		if commit {
+			// Because while upload user gives only the directory in remotepath
+			path := remotepath + filepath.Base(localpath)
+			commitMetaTxn(path, "Upload", allocationObj)
+		}
+
 		return
 	},
 }
@@ -74,6 +82,7 @@ func init() {
 	uploadCmd.PersistentFlags().String("localpath", "", "Local path of file to upload")
 	uploadCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
 	uploadCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
+	uploadCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
 	uploadCmd.MarkFlagRequired("allocation")
 	uploadCmd.MarkFlagRequired("localpath")
 	uploadCmd.MarkFlagRequired("remotepath")
