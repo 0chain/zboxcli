@@ -93,7 +93,7 @@ var downloadCmd = &cobra.Command{
 		if errE == nil {
 			wg.Wait()
 		} else {
-			PrintError("Download failed.", err.Error())
+			PrintError("Download failed.", errE.Error())
 			os.Exit(1)
 		}
 		if !statusBar.success {
