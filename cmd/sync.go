@@ -72,57 +72,73 @@ var syncCmd = &cobra.Command{
 			PrintError("Error fetching the allocation", err)
 			os.Exit(1)
 		}
-
-		// Create filter
-		filter := []string{".DS_Store", ".git"}
-		lDiff, err := allocationObj.GetAllocationDiff(localcache, localpath, filter, exclPath)
-		if err != nil {
-			PrintError("Error getting diff.", err)
-			os.Exit(1)
-		}
-		if len(lDiff) > 0 {
-			printTable(lDiff)
-		} else {
-			fmt.Println("Already up to date")
-			saveCache(allocationObj, localcache, exclPath)
-			return
-		}
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
-		for _, f := range lDiff {
-			localpath = strings.TrimRight(localpath, "/")
-			lPath := localpath + f.Path
-			switch f.Op {
-			case sdk.Download:
-				wg.Add(1)
-				err = allocationObj.DownloadFile(lPath, f.Path, statusBar)
-			case sdk.Upload:
-				wg.Add(1)
-				err = allocationObj.UploadFile(lPath, f.Path, statusBar)
-			case sdk.Update:
-				wg.Add(1)
-				err = allocationObj.UpdateFile(lPath, f.Path, statusBar)
-			case sdk.Delete:
-				// TODO: User confirm??
-				fmt.Printf("Deleting remote %s...\n", f.Path)
-				err = allocationObj.DeleteFile(f.Path)
-				if err != nil {
-					PrintError("Error deleting remote file,", err.Error())
-				}
-				continue
-			case sdk.LocalDelete:
-				// TODO: User confirm??
-				fmt.Printf("Deleting local %s...\n", lPath)
-				err = os.RemoveAll(lPath)
-				if err != nil {
-					PrintError("Error deleting local file.", err.Error())
-				}
-				continue
+		// Create filter
+		filter := []string{".DS_Store", ".git"}
+
+		uploadOnly, _ := cmd.Flags().GetBool("uploadonly")
+		if uploadOnly {
+			lDiff, err := allocationObj.BatchUploader(localcache, localpath, filter, exclPath, statusBar)
+			if err != nil {
+				PrintError("Error doing batch upload.", err)
+				os.Exit(1)
 			}
-			if err == nil {
-				wg.Wait()
+			if len(lDiff) > 0 {
+				printTable(lDiff)
 			} else {
-				PrintError(err.Error())
+				fmt.Println("Already up to date")
+				saveCache(allocationObj, localcache, exclPath)
+				return
+			}
+		} else {
+			lDiff, err := allocationObj.GetAllocationDiff(localcache, localpath, filter, exclPath)
+			if err != nil {
+				PrintError("Error getting diff.", err)
+				os.Exit(1)
+			}
+			if len(lDiff) > 0 {
+				printTable(lDiff)
+			} else {
+				fmt.Println("Already up to date")
+				saveCache(allocationObj, localcache, exclPath)
+				return
+			}
+			for _, f := range lDiff {
+				localpath = strings.TrimRight(localpath, "/")
+				lPath := localpath + f.Path
+				switch f.Op {
+				case sdk.Download:
+					wg.Add(1)
+					err = allocationObj.DownloadFile(lPath, f.Path, statusBar)
+				case sdk.Upload:
+					wg.Add(1)
+					err = allocationObj.UploadFile(lPath, f.Path, statusBar)
+				case sdk.Update:
+					wg.Add(1)
+					err = allocationObj.UpdateFile(lPath, f.Path, statusBar)
+				case sdk.Delete:
+					// TODO: User confirm??
+					fmt.Printf("Deleting remote %s...\n", f.Path)
+					err = allocationObj.DeleteFile(f.Path)
+					if err != nil {
+						PrintError("Error deleting remote file,", err.Error())
+					}
+					continue
+				case sdk.LocalDelete:
+					// TODO: User confirm??
+					fmt.Printf("Deleting local %s...\n", lPath)
+					err = os.RemoveAll(lPath)
+					if err != nil {
+						PrintError("Error deleting local file.", err.Error())
+					}
+					continue
+				}
+				if err == nil {
+					wg.Wait()
+				} else {
+					PrintError(err.Error())
+				}
 			}
 		}
 		fmt.Println("\nSync Complete")
@@ -141,4 +157,6 @@ After sync complete, remote snapshot will be updated to the same file for next u
 	syncCmd.PersistentFlags().StringArray("excludepath", []string{}, "Remote folder paths exclude to sync")
 	syncCmd.MarkFlagRequired("allocation")
 	syncCmd.MarkFlagRequired("localpath")
+	syncCmd.Flags().Bool("uploadonly", false, "pass this option to only upload/update the files")
+
 }
