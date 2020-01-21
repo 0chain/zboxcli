@@ -32,6 +32,26 @@ func saveCache(allocationObj *sdk.Allocation, path string, exclPath []string) {
 	}
 }
 
+func filterOperations(lDiff []sdk.FileDiff) (filterDiff []sdk.FileDiff) {
+	for _, f := range lDiff {
+		if f.Op == sdk.Update || f.Op == sdk.Upload {
+			filterDiff = append(filterDiff, f)
+		}
+	}
+	return
+}
+
+func commitDiff(lDiff []sdk.FileDiff, allocationObj *sdk.Allocation) {
+	for _, f := range lDiff {
+		switch f.Op {
+		case sdk.Upload:
+			commitMetaTxn(f.Path, "Upload", allocationObj)
+		case sdk.Update:
+			commitMetaTxn(f.Path, "Update", allocationObj)
+		}
+	}
+}
+
 // syncCmd represents sync command
 var syncCmd = &cobra.Command{
 	Use:   "sync",
@@ -78,68 +98,62 @@ var syncCmd = &cobra.Command{
 		filter := []string{".DS_Store", ".git"}
 
 		uploadOnly, _ := cmd.Flags().GetBool("uploadonly")
+		commit, _ := cmd.Flags().GetBool("commit")
+		lDiff, err := allocationObj.GetAllocationDiff(localcache, localpath, filter, exclPath)
+		if err != nil {
+			PrintError("Error getting diff.", err)
+			os.Exit(1)
+		}
+
 		if uploadOnly {
-			lDiff, err := allocationObj.BatchUploader(localcache, localpath, filter, exclPath, statusBar)
-			if err != nil {
-				PrintError("Error doing batch upload.", err)
-				os.Exit(1)
-			}
-			if len(lDiff) > 0 {
-				printTable(lDiff)
-			} else {
-				fmt.Println("Already up to date")
-				saveCache(allocationObj, localcache, exclPath)
-				return
-			}
+			lDiff = filterOperations(lDiff)
+		}
+
+		if len(lDiff) > 0 {
+			printTable(lDiff)
 		} else {
-			lDiff, err := allocationObj.GetAllocationDiff(localcache, localpath, filter, exclPath)
-			if err != nil {
-				PrintError("Error getting diff.", err)
-				os.Exit(1)
+			fmt.Println("Already up to date")
+			saveCache(allocationObj, localcache, exclPath)
+			return
+		}
+		for _, f := range lDiff {
+			localpath = strings.TrimRight(localpath, "/")
+			lPath := localpath + f.Path
+			switch f.Op {
+			case sdk.Download:
+				wg.Add(1)
+				err = allocationObj.DownloadFile(lPath, f.Path, statusBar)
+			case sdk.Upload:
+				wg.Add(1)
+				err = allocationObj.UploadFile(lPath, f.Path, statusBar)
+			case sdk.Update:
+				wg.Add(1)
+				err = allocationObj.UpdateFile(lPath, f.Path, statusBar)
+			case sdk.Delete:
+				// TODO: User confirm??
+				fmt.Printf("Deleting remote %s...\n", f.Path)
+				err = allocationObj.DeleteFile(f.Path)
+				if err != nil {
+					PrintError("Error deleting remote file,", err.Error())
+				}
+				continue
+			case sdk.LocalDelete:
+				// TODO: User confirm??
+				fmt.Printf("Deleting local %s...\n", lPath)
+				err = os.RemoveAll(lPath)
+				if err != nil {
+					PrintError("Error deleting local file.", err.Error())
+				}
+				continue
 			}
-			if len(lDiff) > 0 {
-				printTable(lDiff)
+			if err == nil {
+				wg.Wait()
 			} else {
-				fmt.Println("Already up to date")
-				saveCache(allocationObj, localcache, exclPath)
-				return
+				PrintError(err.Error())
 			}
-			for _, f := range lDiff {
-				localpath = strings.TrimRight(localpath, "/")
-				lPath := localpath + f.Path
-				switch f.Op {
-				case sdk.Download:
-					wg.Add(1)
-					err = allocationObj.DownloadFile(lPath, f.Path, statusBar)
-				case sdk.Upload:
-					wg.Add(1)
-					err = allocationObj.UploadFile(lPath, f.Path, statusBar)
-				case sdk.Update:
-					wg.Add(1)
-					err = allocationObj.UpdateFile(lPath, f.Path, statusBar)
-				case sdk.Delete:
-					// TODO: User confirm??
-					fmt.Printf("Deleting remote %s...\n", f.Path)
-					err = allocationObj.DeleteFile(f.Path)
-					if err != nil {
-						PrintError("Error deleting remote file,", err.Error())
-					}
-					continue
-				case sdk.LocalDelete:
-					// TODO: User confirm??
-					fmt.Printf("Deleting local %s...\n", lPath)
-					err = os.RemoveAll(lPath)
-					if err != nil {
-						PrintError("Error deleting local file.", err.Error())
-					}
-					continue
-				}
-				if err == nil {
-					wg.Wait()
-				} else {
-					PrintError(err.Error())
-				}
-			}
+		}
+		if uploadOnly && commit {
+			commitDiff(lDiff, allocationObj)
 		}
 		fmt.Println("\nSync Complete")
 		saveCache(allocationObj, localcache, exclPath)
@@ -158,5 +172,6 @@ After sync complete, remote snapshot will be updated to the same file for next u
 	syncCmd.MarkFlagRequired("allocation")
 	syncCmd.MarkFlagRequired("localpath")
 	syncCmd.Flags().Bool("uploadonly", false, "pass this option to only upload/update the files")
+	syncCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
 
 }
