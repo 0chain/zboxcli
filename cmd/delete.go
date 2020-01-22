@@ -24,6 +24,7 @@ var deleteCmd = &cobra.Command{
 			PrintError("Error: remotepath flag is missing")
 			os.Exit(1)
 		}
+		commit, _ := cmd.Flags().GetBool("commit")
 		allocationID := cmd.Flag("allocation").Value.String()
 		allocationObj, err := sdk.GetAllocation(allocationID)
 		if err != nil {
@@ -31,12 +32,16 @@ var deleteCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		remotepath := cmd.Flag("remotepath").Value.String()
+		if commit {
+			commitMetaTxn(remotepath, "Delete", allocationObj)
+		}
 		err = allocationObj.DeleteFile(remotepath)
 		if err != nil {
-			PrintError(err.Error())
+			PrintError("Delete failed.", err.Error())
 			os.Exit(1)
 		}
 		fmt.Println(remotepath + " deleted")
+
 		return
 	},
 }
@@ -45,6 +50,7 @@ func init() {
 	rootCmd.AddCommand(deleteCmd)
 	deleteCmd.PersistentFlags().String("allocation", "", "Allocation ID")
 	deleteCmd.PersistentFlags().String("remotepath", "", "Remote path of the object to delete")
+	deleteCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
 	deleteCmd.MarkFlagRequired("allocation")
 	deleteCmd.MarkFlagRequired("remotepath")
 }

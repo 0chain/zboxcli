@@ -38,25 +38,37 @@ var updateCmd = &cobra.Command{
 		localpath := cmd.Flag("localpath").Value.String()
 		thumbnailpath := cmd.Flag("thumbnailpath").Value.String()
 		encrypt, _ := cmd.Flags().GetBool("encrypt")
+		commit, _ := cmd.Flags().GetBool("commit")
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
 		if len(thumbnailpath) > 0 {
 			if encrypt {
-				allocationObj.EncryptAndUpdateFileWithThumbnail(localpath, remotepath, thumbnailpath, statusBar)
+				err = allocationObj.EncryptAndUpdateFileWithThumbnail(localpath, remotepath, thumbnailpath, statusBar)
 			} else {
-				allocationObj.UpdateFileWithThumbnail(localpath, remotepath, thumbnailpath, statusBar)
+				err = allocationObj.UpdateFileWithThumbnail(localpath, remotepath, thumbnailpath, statusBar)
 			}
 
 		} else {
 			if encrypt {
-				allocationObj.EncryptAndUpdateFile(localpath, remotepath, statusBar)
+				err = allocationObj.EncryptAndUpdateFile(localpath, remotepath, statusBar)
 			} else {
-				allocationObj.UpdateFile(localpath, remotepath, statusBar)
+				err = allocationObj.UpdateFile(localpath, remotepath, statusBar)
 			}
+		}
+		if err != nil {
+			PrintError("Update failed.", err)
+			os.Exit(1)
 		}
 
 		wg.Wait()
+		if !statusBar.success {
+			os.Exit(1)
+		}
+
+		if commit {
+			commitMetaTxn(remotepath, "Update", allocationObj)
+		}
 		return
 	},
 }
@@ -68,6 +80,7 @@ func init() {
 	updateCmd.PersistentFlags().String("localpath", "", "Local path of file to upload")
 	updateCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
 	updateCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
+	updateCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
 	updateCmd.MarkFlagRequired("allocation")
 	updateCmd.MarkFlagRequired("localpath")
 	updateCmd.MarkFlagRequired("remotepath")
