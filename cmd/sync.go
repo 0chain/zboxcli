@@ -32,6 +32,26 @@ func saveCache(allocationObj *sdk.Allocation, path string, exclPath []string) {
 	}
 }
 
+func filterOperations(lDiff []sdk.FileDiff) (filterDiff []sdk.FileDiff) {
+	for _, f := range lDiff {
+		if f.Op == sdk.Update || f.Op == sdk.Upload {
+			filterDiff = append(filterDiff, f)
+		}
+	}
+	return
+}
+
+func commitDiff(lDiff []sdk.FileDiff, allocationObj *sdk.Allocation) {
+	for _, f := range lDiff {
+		switch f.Op {
+		case sdk.Upload:
+			commitMetaTxn(f.Path, "Upload", allocationObj)
+		case sdk.Update:
+			commitMetaTxn(f.Path, "Update", allocationObj)
+		}
+	}
+}
+
 // syncCmd represents sync command
 var syncCmd = &cobra.Command{
 	Use:   "sync",
@@ -72,14 +92,23 @@ var syncCmd = &cobra.Command{
 			PrintError("Error fetching the allocation", err)
 			os.Exit(1)
 		}
-
+		wg := &sync.WaitGroup{}
+		statusBar := &StatusBar{wg: wg}
 		// Create filter
 		filter := []string{".DS_Store", ".git"}
+
+		uploadOnly, _ := cmd.Flags().GetBool("uploadonly")
+		commit, _ := cmd.Flags().GetBool("commit")
 		lDiff, err := allocationObj.GetAllocationDiff(localcache, localpath, filter, exclPath)
 		if err != nil {
 			PrintError("Error getting diff.", err)
 			os.Exit(1)
 		}
+
+		if uploadOnly {
+			lDiff = filterOperations(lDiff)
+		}
+
 		if len(lDiff) > 0 {
 			printTable(lDiff)
 		} else {
@@ -87,8 +116,6 @@ var syncCmd = &cobra.Command{
 			saveCache(allocationObj, localcache, exclPath)
 			return
 		}
-		wg := &sync.WaitGroup{}
-		statusBar := &StatusBar{wg: wg}
 		for _, f := range lDiff {
 			localpath = strings.TrimRight(localpath, "/")
 			lPath := localpath + f.Path
@@ -125,6 +152,9 @@ var syncCmd = &cobra.Command{
 				PrintError(err.Error())
 			}
 		}
+		if uploadOnly && commit {
+			commitDiff(lDiff, allocationObj)
+		}
 		fmt.Println("\nSync Complete")
 		saveCache(allocationObj, localcache, exclPath)
 		return
@@ -141,4 +171,7 @@ After sync complete, remote snapshot will be updated to the same file for next u
 	syncCmd.PersistentFlags().StringArray("excludepath", []string{}, "Remote folder paths exclude to sync")
 	syncCmd.MarkFlagRequired("allocation")
 	syncCmd.MarkFlagRequired("localpath")
+	syncCmd.Flags().Bool("uploadonly", false, "pass this option to only upload/update the files")
+	syncCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
+
 }
