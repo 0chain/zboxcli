@@ -236,6 +236,7 @@ Use upload command to upload a file. By using help for this command, you will se
 * --remote path -- remote path where you want to store. It should start with "/"
 * --thumbnailpath -- Local thumbnail path of file to upload
 * --encrypt -- [OPTIONAL] pass this option to encrypt and upload the file
+* --commit -- [OPTIONAL] pass this option to commit the metadata transaction
 
 
 Command
@@ -316,6 +317,7 @@ Response contains auth token an encrypted string that can be shared.
 #### download
 Use download command to download your own or a shared file.
       --allocation string     Allocation ID
+      --commit                 pass this option to commit the metadata transaction
       --authticket string     Auth ticket fot the file to download if you dont own it
       --localpath string      Local path of file to download
       --lookuphash string     The remote lookuphash of the object retrieved from the list
@@ -358,6 +360,8 @@ Command help
                                     If file exists, this will be used for comparison with remote.
                                     After sync complete, remote snapshot will be updated to the same file for next use.
         --localpath string          Local dir path to sync
+        --uploadonly                pass this option to only upload/update the files
+        --commit                    pass this option to commit the metadata transaction
 
     Global Flags:
         --config string   config file (default is $HOME/.zcn/nodes.yaml)
