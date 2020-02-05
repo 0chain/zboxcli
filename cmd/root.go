@@ -23,6 +23,7 @@ var bVerbose bool
 
 var sharders []string
 var miners []string
+var preferredBlobbers []string
 var clientConfig string
 var minSubmit int
 var minCfm int
@@ -89,6 +90,7 @@ func initConfig() {
 	}
 	sharders = nodeConfig.GetStringSlice("sharders")
 	miners = nodeConfig.GetStringSlice("miners")
+	preferredBlobbers = nodeConfig.GetStringSlice("preferred_blobbers")
 	signScheme := nodeConfig.GetString("signature_scheme")
 	chainID := nodeConfig.GetString("chain_id")
 	minSubmit = nodeConfig.GetInt("min_submit")
@@ -162,7 +164,7 @@ func initConfig() {
 		os.Exit(1)
 	}
 	//init the storage sdk with the known miners, sharders and client wallet info
-	err = sdk.InitStorageSDK(clientConfig, miners, sharders, chainID, signScheme)
+	err = sdk.InitStorageSDK(clientConfig, miners, sharders, chainID, signScheme, preferredBlobbers)
 	if err != nil {
 		fmt.Println("Error in sdk init", err)
 		os.Exit(1)
