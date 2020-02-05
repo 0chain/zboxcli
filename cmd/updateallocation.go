@@ -34,7 +34,7 @@ var updateallocationCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(updateallocationCmd)
 	updateSize = updateallocationCmd.PersistentFlags().Int64("size", 2147483648, "--size 10000")
-	updateExpiry = updateallocationCmd.PersistentFlags().Int64("expiry", 7776000, "--size 10000")
+	updateExpiry = updateallocationCmd.PersistentFlags().Int64("expiry", 2592000, "--size 10000")
 	updateallocationCmd.MarkFlagRequired("size")
 	updateallocationCmd.MarkFlagRequired("expiry")
 }
