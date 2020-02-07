@@ -117,14 +117,17 @@ Before you start playing with zbox, you need to access the blockchain. Go to sam
 Sample config.yaml
 
       miners:
-      - http://virb.devb.testnet-0chain.net:7071
-      - http://vira.devb.testnet-0chain.net:7071
-      - http://cala.devb.testnet-0chain.net:7071
-      - http://calb.devb.testnet-0chain.net:7071
+      - http://one.devnet-0chain.net:31071
+      - http://one.devnet-0chain.net:31072
+      - http://one.devnet-0chain.net:31073
+      - http://one.devnet-0chain.net:31074                  
       sharders:
-      - http://cala.devb.testnet-0chain.net:7171
-      - http://vira.devb.testnet-0chain.net:7171
+      - http://one.devnet-0chain.net:31171
+      - http://one.devnet-0chain.net:31172
       signature_scheme: bls0chain
+      preferred_blobbers:
+      - 7a90e6790bcd3d78422d7a230390edc102870fe58c15472073922024985b1c7d
+      - f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25
       min_submit: 50 # in percentage
       min_confirmation: 50 # in percentage
       confirmation_chain_length: 6
