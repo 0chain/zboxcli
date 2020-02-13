@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"os"
-	"path/filepath"
 	"sync"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
@@ -66,9 +65,7 @@ var uploadCmd = &cobra.Command{
 		}
 
 		if commit {
-			// Because while upload user gives only the directory in remotepath
-			path := remotepath + filepath.Base(localpath)
-			commitMetaTxn(path, "Upload", allocationObj)
+			commitMetaTxn(remotepath, "Upload", allocationObj)
 		}
 
 		return
