@@ -20,3 +20,5 @@ require (
 	golang.org/x/text v0.3.2 // indirect
 	gopkg.in/cheggaaa/pb.v1 v1.0.28
 )
+
+replace github.com/0chain/gosdk => ../gosdk

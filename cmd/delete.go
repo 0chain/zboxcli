@@ -33,7 +33,7 @@ var deleteCmd = &cobra.Command{
 		}
 		remotepath := cmd.Flag("remotepath").Value.String()
 		if commit {
-			commitMetaTxn(remotepath, "Delete", allocationObj)
+			commitMetaTxn(remotepath, "Delete", "", "", allocationObj)
 		}
 		err = allocationObj.DeleteFile(remotepath)
 		if err != nil {

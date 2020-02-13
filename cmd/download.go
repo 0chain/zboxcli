@@ -100,7 +100,7 @@ var downloadCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		if commit {
-			commitMetaTxn(remotepath, "Download", allocationObj)
+			commitMetaTxn(remotepath, "Download", authticket, lookuphash, allocationObj)
 		}
 		return
 	},

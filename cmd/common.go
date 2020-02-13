@@ -78,8 +78,8 @@ func PrintInfo(v ...interface{}) {
 	fmt.Fprintln(os.Stdin, v...)
 }
 
-func commitMetaTxn(path, crudOp string, a *sdk.Allocation) {
-	metaTxnData, err := a.CommitMetaTransaction(path, crudOp)
+func commitMetaTxn(path, crudOp, authTicket, lookupHash string, a *sdk.Allocation) {
+	metaTxnData, err := a.CommitMetaTransaction(path, crudOp, authTicket, lookupHash)
 	if err != nil {
 		PrintError("Commit failed.", err)
 		os.Exit(1)

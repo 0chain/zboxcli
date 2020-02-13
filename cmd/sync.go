@@ -45,9 +45,9 @@ func commitDiff(lDiff []sdk.FileDiff, allocationObj *sdk.Allocation) {
 	for _, f := range lDiff {
 		switch f.Op {
 		case sdk.Upload:
-			commitMetaTxn(f.Path, "Upload", allocationObj)
+			commitMetaTxn(f.Path, "Upload", "", "", allocationObj)
 		case sdk.Update:
-			commitMetaTxn(f.Path, "Update", allocationObj)
+			commitMetaTxn(f.Path, "Update", "", "", allocationObj)
 		}
 	}
 }
