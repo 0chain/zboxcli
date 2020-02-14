@@ -52,8 +52,8 @@ var filemetaCmd = &cobra.Command{
 			data := make([][]string, 1)
 			data[0] = []string{ref.Type, ref.Name, ref.Path, ref.LookupHash}
 			if ref.Type == fileref.FILE {
-				headerFile := []string{"Size", "Mime Type", "Thumbnail Size", "Hash", "Thumbnail Hash"}
-				dataFile := []string{strconv.FormatInt(ref.Size, 10), ref.MimeType, strconv.FormatInt(ref.ThumbnailSize, 10), ref.Hash, ref.ThumbnailHash}
+				headerFile := []string{"Size", "Mime Type", "Hash"}
+				dataFile := []string{strconv.FormatInt(ref.Size, 10), ref.MimeType, ref.Hash}
 				header = append(header, headerFile...)
 				data[0] = append(data[0], dataFile...)
 			}
@@ -83,8 +83,8 @@ var filemetaCmd = &cobra.Command{
 			data := make([][]string, 1)
 			data[0] = []string{ref.Type, ref.Name, ref.LookupHash}
 			if ref.Type == fileref.FILE {
-				headerFile := []string{"Size", "Mime Type", "Thumbnail Size", "Hash", "Thumbnail Hash"}
-				dataFile := []string{strconv.FormatInt(ref.Size, 10), ref.MimeType, strconv.FormatInt(ref.ThumbnailSize, 10), ref.Hash, ref.ThumbnailHash}
+				headerFile := []string{"Size", "Mime Type", "Hash"}
+				dataFile := []string{strconv.FormatInt(ref.Size, 10), ref.MimeType, ref.Hash}
 				header = append(header, headerFile...)
 				data[0] = append(data[0], dataFile...)
 			}
