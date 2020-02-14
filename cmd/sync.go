@@ -172,6 +172,6 @@ After sync complete, remote snapshot will be updated to the same file for next u
 	syncCmd.MarkFlagRequired("allocation")
 	syncCmd.MarkFlagRequired("localpath")
 	syncCmd.Flags().Bool("uploadonly", false, "pass this option to only upload/update the files")
-	syncCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
+	syncCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction - only works with uploadonly")
 
 }
