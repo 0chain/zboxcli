@@ -41,13 +41,22 @@ func filterOperations(lDiff []sdk.FileDiff) (filterDiff []sdk.FileDiff) {
 	return
 }
 
-func commitDiff(lDiff []sdk.FileDiff, allocationObj *sdk.Allocation) {
+func commitDiff(lDiff []sdk.FileDiff, allocationObj *sdk.Allocation, fileMetas map[string]*sdk.ConsolidatedFileMeta) {
 	for _, f := range lDiff {
 		switch f.Op {
 		case sdk.Upload:
-			commitMetaTxn(f.Path, "Upload", "", "", allocationObj)
+			commitMetaTxn(f.Path, "Upload", "", "", allocationObj, nil)
 		case sdk.Update:
-			commitMetaTxn(f.Path, "Update", "", "", allocationObj)
+			commitMetaTxn(f.Path, "Update", "", "", allocationObj, nil)
+		case sdk.Download:
+			commitMetaTxn(f.Path, "Download", "", "", allocationObj, nil)
+		case sdk.Delete:
+			fileMeta, ok := fileMetas[f.Path]
+			if !ok {
+				PrintError("Unable to commit metaData for :", f.Path)
+				break
+			}
+			commitMetaTxn(f.Path, "Delete", "", "", allocationObj, fileMeta)
 		}
 	}
 }
@@ -92,6 +101,8 @@ var syncCmd = &cobra.Command{
 			PrintError("Error fetching the allocation", err)
 			os.Exit(1)
 		}
+
+		fileMetas := make(map[string]*sdk.ConsolidatedFileMeta)
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		// Create filter
@@ -130,6 +141,11 @@ var syncCmd = &cobra.Command{
 				wg.Add(1)
 				err = allocationObj.UpdateFile(lPath, f.Path, statusBar)
 			case sdk.Delete:
+				fileMeta, err := allocationObj.GetFileMeta(f.Path)
+				if err != nil {
+					PrintError("Error fetching metaData :", err.Error())
+				}
+				fileMetas[f.Path] = fileMeta
 				// TODO: User confirm??
 				fmt.Printf("Deleting remote %s...\n", f.Path)
 				err = allocationObj.DeleteFile(f.Path)
@@ -152,8 +168,8 @@ var syncCmd = &cobra.Command{
 				PrintError(err.Error())
 			}
 		}
-		if uploadOnly && commit {
-			commitDiff(lDiff, allocationObj)
+		if commit {
+			commitDiff(lDiff, allocationObj, fileMetas)
 		}
 		fmt.Println("\nSync Complete")
 		saveCache(allocationObj, localcache, exclPath)

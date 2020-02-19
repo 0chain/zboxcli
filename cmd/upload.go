@@ -65,7 +65,7 @@ var uploadCmd = &cobra.Command{
 		}
 
 		if commit {
-			commitMetaTxn(remotepath, "Upload", "", "", allocationObj)
+			commitMetaTxn(remotepath, "Upload", "", "", allocationObj, nil)
 		}
 
 		return

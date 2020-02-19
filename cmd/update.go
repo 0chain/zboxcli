@@ -67,7 +67,7 @@ var updateCmd = &cobra.Command{
 		}
 
 		if commit {
-			commitMetaTxn(remotepath, "Update", "", "", allocationObj)
+			commitMetaTxn(remotepath, "Update", "", "", allocationObj, nil)
 		}
 		return
 	},
