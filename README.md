@@ -110,7 +110,7 @@ Response
     Use "zbox [command] --help" for more information about a command.
 
 ### Register
-Command register registers a wallet that will be used both by the blockchain and blobbers, and is created in the ~/.zcn directory. If you have created a wallet with another network, you will need to remove and recreate it. If you want to create multiple wallets with multiple allocations, make sure you store the wallet information. zbox uses the keys in ~/.zcn/wallet.txt when it executes the commands.
+Command register registers a wallet that will be used both by the blockchain and blobbers, and is created in the ~/.zcn directory. If you have created a wallet with another network, you will need to remove and recreate it. If you want to create multiple wallets with multiple allocations, make sure you store the wallet information. zbox uses the keys in ~/.zcn/wallet.json when it executes the commands.
 
 Command
 
