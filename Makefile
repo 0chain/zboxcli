@@ -34,11 +34,6 @@ zboxcli-test:
 	go test -tags bn256 ./...
 
 install: $(ZBOX) zboxcli-test
-	@echo ""
-	@cp -f $(ROOT_DIR)/$(ZBOX) $(ROOT_DIR)/sample/
-	@cp -f $(ROOT_DIR)/$(ZBOX) $(ROOT_DIR)/sample/$(ZBOXCLI)
-	@echo "Installed binaries to $(ROOT_DIR)/sample/..."
-	@echo ""
 
 clean: gomod-clean
 	@rm -rf $(ROOT_DIR)/$(ZBOX)
