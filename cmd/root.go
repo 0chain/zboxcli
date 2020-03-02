@@ -41,7 +41,7 @@ var clientWallet *zcncrypto.Wallet
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is config.yaml)")
-	rootCmd.PersistentFlags().StringVar(&walletFile, "wallet", "", "wallet file (default is wallet.txt)")
+	rootCmd.PersistentFlags().StringVar(&walletFile, "wallet", "", "wallet file (default is wallet.json)")
 	rootCmd.PersistentFlags().StringVar(&cDir, "configDir", "", "configuration directory (default is $HOME/.zcn)")
 	rootCmd.PersistentFlags().BoolVar(&bVerbose, "verbose", false, "prints sdk log in stderr (default false)")
 }
@@ -102,7 +102,7 @@ func initConfig() {
 	if &walletFile != nil && len(walletFile) > 0 {
 		walletFilePath = configDir + "/" + walletFile
 	} else {
-		walletFilePath = configDir + "/wallet.txt"
+		walletFilePath = configDir + "/wallet.json"
 	}
 	//set the log file
 	zcncore.SetLogFile("cmdlog.log", bVerbose)
