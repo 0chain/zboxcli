@@ -40,6 +40,12 @@ var getallocationCmd = &cobra.Command{
 		for _, blobber := range allocationObj.Blobbers {
 			fmt.Printf("\t%v\n", blobber.Baseurl)
 		}
+		fmt.Printf("Requested read price range  : [%d, %d] token / GB\n",
+			allocationObj.ReadPriceRange.Min, allocationObj.ReadPriceRange.Max)
+		fmt.Printf("Requested write price range : [%d, %d] token / GB\n",
+			allocationObj.WritePriceRange.Min, allocationObj.WritePriceRange.Max)
+		fmt.Printf("Min Lock Demand             : %v token\n", allocationObj.MinLockDemand)
+		fmt.Printf("Challenge Completion Time   : %v\n", allocationObj.ChallengeCompletionTime)
 
 		fmt.Printf("Stats : \n")
 		fmt.Printf("\tTotal Size : %v\n", allocationObj.Size)
