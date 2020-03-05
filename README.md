@@ -231,17 +231,21 @@ Response
 
 ### Download
 Use download command to download your own or a shared file.
-      --allocation string     Allocation ID
-      --commit                Pass this option to commit the metadata transaction
-      --authticket string     Auth ticket fot the file to download if you dont own it
-      --localpath string      Local path of file to download
-      --lookuphash string     The remote lookuphash of the object retrieved from the list
-      --remotepath string     Remote path to download
-  -t, --thumbnail             pass this option to download only the thumbnail
+* --allocation string     Allocation ID
+* --commit                Pass this option to commit the metadata transaction
+* --authticket string     Auth ticket fot the file to download if you dont own it
+* --localpath string      Local path of file to download
+* --lookuphash string [OPTIONAL]     The remote lookuphash of the object retrieved from the list
+* --remotepath string     Remote path to download
+* -t, --thumbnail             pass this option to download only the thumbnail
 
 Command
 
     ./zbox download --authticket eyJjbGllbnRfaWQiOiIiLCJvd25lcl9pZCI6IjRiZjI4ODU5NzgzMjNiMmU0OGUyNGM0ZTNkODkwYTA1MzQwM2E3MDk3NDE3MDljMzA1YjAxZjE5ZDk2NDFhYTgiLCJhbGxvY2F0aW9uX2lkIjoiM2MwZDMyNTYwZWExOGQ5ZDBkNzY4MDgyMTZhOWM2MzRmNjYxOTc5ZDI5YmE1OWNjOGRhZmNjYjNlNWI5NTM0MSIsImZpbGVfcGF0aF9oYXNoIjoiNDE4NjVmMGM2YWFhNTcxM2VkMzkxZWJkZjgyMjU1MmZjNmNmYjU5YTg3YTI2MTY4MjgyNDJiYTNjYTBkY2U0OSIsImZpbGVfbmFtZSI6ImhvcnNlLmpwZyIsInJlZmVyZW5jZV90eXBlIjoiZiIsImV4cGlyYXRpb24iOjE1Njg3NTQ0ODQsInRpbWVzdGFtcCI6MTU2MDk3ODQ4NCwic2lnbmF0dXJlIjoiYjhkZWNhNzM4YjgyNGRiNmNlNzc0NDY1N2FlZmNiNzUzZTYxOWQ4MmJhODEzMjIzYWQ3MGI2NTlkOTQxNDM2YTVkMzQ0N2E5ZmUwNzE1NGYwMThmYjk5NDkyNDQ5ZDk5NmNjMmQ5M2RkMWM0NTJkYzgzNDEyYjVhZTNkMmFmMDEifQ== --allocation 3c0d32560ea18d9d0d76808216a9c634f661979d29ba59cc8dafccb3e5b95341 --remotepath /myfiles/horse.jpeg --lookuphash 41865f0c6aaa5713ed391ebdf822552fc6cfb59a87a2616828242ba3ca0dce49 --localpath ../horse.jpeg
+
+Note: You can download by using only 1 on the below combination
+* --remotepath , --allocation 
+* --authticket
 
 Response
 

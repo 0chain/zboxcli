@@ -71,17 +71,11 @@ var downloadCmd = &cobra.Command{
 				PrintError("Error getting the filename from authticket", err)
 				os.Exit(1)
 			}
-			isDir, err := at.IsDir()
-			if isDir && len(lookuphash) == 0 {
-				PrintError("Auth ticket is for a directory and hence lookup hash flag is necessary")
+
+			lookuphash, err = at.GetLookupHash()
+			if err != nil {
+				PrintError("Error getting the lookuphash from authticket", err)
 				os.Exit(1)
-			}
-			if !isDir && len(lookuphash) == 0 {
-				lookuphash, err = at.GetLookupHash()
-				if err != nil {
-					PrintError("Error getting the lookuphash from authticket", err)
-					os.Exit(1)
-				}
 			}
 			if thumbnail {
 				errE = allocationObj.DownloadThumbnailFromAuthTicket(localpath, authticket, lookuphash, filename, statusBar)
