@@ -117,6 +117,10 @@ func initConfig() {
 		fmt.Println("Error initializing core SDK.", err)
 		os.Exit(1)
 	}
+
+	// is freshly created wallet?
+	var fresh bool
+
 	if _, err = os.Stat(walletFilePath); os.IsNotExist(err) {
 		wg := &sync.WaitGroup{}
 		statusBar := &ZCNStatus{wg: wg}
@@ -141,6 +145,8 @@ func initConfig() {
 		}
 		defer file.Close()
 		fmt.Fprintf(file, clientConfig)
+
+		fresh = true
 	} else {
 		f, err := os.Open(walletFilePath)
 		if err != nil {
@@ -170,4 +176,13 @@ func initConfig() {
 		os.Exit(1)
 	}
 	sdk.SetNumBlockDownloads(10)
+
+	if fresh {
+		fmt.Println("Creating related read pool for storage smart-contract...")
+		if err = sdk.CreateReadPool(); err != nil {
+			fmt.Printf("Failed to create read pool: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Println("Read pool created successfully")
+	}
 }
