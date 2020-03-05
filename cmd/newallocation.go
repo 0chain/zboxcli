@@ -3,9 +3,12 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"math"
 	"os"
+	"strconv"
+	"strings"
+	"time"
 
-	"github.com/0chain/gosdk/core/common"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
 	"github.com/spf13/cobra"
@@ -16,6 +19,24 @@ var (
 	size                     *int64
 	allocationFileName       *string
 )
+
+func getPriceRange(val string) (pr sdk.PriceRange, err error) {
+	var ss = strings.Split(val, "-")
+	if len(ss) != 2 {
+		err = fmt.Errorf("invalid price range format: %q", val)
+		return
+	}
+	var minf, maxf float64
+	if minf, err = strconv.ParseFloat(ss[0], 64); err != nil {
+		return
+	}
+	if maxf, err = strconv.ParseFloat(ss[1], 64); err != nil {
+		return
+	}
+	pr.Min = zcncore.ConvertToValue(minf)
+	pr.Max = zcncore.ConvertToValue(maxf)
+	return
+}
 
 // newallocationCmd represents the new allocation command
 var newallocationCmd = &cobra.Command{
@@ -49,8 +70,44 @@ var newallocationCmd = &cobra.Command{
 			}
 		}
 
+		var (
+			readPrice  = sdk.PriceRange{Min: 0, Max: math.MaxInt64}
+			writePrice = sdk.PriceRange{Min: 0, Max: math.MaxInt64}
+		)
+
+		if flags.Changed("read_price") {
+			rps, err := flags.GetString("read_price")
+			if err != nil {
+				log.Fatal("invalid read_price value: ", err)
+			}
+			pr, err := getPriceRange(rps)
+			if err != nil {
+				log.Fatal("invalid read_price value: ", err)
+			}
+			readPrice = pr
+		}
+
+		if flags.Changed("write_price") {
+			wps, err := flags.GetString("write_price")
+			if err != nil {
+				log.Fatal("invalid write_price value: ", err)
+			}
+			pr, err := getPriceRange(wps)
+			if err != nil {
+				log.Fatal("invalid write_price value: ", err)
+			}
+			readPrice = pr
+		}
+
+		var expire, err = flags.GetDuration("expire")
+		if err != nil {
+			log.Fatal("invalid 'expire' flag: ", err)
+		}
+
+		var expireAt = time.Now().Add(expire).Unix()
+
 		allocationID, err := sdk.CreateAllocation(*datashards, *parityshards,
-			*size, common.Now()+7776000, fill)
+			*size, expireAt, readPrice, writePrice, fill)
 		if err != nil {
 			log.Fatal("Error creating allocation: ", err)
 		}
@@ -80,6 +137,9 @@ func init() {
 	size = newallocationCmd.PersistentFlags().Int64("size", 2147483648, "--size 10000")
 	allocationFileName = newallocationCmd.PersistentFlags().String("allocationFileName", "allocation.txt", "--allocationFileName allocation.txt")
 	newallocationCmd.PersistentFlags().String("fill", "0", "fill write pool with given number of tokens, or use 'auto'")
+	newallocationCmd.PersistentFlags().String("read_price", "", "select blobbers by provided read price range, use form 0.5-1.5, default is [0; inf)")
+	newallocationCmd.PersistentFlags().String("write_price", "", "select blobbers by provided write price range, use form 1.5-2.5, default is [0; inf)")
+	newallocationCmd.PersistentFlags().Duration("expire", 48*time.Hour, "duration to allocation expiration")
 
 	newallocationCmd.MarkFlagRequired("data")
 	newallocationCmd.MarkFlagRequired("parity")
