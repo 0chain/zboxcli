@@ -99,6 +99,7 @@ Response
       updateallocation Updates allocation's expiry and size
       upload           upload file to blobbers
       version          Prints version information
+
     
     Flags:
           --config string      config file (default is config.yaml)
@@ -132,26 +133,36 @@ Command
 Response
 
     Creates a new allocation
-    
+
     Usage:
       zbox newallocation [flags]
-    
+
     Flags:
           --allocationFileName string   --allocationFileName allocation.txt (default "allocation.txt")
           --data int                    --data 2 (default 2)
+          --expire duration             duration to allocation expiration (default 720h)
       -h, --help                        help for newallocation
+          --lock string                 lock write pool with given number of tokens, or use 'auto' (default "0")
           --parity int                  --parity 2 (default 2)
+          --read_price string           select blobbers by provided read price range, use form 0.5-1.5, default is [0; inf)
           --size int                    --size 10000 (default 2147483648)
-    
+          --write_price string          select blobbers by provided write price range, use form 1.5-2.5, default is [0; inf)
+
     Global Flags:
           --config string      config file (default is config.yaml)
           --configDir string   configuration directory (default is $HOME/.zcn)
           --verbose            prints sdk log in stderr (default false)
           --wallet string      wallet file (default is wallet.json)
+
 As you can see the newallocation command takes allocationFileName where the volume information is stored locally. All the parameters have default values. With more data shards, you can upload or download files faster. With more parity shards, you have higher availability.
 
 #### Usage
-Create a new allocation with default values. If you have not registered a wallet, it will automatically create a wallet.
+
+Create a new allocation with default values. If you have not registered a wallet,
+it will automatically create a wallet. The newallocation also, on success,
+creates related write pool. Use `--lock` flag to add some tokens to the pool
+in the transaction.
+
 Command
 
     ./zbox newallocation
@@ -167,7 +178,7 @@ Command updateallocation updates hard disk space and expiry on the blobbers. Let
 
 Command
 
-    ./zbox updateallo --help
+    ./zbox updateallocation --help
 
 Response
 
@@ -177,10 +188,10 @@ Response
       zbox updateallocation [flags]
 
     Flags:
-          --allocation string   Allocation ID
-          --expiry int          --expiry 10000 (default 2592000)
-      -h, --help                help for updateallocation
-          --size int            --size 10000 (default 2147483648)
+          --allocation_id string   allocation ID
+          --expiry duration        adjust storage expiration time, duration (default 720h)
+      -h, --help                   help for updateallocation
+          --size int               adjust allocation size, bytes (default 2147483648)
 
     Global Flags:
           --config string      config file (default is config.yaml)
@@ -189,7 +200,10 @@ Response
           --wallet string      wallet file (default is wallet.json)
 
 #### Usage
-Create a new allocation with default values. If you have not registered a wallet, it will automatically create a wallet.
+
+Create a new allocation with default values. If you have not registered a wallet,
+it will automatically create a wallet.
+
 Command
 
     ./zbox updateallocation --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac

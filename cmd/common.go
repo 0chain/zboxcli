@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"sync"
 
@@ -87,4 +88,9 @@ func commitMetaTxn(path, crudOp, authTicket, lookupHash string, a *sdk.Allocatio
 	metaDataBytes, _ := json.Marshal(metaTxnData.MetaData)
 	PrintInfo("TxnID :", metaTxnData.TxnID)
 	PrintInfo("MetaData :", string(metaDataBytes))
+}
+
+func init() {
+	log.SetOutput(os.Stdout)
+	log.SetFlags(0)
 }

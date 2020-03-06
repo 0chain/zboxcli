@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"time"
 
 	. "github.com/0chain/gosdk/zboxcore/logger"
 	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk/zcncore"
 	"github.com/spf13/cobra"
 )
 
@@ -35,11 +37,20 @@ var getallocationCmd = &cobra.Command{
 		fmt.Printf("ID : %v\n", allocationObj.ID)
 		fmt.Printf("Data Shards  : %v\n", allocationObj.DataShards)
 		fmt.Printf("Parity Shards  : %v\n", allocationObj.ParityShards)
-		fmt.Printf("Expiration  : %v\n", allocationObj.Expiration)
+		fmt.Printf("Expiration  : %v\n", time.Unix(allocationObj.Expiration, 0))
 		fmt.Printf("Blobbers : \n")
 		for _, blobber := range allocationObj.Blobbers {
 			fmt.Printf("\t%v\n", blobber.Baseurl)
 		}
+		fmt.Printf("Requested read price range  : [%f, %f] token / GB\n",
+			zcncore.ConvertToToken(allocationObj.ReadPriceRange.Min),
+			zcncore.ConvertToToken(allocationObj.ReadPriceRange.Max))
+		fmt.Printf("Requested write price range : [%f, %f] token / GB\n",
+			zcncore.ConvertToToken(allocationObj.WritePriceRange.Min),
+			zcncore.ConvertToToken(allocationObj.WritePriceRange.Max))
+		fmt.Printf("Min Lock Demand             : %f token\n",
+			zcncore.ConvertToToken(allocationObj.MinLockDemand))
+		fmt.Printf("Challenge Completion Time   : %v\n", allocationObj.ChallengeCompletionTime)
 
 		fmt.Printf("Stats : \n")
 		fmt.Printf("\tTotal Size : %v\n", allocationObj.Size)
