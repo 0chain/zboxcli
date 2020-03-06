@@ -63,8 +63,8 @@ var newallocationCmd = &cobra.Command{
 				auto = true
 			} else {
 				var fillf float64
-				if fillf, err = flags.GetFloat64("fill"); err != nil {
-					log.Fatal("error: invalid 'fill' value:", err)
+				if fillf, err = strconv.ParseFloat(fills, 64); err != nil {
+					log.Fatal("error: invalid 'fill' value: ", err)
 				}
 				fill = zcncore.ConvertToValue(fillf)
 			}
