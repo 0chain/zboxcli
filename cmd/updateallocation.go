@@ -37,7 +37,7 @@ var updateAllocationCmd = &cobra.Command{
 		}
 
 		txnHash, err := sdk.UpdateAllocation(size,
-			int64(expiry.Truncate(time.Second)), allocID)
+			int64(expiry/time.Second), allocID)
 		if err != nil {
 			log.Fatal("Error creating allocation:", err)
 		}
@@ -47,7 +47,7 @@ var updateAllocationCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(updateAllocationCmd)
-	updateAllocationCmd.PersistentFlags().String("allocation_id", "",
+	updateAllocationCmd.PersistentFlags().String("allocation", "",
 		"Allocation ID")
 	updateAllocationCmd.PersistentFlags().Int64("size", 2147483648,
 		"adjust allocation size, bytes")
