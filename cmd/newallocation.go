@@ -51,22 +51,22 @@ var newallocationCmd = &cobra.Command{
 
 		var (
 			flags = cmd.Flags() //
-			fill  int64         // fill with given number of tokens
-			auto  bool          // fill automatically
+			lock  int64         // lock with given number of tokens
+			auto  bool          // lock automatically
 		)
-		if flags.Changed("fill") {
-			var fills, err = flags.GetString("fill")
+		if flags.Changed("lock") {
+			var locks, err = flags.GetString("lock")
 			if err != nil {
-				log.Fatal("error: invalid 'fill' value:", err)
+				log.Fatal("error: invalid 'lock' value:", err)
 			}
-			if fills == "auto" {
+			if locks == "auto" {
 				auto = true
 			} else {
-				var fillf float64
-				if fillf, err = strconv.ParseFloat(fills, 64); err != nil {
-					log.Fatal("error: invalid 'fill' value: ", err)
+				var lockf float64
+				if lockf, err = strconv.ParseFloat(locks, 64); err != nil {
+					log.Fatal("error: invalid 'lock' value: ", err)
 				}
-				fill = zcncore.ConvertToValue(fillf)
+				lock = zcncore.ConvertToValue(lockf)
 			}
 		}
 
@@ -107,7 +107,7 @@ var newallocationCmd = &cobra.Command{
 		var expireAt = time.Now().Add(expire).Unix()
 
 		allocationID, err := sdk.CreateAllocation(*datashards, *parityshards,
-			*size, expireAt, readPrice, writePrice, fill)
+			*size, expireAt, readPrice, writePrice, lock)
 		if err != nil {
 			log.Fatal("Error creating allocation: ", err)
 		}
@@ -117,11 +117,14 @@ var newallocationCmd = &cobra.Command{
 		if auto {
 			allocationObj, err := sdk.GetAllocation(allocationID)
 			if err != nil {
-				log.Fatal("Error filling allocation write pool: ", err)
+				log.Fatal("Error locking tokens for write pool of allocation. "+
+					"Can't get allocation object: ", err)
 			}
-			resp, err := sdk.WritePoolLock(allocationID, allocationObj.MinLockDemand)
+			resp, err := sdk.WritePoolLock(allocationID,
+				allocationObj.MinLockDemand)
 			if err != nil {
-				log.Fatal("Error filling allocation write pool: ", err)
+				log.Fatal("Error locking tokens for write pool of allocation: ",
+					err)
 			}
 			log.Println(resp)
 		}
@@ -136,10 +139,17 @@ func init() {
 	parityshards = newallocationCmd.PersistentFlags().Int("parity", 2, "--parity 2")
 	size = newallocationCmd.PersistentFlags().Int64("size", 2147483648, "--size 10000")
 	allocationFileName = newallocationCmd.PersistentFlags().String("allocationFileName", "allocation.txt", "--allocationFileName allocation.txt")
-	newallocationCmd.PersistentFlags().String("fill", "0", "fill write pool with given number of tokens, or use 'auto'")
-	newallocationCmd.PersistentFlags().String("read_price", "", "select blobbers by provided read price range, use form 0.5-1.5, default is [0; inf)")
-	newallocationCmd.PersistentFlags().String("write_price", "", "select blobbers by provided write price range, use form 1.5-2.5, default is [0; inf)")
-	newallocationCmd.PersistentFlags().Duration("expire", 48*time.Hour, "duration to allocation expiration")
+	newallocationCmd.PersistentFlags().
+		String("lock", "0",
+			"lock write pool with given number of tokens, or use 'auto'")
+	newallocationCmd.PersistentFlags().
+		String("read_price", "",
+			"select blobbers by provided read price range, use form 0.5-1.5, default is [0; inf)")
+	newallocationCmd.PersistentFlags().
+		String("write_price", "",
+			"select blobbers by provided write price range, use form 1.5-2.5, default is [0; inf)")
+	newallocationCmd.PersistentFlags().
+		Duration("expire", 720*time.Hour, "duration to allocation expiration")
 
 	newallocationCmd.MarkFlagRequired("data")
 	newallocationCmd.MarkFlagRequired("parity")
