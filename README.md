@@ -23,6 +23,7 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
 17. [Get meta data of files](#Get-metadata)
 18. [Rename an object in allocation](#Rename)
 19. [Get file stats](#Stats)
+20. [Repair a file on dStorage](#Repair)
 
 zbox CLI provides a self-explaining "help" option that lists commands and parameters they need to perform the intended action
 ## How to get it?
@@ -442,3 +443,16 @@ Command
 
     ./zbox stats --allocation 3c0d32560ea18d9d0d76808216a9c634f661979d29ba59cc8dafccb3e5b95341 --remotepath /myfiles/horse.jpg
 
+### Repair
+Use repair command to repair a file. By using help for this command, you will see it takes parameters:
+* --allocation -- the allocation id from the newallocation command
+* --localpath -- absolute path to the file on your local system
+* --remote path -- remote path where you want to store. It should start with "/"
+
+Command
+
+    ./zbox repair --localpath <absolute path to file>/hello.txt --remotepath /myfiles/hello.txt --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
+
+Response
+
+    Status completed callback. Type = application/octet-stream. Name = hello.txt
