@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk/zboxcore/zboxutil"
 	"github.com/spf13/cobra"
 )
 
@@ -65,6 +66,7 @@ var uploadCmd = &cobra.Command{
 		}
 
 		if commit {
+			remotepath = zboxutil.GetFullRemotePath(localpath, remotepath)
 			commitMetaTxn(remotepath, "Upload", "", "", allocationObj, nil)
 		}
 
