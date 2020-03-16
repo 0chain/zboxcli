@@ -3,7 +3,7 @@ module github.com/0chain/zboxcli
 go 1.13
 
 require (
-	github.com/0chain/gosdk v1.0.34
+	github.com/0chain/gosdk v1.0.36
 	github.com/fatih/color v1.7.0 // indirect
 	github.com/klauspost/cpuid v1.2.1 // indirect
 	github.com/magiconair/properties v1.8.1 // indirect
@@ -21,5 +21,4 @@ require (
 	gopkg.in/cheggaaa/pb.v1 v1.0.28
 )
 
-// temporary, for development
-replace github.com/0chain/gosdk => ../gosdk
+// replace github.com/0chain/gosdk => ../gosdk
