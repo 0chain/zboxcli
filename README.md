@@ -84,6 +84,7 @@ Response
       copy             copy an object(file/folder) to another folder on blobbers
       delete           delete file from blobbers
       download         download file from blobbers
+      finialloc        Finalize an expired allocation
       get              Gets the allocation info
       getwallet        Get wallet information
       help             Help about any command
@@ -93,6 +94,7 @@ Response
       newallocation    Creates a new allocation
       register         Registers the wallet with the blockchain
       rename           rename an object(file/folder) on blobbers
+      repair           repair file to blobbers
       share            share files from blobbers
       stats            stats for file from blobbers
       sync             Sync files to/from blobbers
@@ -101,7 +103,6 @@ Response
       upload           upload file to blobbers
       version          Prints version information
 
-    
     Flags:
           --config string      config file (default is config.yaml)
           --configDir string   configuration directory (default is $HOME/.zcn)
@@ -214,6 +215,14 @@ Response
     Allocation updated with txId : fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
 
 You can see more txn details usin above txID in block explorer.
+
+### Finalize and expired allocation
+
+Finalize an expired allocation. It makes sure all blobbers has got min_lock_demand,
+unlocks all related pools. Moves tokens from write pool to allocation owner.
+
+     ./zbox finialloc --allocaiton <allocaiton_id>
+
 
 ### Upload
 Use upload command to upload a file. By using help for this command, you will see it takes parameters:
