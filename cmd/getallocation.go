@@ -42,7 +42,7 @@ var getallocationCmd = &cobra.Command{
 		for _, blobber := range allocationObj.Blobbers {
 			fmt.Printf("\t%v\n", blobber.Baseurl)
 		}
-		fmt.Printf("Requested read price range  : [%f, %f] token / GB\n",
+		fmt.Printf("Requested read price range  : [%f, %f] token / read\n",
 			zcncore.ConvertToToken(allocationObj.ReadPriceRange.Min),
 			zcncore.ConvertToToken(allocationObj.ReadPriceRange.Max))
 		fmt.Printf("Requested write price range : [%f, %f] token / GB\n",
