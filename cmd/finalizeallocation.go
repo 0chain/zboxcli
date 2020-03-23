@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"log"
-	"time"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
