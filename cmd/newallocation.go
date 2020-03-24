@@ -52,23 +52,16 @@ var newallocationCmd = &cobra.Command{
 		var (
 			flags = cmd.Flags() //
 			lock  int64         // lock with given number of tokens
-			auto  bool          // lock automatically
+			err   error         //
 		)
-		if flags.Changed("lock") {
-			var locks, err = flags.GetString("lock")
-			if err != nil {
-				log.Fatal("error: invalid 'lock' value:", err)
-			}
-			if locks == "auto" {
-				auto = true
-			} else {
-				var lockf float64
-				if lockf, err = strconv.ParseFloat(locks, 64); err != nil {
-					log.Fatal("error: invalid 'lock' value: ", err)
-				}
-				lock = zcncore.ConvertToValue(lockf)
-			}
+		if !flags.Changed("lock") {
+			log.Fatal("missing required 'lock' argument")
 		}
+		var lockf float64
+		if lockf, err = flags.GetFloat64("lock"); err != nil {
+			log.Fatal("error: invalid 'lock' value:", err)
+		}
+		lock = zcncore.ConvertToValue(lockf)
 
 		var (
 			readPrice  = sdk.PriceRange{Min: 0, Max: math.MaxInt64}
@@ -99,8 +92,8 @@ var newallocationCmd = &cobra.Command{
 			readPrice = pr
 		}
 
-		var expire, err = flags.GetDuration("expire")
-		if err != nil {
+		var expire time.Duration
+		if expire, err = flags.GetDuration("expire"); err != nil {
 			log.Fatal("invalid 'expire' flag: ", err)
 		}
 
@@ -113,22 +106,6 @@ var newallocationCmd = &cobra.Command{
 		}
 		log.Print("Allocation created: ", allocationID)
 		storeAllocation(allocationID)
-
-		if auto {
-			allocationObj, err := sdk.GetAllocation(allocationID)
-			if err != nil {
-				log.Fatal("Error locking tokens for write pool of allocation. "+
-					"Can't get allocation object: ", err)
-			}
-			resp, err := sdk.WritePoolLock(allocationID,
-				allocationObj.MinLockDemand)
-			if err != nil {
-				log.Fatal("Error locking tokens for write pool of allocation: ",
-					err)
-			}
-			log.Println(resp)
-		}
-
 		return
 	},
 }
@@ -140,8 +117,8 @@ func init() {
 	size = newallocationCmd.PersistentFlags().Int64("size", 2147483648, "--size 10000")
 	allocationFileName = newallocationCmd.PersistentFlags().String("allocationFileName", "allocation.txt", "--allocationFileName allocation.txt")
 	newallocationCmd.PersistentFlags().
-		String("lock", "0",
-			"lock write pool with given number of tokens, or use 'auto'")
+		Float64("lock", 0.0,
+			"lock write pool with given number of tokens, required")
 	newallocationCmd.PersistentFlags().
 		String("read_price", "",
 			"select blobbers by provided read price range, use form 0.5-1.5, default is [0; inf)")

@@ -82,6 +82,7 @@ Response
     
     Available Commands:
       copy             copy an object(file/folder) to another folder on blobbers
+      cp-info          Challenge pool information.
       delete           delete file from blobbers
       download         download file from blobbers
       finialloc        Finalize an expired allocation
@@ -90,18 +91,29 @@ Response
       help             Help about any command
       list             list files from blobbers
       listallocations  List allocations for the client
+      ls-blobbers      Show active blobbers in storage SC.
       meta             get meta data of files from blobbers
       newallocation    Creates a new allocation
       register         Registers the wallet with the blockchain
       rename           rename an object(file/folder) on blobbers
       repair           repair file to blobbers
+      rp-create        Create read pool if missing
+      rp-info          Read pool information.
+      rp-lock          Lock some tokens in read pool.
+      rp-unlock        Unlock some expired tokens in a read pool.
+      sc-config        Show storage SC configuration.
       share            share files from blobbers
+      sp-info          Stake pool information.
+      sp-unlock        Unlock tokens in stake pool.
       stats            stats for file from blobbers
       sync             Sync files to/from blobbers
       update           update file to blobbers
       updateallocation Updates allocation's expiry and size
       upload           upload file to blobbers
       version          Prints version information
+      wp-info          Write pool information.
+      wp-lock          Lock tokens to write pool.
+
 
     Flags:
           --config string      config file (default is config.yaml)
@@ -465,3 +477,134 @@ Command
 Response
 
     Status completed callback. Type = application/octet-stream. Name = hello.txt
+
+
+### Challenge pool information
+
+Get information about a challenge pool of an allocation
+
+    ./zbox cp-info --allocation <ALLOC ID>
+
+Example response
+
+    POOL ID: 6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7:challengepool:6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7ff0b0b7ff1c4acd75fefcb767d0679db01059ee7d0fb79c2f97e9adc5b2fc041
+                  START             |   DUR    |      TIME LEFT       | LOCKED | BALANCE  
+    +-------------------------------+----------+----------------------+--------+---------+
+      2020-03-24 20:22:22 +0400 +04 | 768h1m0s | 766h49m55.788951988s | true   |       0 
+
+
+### Show active blobbers in storage SC.
+
+Command
+
+    ./zbox ls-blobbers
+
+
+Example response
+
+    Blobbers:
+               URL          |                                ID                                |         CAP         |     R / W PRICE     | DEMAND  
+    +-----------------------+------------------------------------------------------------------+---------------------+---------------------+--------+
+      http://localhost:5052 | 7a90e6790bcd3d78422d7a230390edc102870fe58c15472073922024985b1c7d | 300.0 MiB / 1.0 GiB | 0.010000 / 1.000000 |    0.1  
+      http://localhost:5051 | f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25 | 300.0 MiB / 1.0 GiB | 0.010000 / 1.000000 |    0.1 
+
+### Create read pool if missing
+
+Command
+
+    ./zbox rp-create
+
+
+### View read pool information
+
+Command
+
+    ./zbox rp-info
+
+Example response:
+
+                                     ID                                |          START TIME           |  DUR   |     TIME LEFT      | LOCKED | BALANCE  
+    +------------------------------------------------------------------+-------------------------------+--------+--------------------+--------+---------+
+      61382f3ceec0b7eb2a4cacfa6fb0f51d66a4563eb9bc6a5018d861daed3b40d4 | 2020-03-24 18:51:02 +0400 +04 | 1h0m0s | 38m6.060103434s    | true   |     0.3  
+      38ec7e1a1241bb6ed21b3a5d52f6f9630e0c6b8a4f8c51769ed6e243e1bafb5e | 2020-03-24 18:50:55 +0400 +04 | 1h0m0s | 37m59.060103434s   | true   |     0.2  
+      454e5a29a3050ddfb89d5c1f7dfede1216d87e0a553646a0b10b240822b5d678 | 2020-03-24 19:12:41 +0400 +04 | 2h0m0s | 1h59m45.060103434s | true   |     0.4  
+
+
+### Lock some tokens in read pool
+
+Command
+
+    ./zbox rp-lock --duration 20h --tokens 1.54
+
+
+### Unlock expired tokens from a read pool
+
+Command
+
+    ./zbox rp-unlock --pool_id <POOL ID>
+
+
+### Stake pool information
+
+Command for blobber owner
+
+    ./zbox sp-info
+
+Command for a user
+
+    ./zbox sp-info --blobber_id <BLOBBER ID>
+
+
+Example response
+
+    POOL ID: 6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7:stakepool:f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25
+      LOCKED | UNLOCKED | OFFERS TOTAL | REQUIRED STAKE  
+    +--------+----------+--------------+----------------+
+           1 |        1 |  0.146484375 |              1  
+    
+    OFFERS:
+         LOCK     |            EXPIRE             |                              ALLOC                               | EXPIRED  
+    +-------------+-------------------------------+------------------------------------------------------------------+---------+
+      0.146484375 | 2020-04-25 20:23:22 +0400 +04 | ff0b0b7ff1c4acd75fefcb767d0679db01059ee7d0fb79c2f97e9adc5b2fc041 | false    
+      0.048828125 | 2020-03-24 20:46:19 +0400 +04 | 2d23222b0ff205d3c1c6a5728826956bd48d5280084999b4de7d4ab249e3f215 | true     
+      0.048828125 | 2020-03-24 20:46:26 +0400 +04 | caaac1d6f4ee918465c949d8e275cc449f562e2777eb711c7832f4dd6af99bfc | true 
+
+
+### Unlock tokens of a stake pool
+
+If blobber reduces its capacity, then some tokens of a stake pool can be unlocked.
+Also, blobber rewards are receiving into its stake pool.
+
+Command
+
+    ./zbox --wallet=blobber1.json sp-unlock
+
+
+### Write pool information
+
+
+Command
+
+    ./zbox wp-info --allocation <ALLOC ID>
+
+Example response
+
+    POOL ID: 6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7:writepool:6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7ff0b0b7ff1c4acd75fefcb767d0679db01059ee7d0fb79c2f97e9adc5b2fc041
+                  START             |   DUR    |      TIME LEFT      | LOCKED | BALANCE  
+    +-------------------------------+----------+---------------------+--------+---------+
+      2020-03-24 20:22:22 +0400 +04 | 768h1m0s | 767h4m23.712726658s | true   |       2  
+
+### Add more tokens to a write pool
+
+Command
+
+    ./zbox wp-lock --allocation <ALLOC ID> --tokens 1.2
+
+### View Storage SC configurations
+
+Command
+
+    ./zbox sc-config
+
+
+---

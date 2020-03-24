@@ -48,8 +48,6 @@ var getallocationCmd = &cobra.Command{
 		fmt.Printf("Requested write price range : [%f, %f] token / GB\n",
 			zcncore.ConvertToToken(allocationObj.WritePriceRange.Min),
 			zcncore.ConvertToToken(allocationObj.WritePriceRange.Max))
-		fmt.Printf("Min Lock Demand             : %f token\n",
-			zcncore.ConvertToToken(allocationObj.MinLockDemand))
 		fmt.Printf("Challenge Completion Time   : %v\n", allocationObj.ChallengeCompletionTime)
 
 		fmt.Printf("Stats : \n")
