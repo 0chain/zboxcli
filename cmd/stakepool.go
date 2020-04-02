@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
@@ -14,13 +13,14 @@ import (
 
 func printStakePoolInfo(info *sdk.StakePoolInfo) {
 	var header = []string{
-		"LOCKED", "UNLOCKED", "OFFERS TOTAL", "REQUIRED STAKE",
+		"LOCKED", "OFFERS TOTAL", "CAP. STAKE", "LACK", "OVERFILL",
 	}
 	var data = [][]string{{
-		fmt.Sprint(zcncore.ConvertToToken(info.Locked)),
-		fmt.Sprint(zcncore.ConvertToToken(info.Unlocked)),
-		fmt.Sprint(zcncore.ConvertToToken(info.OffersTotal)),
-		fmt.Sprint(zcncore.ConvertToToken(info.RequiredStake)),
+		info.Locked.String(),
+		info.OffersTotal.String(),
+		info.CapacityStake.String(),
+		info.Lack.String(),
+		info.Overfill.String(),
 	}}
 	fmt.Println("POOL ID:", info.ID)
 	util.WriteTable(os.Stdout, header, []string{}, data)
@@ -39,9 +39,9 @@ func printStakePoolOffers(offers []*sdk.StakePoolOfferStat) {
 	var data = make([][]string, len(offers))
 	for i, val := range offers {
 		data[i] = []string{
-			fmt.Sprint(zcncore.ConvertToToken(val.Lock)),
-			time.Unix(int64(val.Expire), 0).String(),
-			val.AllocationID,
+			val.Lock.String(),
+			val.Expire.ToTime().String(),
+			string(val.AllocationID),
 			fmt.Sprint(val.IsExpired),
 		}
 	}
@@ -78,6 +78,44 @@ var spInfo = &cobra.Command{
 	},
 }
 
+// spLock locks tokens a stake pool lack
+var spLock = &cobra.Command{
+	Use:   "sp-lock",
+	Short: "Lock tokens lacking in stake pool.",
+	Long:  `Lock tokens lacking in stake pool.`,
+	Args:  cobra.MinimumNArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+
+		var (
+			flags  = cmd.Flags()
+			tokens float64
+			fee    float64
+			err    error
+		)
+
+		if !flags.Changed("tokens") {
+			log.Fatal("missing required 'tokens' flag")
+		}
+
+		if tokens, err = flags.GetFloat64("tokens"); err != nil {
+			log.Fatal("invalid 'tokens' flag: ", err)
+		}
+
+		if flags.Changed("fee") {
+			if fee, err = flags.GetFloat64("fee"); err != nil {
+				log.Fatal("invalid 'fee' flag: ", err)
+			}
+		}
+
+		err = sdk.StakePoolLock(zcncore.ConvertToValue(tokens),
+			zcncore.ConvertToValue(fee))
+		if err != nil {
+			log.Fatalf("Failed to unlock tokens in stake pool: %v", err)
+		}
+		fmt.Println("unlocked")
+	},
+}
+
 // spUnlock unlocks tokens in stake pool
 var spUnlock = &cobra.Command{
 	Use:   "sp-unlock",
@@ -108,10 +146,16 @@ var spUnlock = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(spInfo)
+	rootCmd.AddCommand(spLock)
 	rootCmd.AddCommand(spUnlock)
 
 	spInfo.PersistentFlags().String("blobber_id", "",
 		"for given blobber, default is current client")
+
+	spLock.PersistentFlags().Float64("tokens", 0.0,
+		"tokens to lock, required")
+	spLock.PersistentFlags().Float64("fee", 0.0,
+		"transaction fee, default 0")
 
 	spUnlock.PersistentFlags().Float64("fee", 0.0,
 		"transaction fee, default 0")

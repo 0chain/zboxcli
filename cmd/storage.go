@@ -6,23 +6,9 @@ import (
 	"os"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
-	"github.com/0chain/gosdk/zcncore"
 	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )
-
-func byteCountIEC(b int64) string {
-	const unit = 1024
-	if b < unit {
-		return fmt.Sprintf("%d B", b)
-	}
-	div, exp := int64(unit), 0
-	for n := b / unit; n >= unit; n /= unit {
-		div *= unit
-		exp++
-	}
-	return fmt.Sprintf("%.1f %ciB", float64(b)/float64(div), "KMGTPE"[exp])
-}
 
 func printStorageSCConfig(conf *sdk.StorageSCConfig) {
 	fmt.Printf(`
@@ -44,15 +30,15 @@ blobber_slash:      %f
 `,
 		conf.ChallengeEnabled,
 		conf.ChallengeRatePerMBMin,
-		byteCountIEC(conf.MinAllocSize),
+		conf.MinAllocSize.String(),
 		conf.MinAllocDuration,
 		conf.MaxChallengeCompletionTime,
 		conf.MinOfferDuration,
-		byteCountIEC(conf.MinBlobberCapacity),
-		zcncore.ConvertToToken(conf.ReadPool.MinLock),
+		conf.MinBlobberCapacity.String(),
+		conf.ReadPool.MinLock.String(),
 		conf.ReadPool.MinLockPeriod,
 		conf.ReadPool.MaxLockPeriod,
-		zcncore.ConvertToToken(conf.WritePool.MinLock),
+		conf.WritePool.MinLock.String(),
 		conf.ValidatorReward,
 		conf.BlobberSlash,
 	)
@@ -84,10 +70,9 @@ func printBlobbers(nodes []*sdk.Blobber) {
 			val.BaseURL,
 			val.ID,
 			fmt.Sprintf("%s / %s",
-				byteCountIEC(val.Used), byteCountIEC(val.Capacity)),
-			fmt.Sprintf("%f / %f",
-				zcncore.ConvertToToken(val.Terms.ReadPrice),
-				zcncore.ConvertToToken(val.Terms.WritePrice)),
+				val.Used.String(), val.Capacity.String()),
+			fmt.Sprintf("%s / %s",
+				val.Terms.ReadPrice.String(), val.Terms.WritePrice.String()),
 			fmt.Sprint(val.Terms.MinLockDemand),
 		}
 	}

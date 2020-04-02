@@ -34,12 +34,12 @@ func printReadPoolStat(stat []*sdk.ReadPoolStat) {
 	var data = make([][]string, len(stat))
 	for i, val := range stat {
 		data[i] = []string{
-			val.ID,
-			time.Unix(int64(val.StartTime), 0).String(),
+			string(val.ID),
+			val.StartTime.ToTime().String(),
 			val.Duration.String(),
 			val.TimeLeft.String(),
 			fmt.Sprint(val.Locked),
-			fmt.Sprint(zcncore.ConvertToToken(val.Balance)),
+			val.Balance.String(),
 		}
 	}
 	util.WriteTable(os.Stdout, header, []string{}, data)

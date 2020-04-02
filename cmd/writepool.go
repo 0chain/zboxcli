@@ -14,14 +14,13 @@ import (
 
 func printWritePoolInfo(info *sdk.WritePoolInfo) {
 	var header = []string{
-		"START", "DUR.", "TIME LEFT", "LOCKED", "BALANCE",
+		"BALANCE", "START", "EXPIRE", "FINIALIZED",
 	}
 	var data = [][]string{{
-		time.Unix(info.StartTime, 0).String(),
-		info.Duration.String(),
-		info.TimeLeft.String(),
-		fmt.Sprint(info.Locked),
-		fmt.Sprint(zcncore.ConvertToToken(info.Balance)),
+		info.Balance.String(),
+		info.StartTime.ToTime.String(),
+		info.Expiration.ToTime.String(),
+		fmt.Sprint(info.Finalized),
 	}}
 	fmt.Println("POOL ID:", info.ID)
 	util.WriteTable(os.Stdout, header, []string{}, data)
