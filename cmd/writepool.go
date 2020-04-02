@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
@@ -18,8 +17,8 @@ func printWritePoolInfo(info *sdk.WritePoolInfo) {
 	}
 	var data = [][]string{{
 		info.Balance.String(),
-		info.StartTime.ToTime.String(),
-		info.Expiration.ToTime.String(),
+		info.StartTime.ToTime().String(),
+		info.Expiration.ToTime().String(),
 		fmt.Sprint(info.Finalized),
 	}}
 	fmt.Println("POOL ID:", info.ID)

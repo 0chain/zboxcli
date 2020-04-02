@@ -20,11 +20,11 @@ max_challenge_completion_time:    %v
 min_offer_duration:               %v
 min_blobber_capacity:             %v
 readpool:
-  min_lock:         %g tok
+  min_lock:         %s tok
   min_lock_period:  %v
   max_lock_period:  %v
 writepool:
-  min_lock:         %g tok
+  min_lock:         %s tok
 validator_reward:   %f
 blobber_slash:      %f
 `,
@@ -68,7 +68,7 @@ func printBlobbers(nodes []*sdk.Blobber) {
 	for i, val := range nodes {
 		data[i] = []string{
 			val.BaseURL,
-			val.ID,
+			string(val.ID),
 			fmt.Sprintf("%s / %s",
 				val.Used.String(), val.Capacity.String()),
 			fmt.Sprintf("%s / %s",
