@@ -20,7 +20,8 @@ var listallocationsCmd = &cobra.Command{
 			PrintError("Error getting allocations list." + err.Error())
 			os.Exit(1)
 		}
-		header := []string{"ID", "Size", "Expiration", "Datashards", "Parityshards"}
+		header := []string{"ID", "Size", "Expiration", "Datashards",
+			"Parityshards", "Finalized", "Canceled"}
 		data := make([][]string, len(allocations))
 		for idx, allocation := range allocations {
 			size := strconv.FormatInt(allocation.Size, 10)
@@ -32,7 +33,11 @@ var listallocationsCmd = &cobra.Command{
 			}
 			d := strconv.FormatInt(int64(allocation.DataShards), 10)
 			p := strconv.FormatInt(int64(allocation.ParityShards), 10)
-			data[idx] = []string{allocation.ID, size, expStr, d, p}
+			data[idx] = []string{
+				allocation.ID, size, expStr, d, p,
+				strconv.FormatBool(allocation.Finalized),
+				strconv.FormatBool(allocation.Canceled),
+			}
 		}
 		util.WriteTable(os.Stdout, header, []string{}, data)
 		return
