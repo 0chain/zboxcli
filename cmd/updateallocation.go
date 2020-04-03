@@ -49,9 +49,9 @@ func init() {
 	rootCmd.AddCommand(updateAllocationCmd)
 	updateAllocationCmd.PersistentFlags().String("allocation", "",
 		"Allocation ID")
-	updateAllocationCmd.PersistentFlags().Int64("size", 2147483648,
+	updateAllocationCmd.PersistentFlags().Int64("size", 0,
 		"adjust allocation size, bytes")
-	updateAllocationCmd.PersistentFlags().Duration("expiry", 720*time.Hour,
+	updateAllocationCmd.PersistentFlags().Duration("expiry", 0,
 		"adjust storage expiration time, duration")
 	updateAllocationCmd.MarkFlagRequired("allocation")
 	updateAllocationCmd.MarkFlagRequired("size")
