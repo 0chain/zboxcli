@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -44,6 +43,17 @@ func (s *StatusBar) Error(allocationID string, filePath string, op int, err erro
 	PrintError("Error in file operation." + err.Error())
 }
 
+func (s *StatusBar) CommitMetaCompleted(request, response string, err error) {
+	defer s.wg.Done()
+	if err != nil {
+		s.success = false
+		PrintError("Error in commitMetaTransaction." + err.Error())
+	} else {
+		s.success = true
+		fmt.Println("Commit Metadata successful, Response :", response)
+	}
+}
+
 type StatusBar struct {
 	b       *pb.ProgressBar
 	wg      *sync.WaitGroup
@@ -79,15 +89,12 @@ func PrintInfo(v ...interface{}) {
 	fmt.Fprintln(os.Stdin, v...)
 }
 
-func commitMetaTxn(path, crudOp, authTicket, lookupHash string, a *sdk.Allocation, fileMeta *sdk.ConsolidatedFileMeta) {
-	metaTxnData, err := a.CommitMetaTransaction(path, crudOp, authTicket, lookupHash, fileMeta)
+func commitMetaTxn(path, crudOp, authTicket, lookupHash string, a *sdk.Allocation, fileMeta *sdk.ConsolidatedFileMeta, status *StatusBar) {
+	err := a.CommitMetaTransaction(path, crudOp, authTicket, lookupHash, fileMeta, status)
 	if err != nil {
 		PrintError("Commit failed.", err)
 		os.Exit(1)
 	}
-	metaDataBytes, _ := json.Marshal(metaTxnData.MetaData)
-	PrintInfo("TxnID :", metaTxnData.TxnID)
-	PrintInfo("MetaData :", string(metaDataBytes))
 }
 
 func init() {

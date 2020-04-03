@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"sync"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
@@ -46,7 +47,11 @@ var deleteCmd = &cobra.Command{
 		}
 		fmt.Println(remotepath + " deleted")
 		if commit {
-			commitMetaTxn(remotepath, "Delete", "", "", allocationObj, fileMeta)
+			wg := &sync.WaitGroup{}
+			statusBar := &StatusBar{wg: wg}
+			wg.Add(1)
+			commitMetaTxn(remotepath, "Delete", "", "", allocationObj, fileMeta, statusBar)
+			wg.Wait()
 		}
 		return
 	},
