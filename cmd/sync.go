@@ -42,23 +42,30 @@ func filterOperations(lDiff []sdk.FileDiff) (filterDiff []sdk.FileDiff) {
 }
 
 func commitDiff(lDiff []sdk.FileDiff, allocationObj *sdk.Allocation, fileMetas map[string]*sdk.ConsolidatedFileMeta) {
+	wg := &sync.WaitGroup{}
+	statusBar := &StatusBar{wg: wg}
 	for _, f := range lDiff {
 		switch f.Op {
 		case sdk.Upload:
-			commitMetaTxn(f.Path, "Upload", "", "", allocationObj, nil)
+			wg.Add(1)
+			commitMetaTxn(f.Path, "Upload", "", "", allocationObj, nil, statusBar)
 		case sdk.Update:
-			commitMetaTxn(f.Path, "Update", "", "", allocationObj, nil)
+			wg.Add(1)
+			commitMetaTxn(f.Path, "Update", "", "", allocationObj, nil, statusBar)
 		case sdk.Download:
-			commitMetaTxn(f.Path, "Download", "", "", allocationObj, nil)
+			wg.Add(1)
+			commitMetaTxn(f.Path, "Download", "", "", allocationObj, nil, statusBar)
 		case sdk.Delete:
 			fileMeta, ok := fileMetas[f.Path]
 			if !ok {
 				PrintError("Unable to commit metaData for :", f.Path)
 				break
 			}
-			commitMetaTxn(f.Path, "Delete", "", "", allocationObj, fileMeta)
+			wg.Add(1)
+			commitMetaTxn(f.Path, "Delete", "", "", allocationObj, fileMeta, statusBar)
 		}
 	}
+	statusBar.wg.Wait()
 }
 
 // syncCmd represents sync command

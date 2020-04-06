@@ -67,7 +67,9 @@ var uploadCmd = &cobra.Command{
 
 		if commit {
 			remotepath = zboxutil.GetFullRemotePath(localpath, remotepath)
-			commitMetaTxn(remotepath, "Upload", "", "", allocationObj, nil)
+			statusBar.wg.Add(1)
+			commitMetaTxn(remotepath, "Upload", "", "", allocationObj, nil, statusBar)
+			statusBar.wg.Wait()
 		}
 
 		return
