@@ -50,7 +50,7 @@ var wpInfo = &cobra.Command{
 
 		var info *sdk.WritePoolInfo
 		if info, err = sdk.GetWritePoolInfo(allocID); err != nil {
-			log.Fatalf("Failed to get stake pool info: %v", err)
+			log.Fatalf("Failed to get write pool info: %v", err)
 		}
 		printWritePoolInfo(info)
 	},
