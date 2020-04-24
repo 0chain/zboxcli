@@ -32,6 +32,7 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
 26. [Storage SC configurations](#Storage-SC-configurations)
 27. [Stake pool](#Stake-pool)
 28. [Write pool](#Write-pool)
+29. [Costs](#Costs)
 
 zbox CLI provides a self-explaining "help" option that lists commands and parameters they need to perform the intended action
 ## How to get it?
@@ -89,41 +90,44 @@ Response
       zbox [command]
     
     Available Commands:
-      alloc-cancel     Cancel an allocation
-      alloc-fini       Finalize an expired allocation
-      copy             copy an object(file/folder) to another folder on blobbers
-      cp-info          Challenge pool information.
-      delete           delete file from blobbers
-      download         download file from blobbers
-      get              Gets the allocation info
-      getwallet        Get wallet information
-      help             Help about any command
-      list             list files from blobbers
-      listallocations  List allocations for the client
-      ls-blobbers      Show active blobbers in storage SC.
-      meta             get meta data of files from blobbers
-      newallocation    Creates a new allocation
-      register         Registers the wallet with the blockchain
-      rename           rename an object(file/folder) on blobbers
-      repair           repair file to blobbers
-      rp-create        Create read pool if missing
-      rp-info          Read pool information.
-      rp-lock          Lock some tokens in read pool.
-      rp-unlock        Unlock some expired tokens in a read pool.
-      sc-config        Show storage SC configuration.
-      share            share files from blobbers
-      sp-info          Stake pool information.
-      sp-lock          Lock tokens lacking in stake pool.
-      sp-unlock        Unlock tokens in stake pool.
-      stats            stats for file from blobbers
-      sync             Sync files to/from blobbers
-      update           update file to blobbers
-      updateallocation Updates allocation's expiry and size
-      upload           upload file to blobbers
-      version          Prints version information
-      wp-info          Write pool information.
-      wp-lock          Lock some tokens in write pool.
-      wp-unlock        Unlock some expired tokens in a write pool.
+      alloc-cancel      Cancel an allocation
+      alloc-fini        Finalize an expired allocation
+      copy              copy an object(file/folder) to another folder on blobbers
+      cp-info           Challenge pool information.
+      delete            delete file from blobbers
+      download          download file from blobbers
+      get               Gets the allocation info
+      get-download-cost Get downloading cost
+      get-upload-cost   Get uploading cost
+      getwallet         Get wallet information
+      help              Help about any command
+      list              list files from blobbers
+      listallocations   List allocations for the client
+      ls-blobbers       Show active blobbers in storage SC.
+      meta              get meta data of files from blobbers
+      newallocation     Creates a new allocation
+      register          Registers the wallet with the blockchain
+      rename            rename an object(file/folder) on blobbers
+      repair            repair file to blobbers
+      rp-create         Create read pool if missing
+      rp-info           Read pool information.
+      rp-lock           Lock some tokens in read pool.
+      rp-unlock         Unlock some expired tokens in a read pool.
+      sc-config         Show storage SC configuration.
+      share             share files from blobbers
+      sp-info           Stake pool information.
+      sp-lock           Lock tokens lacking in stake pool.
+      sp-unlock         Unlock tokens in stake pool.
+      stats             stats for file from blobbers
+      sync              Sync files to/from blobbers
+      update            update file to blobbers
+      updateallocation  Updates allocation's expiry and size
+      upload            upload file to blobbers
+      version           Prints version information
+      wp-info           Write pool information.
+      wp-lock           Lock some tokens in write pool.
+      wp-unlock         Unlock some expired tokens in a write pool.
+
 
     Flags:
           --config string      config file (default is config.yaml)
@@ -167,6 +171,7 @@ Response
           --expire duration             duration to allocation expiration (default 720h)
       -h, --help                        help for newallocation
           --lock string                 lock write pool with given number of tokens, or use 'auto' (default "0")
+          --mcct duration               max challenge completion time, optional, default 1 hour
           --parity int                  --parity 2 (default 2)
           --read_price string           select blobbers by provided read price range, use form 0.5-1.5, default is [0; inf)
           --size int                    --size 10000 (default 2147483648)
@@ -582,27 +587,32 @@ Stake pool information.
 Example
 
 ```
-POOL ID: 6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7:stakepool:f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25
-     LOCKED    | OFFERS TOTAL | CAP  STAKE | LACK |   OVERFILL   |    REWARD     
-+--------------+--------------+------------+------+--------------+--------------+
-  0.1671881145 |   0.01953125 |        0.1 |    0 | 0.0671881145 | 0.0671881145  
+POOL ID: 6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7:stakepool:7a90e6790bcd3d78422d7a230390edc102870fe58c15472073922024985b1c7d
+  LOCKED | OFFERS TOTAL | CAP  STAKE | LACK | EXCESS | B  REWARD | V  REWARD  
++--------+--------------+------------+------+--------+-----------+-----------+
+     0.1 |  0.009765625 |        0.1 |    0 |      0 |         0 |         0  
 
 OFFERS:
       LOCK     |            EXPIRE             |                              ALLOC                               | EXPIRED  
 +--------------+-------------------------------+------------------------------------------------------------------+---------+
-  0.0146484375 | 2020-04-26 03:56:35 +0400 +04 | 3d67f2246829d9095a27b9f3825780a97b56e2cbd43a61dd8517c6c9d005b010 | false    
-  0.0048828125 | 2020-04-26 03:56:40 +0400 +04 | 86b78bb2ec5971412e665c457cd26136bab2b37220247276235f5ec02bdf975e | false  
+  0.0048828125 | 2020-04-26 20:09:52 +0400 +04 | 51030915a7e6dd57fb627aa66ea2bbd1b3530f9176fd8b374f4d220390d8f3b5 | false    
+  0.0048828125 | 2020-04-26 20:10:39 +0400 +04 | bff7adf10cb5d8503616dc7ca4cc5d103f803dd0a5174dac3b75795cd5b72f59 | false    
 ```
 
-- Offers is information about opened offers.
 - Locked is number of locked tokens.
 - Offers total is total stake required by opened offers.
 - Capacity stake is stake required by blobber capacity.
 - Lack is tokens lack in the stake pool. It's possible if the blobber
   has punished.
-- Overfill is tokens can be unlocked.
-- Reward is blobber reward for all time and all allocations including
+- Excess is tokens can be unlocked.
+- B. Reward is blobber reward for all time and all allocations including
   reading rewards.
+- V. Reward is validator reward for all time and all allocations.
+- Offers is information about opened offers. Expire, allocation ID and expired
+  are belongs to related allocation object. The offer lock is tokens of blobber
+  stake reserved for this allocation (offer stake). If blobber penalized then
+  this offer stake will be reduced. Other words, it's max blobber penalty for
+  this allocation.
 
 ## Lock
 
@@ -650,5 +660,22 @@ cases where related blobber doesn't give their min lock demands. The
 finalization will pay the demand an unlock the pool.
 
       ./zbox wp-unlock --pool_id POOL_ID
+
+# Costs
+
+## Download cost.
+
+How much a remote file downloading.
+
+      ./zbox get-download-cost --allocation ALLOC_ID --remotepath /path/file.ext
+
+Also, there are `authticket` and `lookuphash` flags to get the cost for
+non allocation owners.
+
+## Upload cost.
+
+How much a local file uploading.
+
+    ./zbox get-upload-cost --allocation ALLOC_ID --localpath ./path/file.ext
 
 ---

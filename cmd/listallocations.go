@@ -5,8 +5,10 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/0chain/gosdk/core/common"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/zboxcli/util"
+
 	"github.com/spf13/cobra"
 )
 
@@ -21,7 +23,7 @@ var listallocationsCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		header := []string{"ID", "Size", "Expiration", "Datashards",
-			"Parityshards", "Finalized", "Canceled"}
+			"Parityshards", "Finalized", "Canceled", "R. Price", "W. Price"}
 		data := make([][]string, len(allocations))
 		for idx, allocation := range allocations {
 			size := strconv.FormatInt(allocation.Size, 10)
@@ -33,10 +35,20 @@ var listallocationsCmd = &cobra.Command{
 			}
 			d := strconv.FormatInt(int64(allocation.DataShards), 10)
 			p := strconv.FormatInt(int64(allocation.ParityShards), 10)
+
+			// TODO (sfxdx): data shards, parity shards
+
+			var rp, wp common.Balance
+			for _, d := range allocation.BlobberDetails {
+				rp += d.Terms.ReadPrice
+				wp += d.Terms.WritePrice
+			}
+
 			data[idx] = []string{
 				allocation.ID, size, expStr, d, p,
 				strconv.FormatBool(allocation.Finalized),
 				strconv.FormatBool(allocation.Canceled),
+				rp.String(), wp.String(),
 			}
 		}
 		util.WriteTable(os.Stdout, header, []string{}, data)

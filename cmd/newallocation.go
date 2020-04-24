@@ -54,6 +54,7 @@ var newallocationCmd = &cobra.Command{
 			lock  int64         // lock with given number of tokens
 			err   error         //
 		)
+
 		if !flags.Changed("lock") {
 			log.Fatal("missing required 'lock' argument")
 		}
@@ -66,6 +67,8 @@ var newallocationCmd = &cobra.Command{
 		var (
 			readPrice  = sdk.PriceRange{Min: 0, Max: math.MaxInt64}
 			writePrice = sdk.PriceRange{Min: 0, Max: math.MaxInt64}
+
+			mcct time.Duration = 1 * time.Hour
 		)
 
 		if flags.Changed("read_price") {
@@ -92,6 +95,16 @@ var newallocationCmd = &cobra.Command{
 			readPrice = pr
 		}
 
+		if flags.Changed("mcct") {
+			mcct, err := flags.GetDuration("mcct")
+			if err != nil {
+				log.Fatal("invalid mcct value: ", err)
+			}
+			if mcct <= 1*time.Second {
+				log.Fatal("invalid mcct value < 1s")
+			}
+		}
+
 		var expire time.Duration
 		if expire, err = flags.GetDuration("expire"); err != nil {
 			log.Fatal("invalid 'expire' flag: ", err)
@@ -100,7 +113,7 @@ var newallocationCmd = &cobra.Command{
 		var expireAt = time.Now().Add(expire).Unix()
 
 		allocationID, err := sdk.CreateAllocation(*datashards, *parityshards,
-			*size, expireAt, readPrice, writePrice, lock)
+			*size, expireAt, readPrice, writePrice, mcct, lock)
 		if err != nil {
 			log.Fatal("Error creating allocation: ", err)
 		}
@@ -127,6 +140,8 @@ func init() {
 			"select blobbers by provided write price range, use form 1.5-2.5, default is [0; inf)")
 	newallocationCmd.PersistentFlags().
 		Duration("expire", 720*time.Hour, "duration to allocation expiration")
+	newallocationCmd.PersistentFlags().Duration("mcct", 1*time.Hour,
+		"max challenge completion time, optional, default 1h")
 
 	newallocationCmd.MarkFlagRequired("data")
 	newallocationCmd.MarkFlagRequired("parity")
