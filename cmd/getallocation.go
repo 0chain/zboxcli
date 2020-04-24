@@ -1,14 +1,17 @@
 package cmd
 
 import (
-	"encoding/json"
+	// "encoding/json"
 	"fmt"
 	"os"
-	"time"
+	// "time"
 
+	"github.com/0chain/gosdk/core/common"
+	"github.com/0chain/gosdk/zboxcore/blockchain"
 	. "github.com/0chain/gosdk/zboxcore/logger"
 	"github.com/0chain/gosdk/zboxcore/sdk"
-	"github.com/0chain/gosdk/zcncore"
+	// "github.com/0chain/gosdk/zcncore"
+
 	"github.com/spf13/cobra"
 )
 
@@ -25,40 +28,69 @@ var getallocationCmd = &cobra.Command{
 			os.Exit(1)                                      // and os.Exit(1)
 		}
 		allocationID := cmd.Flag("allocation").Value.String()
-		allocationObj, err := sdk.GetAllocation(allocationID)
+		alloc, err := sdk.GetAllocation(allocationID)
 		if err != nil {
 			Logger.Error("Error fetching the allocation", err)
 			PrintError("Error fetching/verifying the allocation")
 			os.Exit(1)
 		}
-		stats := allocationObj.GetStats()
-		statsBytes, _ := json.Marshal(stats)
-		fmt.Println(string(statsBytes))
-		fmt.Printf("ID : %v\n", allocationObj.ID)
-		fmt.Printf("Data Shards  : %v\n", allocationObj.DataShards)
-		fmt.Printf("Parity Shards  : %v\n", allocationObj.ParityShards)
-		fmt.Printf("Expiration  : %v\n", time.Unix(allocationObj.Expiration, 0))
-		fmt.Printf("Blobbers : \n")
-		for _, blobber := range allocationObj.Blobbers {
-			fmt.Printf("\t%v\n", blobber.Baseurl)
-		}
-		fmt.Printf("Requested read price range  : [%f, %f] token / read\n",
-			zcncore.ConvertToToken(allocationObj.ReadPriceRange.Min),
-			zcncore.ConvertToToken(allocationObj.ReadPriceRange.Max))
-		fmt.Printf("Requested write price range : [%f, %f] token / GB\n",
-			zcncore.ConvertToToken(allocationObj.WritePriceRange.Min),
-			zcncore.ConvertToToken(allocationObj.WritePriceRange.Max))
-		fmt.Printf("Challenge Completion Time   : %v\n", allocationObj.ChallengeCompletionTime)
 
-		fmt.Printf("Stats : \n")
-		fmt.Printf("\tTotal Size : %v\n", allocationObj.Size)
-		fmt.Printf("\tUsed Size : %v\n", allocationObj.Stats.UsedSize)
-		fmt.Printf("\tNumber of Writes : %v\n", allocationObj.Stats.NumWrites)
-		fmt.Printf("\tTotal Challenges : %v\n", allocationObj.Stats.TotalChallenges)
-		fmt.Printf("\tPassed Challenges : %v\n", allocationObj.Stats.SuccessChallenges)
-		fmt.Printf("\tFailed Challenges : %v\n", allocationObj.Stats.FailedChallenges)
-		fmt.Printf("\tOpen Challenges : %v\n", allocationObj.Stats.OpenChallenges)
-		fmt.Printf("\tLast Challenge redeemed : %v\n", allocationObj.Stats.LastestClosedChallengeTxn)
+		var getBaseURL = func(bid string, bs []*blockchain.StorageNode) string {
+			for _, b := range bs {
+				if b.ID == bid {
+					return b.Baseurl
+				}
+			}
+			return "(not found)"
+		}
+
+		fmt.Println("allocation:")
+		fmt.Println("  id:             ", alloc.ID)
+		fmt.Println("  tx:             ", alloc.Tx, "(latest create/update allocation transaction hash)")
+		fmt.Println("  data_shards:    ", alloc.DataShards)
+		fmt.Println("  parity_shards:  ", alloc.ParityShards)
+		fmt.Println("  size:           ", common.Size(alloc.Size))
+		fmt.Println("  expiration_date:", common.Timestamp(alloc.Expiration).ToTime())
+		fmt.Println("  blobbers:")
+
+		for _, d := range alloc.BlobberDetails {
+			fmt.Println("    - blobber_id:      ", d.BlobberID)
+			fmt.Println("      base URL:        ", getBaseURL(d.BlobberID, alloc.Blobbers))
+			fmt.Println("      size:            ", common.Size(d.Size))
+			fmt.Println("      min_lock_deman:  ", common.Balance(d.MinLockDemand))
+			fmt.Println("      spent:           ", common.Balance(d.Spent), "(moved to challenge pool or to the blobber)")
+			fmt.Println("      penalty:         ", common.Balance(d.Penalty), "(blobber stake slash)")
+			fmt.Println("      read_reward:     ", common.Balance(d.ReadReward))
+			fmt.Println("      returned:        ", common.Balance(d.Returned), "(on challenge failed)")
+			fmt.Println("      challenge_reward:", common.Balance(d.ChallengeReward), "(on challenge passed)")
+			fmt.Println("      final_reward:    ", common.Balance(d.FinalReward), "(if finalized)")
+			fmt.Println("      terms: (allocation related terms)")
+			fmt.Println("        read_price:               ", d.Terms.ReadPrice, "tok / GB (by 64KB chunks)")
+			fmt.Println("        write_price:              ", d.Terms.WritePrice, "tok / GB")
+			fmt.Println("        min_lock_demand:          ", d.Terms.MinLockDemand*100, "%")
+			fmt.Println("        max_offer_duration:       ", d.Terms.MaxOfferDuration)
+			fmt.Println("        challenge_completion_time:", d.Terms.ChallengeCompletionTime)
+		}
+
+		fmt.Println("  read_price_range:         ", alloc.ReadPriceRange, "(requested)")
+		fmt.Println("  write_price_range:        ", alloc.WritePriceRange, "(requested)")
+		fmt.Println("  challenge_completion_time:", alloc.ChallengeCompletionTime, "(max)")
+		fmt.Println("  start_time:               ", common.Timestamp(alloc.StartTime).ToTime())
+		fmt.Println("  finalized:                ", alloc.Finalized)
+		fmt.Println("  canceled:                 ", alloc.Canceled)
+		fmt.Println("  moved_to_challenge:       ", common.Balance(alloc.MovedToChallenge))
+		fmt.Println("  moved_back:               ", common.Balance(alloc.MovedBack))
+		fmt.Println("  moved_to_validators:      ", common.Balance(alloc.MovedToValidators))
+
+		fmt.Println("  stats:")
+		fmt.Println("    total size:             ", common.Size(alloc.Size))
+		fmt.Println("    used size:              ", common.Size(alloc.Stats.UsedSize))
+		fmt.Println("    number of writes:       ", alloc.Stats.NumWrites)
+		fmt.Println("    total challenges:       ", alloc.Stats.TotalChallenges)
+		fmt.Println("    passed challenges:      ", alloc.Stats.SuccessChallenges)
+		fmt.Println("    failed challenges:      ", alloc.Stats.FailedChallenges)
+		fmt.Println("    open challenges:        ", alloc.Stats.OpenChallenges)
+		fmt.Println("    last challenge redeemed:", alloc.Stats.LastestClosedChallengeTxn)
 		return
 	},
 }

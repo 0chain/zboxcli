@@ -24,6 +24,14 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
 18. [Rename an object in allocation](#Rename)
 19. [Get file stats](#Stats)
 20. [Repair a file on dStorage](#Repair)
+21. [Cancel allocation](#Cancel-allocation)
+22. [Finalize allocation](#Finalize-allocation)
+23. [Challenge pool information](#Challenge-pool-information)
+24. [List blobbers](#List-blobbers)
+25. [Read pool](#Read-pool)
+26. [Storage SC configurations](#Storage-SC-configurations)
+27. [Stake pool](#Stake-pool)
+28. [Write pool](#Write-pool)
 
 zbox CLI provides a self-explaining "help" option that lists commands and parameters they need to perform the intended action
 ## How to get it?
@@ -81,11 +89,12 @@ Response
       zbox [command]
     
     Available Commands:
+      alloc-cancel     Cancel an allocation
+      alloc-fini       Finalize an expired allocation
       copy             copy an object(file/folder) to another folder on blobbers
       cp-info          Challenge pool information.
       delete           delete file from blobbers
       download         download file from blobbers
-      finialloc        Finalize an expired allocation
       get              Gets the allocation info
       getwallet        Get wallet information
       help             Help about any command
@@ -104,6 +113,7 @@ Response
       sc-config        Show storage SC configuration.
       share            share files from blobbers
       sp-info          Stake pool information.
+      sp-lock          Lock tokens lacking in stake pool.
       sp-unlock        Unlock tokens in stake pool.
       stats            stats for file from blobbers
       sync             Sync files to/from blobbers
@@ -112,8 +122,8 @@ Response
       upload           upload file to blobbers
       version          Prints version information
       wp-info          Write pool information.
-      wp-lock          Lock tokens to write pool.
-
+      wp-lock          Lock some tokens in write pool.
+      wp-unlock        Unlock some expired tokens in a write pool.
 
     Flags:
           --config string      config file (default is config.yaml)
@@ -478,133 +488,167 @@ Response
 
     Status completed callback. Type = application/octet-stream. Name = hello.txt
 
+# Cancel allocation
 
-### Challenge pool information
+Cancel allocation immediately and return all tokens from challenge pool
+back to user (to write pool). This case blobber will not give their min
+lock demand. If blobbers already got some tokens, the tokens will not be
+returned.
 
-Get information about a challenge pool of an allocation
+It returns tokens to user's write pool, creating one expired if necessary.
 
-    ./zbox cp-info --allocation <ALLOC ID>
+    ./zbox alloc-cancel --allocation ALLOCATION_ID
 
-Example response
+# Finalize allocation
 
-    POOL ID: 6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7:challengepool:6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7ff0b0b7ff1c4acd75fefcb767d0679db01059ee7d0fb79c2f97e9adc5b2fc041
-                  START             |   DUR    |      TIME LEFT       | LOCKED | BALANCE  
-    +-------------------------------+----------+----------------------+--------+---------+
-      2020-03-24 20:22:22 +0400 +04 | 768h1m0s | 766h49m55.788951988s | true   |       0 
+Finalize an expired allocation. When allocation expired, after its
+challenge completion time (after the expiration) an allocation can be
+finalized by owner or one of allocation blobbers.
 
+      ./zbox alloc-fini --allocation ALLOCATION_ID
 
-### Show active blobbers in storage SC.
+# Challenge pool information
 
-Command
+Challenge pool brief information.
 
-    ./zbox ls-blobbers
+      ./zbox cp-info --allocation ALLOCATION_ID
 
+Example
 
-Example response
+```
+    BALANCE    |             START             |            EXPIRE             | FINIALIZED  
++--------------+-------------------------------+-------------------------------+------------+
+  0.0039020457 | 2020-04-24 03:54:35 +0400 +04 | 2020-04-26 03:56:35 +0400 +04 | false       
+```
 
-    Blobbers:
-               URL          |                                ID                                |         CAP         |     R / W PRICE     | DEMAND  
-    +-----------------------+------------------------------------------------------------------+---------------------+---------------------+--------+
-      http://localhost:5052 | 7a90e6790bcd3d78422d7a230390edc102870fe58c15472073922024985b1c7d | 300.0 MiB / 1.0 GiB | 0.010000 / 1.000000 |    0.1  
-      http://localhost:5051 | f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25 | 300.0 MiB / 1.0 GiB | 0.010000 / 1.000000 |    0.1 
+Where time bounds and the finalization are allocations related. Balance is
+current challenge pool balance.
 
-### Create read pool if missing
+# List blobbers
 
-Command
+Show active blobbers in storage SC.
 
-    ./zbox rp-create
+      ./zbox ls-blobbers
 
+# Read pool
 
-### View read pool information
+## Create
 
-Command
+Create read pool if missing.
 
-    ./zbox rp-info
+      ./zbox rp-create
 
-Example response:
+## Info
 
-                                     ID                                |          START TIME           |  DUR   |     TIME LEFT      | LOCKED | BALANCE  
-    +------------------------------------------------------------------+-------------------------------+--------+--------------------+--------+---------+
-      61382f3ceec0b7eb2a4cacfa6fb0f51d66a4563eb9bc6a5018d861daed3b40d4 | 2020-03-24 18:51:02 +0400 +04 | 1h0m0s | 38m6.060103434s    | true   |     0.3  
-      38ec7e1a1241bb6ed21b3a5d52f6f9630e0c6b8a4f8c51769ed6e243e1bafb5e | 2020-03-24 18:50:55 +0400 +04 | 1h0m0s | 37m59.060103434s   | true   |     0.2  
-      454e5a29a3050ddfb89d5c1f7dfede1216d87e0a553646a0b10b240822b5d678 | 2020-03-24 19:12:41 +0400 +04 | 2h0m0s | 1h59m45.060103434s | true   |     0.4  
+Read pool information.
 
+      ./zbox rp-info
 
-### Lock some tokens in read pool
+Filtering result for an allocation.
 
-Command
+      ./zbox rp-info --allocation ALLOCATION_ID
 
-    ./zbox rp-lock --duration 20h --tokens 1.54
+## Lock
 
+Lock some tokens in read pool associated with an allocation. The tokens
+will be divided between allocation blobbers by their read price.
 
-### Unlock expired tokens from a read pool
+      ./zbox rp-lock --allocation ALLOCATION_ID --duration 40m --tokens 1
 
-Command
+## Unlock
 
-    ./zbox rp-unlock --pool_id <POOL ID>
+Unlock an expired read pool by pool id. See `rp-info` for the POOL_ID and
+the expiration.
 
+      ./zbox rp-unlock --pool_id POOL_ID
 
-### Stake pool information
+# Storage SC configurations
 
-Command for blobber owner
+Show storage SC configuration.
 
-    ./zbox sp-info
+      ./zbox sc-config
 
-Command for a user
+# Stake pool
 
-    ./zbox sp-info --blobber_id <BLOBBER ID>
-
-
-Example response
-
-    POOL ID: 6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7:stakepool:f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25
-      LOCKED | UNLOCKED | OFFERS TOTAL | REQUIRED STAKE  
-    +--------+----------+--------------+----------------+
-           1 |        1 |  0.146484375 |              1  
-    
-    OFFERS:
-         LOCK     |            EXPIRE             |                              ALLOC                               | EXPIRED  
-    +-------------+-------------------------------+------------------------------------------------------------------+---------+
-      0.146484375 | 2020-04-25 20:23:22 +0400 +04 | ff0b0b7ff1c4acd75fefcb767d0679db01059ee7d0fb79c2f97e9adc5b2fc041 | false    
-      0.048828125 | 2020-03-24 20:46:19 +0400 +04 | 2d23222b0ff205d3c1c6a5728826956bd48d5280084999b4de7d4ab249e3f215 | true     
-      0.048828125 | 2020-03-24 20:46:26 +0400 +04 | caaac1d6f4ee918465c949d8e275cc449f562e2777eb711c7832f4dd6af99bfc | true 
+Stake pool related commands.
 
 
-### Unlock tokens of a stake pool
+## Info
 
-If blobber reduces its capacity, then some tokens of a stake pool can be unlocked.
-Also, blobber rewards are receiving into its stake pool.
+Stake pool information.
 
-Command
+      ./zbox sp-info --blobber_id BLOBBER_ID
 
-    ./zbox --wallet=blobber1.json sp-unlock
+Example
+
+```
+POOL ID: 6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7:stakepool:f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25
+     LOCKED    | OFFERS TOTAL | CAP  STAKE | LACK |   OVERFILL   |    REWARD     
++--------------+--------------+------------+------+--------------+--------------+
+  0.1671881145 |   0.01953125 |        0.1 |    0 | 0.0671881145 | 0.0671881145  
+
+OFFERS:
+      LOCK     |            EXPIRE             |                              ALLOC                               | EXPIRED  
++--------------+-------------------------------+------------------------------------------------------------------+---------+
+  0.0146484375 | 2020-04-26 03:56:35 +0400 +04 | 3d67f2246829d9095a27b9f3825780a97b56e2cbd43a61dd8517c6c9d005b010 | false    
+  0.0048828125 | 2020-04-26 03:56:40 +0400 +04 | 86b78bb2ec5971412e665c457cd26136bab2b37220247276235f5ec02bdf975e | false  
+```
+
+- Offers is information about opened offers.
+- Locked is number of locked tokens.
+- Offers total is total stake required by opened offers.
+- Capacity stake is stake required by blobber capacity.
+- Lack is tokens lack in the stake pool. It's possible if the blobber
+  has punished.
+- Overfill is tokens can be unlocked.
+- Reward is blobber reward for all time and all allocations including
+  reading rewards.
+
+## Lock
+
+Lock more tokens in stake pool. It useful if tokens missing (lack) or
+if blobber going to increase its capacity and the tokens will be lacked.
+See `sp-info` 'LACK' column.
+
+      ./zbox sp-lock --blobber_id BLOBBER_ID
+
+## Unlock
+
+Unlock tokens from a stake pool. Only tokens overfilling the stake pool
+can be unlocked. See sp-info 'OVERFILL' column.
+
+      ./zbox sp-unlock --blobber_id BLOBBER_ID
 
 
-### Write pool information
+# Write pool
 
+## Info
 
-Command
+Write pool information.
 
-    ./zbox wp-info --allocation <ALLOC ID>
+For all write pools.
 
-Example response
+      ./zbox wp-info
 
-    POOL ID: 6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7:writepool:6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7ff0b0b7ff1c4acd75fefcb767d0679db01059ee7d0fb79c2f97e9adc5b2fc041
-                  START             |   DUR    |      TIME LEFT      | LOCKED | BALANCE  
-    +-------------------------------+----------+---------------------+--------+---------+
-      2020-03-24 20:22:22 +0400 +04 | 768h1m0s | 767h4m23.712726658s | true   |       2  
+Filtering by allocation.
 
-### Add more tokens to a write pool
+      ./zbox wp-info --allocation ALLOCATION_ID       
 
-Command
+## Lock
 
-    ./zbox wp-lock --allocation <ALLOC ID> --tokens 1.2
+Lock tokens in a write pool associated with an allocation. All tokens will
+be divided between allocation blobbers depending on their write price.
 
-### View Storage SC configurations
+      ./zbox wp-lock --allocation ALLOCATION_ID --duration 40m --tokens 1
 
-Command
+## Unlock
 
-    ./zbox sc-config
+Unlock an expired write pool by its POOL_ID. See wp-info  for the id and the
+expiration. An expired write pool, associated with an allocation, can be
+locked until allocation finalization even if it's expired. It possible in
+cases where related blobber doesn't give their min lock demands. The
+finalization will pay the demand an unlock the pool.
 
+      ./zbox wp-unlock --pool_id POOL_ID
 
 ---

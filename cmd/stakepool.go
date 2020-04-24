@@ -13,7 +13,7 @@ import (
 
 func printStakePoolInfo(info *sdk.StakePoolInfo) {
 	var header = []string{
-		"LOCKED", "OFFERS TOTAL", "CAP. STAKE", "LACK", "OVERFILL",
+		"LOCKED", "OFFERS TOTAL", "CAP. STAKE", "LACK", "OVERFILL", "REWARD",
 	}
 	var data = [][]string{{
 		info.Locked.String(),
@@ -21,6 +21,7 @@ func printStakePoolInfo(info *sdk.StakePoolInfo) {
 		info.CapacityStake.String(),
 		info.Lack.String(),
 		info.Overfill.String(),
+		info.Reward.String(),
 	}}
 	fmt.Println("POOL ID:", info.ID)
 	util.WriteTable(os.Stdout, header, []string{}, data)

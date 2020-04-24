@@ -3,28 +3,12 @@ package cmd
 import (
 	"fmt"
 	"log"
-	"os"
+	"time"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
-	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )
-
-func printWritePoolInfo(info *sdk.WritePoolInfo) {
-	var header = []string{
-		"BALANCE", "START", "EXPIRE", "FINIALIZED",
-	}
-	var data = [][]string{{
-		info.Balance.String(),
-		info.StartTime.ToTime().String(),
-		info.Expiration.ToTime().String(),
-		fmt.Sprint(info.Finalized),
-	}}
-	fmt.Println("POOL ID:", info.ID)
-	util.WriteTable(os.Stdout, header, []string{}, data)
-	fmt.Println()
-}
 
 // wpInfo information
 var wpInfo = &cobra.Command{
@@ -40,37 +24,47 @@ var wpInfo = &cobra.Command{
 			err     error
 		)
 
-		if !flags.Changed("allocation") {
-			log.Fatal("missing required 'allocation' flag")
+		if flags.Changed("allocation") {
+			if allocID, err = flags.GetString("allocation"); err != nil {
+				log.Fatalf("can't get 'allocation' flag: %v", err)
+			}
 		}
 
-		if allocID, err = flags.GetString("allocation"); err != nil {
-			log.Fatalf("can't get 'allocation' flag: %v", err)
-		}
-
-		var info *sdk.WritePoolInfo
-		if info, err = sdk.GetWritePoolInfo(allocID); err != nil {
+		var info *sdk.AllocationPoolStats
+		if info, err = sdk.GetWritePoolInfo(""); err != nil {
 			log.Fatalf("Failed to get write pool info: %v", err)
 		}
-		printWritePoolInfo(info)
+		if len(info.Pools) == 0 {
+			fmt.Println("no tokens locked")
+			return
+		}
+
+		info.AllocFilter(allocID)
+		printReadPoolStat(info.Pools)
 	},
 }
 
-// wpLock locks additional tokens to a write pool of an allocation
+// wpLock locks tokens in write pool
 var wpLock = &cobra.Command{
 	Use:   "wp-lock",
-	Short: "Lock tokens to write pool.",
-	Long:  `Lock additional tokens to a write pool of an allocation.`,
+	Short: "Lock some tokens in write pool.",
+	Long:  `Lock some tokens in write pool.`,
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		var (
-			flags   = cmd.Flags()
-			allocID string
-			tokens  float64
-			fee     float64
-			err     error
+			flags     = cmd.Flags()
+			duration  time.Duration
+			allocID   string // required
+			blobberID string // optional
+			tokens    float64
+			fee       float64
+			err       error
 		)
+
+		if !flags.Changed("duration") {
+			log.Fatal("missing required 'duration' flag")
+		}
 
 		if !flags.Changed("allocation") {
 			log.Fatal("missing required 'allocation' flag")
@@ -80,13 +74,21 @@ var wpLock = &cobra.Command{
 			log.Fatal("missing required 'tokens' flag")
 		}
 
-		allocID, err = flags.GetString("allocation")
-		if err != nil {
+		if duration, err = flags.GetDuration("duration"); err != nil {
+			log.Fatal("invalid 'duration' flag: ", err)
+		}
+
+		if allocID, err = flags.GetString("allocation"); err != nil {
 			log.Fatal("invalid 'allocation' flag: ", err)
 		}
 
-		tokens, err = flags.GetFloat64("tokens")
-		if err != nil {
+		if flags.Changed("blobber") {
+			if blobberID, err = flags.GetString("blobber"); err != nil {
+				log.Fatal("invalid 'blobber' flag: ", err)
+			}
+		}
+
+		if tokens, err = flags.GetFloat64("tokens"); err != nil {
 			log.Fatal("invalid 'tokens' flag: ", err)
 		}
 
@@ -96,26 +98,79 @@ var wpLock = &cobra.Command{
 			}
 		}
 
-		err = sdk.WritePoolLock(allocID, zcncore.ConvertToValue(tokens),
-			zcncore.ConvertToValue(fee))
+		err = sdk.WritePoolLock(duration, allocID, blobberID,
+			zcncore.ConvertToValue(tokens), zcncore.ConvertToValue(fee))
 		if err != nil {
-			log.Fatalf("Failed to lock tokens to write pool: %v", err)
+			log.Fatalf("Failed to lock tokens in write pool: %v", err)
 		}
 		fmt.Println("locked")
+	},
+}
+
+// wpUnlock unlocks tokens in a write pool
+var wpUnlock = &cobra.Command{
+	Use:   "wp-unlock",
+	Short: "Unlock some expired tokens in a write pool.",
+	Long:  `Unlock some expired tokens in a write pool.`,
+	Args:  cobra.MinimumNArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+
+		var (
+			flags  = cmd.Flags()
+			poolID string
+			fee    float64
+			err    error
+		)
+
+		if !flags.Changed("pool_id") {
+			log.Fatal("missing required 'pool_id' flag")
+		}
+
+		if poolID, err = flags.GetString("pool_id"); err != nil {
+			log.Fatal("invalid 'pool_id' flag: ", err)
+		}
+
+		if flags.Changed("fee") {
+			if fee, err = flags.GetFloat64("fee"); err != nil {
+				log.Fatal("invalid 'fee' flag: ", err)
+			}
+		}
+
+		err = sdk.WritePoolUnlock(poolID, zcncore.ConvertToValue(fee))
+		if err != nil {
+			log.Fatalf("Failed to unlock tokens in write pool: %v", err)
+		}
+		fmt.Println("unlocked")
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(wpInfo)
 	rootCmd.AddCommand(wpLock)
+	rootCmd.AddCommand(wpUnlock)
 
 	wpInfo.PersistentFlags().String("allocation", "",
-		"allocation identifier, required")
+		"allocation, optional")
 
+	wpLock.PersistentFlags().Duration("duration", 0,
+		"lock duration, required")
 	wpLock.PersistentFlags().String("allocation", "",
-		"allocation identifier, required")
+		"allocation id to lock for, required")
+	wpLock.PersistentFlags().String("blobber", "",
+		"blobber id to lock for, optional")
 	wpLock.PersistentFlags().Float64("tokens", 0.0,
-		"tokens to lock, required")
+		"lock tokens number, required")
 	wpLock.PersistentFlags().Float64("fee", 0.0,
 		"transaction fee, default 0")
+
+	wpLock.MarkFlagRequired("duration")
+	wpLock.MarkFlagRequired("allocation")
+	wpLock.MarkFlagRequired("tokens")
+
+	wpUnlock.PersistentFlags().String("pool_id", "",
+		"expired write pool identifier, required")
+	wpUnlock.PersistentFlags().Float64("fee", 0.0,
+		"transaction fee, default 0")
+
+	wpUnlock.MarkFlagRequired("pool_id")
 }

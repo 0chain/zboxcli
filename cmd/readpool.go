@@ -3,12 +3,10 @@ package cmd
 import (
 	"fmt"
 	"log"
-	"os"
 	"time"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
-	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )
 
@@ -27,22 +25,19 @@ var rpCreate = &cobra.Command{
 	},
 }
 
-func printReadPoolStat(stat []*sdk.ReadPoolStat) {
-	var header = []string{
-		"ID", "START TIME", "DUR", "TIME LEFT", "LOCKED", "BALANCE",
-	}
-	var data = make([][]string, len(stat))
-	for i, val := range stat {
-		data[i] = []string{
-			string(val.ID),
-			val.StartTime.ToTime().String(),
-			val.Duration.String(),
-			val.TimeLeft.String(),
-			fmt.Sprint(val.Locked),
-			val.Balance.String(),
+func printReadPoolStat(stat []*sdk.AllocationPoolStat) {
+	for _, st := range stat {
+		fmt.Println("- id:            ", st.ID)
+		fmt.Println("  balance:       ", st.Balance.String())
+		fmt.Println("  expire_at:     ", st.ExpireAt.ToTime().String())
+		fmt.Println("  allocation_id: ", st.AllocationID)
+		fmt.Println("  locked:        ", st.Locked)
+		fmt.Println("  blobbers:")
+		for _, b := range st.Blobbers {
+			fmt.Println("  - blobber_id: ", b.BlobberID)
+			fmt.Println("  - balance:    ", b.Balance.String())
 		}
 	}
-	util.WriteTable(os.Stdout, header, []string{}, data)
 	fmt.Println()
 }
 
@@ -55,30 +50,28 @@ var rpInfo = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		var (
-			flags    = cmd.Flags()
-			clientID string
-			err      error
+			flags   = cmd.Flags()
+			allocID string
+			err     error
 		)
 
-		if flags.Changed("client_id") {
-			if clientID, err = flags.GetString("client_id"); err != nil {
-				log.Fatalf("can't get 'client_id' flag: %v", err)
+		if flags.Changed("allocation") {
+			if allocID, err = flags.GetString("allocation"); err != nil {
+				log.Fatalf("can't get 'allocation' flag: %v", err)
 			}
 		}
 
-		var info *sdk.ReadPoolInfo
-		if info, err = sdk.GetReadPoolInfo(clientID); err != nil {
+		var info *sdk.AllocationPoolStats
+		if info, err = sdk.GetReadPoolInfo(""); err != nil {
 			log.Fatalf("Failed to get read pool info: %v", err)
 		}
-		if len(info.Stats) == 0 {
-			fmt.Println("no locked tokens in the read pool")
-			return
-		}
-		if len(info.Stats) == 0 {
+		if len(info.Pools) == 0 {
 			fmt.Println("no tokens locked")
 			return
 		}
-		printReadPoolStat(info.Stats)
+
+		info.AllocFilter(allocID)
+		printReadPoolStat(info.Pools)
 	},
 }
 
@@ -91,15 +84,21 @@ var rpLock = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		var (
-			flags    = cmd.Flags()
-			duration time.Duration
-			tokens   float64
-			fee      float64
-			err      error
+			flags     = cmd.Flags()
+			duration  time.Duration
+			allocID   string // required
+			blobberID string // optional
+			tokens    float64
+			fee       float64
+			err       error
 		)
 
 		if !flags.Changed("duration") {
 			log.Fatal("missing required 'duration' flag")
+		}
+
+		if !flags.Changed("allocation") {
+			log.Fatal("missing required 'allocation' flag")
 		}
 
 		if !flags.Changed("tokens") {
@@ -108,6 +107,16 @@ var rpLock = &cobra.Command{
 
 		if duration, err = flags.GetDuration("duration"); err != nil {
 			log.Fatal("invalid 'duration' flag: ", err)
+		}
+
+		if allocID, err = flags.GetString("allocation"); err != nil {
+			log.Fatal("invalid 'allocation' flag: ", err)
+		}
+
+		if flags.Changed("blobber") {
+			if blobberID, err = flags.GetString("blobber"); err != nil {
+				log.Fatal("invalid 'blobber' flag: ", err)
+			}
 		}
 
 		if tokens, err = flags.GetFloat64("tokens"); err != nil {
@@ -120,8 +129,8 @@ var rpLock = &cobra.Command{
 			}
 		}
 
-		err = sdk.ReadPoolLock(duration, zcncore.ConvertToValue(tokens),
-			zcncore.ConvertToValue(fee))
+		err = sdk.ReadPoolLock(duration, allocID, blobberID,
+			zcncore.ConvertToValue(tokens), zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to lock tokens in read pool: %v", err)
 		}
@@ -172,17 +181,22 @@ func init() {
 	rootCmd.AddCommand(rpLock)
 	rootCmd.AddCommand(rpUnlock)
 
-	rpInfo.PersistentFlags().String("client_id", "",
-		"for given client, default is current client")
+	rpInfo.PersistentFlags().String("allocation", "",
+		"allocation id, optional")
 
 	rpLock.PersistentFlags().Duration("duration", 0,
 		"lock duration, required")
+	rpLock.PersistentFlags().String("allocation", "",
+		"allocation id to lock for, required")
+	rpLock.PersistentFlags().String("blobber", "",
+		"blobber id to lock for, optional")
 	rpLock.PersistentFlags().Float64("tokens", 0.0,
 		"lock tokens number, required")
 	rpLock.PersistentFlags().Float64("fee", 0.0,
 		"transaction fee, default 0")
 
 	rpLock.MarkFlagRequired("duration")
+	rpLock.MarkFlagRequired("allocation")
 	rpLock.MarkFlagRequired("tokens")
 
 	rpUnlock.PersistentFlags().String("pool_id", "",
