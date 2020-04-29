@@ -15,6 +15,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func sizePerBlobber(size int64, data, parity int) int64 {
+	return ((size + int64(data) - 1) / int64(data)) * (int64(data) + int64(parity))
+}
+
 // getallocationCmd represents the get allocation info command
 var getallocationCmd = &cobra.Command{
 	Use:   "get",
@@ -56,12 +60,17 @@ var getallocationCmd = &cobra.Command{
 		fmt.Println("  expiration_date:", common.Timestamp(alloc.Expiration).ToTime())
 		fmt.Println("  blobbers:")
 
-		var totalRead, totalWrite common.Balance
+		var (
+			gbsize   = sizePerBlobber(1*GB, alloc.DataShards, alloc.ParityShards)
+			gbblocks = sizeInGB(maxInt64(gbsize/(64*KB), 2) * 64 * KB)
+
+			totalRead, totalWrite common.Balance
+		)
 
 		for _, d := range alloc.BlobberDetails {
 
-			totalRead += d.Terms.ReadPrice
-			totalWrite += d.Terms.WritePrice
+			totalRead += common.Balance(float64(d.Terms.ReadPrice) * gbblocks)
+			totalWrite += common.Balance(float64(d.Terms.WritePrice) * sizeInGB(gbsize))
 
 			fmt.Println("    - blobber_id:      ", d.BlobberID)
 			fmt.Println("      base URL:        ", getBaseURL(d.BlobberID, alloc.Blobbers))
@@ -101,8 +110,6 @@ var getallocationCmd = &cobra.Command{
 		fmt.Println("    open challenges:        ", alloc.Stats.OpenChallenges)
 		fmt.Println("    last challenge redeemed:", alloc.Stats.LastestClosedChallengeTxn)
 
-		// TODO (sfxdx): data shards, parity shards
-
 		fmt.Println("  price:")
 		fmt.Println("    read_price: ", totalRead, "tok / GB (by 64KB)")
 		fmt.Println("    write_price:", totalWrite, "tok / GB")
@@ -134,12 +141,11 @@ func downloadCost(alloc *sdk.Allocation, meta *sdk.ConsolidatedFileMeta) {
 	}
 
 	var (
-		blocks = maxInt64(meta.Size/fileref.CHUNK_SIZE, 2)
+		bsize  = sizePerBlobber(meta.Size, alloc.DataShards, alloc.ParityShards)
+		blocks = maxInt64(bsize/fileref.CHUNK_SIZE, 2)
 		size   = sizeInGB(blocks * fileref.CHUNK_SIZE)
 		cost   common.Balance
 	)
-
-	// TODO (sfxdx): data shards, parity shards ?
 
 	for _, d := range alloc.BlobberDetails {
 		cost += common.Balance(float64(d.Terms.ReadPrice) * size)
@@ -245,11 +251,9 @@ var getDownloadCostCmd = &cobra.Command{
 func uploadCost(alloc *sdk.Allocation, size int64, path string) {
 
 	var (
-		gb   = sizeInGB(size)
+		gb   = sizeInGB(sizePerBlobber(size, alloc.DataShards, alloc.ParityShards))
 		cost common.Balance
 	)
-
-	// TODO (sfxdx): data shards, parity shards ?
 
 	for _, d := range alloc.BlobberDetails {
 		cost += common.Balance(float64(d.Terms.WritePrice) * gb)
