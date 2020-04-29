@@ -92,12 +92,11 @@ var newallocationCmd = &cobra.Command{
 			if err != nil {
 				log.Fatal("invalid write_price value: ", err)
 			}
-			readPrice = pr
+			writePrice = pr
 		}
 
 		if flags.Changed("mcct") {
-			mcct, err := flags.GetDuration("mcct")
-			if err != nil {
+			if mcct, err = flags.GetDuration("mcct"); err != nil {
 				log.Fatal("invalid mcct value: ", err)
 			}
 			if mcct <= 1*time.Second {
@@ -140,8 +139,9 @@ func init() {
 			"select blobbers by provided write price range, use form 1.5-2.5, default is [0; inf)")
 	newallocationCmd.PersistentFlags().
 		Duration("expire", 720*time.Hour, "duration to allocation expiration")
-	newallocationCmd.PersistentFlags().Duration("mcct", 1*time.Hour,
-		"max challenge completion time, optional, default 1h")
+	newallocationCmd.PersistentFlags().
+		Duration("mcct", 1*time.Hour,
+			"max challenge completion time, optional, default 1h")
 
 	newallocationCmd.MarkFlagRequired("data")
 	newallocationCmd.MarkFlagRequired("parity")

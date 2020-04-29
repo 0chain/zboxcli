@@ -14,7 +14,7 @@ import (
 func printStakePoolInfo(info *sdk.StakePoolInfo) {
 	var header = []string{
 		"LOCKED", "OFFERS TOTAL", "CAP. STAKE", "LACK",
-		"EXCESS", "B. REWARD", "V. REWARD",
+		"EXCESS", "REWARD", "B. REWARD", "V. REWARD", "I. REWARD",
 	}
 	var data = [][]string{{
 		info.Locked.String(),
@@ -22,8 +22,10 @@ func printStakePoolInfo(info *sdk.StakePoolInfo) {
 		info.CapacityStake.String(),
 		info.Lack.String(),
 		info.Overfill.String(),
+		info.Rewards.String(),
 		info.BlobberReward.String(),
 		info.ValidatorReward.String(),
+		info.InterestReward.String(),
 	}}
 	fmt.Println("POOL ID:", info.ID)
 	util.WriteTable(os.Stdout, header, []string{}, data)
@@ -115,7 +117,7 @@ var spLock = &cobra.Command{
 		if err != nil {
 			log.Fatalf("Failed to unlock tokens in stake pool: %v", err)
 		}
-		fmt.Println("unlocked")
+		fmt.Println("tokens locked")
 	},
 }
 
@@ -128,10 +130,23 @@ var spUnlock = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		var (
-			flags = cmd.Flags()
-			fee   float64
-			err   error
+			flags  = cmd.Flags()
+			tokens float64
+			fee    float64
+			err    error
 		)
+
+		if !flags.Changed("tokens") {
+			log.Fatal("missing required 'tokens' flag")
+		}
+
+		if tokens, err = flags.GetFloat64("tokens"); err != nil {
+			log.Fatal("invalid 'tokens' flag: ", err)
+		}
+
+		if tokens <= 0 {
+			log.Fatalf("invalid tokens flag: %f, should be > 0", tokens)
+		}
 
 		if flags.Changed("fee") {
 			if fee, err = flags.GetFloat64("fee"); err != nil {
@@ -139,11 +154,30 @@ var spUnlock = &cobra.Command{
 			}
 		}
 
-		err = sdk.StakePoolUnlock(zcncore.ConvertToValue(fee))
+		err = sdk.StakePoolUnlock(zcncore.ConvertToValue(tokens),
+			zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to unlock tokens in stake pool: %v", err)
 		}
-		fmt.Println("unlocked")
+		fmt.Println("tokens has unlocked")
+	},
+}
+
+// spUnlockRewards unlocks rewards of the blobber including
+// validator rewards and interests
+var spUnlockRewards = &cobra.Command{
+	Use:   "sp-unlock-rewards",
+	Short: "Unlock blobber rewards.",
+	Long: `Unlock blobber rewards, including all blobber rewards, rewards of
+related validator and interests.`,
+	Args: cobra.MinimumNArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+
+		var err error
+		if err = sdk.StakePoolUnlockRewards(); err != nil {
+			log.Fatalf("Failed to unlock rewards in stake pool: %v", err)
+		}
+		fmt.Println("rewards has unlocked")
 	},
 }
 
@@ -151,6 +185,7 @@ func init() {
 	rootCmd.AddCommand(spInfo)
 	rootCmd.AddCommand(spLock)
 	rootCmd.AddCommand(spUnlock)
+	rootCmd.AddCommand(spUnlockRewards)
 
 	spInfo.PersistentFlags().String("blobber_id", "",
 		"for given blobber, default is current client")
@@ -160,6 +195,9 @@ func init() {
 	spLock.PersistentFlags().Float64("fee", 0.0,
 		"transaction fee, default 0")
 
+	spUnlock.PersistentFlags().Float64("tokens", 0.0,
+		"amount of tokens to unlock, required")
 	spUnlock.PersistentFlags().Float64("fee", 0.0,
 		"transaction fee, default 0")
+	spUnlock.MarkFlagRequired("tokens")
 }

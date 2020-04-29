@@ -118,6 +118,7 @@ Response
       sp-info           Stake pool information.
       sp-lock           Lock tokens lacking in stake pool.
       sp-unlock         Unlock tokens in stake pool.
+      sp-unlock-rewards Unlock rewards.
       stats             stats for file from blobbers
       sync              Sync files to/from blobbers
       update            update file to blobbers
@@ -588,9 +589,9 @@ Example
 
 ```
 POOL ID: 6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7:stakepool:7a90e6790bcd3d78422d7a230390edc102870fe58c15472073922024985b1c7d
-  LOCKED | OFFERS TOTAL | CAP  STAKE | LACK | EXCESS | B  REWARD | V  REWARD  
-+--------+--------------+------------+------+--------+-----------+-----------+
-     0.1 |  0.009765625 |        0.1 |    0 |      0 |         0 |         0  
+  LOCKED | OFFERS TOTAL | CAP  STAKE | LACK | EXCESS | REWARD | B  REWARD | V  REWARD | I  REWARD  
++--------+--------------+------------+------+--------+--------+-----------+-----------+-----------+
+     0.1 |            0 |        0.1 |    0 |      0 |      0 |         0 |         0 |      0.01 
 
 OFFERS:
       LOCK     |            EXPIRE             |                              ALLOC                               | EXPIRED  
@@ -605,9 +606,12 @@ OFFERS:
 - Lack is tokens lack in the stake pool. It's possible if the blobber
   has punished.
 - Excess is tokens can be unlocked.
+- Reward is all rewards: blobber rewards, validator rewards and interests.
+  It's current value. Rewards unlocking reduces it to zero.
 - B. Reward is blobber reward for all time and all allocations including
   reading rewards.
 - V. Reward is validator reward for all time and all allocations.
+- I. Reward is stake interests for all time.
 - Offers is information about opened offers. Expire, allocation ID and expired
   are belongs to related allocation object. The offer lock is tokens of blobber
   stake reserved for this allocation (offer stake). If blobber penalized then
@@ -624,11 +628,24 @@ See `sp-info` 'LACK' column.
 
 ## Unlock
 
-Unlock tokens from a stake pool. Only tokens overfilling the stake pool
-can be unlocked. See sp-info 'OVERFILL' column.
+Unlock tokens from a stake pool. Tokens locked for blobber capacity stake or
+offers stake (max of the stakes) can't be unlocked. Also, to unlock rewards
+use `sp-unlock-rewards`
 
       ./zbox sp-unlock --blobber_id BLOBBER_ID
 
+Only stake pool (blobber) owner can unlock the rewards.
+
+## Unlock rewards
+
+Unlock all rewards, including:
+- blobber read and write rewards
+- rewards of related validator
+- interests
+
+      ./zbox sp-unlock-rewards
+
+Only stake pool (blobber) owner can unlock the rewards.
 
 # Write pool
 
