@@ -24,13 +24,14 @@ func (s *StatusBar) InProgress(allocationId, filePath string, op int, completedB
 }
 
 func (s *StatusBar) Completed(allocationId, filePath string, filename string, mimetype string, size int, op int) {
-	// Not required
-	// s.b.PrependElapsed()
 	if s.b != nil {
 		s.b.Finish()
 	}
 	s.success = true
-	defer s.wg.Done()
+
+	if op == sdk.OpDownload || op == sdk.OpCommit {
+		defer s.wg.Done()
+	}
 	fmt.Println("Status completed callback. Type = " + mimetype + ". Name = " + filename)
 }
 
