@@ -26,6 +26,7 @@ var filemetaCmd = &cobra.Command{
 		remotepath := cmd.Flag("remotepath").Value.String()
 		authticket := cmd.Flag("authticket").Value.String()
 		lookuphash := cmd.Flag("lookuphash").Value.String()
+		doJSON, _ := cmd.Flags().GetBool("json")
 		if len(remotepath) == 0 && (len(authticket) == 0) {
 			PrintError("Error: remotepath / authticket / lookuphash flag is missing")
 			os.Exit(1)
@@ -48,17 +49,22 @@ var filemetaCmd = &cobra.Command{
 				PrintError(err.Error())
 				os.Exit(1)
 			}
-			header := []string{"Type", "Name", "Path", "Lookup Hash"}
-			data := make([][]string, 1)
-			data[0] = []string{ref.Type, ref.Name, ref.Path, ref.LookupHash}
-			if ref.Type == fileref.FILE {
-				headerFile := []string{"Size", "Mime Type", "Hash"}
-				dataFile := []string{strconv.FormatInt(ref.Size, 10), ref.MimeType, ref.Hash}
-				header = append(header, headerFile...)
-				data[0] = append(data[0], dataFile...)
-			}
 
-			util.WriteTable(os.Stdout, header, []string{}, data)
+			if doJSON {
+				util.PrintJSON(ref)
+			} else {
+				header := []string{"Type", "Name", "Path", "Lookup Hash"}
+				data := make([][]string, 1)
+				data[0] = []string{ref.Type, ref.Name, ref.Path, ref.LookupHash}
+				if ref.Type == fileref.FILE {
+					headerFile := []string{"Size", "Mime Type", "Hash"}
+					dataFile := []string{strconv.FormatInt(ref.Size, 10), ref.MimeType, ref.Hash}
+					header = append(header, headerFile...)
+					data[0] = append(data[0], dataFile...)
+				}
+
+				util.WriteTable(os.Stdout, header, []string{}, data)
+			}
 		} else if len(authticket) > 0 {
 			allocationObj, err := sdk.GetAllocationFromAuthTicket(authticket)
 			if err != nil {
@@ -79,18 +85,21 @@ var filemetaCmd = &cobra.Command{
 				PrintError(err.Error())
 				os.Exit(1)
 			}
-			header := []string{"Type", "Name", "Lookup Hash"}
-			data := make([][]string, 1)
-			data[0] = []string{ref.Type, ref.Name, ref.LookupHash}
-			if ref.Type == fileref.FILE {
-				headerFile := []string{"Size", "Mime Type", "Hash"}
-				dataFile := []string{strconv.FormatInt(ref.Size, 10), ref.MimeType, ref.Hash}
-				header = append(header, headerFile...)
-				data[0] = append(data[0], dataFile...)
+			if doJSON {
+				util.PrintJSON(ref)
+			} else {
+				header := []string{"Type", "Name", "Lookup Hash"}
+				data := make([][]string, 1)
+				data[0] = []string{ref.Type, ref.Name, ref.LookupHash}
+				if ref.Type == fileref.FILE {
+					headerFile := []string{"Size", "Mime Type", "Hash"}
+					dataFile := []string{strconv.FormatInt(ref.Size, 10), ref.MimeType, ref.Hash}
+					header = append(header, headerFile...)
+					data[0] = append(data[0], dataFile...)
+				}
+				util.WriteTable(os.Stdout, header, []string{}, data)
 			}
-			util.WriteTable(os.Stdout, header, []string{}, data)
 		}
-
 		return
 	},
 }
@@ -101,5 +110,6 @@ func init() {
 	filemetaCmd.PersistentFlags().String("remotepath", "", "Remote path to list from")
 	filemetaCmd.PersistentFlags().String("authticket", "", "Auth ticket fot the file to download if you dont own it")
 	filemetaCmd.PersistentFlags().String("lookuphash", "", "The remote lookuphash of the object retrieved from the list")
+	filemetaCmd.Flags().Bool("json", false, "pass this option to print response as json data")
 	filemetaCmd.MarkFlagRequired("allocation")
 }
