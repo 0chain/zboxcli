@@ -39,6 +39,8 @@ var cpInfo = &cobra.Command{
 			err     error
 		)
 
+		doJSON, _ := cmd.Flags().GetBool("json")
+
 		if !flags.Changed("allocation") {
 			log.Fatal("missing required 'allocation' flag")
 		}
@@ -51,7 +53,11 @@ var cpInfo = &cobra.Command{
 		if info, err = sdk.GetChallengePoolInfo(allocID); err != nil {
 			log.Fatalf("Failed to get challenge pool info: %v", err)
 		}
-		printChallengePoolInfo(info)
+		if doJSON {
+			util.PrintJSON(info)
+		} else {
+			printChallengePoolInfo(info)
+		}
 	},
 }
 
@@ -60,4 +66,5 @@ func init() {
 
 	cpInfo.PersistentFlags().String("allocation", "",
 		"allocation identifier, required")
+	cpInfo.Flags().Bool("json", false, "pass this option to print response as json data")
 }
