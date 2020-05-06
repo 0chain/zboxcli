@@ -28,9 +28,10 @@ func (s *StatusBar) Completed(allocationId, filePath string, filename string, mi
 		s.b.Finish()
 	}
 	s.success = true
-
-	if op == sdk.OpDownload || op == sdk.OpCommit {
-		defer s.wg.Done()
+	if !allocUnderRepair {
+		if op == sdk.OpDownload || op == sdk.OpCommit {
+			defer s.wg.Done()
+		}
 	}
 	fmt.Println("Status completed callback. Type = " + mimetype + ". Name = " + filename)
 }
@@ -40,7 +41,9 @@ func (s *StatusBar) Error(allocationID string, filePath string, op int, err erro
 		s.b.Finish()
 	}
 	s.success = false
-	defer s.wg.Done()
+	if !allocUnderRepair {
+		defer s.wg.Done()
+	}
 	PrintError("Error in file operation." + err.Error())
 }
 
@@ -52,6 +55,20 @@ func (s *StatusBar) CommitMetaCompleted(request, response string, err error) {
 	} else {
 		s.success = true
 		fmt.Println("Commit Metadata successful, Response :", response)
+	}
+}
+
+func (s *StatusBar) RepairCompleted(filesRepaired int) {
+	defer s.wg.Done()
+	allocUnderRepair = false
+	fmt.Println("Repair file completed, Total files repaired: ", filesRepaired)
+}
+
+func (s *StatusBar) RepairCancelled(err error) {
+	if err != nil {
+		fmt.Println("Cancelling repair...")
+	} else {
+		PrintError("Error while repair cancel: " + err.Error())
 	}
 }
 

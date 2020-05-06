@@ -41,10 +41,12 @@ var statsCmd = &cobra.Command{
 		data := make([][]string, 0)
 		idx := 0
 		for k, v := range ref {
-			size := strconv.FormatInt(v.Size, 10)
-			rowData := []string{k, v.Name, v.Path, size, strconv.FormatInt(v.NumUpdates, 10), strconv.FormatInt(v.NumBlockDownloads, 10), strconv.FormatInt(v.SuccessChallenges, 10), strconv.FormatBool(len(v.WriteMarkerRedeemTxn) > 0)}
-			data = append(data, rowData)
-			idx++
+			if v != nil {
+				size := strconv.FormatInt(v.Size, 10)
+				rowData := []string{k, v.Name, v.Path, size, strconv.FormatInt(v.NumUpdates, 10), strconv.FormatInt(v.NumBlockDownloads, 10), strconv.FormatInt(v.SuccessChallenges, 10), strconv.FormatBool(len(v.WriteMarkerRedeemTxn) > 0)}
+				data = append(data, rowData)
+				idx++
+			}
 		}
 
 		util.WriteTable(os.Stdout, header, []string{}, data)

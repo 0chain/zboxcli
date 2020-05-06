@@ -8,11 +8,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// uploadCmd represents upload command
-var repairCmd = &cobra.Command{
-	Use:   "repair",
-	Short: "repair file to blobbers",
-	Long:  `repair file to blobbers`,
+// startRepair represents startRepair command
+var startRepair = &cobra.Command{
+	Use:   "start-repair",
+	Short: "start repair file to blobbers",
+	Long:  `start repair file to blobbers`,
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags()                      // fflags is a *flag.FlagSet
@@ -20,12 +20,12 @@ var repairCmd = &cobra.Command{
 			PrintError("Error: allocation flag is missing") // If not, we'll let the user know
 			os.Exit(1)                                      // and return
 		}
-		if fflags.Changed("remotepath") == false {
-			PrintError("Error: remotepath flag is missing")
+		if fflags.Changed("filepath") == false {
+			PrintError("Error: filepath flag is missing")
 			os.Exit(1)
 		}
-		if fflags.Changed("localpath") == false {
-			PrintError("Error: localpath flag is missing")
+		if fflags.Changed("repairpath") == false {
+			PrintError("Error: repairpath flag is missing")
 			os.Exit(1)
 		}
 		allocationID := cmd.Flag("allocation").Value.String()
@@ -34,13 +34,21 @@ var repairCmd = &cobra.Command{
 			PrintError("Error fetching the allocation.", err)
 			os.Exit(1)
 		}
-		remotepath := cmd.Flag("remotepath").Value.String()
-		localpath := cmd.Flag("localpath").Value.String()
+		filepath := cmd.Flag("filepath").Value.String()
+		imagepath := cmd.Flag("imagepath").Value.String()
+		repairpath := cmd.Flag("repairpath").Value.String()
+
+		if imagepath == "" {
+			imagepath = filepath
+		}
+
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
-		err = allocationObj.RepairFile(localpath, remotepath, statusBar)
+		allocUnderRepair = true
+		err = allocationObj.StartRepair(imagepath, filepath, repairpath, statusBar)
 		if err != nil {
+			allocUnderRepair = false
 			PrintError("Repair failed.", err)
 			os.Exit(1)
 		}
@@ -53,11 +61,12 @@ var repairCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(repairCmd)
-	repairCmd.PersistentFlags().String("allocation", "", "Allocation ID")
-	repairCmd.PersistentFlags().String("remotepath", "", "Remote path to repair")
-	repairCmd.PersistentFlags().String("localpath", "", "Local path of file to repair")
-	repairCmd.MarkFlagRequired("allocation")
-	repairCmd.MarkFlagRequired("localpath")
-	repairCmd.MarkFlagRequired("remotepath")
+	rootCmd.AddCommand(startRepair)
+	startRepair.PersistentFlags().String("allocation", "", "Allocation ID")
+	startRepair.PersistentFlags().String("filepath", "", "File path for local files ")
+	startRepair.PersistentFlags().String("imagepath", "", "Image path for local images")
+	startRepair.PersistentFlags().String("repairpath", "", "Path to repair")
+	startRepair.MarkFlagRequired("allocation")
+	startRepair.MarkFlagRequired("filepath")
+	startRepair.MarkFlagRequired("repairpath")
 }

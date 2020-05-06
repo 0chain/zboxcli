@@ -20,6 +20,7 @@ var cfgFile string
 var walletFile string
 var cDir string
 var bVerbose bool
+var allocUnderRepair bool
 
 var sharders []string
 var miners []string
