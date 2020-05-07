@@ -11,37 +11,32 @@ import (
 )
 
 func printStorageSCConfig(conf *sdk.StorageSCConfig) {
-	fmt.Printf(`
-challenge_enabled:                %t
-challenge_rate_per_mb_min:        %v
-min_alloc_size:                   %s
-min_alloc_duration:               %v
-max_challenge_completion_time:    %v
-min_offer_duration:               %v
-min_blobber_capacity:             %v
-readpool:
-  min_lock:         %s tok
-  min_lock_period:  %v
-  max_lock_period:  %v
-writepool:
-  min_lock:         %s tok
-validator_reward:   %f
-blobber_slash:      %f
-`,
-		conf.ChallengeEnabled,
-		conf.ChallengeRatePerMBMin,
-		conf.MinAllocSize.String(),
-		conf.MinAllocDuration,
-		conf.MaxChallengeCompletionTime,
-		conf.MinOfferDuration,
-		conf.MinBlobberCapacity.String(),
-		conf.ReadPool.MinLock.String(),
-		conf.ReadPool.MinLockPeriod,
-		conf.ReadPool.MaxLockPeriod,
-		conf.WritePool.MinLock.String(),
-		conf.ValidatorReward,
-		conf.BlobberSlash,
-	)
+	fmt.Println("min_alloc_size:               ", conf.MinAllocSize)
+	fmt.Println("min_alloc_duration:           ", conf.MinAllocDuration)
+	fmt.Println("max_challenge_completion_time:", conf.MaxChallengeCompletionTime)
+	fmt.Println("min_offer_duration:           ", conf.MinOfferDuration)
+	fmt.Println("min_blobber_capacity:         ", conf.MinBlobberCapacity)
+	fmt.Println("readpool:")
+	fmt.Println("  min_lock:", conf.ReadPool.MinLock, "tok")
+	fmt.Println("  min_lock_period:", conf.ReadPool.MinLockPeriod)
+	fmt.Println("  max_lock_period:", conf.ReadPool.MaxLockPeriod)
+	fmt.Println("writepool:")
+	fmt.Println("  min_lock:", conf.WritePool.MinLock, "tok")
+	fmt.Println("  min_lock_period:", conf.WritePool.MinLockPeriod)
+	fmt.Println("  max_lock_period:", conf.WritePool.MaxLockPeriod)
+	fmt.Println("stakepool:")
+	fmt.Println("  min_lock:", conf.StakePool.MinLock, "tok")
+	fmt.Println("  interest_rate:", conf.StakePool.InterestRate)
+	fmt.Println("  interest_interval:", conf.StakePool.InterestInterval)
+	fmt.Println("validator_reward:                    ", conf.ValidatorReward)
+	fmt.Println("blobber_slash:                       ", conf.BlobberSlash)
+	fmt.Println("max_read_price:                      ", conf.MaxReadPrice, "tok / GB")
+	fmt.Println("max_write_price:                     ", conf.MaxWritePrice, "tok / GB")
+	fmt.Println("failed_challenges_to_cancel:         ", conf.FailedChallengesToCancel)
+	fmt.Println("failed_challenges_to_revoke_min_lock:", conf.FailedChallengesToRevokeMinLock)
+	fmt.Println("challenge_enabled:                   ", conf.ChallengeEnabled)
+	fmt.Println("max_challenges_per_generation:       ", conf.MaxChallengesPerGeneration)
+	fmt.Println("challenge_rate_per_mb_min:           ", conf.ChallengeGenerationRate)
 }
 
 // scConfig shows SC configurations

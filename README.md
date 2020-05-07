@@ -117,8 +117,9 @@ Response
       share             share files from blobbers
       sp-info           Stake pool information.
       sp-lock           Lock tokens lacking in stake pool.
+      sp-pay-interests  Pay interests not payed yet.
+      sp-take-rewards   Take blobber rewards.
       sp-unlock         Unlock tokens in stake pool.
-      sp-unlock-rewards Unlock rewards.
       stats             stats for file from blobbers
       sync              Sync files to/from blobbers
       update            update file to blobbers
@@ -128,6 +129,7 @@ Response
       wp-info           Write pool information.
       wp-lock           Lock some tokens in write pool.
       wp-unlock         Unlock some expired tokens in a write pool.
+
 
 
     Flags:
@@ -585,67 +587,43 @@ Stake pool information.
 
       ./zbox sp-info --blobber_id BLOBBER_ID
 
-Example
-
-```
-POOL ID: 6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7:stakepool:7a90e6790bcd3d78422d7a230390edc102870fe58c15472073922024985b1c7d
-  LOCKED | OFFERS TOTAL | CAP  STAKE | LACK | EXCESS | REWARD | B  REWARD | V  REWARD | I  REWARD  
-+--------+--------------+------------+------+--------+--------+-----------+-----------+-----------+
-     0.1 |            0 |        0.1 |    0 |      0 |      0 |         0 |         0 |      0.01 
-
-OFFERS:
-      LOCK     |            EXPIRE             |                              ALLOC                               | EXPIRED  
-+--------------+-------------------------------+------------------------------------------------------------------+---------+
-  0.0048828125 | 2020-04-26 20:09:52 +0400 +04 | 51030915a7e6dd57fb627aa66ea2bbd1b3530f9176fd8b374f4d220390d8f3b5 | false    
-  0.0048828125 | 2020-04-26 20:10:39 +0400 +04 | bff7adf10cb5d8503616dc7ca4cc5d103f803dd0a5174dac3b75795cd5b72f59 | false    
-```
-
-- Locked is number of locked tokens.
-- Offers total is total stake required by opened offers.
-- Capacity stake is stake required by blobber capacity.
-- Lack is tokens lack in the stake pool. It's possible if the blobber
-  has punished.
-- Excess is tokens can be unlocked.
-- Reward is all rewards: blobber rewards, validator rewards and interests.
-  It's current value. Rewards unlocking reduces it to zero.
-- B. Reward is blobber reward for all time and all allocations including
-  reading rewards.
-- V. Reward is validator reward for all time and all allocations.
-- I. Reward is stake interests for all time.
-- Offers is information about opened offers. Expire, allocation ID and expired
-  are belongs to related allocation object. The offer lock is tokens of blobber
-  stake reserved for this allocation (offer stake). If blobber penalized then
-  this offer stake will be reduced. Other words, it's max blobber penalty for
-  this allocation.
-
 ## Lock
 
-Lock more tokens in stake pool. It useful if tokens missing (lack) or
-if blobber going to increase its capacity and the tokens will be lacked.
-See `sp-info` 'LACK' column.
+Lock crates delegate pool for current client and given blobber. The tokens
+locked for the blobber stake and can be unlocked any time, excluding where
+the tokens held by opened offers. The tokens collect interests.
 
-      ./zbox sp-lock --blobber_id BLOBBER_ID
+      ./zbox sp-lock --blobber_id BLOBBER_ID --tokens 1.0
 
 ## Unlock
 
-Unlock tokens from a stake pool. Tokens locked for blobber capacity stake or
-offers stake (max of the stakes) can't be unlocked. Also, to unlock rewards
-use `sp-unlock-rewards`
+Unlock a stake pool by pool owner.
 
-      ./zbox sp-unlock --blobber_id BLOBBER_ID
+      ./zbox sp-unlock --blobber_id BLOBBER_ID --pool_id POOL_ID
 
-Only stake pool (blobber) owner can unlock the rewards.
 
-## Unlock rewards
+## Take rewards
 
 Unlock all rewards, including:
-- blobber read and write rewards
-- rewards of related validator
-- interests
+  - blobber read and write rewards
+  - rewards of related validator
 
-      ./zbox sp-unlock-rewards
+Excluding:
+  - interests that payed other way
 
-Only stake pool (blobber) owner can unlock the rewards.
+      ./zbox sp-take-rewards
+
+Any of delegates can take all rewards for his wallet.
+
+## Pay interests
+
+Some changes in stake pool pays all pending rewards to calculate next rewards
+correctly and don't complicate stake pool. But if there is no changes interests
+will not be payed. The `sp-pay-interests` can be used to pay the interests. The
+command never fails. It pays interests for all delegates. Use `sp-info` to check
+interests can be payed.
+
+      ./zbox sp-pay-interests --blobber_id BLOBBER_ID
 
 # Write pool
 
