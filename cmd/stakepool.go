@@ -3,55 +3,55 @@ package cmd
 import (
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
-	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )
 
 func printStakePoolInfo(info *sdk.StakePoolInfo) {
-	var header = []string{
-		"LOCKED", "OFFERS TOTAL", "CAP. STAKE", "LACK",
-		"EXCESS", "REWARD", "B. REWARD", "V. REWARD", "I. REWARD",
-	}
-	var data = [][]string{{
-		info.Locked.String(),
-		info.OffersTotal.String(),
-		info.CapacityStake.String(),
-		info.Lack.String(),
-		info.Overfill.String(),
-		info.Rewards.String(),
-		info.BlobberReward.String(),
-		info.ValidatorReward.String(),
-		info.InterestReward.String(),
-	}}
-	fmt.Println("POOL ID:", info.ID)
-	util.WriteTable(os.Stdout, header, []string{}, data)
-	fmt.Println()
-}
+	fmt.Println("pool_id:", info.ID)
+	fmt.Println("balance:", info.Balance)
 
-func printStakePoolOffers(offers []*sdk.StakePoolOfferStat) {
-	if len(offers) == 0 {
-		fmt.Println("NO OFFERS")
-		return
+	fmt.Println("capacity:")
+	fmt.Println("  free:       ", info.Free, "(for current write price)")
+	fmt.Println("  capacity:   ", info.Capacity, "(blobber bid)")
+	fmt.Println("  write_price:", info.WritePrice, "(blobber write price)")
+
+	if len(info.Offers) == 0 {
+		fmt.Println("offers: no opened offers")
+	} else {
+		fmt.Println("offers:")
+		for _, off := range info.Offers {
+			fmt.Println("- lock:      ", off.Lock)
+			fmt.Println("  expire:    ", off.Expire.ToTime())
+			fmt.Println("  allocation:", off.AllocationID)
+			fmt.Println("  expired:   ", off.IsExpired)
+		}
+		fmt.Println("offers_total:", info.OffersTotal, "(held by opened offers)")
 	}
-	fmt.Println("OFFERS:")
-	var header = []string{
-		"LOCK", "EXPIRE", "ALLOC.", "EXPIRED",
-	}
-	var data = make([][]string, len(offers))
-	for i, val := range offers {
-		data[i] = []string{
-			val.Lock.String(),
-			val.Expire.ToTime().String(),
-			string(val.AllocationID),
-			fmt.Sprint(val.IsExpired),
+
+	if len(info.Delegate) == 0 {
+		fmt.Println("delegate_pools: no delegate pools")
+	} else {
+		fmt.Println("delegate_pools:")
+		for _, dp := range info.Delegate {
+			fmt.Println("- id:         ", dp.ID)
+			fmt.Println("  balance:    ", dp.Balance)
+			fmt.Println("  delegate_id:", dp.DelegateID)
+			fmt.Println("  earnings:   ", dp.Earnings, "(payed interests for the delegate pool)")
+			fmt.Println("  penalty:    ", dp.Penalty, "(penalty for the delegate pool)")
+			fmt.Println("  interests:  ", dp.Interests, "(interests not payed yet, can be given by 'sp-pay-interests' command)")
 		}
 	}
-	util.WriteTable(os.Stdout, header, []string{}, data)
-	fmt.Println()
+	fmt.Println("earnings:", info.Earnings, "(total interests earnings for all delegate pools for all time)")
+	fmt.Println("penalty:", info.Penalty, "(total blobber penalty for all time)")
+
+	fmt.Println("rewards: (excluding interests)")
+	fmt.Println("  balance:  ", info.Rewards.Balance, "(current rewards can be unlocked)")
+	fmt.Println("  blobber:  ", info.Rewards.Blobber, "(for all time)")
+	fmt.Println("  validator:", info.Rewards.Validator, "(for all time)")
+
 }
 
 // spInfo information
@@ -79,7 +79,6 @@ var spInfo = &cobra.Command{
 			log.Fatalf("Failed to get stake pool info: %v", err)
 		}
 		printStakePoolInfo(info)
-		printStakePoolOffers(info.Offers)
 	},
 }
 
@@ -92,11 +91,18 @@ var spLock = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		var (
-			flags  = cmd.Flags()
-			tokens float64
-			fee    float64
-			err    error
+			flags     = cmd.Flags()
+			blobberID string
+			tokens    float64
+			fee       float64
+			err       error
 		)
+
+		if flags.Changed("blobber_id") {
+			if blobberID, err = flags.GetString("blobber_id"); err != nil {
+				log.Fatalf("invalid 'blobber_id' flag: %v", err)
+			}
+		}
 
 		if !flags.Changed("tokens") {
 			log.Fatal("missing required 'tokens' flag")
@@ -112,12 +118,13 @@ var spLock = &cobra.Command{
 			}
 		}
 
-		err = sdk.StakePoolLock(zcncore.ConvertToValue(tokens),
-			zcncore.ConvertToValue(fee))
+		var poolID string
+		poolID, err = sdk.StakePoolLock(blobberID,
+			zcncore.ConvertToValue(tokens), zcncore.ConvertToValue(fee))
 		if err != nil {
-			log.Fatalf("Failed to unlock tokens in stake pool: %v", err)
+			log.Fatalf("Failed to lock tokens in stake pool: %v", err)
 		}
-		fmt.Println("tokens locked")
+		fmt.Println("tokens locked, pool id:", poolID)
 	},
 }
 
@@ -130,22 +137,24 @@ var spUnlock = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		var (
-			flags  = cmd.Flags()
-			tokens float64
-			fee    float64
-			err    error
+			flags             = cmd.Flags()
+			blobberID, poolID string
+			fee               float64
+			err               error
 		)
 
-		if !flags.Changed("tokens") {
-			log.Fatal("missing required 'tokens' flag")
+		if flags.Changed("blobber_id") {
+			if blobberID, err = flags.GetString("blobber_id"); err != nil {
+				log.Fatalf("invalid 'blobber_id' flag: %v", err)
+			}
 		}
 
-		if tokens, err = flags.GetFloat64("tokens"); err != nil {
-			log.Fatal("invalid 'tokens' flag: ", err)
+		if !flags.Changed("pool_id") {
+			log.Fatal("missing required 'pool_id' flag")
 		}
 
-		if tokens <= 0 {
-			log.Fatalf("invalid tokens flag: %f, should be > 0", tokens)
+		if poolID, err = flags.GetString("pool_id"); err != nil {
+			log.Fatal("invalid 'pool_id' flag: ", err)
 		}
 
 		if flags.Changed("fee") {
@@ -154,30 +163,70 @@ var spUnlock = &cobra.Command{
 			}
 		}
 
-		err = sdk.StakePoolUnlock(zcncore.ConvertToValue(tokens),
+		err = sdk.StakePoolUnlock(blobberID, poolID,
 			zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to unlock tokens in stake pool: %v", err)
 		}
-		fmt.Println("tokens has unlocked")
+		fmt.Println("tokens has unlocked, pool deleted")
 	},
 }
 
-// spUnlockRewards unlocks rewards of the blobber including
-// validator rewards and interests
-var spUnlockRewards = &cobra.Command{
-	Use:   "sp-unlock-rewards",
-	Short: "Unlock blobber rewards.",
-	Long: `Unlock blobber rewards, including all blobber rewards, rewards of
-related validator and interests.`,
+// spTakeRewards unlocks rewards of the blobber including
+// validator rewards, and excluding interests
+var spTakeRewards = &cobra.Command{
+	Use:   "sp-take-rewards",
+	Short: "Take blobber rewards.",
+	Long: `Take blobber rewards, including all blobber rewards, rewards of
+related validator, and excluding interests.`,
 	Args: cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 
-		var err error
-		if err = sdk.StakePoolUnlockRewards(); err != nil {
-			log.Fatalf("Failed to unlock rewards in stake pool: %v", err)
+		var (
+			flags     = cmd.Flags()
+			blobberID string
+			err       error
+		)
+
+		if flags.Changed("blobber_id") {
+			if blobberID, err = flags.GetString("blobber_id"); err != nil {
+				log.Fatalf("invalid 'blobber_id' flag: %v", err)
+			}
 		}
-		fmt.Println("rewards has unlocked")
+
+		if err = sdk.StakePoolTakeRewards(blobberID); err != nil {
+			log.Fatalf("Failed to take rewards: %v", err)
+		}
+		fmt.Println("rewards has taken")
+	},
+}
+
+// spPayInterests pays interests not payed yet. A stake pool changes
+// pays all interests can be payed. But if stake pool is not changed,
+// then user can manually pay the interests.
+var spPayInterests = &cobra.Command{
+	Use:   "sp-pay-interests",
+	Short: "Pay interests not payed yet.",
+	Long:  `Pay interests not payed.`,
+	Args:  cobra.MinimumNArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+
+		var (
+			flags     = cmd.Flags()
+			blobberID string
+			err       error
+		)
+
+		if flags.Changed("blobber_id") {
+			if blobberID, err = flags.GetString("blobber_id"); err != nil {
+				log.Fatalf("invalid 'blobber_id' flag: %v", err)
+			}
+		}
+
+		if err = sdk.StakePoolPayInterests(blobberID); err != nil {
+			log.Fatalf("Failed to pay interests: %v", err)
+		}
+		fmt.Println("interests has payed")
 	},
 }
 
@@ -185,19 +234,32 @@ func init() {
 	rootCmd.AddCommand(spInfo)
 	rootCmd.AddCommand(spLock)
 	rootCmd.AddCommand(spUnlock)
-	rootCmd.AddCommand(spUnlockRewards)
+	rootCmd.AddCommand(spTakeRewards)
+	rootCmd.AddCommand(spPayInterests)
 
 	spInfo.PersistentFlags().String("blobber_id", "",
 		"for given blobber, default is current client")
 
+	spLock.PersistentFlags().String("blobber_id", "",
+		"for given blobber, default is current client")
 	spLock.PersistentFlags().Float64("tokens", 0.0,
 		"tokens to lock, required")
 	spLock.PersistentFlags().Float64("fee", 0.0,
 		"transaction fee, default 0")
+	spLock.MarkFlagRequired("tokens")
 
-	spUnlock.PersistentFlags().Float64("tokens", 0.0,
-		"amount of tokens to unlock, required")
+	spUnlock.PersistentFlags().String("blobber_id", "",
+		"for given blobber, default is current client")
+	spUnlock.PersistentFlags().String("pool_id", "",
+		"pool id to unlock")
 	spUnlock.PersistentFlags().Float64("fee", 0.0,
 		"transaction fee, default 0")
 	spUnlock.MarkFlagRequired("tokens")
+	spUnlock.MarkFlagRequired("pool_id")
+
+	spTakeRewards.PersistentFlags().String("blobber_id", "",
+		"for given blobber, default is current client")
+
+	spPayInterests.PersistentFlags().String("blobber_id", "",
+		"for given blobber, default is current client")
 }
