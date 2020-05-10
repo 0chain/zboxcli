@@ -9,6 +9,7 @@ import (
 	"github.com/0chain/gosdk/zboxcore/blockchain"
 	. "github.com/0chain/gosdk/zboxcore/logger"
 	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/zboxcli/util"
 	// "github.com/0chain/gosdk/zcncore"
 	"github.com/0chain/gosdk/zboxcore/fileref"
 
@@ -32,12 +33,16 @@ var getallocationCmd = &cobra.Command{
 			os.Exit(1)                                      // and os.Exit(1)
 		}
 		allocationID := cmd.Flag("allocation").Value.String()
+		doJSON, _ := cmd.Flags().GetBool("json")
 		alloc, err := sdk.GetAllocation(allocationID)
 		if err != nil {
 			Logger.Error("Error fetching the allocation", err)
 			log.Fatal("Error fetching/verifying the allocation")
 		}
-
+		if doJSON {
+			util.PrintJSON(alloc)
+			return
+		}
 		var getBaseURL = func(bid string, bs []*blockchain.StorageNode) string {
 			for _, b := range bs {
 				if b.ID == bid {
@@ -322,6 +327,7 @@ func init() {
 
 	getallocationCmd.PersistentFlags().String("allocation", "", "Allocation ID")
 	getallocationCmd.MarkFlagRequired("allocation")
+	getallocationCmd.Flags().Bool("json", false, "pass this option to print response as json data")
 
 	dcpf := getDownloadCostCmd.PersistentFlags()
 	dcpf.String("allocation", "", "allocation ID, required")
