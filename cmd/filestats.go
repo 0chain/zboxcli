@@ -26,6 +26,8 @@ var statsCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		allocationID := cmd.Flag("allocation").Value.String()
+		doJSON, _ := cmd.Flags().GetBool("json")
+
 		allocationObj, err := sdk.GetAllocation(allocationID)
 		if err != nil {
 			PrintError("Error fetching the allocation", err)
@@ -36,6 +38,10 @@ var statsCmd = &cobra.Command{
 		if err != nil {
 			PrintError(err.Error())
 			os.Exit(1)
+		}
+		if doJSON {
+			util.PrintJSON(ref)
+			return
 		}
 		header := []string{"Blobber", "Name", "Path", "Size", "Uploads", "Block Downloads", "Challenges", "Blockchain Aware"}
 		data := make([][]string, 0)
@@ -60,4 +66,5 @@ func init() {
 	statsCmd.PersistentFlags().String("remotepath", "", "Remote path to list from")
 	statsCmd.MarkFlagRequired("allocation")
 	statsCmd.MarkFlagRequired("remotepath")
+	statsCmd.Flags().Bool("json", false, "pass this option to print response as json data")
 }
