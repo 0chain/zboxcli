@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk/zcncore"
 	"github.com/spf13/cobra"
 )
 
@@ -26,6 +27,13 @@ var updateAllocationCmd = &cobra.Command{
 			log.Fatal("invalid 'allocation_id' flag: ", err)
 		}
 
+		var lockf float64
+		var lock int64
+		if lockf, err = flags.GetFloat64("lock"); err != nil {
+			log.Fatal("error: invalid 'lock' value:", err)
+		}
+		lock = zcncore.ConvertToValue(lockf)
+
 		size, err := flags.GetInt64("size")
 		if err != nil {
 			log.Fatal("invalid 'size' flag: ", err)
@@ -37,7 +45,7 @@ var updateAllocationCmd = &cobra.Command{
 		}
 
 		txnHash, err := sdk.UpdateAllocation(size,
-			int64(expiry/time.Second), allocID)
+			int64(expiry/time.Second), allocID, lock)
 		if err != nil {
 			log.Fatal("Error creating allocation:", err)
 		}
@@ -49,6 +57,8 @@ func init() {
 	rootCmd.AddCommand(updateAllocationCmd)
 	updateAllocationCmd.PersistentFlags().String("allocation", "",
 		"Allocation ID")
+	updateAllocationCmd.PersistentFlags().Float64("lock", 0.0,
+		"lock write pool with given number of tokens, required")
 	updateAllocationCmd.PersistentFlags().Int64("size", 0,
 		"adjust allocation size, bytes")
 	updateAllocationCmd.PersistentFlags().Duration("expiry", 0,
