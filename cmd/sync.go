@@ -32,10 +32,12 @@ func saveCache(allocationObj *sdk.Allocation, path string, exclPath []string) {
 	}
 }
 
-func filterOperations(lDiff []sdk.FileDiff) (filterDiff []sdk.FileDiff) {
+func filterOperations(lDiff []sdk.FileDiff) (filterDiff []sdk.FileDiff, exclPath []string) {
 	for _, f := range lDiff {
 		if f.Op == sdk.Update || f.Op == sdk.Upload {
 			filterDiff = append(filterDiff, f)
+		} else {
+			exclPath = append(exclPath, f.Path)
 		}
 	}
 	return
@@ -124,7 +126,9 @@ var syncCmd = &cobra.Command{
 		}
 
 		if uploadOnly {
-			lDiff = filterOperations(lDiff)
+			var otherPaths []string
+			lDiff, otherPaths = filterOperations(lDiff)
+			exclPath = append(exclPath, otherPaths...)
 		}
 
 		if len(lDiff) > 0 {
