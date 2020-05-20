@@ -1,11 +1,30 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
 )
+
+func isFinalized(allocID string) (ok bool, err error) {
+	var alloc *sdk.Allocation
+	if alloc, err = sdk.GetAllocation(allocID); err != nil {
+		return false, fmt.Errorf("can't get allocation from sharders: %v", err)
+	}
+	return alloc.Finalized, nil
+}
+
+func allocShouldNotBeFinalized(allocID string) {
+	var ok, err = isFinalized(allocID)
+	if err != nil {
+		log.Fatalf("can't get allocation from sharders: %v", err)
+	}
+	if ok {
+		log.Fatal("allocation already finalized")
+	}
+}
 
 // finiAllocationCmd used to change allocation size and expiration
 var finiAllocationCmd = &cobra.Command{
@@ -27,10 +46,17 @@ and empties write pool moving left tokens to client.`,
 			log.Fatal("invalid 'allocation' flag: ", err)
 		}
 
+		// check out allocation first
+		allocShouldNotBeFinalized(allocID)
+
 		txnHash, err := sdk.FinalizeAllocation(allocID)
 		if err != nil {
-			log.Fatal("Error creating allocation:", err)
+			// check again, a blobber can finalize it
+			allocShouldNotBeFinalized(allocID)
+			// finalizing error
+			log.Fatal("Error finalizing allocation:", err)
 		}
+		// success
 		log.Print("Allocation finalized with txId : " + txnHash)
 	},
 }
