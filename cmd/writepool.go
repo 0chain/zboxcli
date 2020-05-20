@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/zboxcli/util"
 	"github.com/0chain/gosdk/zcncore"
 	"github.com/spf13/cobra"
 )
@@ -29,6 +30,7 @@ var wpInfo = &cobra.Command{
 				log.Fatalf("can't get 'allocation' flag: %v", err)
 			}
 		}
+		doJSON, _ := cmd.Flags().GetBool("json")
 
 		var info *sdk.AllocationPoolStats
 		if info, err = sdk.GetWritePoolInfo(""); err != nil {
@@ -40,6 +42,10 @@ var wpInfo = &cobra.Command{
 		}
 
 		info.AllocFilter(allocID)
+		if doJSON {
+			util.PrintJSON(info.Pools)
+			return
+		}
 		printReadPoolStat(info.Pools)
 	},
 }
@@ -151,6 +157,8 @@ func init() {
 
 	wpInfo.PersistentFlags().String("allocation", "",
 		"allocation, optional")
+	wpInfo.Flags().Bool("json", false, "pass this option to print response as json data")
+
 
 	wpLock.PersistentFlags().Duration("duration", 0,
 		"lock duration, required")

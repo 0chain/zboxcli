@@ -26,6 +26,7 @@ var listCmd = &cobra.Command{
 		remotepath := cmd.Flag("remotepath").Value.String()
 		authticket := cmd.Flag("authticket").Value.String()
 		lookuphash := cmd.Flag("lookuphash").Value.String()
+		doJSON, _ := cmd.Flags().GetBool("json")
 		if len(remotepath) == 0 && (len(authticket) == 0) {
 			PrintError("Error: remotepath / authticket / lookuphash flag is missing")
 			os.Exit(1)
@@ -48,6 +49,10 @@ var listCmd = &cobra.Command{
 				PrintError(err.Error())
 				os.Exit(1)
 			}
+			if doJSON {
+				util.PrintJSON(ref.Children)
+				return
+			}			
 			header := []string{"Type", "Name", "Path", "Size", "Num Blocks", "Lookup Hash", "Is Encrypted"}
 			data := make([][]string, len(ref.Children))
 			for idx, child := range ref.Children {
@@ -91,6 +96,11 @@ var listCmd = &cobra.Command{
 				PrintError(err.Error())
 				os.Exit(1)
 			}
+			
+			if doJSON {
+				util.PrintJSON(ref.Children)
+				return
+			}
 			header := []string{"Type", "Name", "Size", "Num Blocks", "Lookup Hash", "Is Encrypted"}
 			data := make([][]string, len(ref.Children))
 			for idx, child := range ref.Children {
@@ -118,5 +128,6 @@ func init() {
 	listCmd.PersistentFlags().String("remotepath", "", "Remote path to list from")
 	listCmd.PersistentFlags().String("authticket", "", "Auth ticket fot the file to download if you dont own it")
 	listCmd.PersistentFlags().String("lookuphash", "", "The remote lookuphash of the object retrieved from the list")
+	listCmd.Flags().Bool("json", false, "pass this option to print response as json data")
 	listCmd.MarkFlagRequired("allocation")
 }

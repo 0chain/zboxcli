@@ -1,6 +1,10 @@
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 github.com/0chain/gosdk v1.0.62 h1:+JsB3qbdIfr+QeDXyigRL5sJp5K0K5x3HoGFrDy6uAo=
 github.com/0chain/gosdk v1.0.62/go.mod h1:eB6UoN6Hr8WZfcjArFkLAwu74N7wuUPkhzMRDOTJCAg=
+github.com/0chain/gosdk v1.0.63 h1:3OwpgvQiIAZCL5a1tqboEm+dsjjz5tEesAEIADRn7gg=
+github.com/0chain/gosdk v1.0.63/go.mod h1:eB6UoN6Hr8WZfcjArFkLAwu74N7wuUPkhzMRDOTJCAg=
+github.com/0chain/gosdk v1.0.65 h1:rO/yW7S51WSGD/g1qNsLsKkXt3Qb4umniLa8jR7tOqE=
+github.com/0chain/gosdk v1.0.65/go.mod h1:eB6UoN6Hr8WZfcjArFkLAwu74N7wuUPkhzMRDOTJCAg=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/alecthomas/template v0.0.0-20160405071501-a0175ee3bccc/go.mod h1:LOuyumcjzFXgccqObfd/Ljyb9UuFJ6TxHnclSeseNhc=

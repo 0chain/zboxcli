@@ -17,10 +17,16 @@ var listallocationsCmd = &cobra.Command{
 	Short: "List allocations for the client",
 	Long:  `List allocations for the client`,
 	Run: func(cmd *cobra.Command, args []string) {
+		doJSON, _ := cmd.Flags().GetBool("json")
+
 		allocations, err := sdk.GetAllocations()
 		if err != nil {
 			PrintError("Error getting allocations list." + err.Error())
 			os.Exit(1)
+		}
+		if doJSON {
+			util.PrintJSON(allocations)
+			return
 		}
 		header := []string{"ID", "Size", "Expiration", "Datashards",
 			"Parityshards", "Finalized", "Canceled", "R. Price", "W. Price"}
@@ -58,4 +64,5 @@ var listallocationsCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(listallocationsCmd)
+	listallocationsCmd.Flags().Bool("json", false, "pass this option to print response as json data")
 }
