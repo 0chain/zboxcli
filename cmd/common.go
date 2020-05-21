@@ -29,9 +29,7 @@ func (s *StatusBar) Completed(allocationId, filePath string, filename string, mi
 	}
 	s.success = true
 	if !allocUnderRepair {
-		if op == sdk.OpDownload || op == sdk.OpCommit {
-			defer s.wg.Done()
-		}
+		defer s.wg.Done()
 	}
 	fmt.Println("Status completed callback. Type = " + mimetype + ". Name = " + filename)
 }
@@ -62,14 +60,6 @@ func (s *StatusBar) RepairCompleted(filesRepaired int) {
 	defer s.wg.Done()
 	allocUnderRepair = false
 	fmt.Println("Repair file completed, Total files repaired: ", filesRepaired)
-}
-
-func (s *StatusBar) RepairCancelled(err error) {
-	if err != nil {
-		fmt.Println("Cancelling repair...")
-	} else {
-		PrintError("Error while repair cancel: " + err.Error())
-	}
 }
 
 type StatusBar struct {
