@@ -46,9 +46,14 @@ var scConfig = &cobra.Command{
 	Long:  `Show storage SC configuration.`,
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
+		doJSON, _ := cmd.Flags().GetBool("json")
 		var conf, err = sdk.GetStorageSCConfig()
 		if err != nil {
 			log.Fatalf("Failed to get storage SC configurations: %v", err)
+		}
+		if doJSON {
+			util.PrintJSON(conf)
+			return
 		}
 		printStorageSCConfig(conf)
 	},
@@ -82,9 +87,14 @@ var lsBlobers = &cobra.Command{
 	Long:  `Show active blobbers in storage SC.`,
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
+		doJSON, _ := cmd.Flags().GetBool("json")
 		var list, err = sdk.GetBlobbers()
 		if err != nil {
 			log.Fatalf("Failed to get storage SC configurations: %v", err)
+		}
+		if doJSON {
+			util.PrintJSON(list)
+			return
 		}
 		printBlobbers(list)
 	},
@@ -93,6 +103,8 @@ var lsBlobers = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(scConfig)
 	rootCmd.AddCommand(lsBlobers)
+	scConfig.Flags().Bool("json", false, "pass this option to print response as json data")
+	lsBlobers.Flags().Bool("json", false, "pass this option to print response as json data")
 
 	scConfig.PersistentFlags().String("allocation", "",
 		"allocation identifier, required")
