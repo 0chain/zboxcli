@@ -10,8 +10,8 @@ import (
 )
 
 func printStakePoolInfo(info *sdk.StakePoolInfo) {
-	fmt.Println("pool_id:", info.ID)
-	fmt.Println("balance:", info.Balance)
+	fmt.Println("blobber_id: ", info.ID)
+	fmt.Println("total stake:", info.Balance)
 
 	fmt.Println("capacity:")
 	fmt.Println("  free:       ", info.Free, "(for current write price)")
@@ -36,22 +36,28 @@ func printStakePoolInfo(info *sdk.StakePoolInfo) {
 	} else {
 		fmt.Println("delegate_pools:")
 		for _, dp := range info.Delegate {
-			fmt.Println("- id:         ", dp.ID)
-			fmt.Println("  balance:    ", dp.Balance)
-			fmt.Println("  delegate_id:", dp.DelegateID)
-			fmt.Println("  earnings:   ", dp.Earnings, "(payed interests for the delegate pool)")
-			fmt.Println("  penalty:    ", dp.Penalty, "(penalty for the delegate pool)")
-			fmt.Println("  interests:  ", dp.Interests, "(interests not payed yet, can be given by 'sp-pay-interests' command)")
+			fmt.Println("- id:               ", dp.ID)
+			fmt.Println("  balance:          ", dp.Balance)
+			fmt.Println("  delegate_id:      ", dp.DelegateID)
+			fmt.Println("  rewards:          ", dp.Rewards)
+			fmt.Println("  penalty:          ", dp.Penalty)
+			fmt.Println("  interests:        ", dp.Interests, "(payed)")
+			fmt.Println("  pending_interests:", dp.Interests, "(not payed yet, can be given by 'sp-pay-interests' command)")
 		}
 	}
-	fmt.Println("earnings:", info.Earnings, "(total interests earnings for all delegate pools for all time)")
-	fmt.Println("penalty:", info.Penalty, "(total blobber penalty for all time)")
+	fmt.Println("interests:", info.Earnings, "(total interests for all delegate pools for all time)")
+	fmt.Println("penalty:  ", info.Penalty, "(total blobber penalty for all time)")
 
 	fmt.Println("rewards: (excluding interests)")
-	fmt.Println("  balance:  ", info.Rewards.Balance, "(current rewards can be unlocked)")
 	fmt.Println("  blobber:  ", info.Rewards.Blobber, "(for all time)")
 	fmt.Println("  validator:", info.Rewards.Validator, "(for all time)")
 
+	// settings
+	fmt.Println("settings:")
+	fmt.Println("  delegate_wallet:", info.Settings.DelegateWallet)
+	fmt.Println("  min_stake:      ", info.Settings.MinStake.String())
+	fmt.Println("  max_stake:      ", info.Settings.MaxStake.String())
+	fmt.Println("  num_delegates:  ", info.Settings.NumDelegates)
 }
 
 // spInfo information
@@ -172,35 +178,6 @@ var spUnlock = &cobra.Command{
 	},
 }
 
-// spTakeRewards unlocks rewards of the blobber including
-// validator rewards, and excluding interests
-var spTakeRewards = &cobra.Command{
-	Use:   "sp-take-rewards",
-	Short: "Take blobber rewards.",
-	Long: `Take blobber rewards, including all blobber rewards, rewards of
-related validator, and excluding interests.`,
-	Args: cobra.MinimumNArgs(0),
-	Run: func(cmd *cobra.Command, args []string) {
-
-		var (
-			flags     = cmd.Flags()
-			blobberID string
-			err       error
-		)
-
-		if flags.Changed("blobber_id") {
-			if blobberID, err = flags.GetString("blobber_id"); err != nil {
-				log.Fatalf("invalid 'blobber_id' flag: %v", err)
-			}
-		}
-
-		if err = sdk.StakePoolTakeRewards(blobberID); err != nil {
-			log.Fatalf("Failed to take rewards: %v", err)
-		}
-		fmt.Println("rewards has taken")
-	},
-}
-
 // spPayInterests pays interests not payed yet. A stake pool changes
 // pays all interests can be payed. But if stake pool is not changed,
 // then user can manually pay the interests.
@@ -234,7 +211,6 @@ func init() {
 	rootCmd.AddCommand(spInfo)
 	rootCmd.AddCommand(spLock)
 	rootCmd.AddCommand(spUnlock)
-	rootCmd.AddCommand(spTakeRewards)
 	rootCmd.AddCommand(spPayInterests)
 
 	spInfo.PersistentFlags().String("blobber_id", "",
@@ -256,9 +232,6 @@ func init() {
 		"transaction fee, default 0")
 	spUnlock.MarkFlagRequired("tokens")
 	spUnlock.MarkFlagRequired("pool_id")
-
-	spTakeRewards.PersistentFlags().String("blobber_id", "",
-		"for given blobber, default is current client")
 
 	spPayInterests.PersistentFlags().String("blobber_id", "",
 		"for given blobber, default is current client")

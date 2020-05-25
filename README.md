@@ -108,7 +108,6 @@ Response
       newallocation     Creates a new allocation
       register          Registers the wallet with the blockchain
       rename            rename an object(file/folder) on blobbers
-      repair            repair file to blobbers
       rp-create         Create read pool if missing
       rp-info           Read pool information.
       rp-lock           Lock some tokens in read pool.
@@ -118,8 +117,8 @@ Response
       sp-info           Stake pool information.
       sp-lock           Lock tokens lacking in stake pool.
       sp-pay-interests  Pay interests not payed yet.
-      sp-take-rewards   Take blobber rewards.
       sp-unlock         Unlock tokens in stake pool.
+      start-repair      start repair file to blobbers
       stats             stats for file from blobbers
       sync              Sync files to/from blobbers
       update            update file to blobbers
@@ -129,8 +128,6 @@ Response
       wp-info           Write pool information.
       wp-lock           Lock some tokens in write pool.
       wp-unlock         Unlock some expired tokens in a write pool.
-
-
 
     Flags:
           --config string      config file (default is config.yaml)
@@ -583,7 +580,7 @@ Stake pool related commands.
 
 ## Info
 
-Stake pool information.
+Stake pool information and settings.
 
       ./zbox sp-info --blobber_id BLOBBER_ID
 
@@ -600,20 +597,6 @@ the tokens held by opened offers. The tokens collect interests.
 Unlock a stake pool by pool owner.
 
       ./zbox sp-unlock --blobber_id BLOBBER_ID --pool_id POOL_ID
-
-
-## Take rewards
-
-Unlock all rewards, including:
-  - blobber read and write rewards
-  - rewards of related validator
-
-Excluding:
-  - interests that payed other way
-
-      ./zbox sp-take-rewards
-
-Any of delegates can take all rewards for his wallet.
 
 ## Pay interests
 
