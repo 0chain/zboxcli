@@ -18,6 +18,8 @@ import (
 
 var cfgFile string
 var walletFile string
+var walletClientID string
+var walletClientKey string
 var cDir string
 var bVerbose bool
 var allocUnderRepair bool
@@ -43,6 +45,8 @@ func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is config.yaml)")
 	rootCmd.PersistentFlags().StringVar(&walletFile, "wallet", "", "wallet file (default is wallet.json)")
+	rootCmd.PersistentFlags().StringVar(&walletClientID, "walletclientid", "", "wallet client_id")
+	rootCmd.PersistentFlags().StringVar(&walletClientKey, "walletclientkey", "", "wallet client_key")
 	rootCmd.PersistentFlags().StringVar(&cDir, "configDir", "", "configuration directory (default is $HOME/.zcn)")
 	rootCmd.PersistentFlags().BoolVar(&bVerbose, "verbose", false, "prints sdk log in stderr (default false)")
 }
@@ -65,7 +69,7 @@ func getConfigDir() string {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	configDir = home + "/.zcn"
+	configDir = home + string(os.PathSeparator)+ ".zcn"
 	return configDir
 }
 
@@ -99,12 +103,7 @@ func initConfig() {
 	CfmChainLength = nodeConfig.GetInt("confirmation_chain_length")
 
 	//TODO: move the private key storage to the keychain or secure storage
-	var walletFilePath string
-	if &walletFile != nil && len(walletFile) > 0 {
-		walletFilePath = configDir + "/" + walletFile
-	} else {
-		walletFilePath = configDir + "/wallet.json"
-	}
+
 	//set the log file
 	zcncore.SetLogFile("cmdlog.log", bVerbose)
 	sdk.SetLogFile("cmdlog.log", bVerbose)
@@ -118,10 +117,32 @@ func initConfig() {
 		fmt.Println("Error initializing core SDK.", err)
 		os.Exit(1)
 	}
-
 	// is freshly created wallet?
 	var fresh bool
+	
+	wallet := &zcncrypto.Wallet{}
+if (&walletClientID != nil) && (len(walletClientID) > 0) && (&walletClientKey != nil) && (len(walletClientKey) > 0) {
+		wallet.ClientID = walletClientID
+		wallet.ClientKey = walletClientKey
+	var clientBytes []byte
+	
+	  clientBytes, err = json.Marshal(wallet)
+	  clientConfig = string(clientBytes)
+	  if err != nil {
+		fmt.Println("Invalid wallet data passed:" + walletClientID + " " + walletClientKey)
+		os.Exit(1)
+	}
+	clientWallet = wallet
+	fresh = false		
+} else {
+	var walletFilePath string
+	if &walletFile != nil && len(walletFile) > 0 {
+		walletFilePath = configDir + string(os.PathSeparator) + walletFile
+	} else {
+		walletFilePath = configDir + string(os.PathSeparator) + "wallet.json"
+	}
 
+	
 	if _, err = os.Stat(walletFilePath); os.IsNotExist(err) {
 		wg := &sync.WaitGroup{}
 		statusBar := &ZCNStatus{wg: wg}
@@ -163,13 +184,14 @@ func initConfig() {
 	}
 	//minerjson, _ := json.Marshal(miners)
 	//sharderjson, _ := json.Marshal(sharders)
-	wallet := &zcncrypto.Wallet{}
 	err = json.Unmarshal([]byte(clientConfig), wallet)
 	clientWallet = wallet
 	if err != nil {
 		fmt.Println("Invalid wallet at path:" + walletFilePath)
 		os.Exit(1)
 	}
+}
+
 	//init the storage sdk with the known miners, sharders and client wallet info
 	err = sdk.InitStorageSDK(clientConfig, miners, sharders, chainID, signScheme, preferredBlobbers)
 	if err != nil {
