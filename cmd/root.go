@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"sync"
+	"path/filepath"
 
 	"github.com/0chain/gosdk/core/zcncrypto"
 	"github.com/mitchellh/go-homedir"
@@ -45,8 +46,8 @@ func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is config.yaml)")
 	rootCmd.PersistentFlags().StringVar(&walletFile, "wallet", "", "wallet file (default is wallet.json)")
-	rootCmd.PersistentFlags().StringVar(&walletClientID, "walletclientid", "", "wallet client_id")
-	rootCmd.PersistentFlags().StringVar(&walletClientKey, "walletclientkey", "", "wallet client_key")
+	rootCmd.PersistentFlags().StringVar(&walletClientID, "wallet_client_id", "", "wallet client_id")
+	rootCmd.PersistentFlags().StringVar(&walletClientKey, "wallet_client_key", "", "wallet client_key")
 	rootCmd.PersistentFlags().StringVar(&cDir, "configDir", "", "configuration directory (default is $HOME/.zcn)")
 	rootCmd.PersistentFlags().BoolVar(&bVerbose, "verbose", false, "prints sdk log in stderr (default false)")
 }
@@ -137,7 +138,11 @@ if (&walletClientID != nil) && (len(walletClientID) > 0) && (&walletClientKey !=
 } else {
 	var walletFilePath string
 	if &walletFile != nil && len(walletFile) > 0 {
-		walletFilePath = configDir + string(os.PathSeparator) + walletFile
+		if(filepath.IsAbs(walletFile)) {
+			walletFilePath = walletFile
+		} else {
+			walletFilePath = configDir + string(os.PathSeparator) + walletFile
+		}
 	} else {
 		walletFilePath = configDir + string(os.PathSeparator) + "wallet.json"
 	}
@@ -169,7 +174,7 @@ if (&walletClientID != nil) && (len(walletClientID) > 0) && (&walletClientKey !=
 		fmt.Fprintf(file, clientConfig)
 
 		fresh = true
-	} else {
+	  } else {
 		f, err := os.Open(walletFilePath)
 		if err != nil {
 			fmt.Println("Error opening the wallet", err)
@@ -181,12 +186,12 @@ if (&walletClientID != nil) && (len(walletClientID) > 0) && (&walletClientKey !=
 			os.Exit(1)
 		}
 		clientConfig = string(clientBytes)
-	}
-	//minerjson, _ := json.Marshal(miners)
-	//sharderjson, _ := json.Marshal(sharders)
-	err = json.Unmarshal([]byte(clientConfig), wallet)
-	clientWallet = wallet
-	if err != nil {
+	  }
+	  //minerjson, _ := json.Marshal(miners)
+	  //sharderjson, _ := json.Marshal(sharders)
+	  err = json.Unmarshal([]byte(clientConfig), wallet)
+	  clientWallet = wallet
+	  if err != nil {
 		fmt.Println("Invalid wallet at path:" + walletFilePath)
 		os.Exit(1)
 	}
