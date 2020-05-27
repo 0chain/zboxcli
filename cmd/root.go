@@ -25,8 +25,6 @@ var cDir string
 var bVerbose bool
 var allocUnderRepair bool
 
-var sharders []string
-var miners []string
 var preferredBlobbers []string
 var clientConfig string
 var minSubmit int
@@ -94,8 +92,7 @@ func initConfig() {
 		fmt.Println("Can't read config:", err)
 		os.Exit(1)
 	}
-	sharders = nodeConfig.GetStringSlice("sharders")
-	miners = nodeConfig.GetStringSlice("miners")
+	blockWorker := nodeConfig.GetString("block_worker")
 	preferredBlobbers = nodeConfig.GetStringSlice("preferred_blobbers")
 	signScheme := nodeConfig.GetString("signature_scheme")
 	chainID := nodeConfig.GetString("chain_id")
@@ -109,7 +106,7 @@ func initConfig() {
 	zcncore.SetLogFile("cmdlog.log", bVerbose)
 	sdk.SetLogFile("cmdlog.log", bVerbose)
 
-	err := zcncore.InitZCNSDK(miners, sharders, signScheme,
+	err := zcncore.InitZCNSDK(blockWorker, signScheme,
 		zcncore.WithChainID(chainID),
 		zcncore.WithMinSubmit(minSubmit),
 		zcncore.WithMinConfirmation(minCfm),
@@ -198,7 +195,7 @@ if (&walletClientID != nil) && (len(walletClientID) > 0) && (&walletClientKey !=
 }
 
 	//init the storage sdk with the known miners, sharders and client wallet info
-	err = sdk.InitStorageSDK(clientConfig, miners, sharders, chainID, signScheme, preferredBlobbers)
+	err = sdk.InitStorageSDK(clientConfig, blockWorker, chainID, signScheme, preferredBlobbers)
 	if err != nil {
 		fmt.Println("Error in sdk init", err)
 		os.Exit(1)
