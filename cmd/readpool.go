@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/zboxcli/util"
 	"github.com/0chain/gosdk/zcncore"
 	"github.com/spf13/cobra"
 )
@@ -60,6 +61,8 @@ var rpInfo = &cobra.Command{
 				log.Fatalf("can't get 'allocation' flag: %v", err)
 			}
 		}
+		doJSON, _ := cmd.Flags().GetBool("json")
+
 
 		var info *sdk.AllocationPoolStats
 		if info, err = sdk.GetReadPoolInfo(""); err != nil {
@@ -71,6 +74,10 @@ var rpInfo = &cobra.Command{
 		}
 
 		info.AllocFilter(allocID)
+		if doJSON {
+			util.PrintJSON(info.Pools)
+			return
+		}
 		printReadPoolStat(info.Pools)
 	},
 }
@@ -183,6 +190,7 @@ func init() {
 
 	rpInfo.PersistentFlags().String("allocation", "",
 		"allocation id, optional")
+	rpInfo.Flags().Bool("json", false, "pass this option to print response as json data")
 
 	rpLock.PersistentFlags().Duration("duration", 0,
 		"lock duration, required")
