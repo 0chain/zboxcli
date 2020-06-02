@@ -35,6 +35,7 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
 27. [Stake pool](#Stake-pool)
 28. [Write pool](#Write-pool)
 29. [Costs](#Costs)
+30. [Blobber](#Blobbers)
 
 zbox CLI provides a self-explaining "help" option that lists commands and parameters they need to perform the intended action
 
@@ -95,44 +96,47 @@ Response
       zbox [command]
 
     Available Commands:
-      alloc-cancel      Cancel an allocation
-      alloc-fini        Finalize an expired allocation
-      copy              copy an object(file/folder) to another folder on blobbers
-      cp-info           Challenge pool information.
-      delete            delete file from blobbers
-      download          download file from blobbers
-      get               Gets the allocation info
-      get-download-cost Get downloading cost
-      get-upload-cost   Get uploading cost
-      getwallet         Get wallet information
-      help              Help about any command
-      list              list files from blobbers
-      listallocations   List allocations for the client
-      ls-blobbers       Show active blobbers in storage SC.
-      meta              get meta data of files from blobbers
-      newallocation     Creates a new allocation
-      register          Registers the wallet with the blockchain
-      rename            rename an object(file/folder) on blobbers
-      rp-create         Create read pool if missing
-      rp-info           Read pool information.
-      rp-lock           Lock some tokens in read pool.
-      rp-unlock         Unlock some expired tokens in a read pool.
-      sc-config         Show storage SC configuration.
-      share             share files from blobbers
-      sp-info           Stake pool information.
-      sp-lock           Lock tokens lacking in stake pool.
-      sp-pay-interests  Pay interests not payed yet.
-      sp-unlock         Unlock tokens in stake pool.
-      start-repair      start repair file to blobbers
-      stats             stats for file from blobbers
-      sync              Sync files to/from blobbers
-      update            update file to blobbers
-      updateallocation  Updates allocation's expiry and size
-      upload            upload file to blobbers
-      version           Prints version information
-      wp-info           Write pool information.
-      wp-lock           Lock some tokens in write pool.
-      wp-unlock         Unlock some expired tokens in a write pool.
+        alloc-cancel      Cancel an allocation
+        alloc-fini        Finalize an expired allocation
+        bl-info           Get blobber info
+        bl-update         Update blobber settings by its delegate_wallet owner
+        copy              copy an object(file/folder) to another folder on blobbers
+        cp-info           Challenge pool information.
+        delete            delete file from blobbers
+        download          download file from blobbers
+        get               Gets the allocation info
+        get-download-cost Get downloading cost
+        get-upload-cost   Get uploading cost
+        getwallet         Get wallet information
+        help              Help about any command
+        list              list files from blobbers
+        listallocations   List allocations for the client
+        ls-blobbers       Show active blobbers in storage SC.
+        meta              get meta data of files from blobbers
+        newallocation     Creates a new allocation
+        register          Registers the wallet with the blockchain
+        rename            rename an object(file/folder) on blobbers
+        rp-create         Create read pool if missing
+        rp-info           Read pool information.
+        rp-lock           Lock some tokens in read pool.
+        rp-unlock         Unlock some expired tokens in a read pool.
+        sc-config         Show storage SC configuration.
+        share             share files from blobbers
+        sp-info           Stake pool information.
+        sp-lock           Lock tokens lacking in stake pool.
+        sp-pay-interests  Pay interests not payed yet.
+        sp-unlock         Unlock tokens in stake pool.
+        start-repair      start repair file to blobbers
+        stats             stats for file from blobbers
+        sync              Sync files to/from blobbers
+        update            update file to blobbers
+        updateallocation  Updates allocation's expiry and size
+        upload            upload file to blobbers
+        version           Prints version information
+        wp-info           Write pool information.
+        wp-lock           Lock some tokens in write pool.
+        wp-unlock         Unlock some expired tokens in a write pool.
+
 
     Flags:
           --config string      config file (default is config.yaml)
@@ -681,5 +685,22 @@ non allocation owners.
 How much a local file uploading.
 
     ./zbox get-upload-cost --allocation ALLOC_ID --localpath ./path/file.ext
+
+
+# Blobbers
+
+## Detailed blobber information
+
+Get blobber detailed information.
+
+    ./zbox bl-info --blobber_id BLOBBER_ID
+
+## Update blobber settings
+
+Update blobber settings.
+
+    ./zbox bl-update --blobber_id BLOBBER_ID [settings to update]
+
+Use `./zbox bl-update --help` to get list of setting can be updated.
 
 ---
