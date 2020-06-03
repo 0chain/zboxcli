@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"sync"
 	"path/filepath"
+	"sync"
 
 	"github.com/0chain/gosdk/core/zcncrypto"
 	"github.com/mitchellh/go-homedir"
@@ -68,7 +68,7 @@ func getConfigDir() string {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	configDir = home + string(os.PathSeparator)+ ".zcn"
+	configDir = home + string(os.PathSeparator) + ".zcn"
 	return configDir
 }
 
@@ -83,9 +83,9 @@ func initConfig() {
 	// Search config in home directory with name ".cobra" (without extension).
 	nodeConfig.AddConfigPath(configDir)
 	if &cfgFile != nil && len(cfgFile) > 0 {
-		nodeConfig.SetConfigName(cfgFile)
+		nodeConfig.SetConfigFile(configDir + "/" + cfgFile)
 	} else {
-		nodeConfig.SetConfigName("config")
+		nodeConfig.SetConfigFile(configDir + "/" + "config.yaml")
 	}
 
 	if err := nodeConfig.ReadInConfig(); err != nil {
@@ -117,82 +117,81 @@ func initConfig() {
 	}
 	// is freshly created wallet?
 	var fresh bool
-	
+
 	wallet := &zcncrypto.Wallet{}
-if (&walletClientID != nil) && (len(walletClientID) > 0) && (&walletClientKey != nil) && (len(walletClientKey) > 0) {
+	if (&walletClientID != nil) && (len(walletClientID) > 0) && (&walletClientKey != nil) && (len(walletClientKey) > 0) {
 		wallet.ClientID = walletClientID
 		wallet.ClientKey = walletClientKey
-	var clientBytes []byte
-	
-	  clientBytes, err = json.Marshal(wallet)
-	  clientConfig = string(clientBytes)
-	  if err != nil {
-		fmt.Println("Invalid wallet data passed:" + walletClientID + " " + walletClientKey)
-		os.Exit(1)
-	}
-	clientWallet = wallet
-	fresh = false		
-} else {
-	var walletFilePath string
-	if &walletFile != nil && len(walletFile) > 0 {
-		if(filepath.IsAbs(walletFile)) {
-			walletFilePath = walletFile
-		} else {
-			walletFilePath = configDir + string(os.PathSeparator) + walletFile
-		}
-	} else {
-		walletFilePath = configDir + string(os.PathSeparator) + "wallet.json"
-	}
+		var clientBytes []byte
 
-	
-	if _, err = os.Stat(walletFilePath); os.IsNotExist(err) {
-		wg := &sync.WaitGroup{}
-		statusBar := &ZCNStatus{wg: wg}
-		wg.Add(1)
-		err = zcncore.CreateWallet(statusBar)
-		if err == nil {
-			wg.Wait()
-		} else {
-			fmt.Println(err.Error())
-			os.Exit(1)
-		}
-		if len(statusBar.walletString) == 0 || !statusBar.success {
-			fmt.Println("Error creating the wallet." + statusBar.errMsg)
-			os.Exit(1)
-		}
-		fmt.Println("ZCN wallet created")
-		clientConfig = string(statusBar.walletString)
-		file, err := os.Create(walletFilePath)
-		if err != nil {
-			fmt.Println(err.Error())
-			os.Exit(1)
-		}
-		defer file.Close()
-		fmt.Fprintf(file, clientConfig)
-
-		fresh = true
-	  } else {
-		f, err := os.Open(walletFilePath)
-		if err != nil {
-			fmt.Println("Error opening the wallet", err)
-			os.Exit(1)
-		}
-		clientBytes, err := ioutil.ReadAll(f)
-		if err != nil {
-			fmt.Println("Error reading the wallet", err)
-			os.Exit(1)
-		}
+		clientBytes, err = json.Marshal(wallet)
 		clientConfig = string(clientBytes)
-	  }
-	  //minerjson, _ := json.Marshal(miners)
-	  //sharderjson, _ := json.Marshal(sharders)
-	  err = json.Unmarshal([]byte(clientConfig), wallet)
-	  clientWallet = wallet
-	  if err != nil {
-		fmt.Println("Invalid wallet at path:" + walletFilePath)
-		os.Exit(1)
+		if err != nil {
+			fmt.Println("Invalid wallet data passed:" + walletClientID + " " + walletClientKey)
+			os.Exit(1)
+		}
+		clientWallet = wallet
+		fresh = false
+	} else {
+		var walletFilePath string
+		if &walletFile != nil && len(walletFile) > 0 {
+			if filepath.IsAbs(walletFile) {
+				walletFilePath = walletFile
+			} else {
+				walletFilePath = configDir + string(os.PathSeparator) + walletFile
+			}
+		} else {
+			walletFilePath = configDir + string(os.PathSeparator) + "wallet.json"
+		}
+
+		if _, err = os.Stat(walletFilePath); os.IsNotExist(err) {
+			wg := &sync.WaitGroup{}
+			statusBar := &ZCNStatus{wg: wg}
+			wg.Add(1)
+			err = zcncore.CreateWallet(statusBar)
+			if err == nil {
+				wg.Wait()
+			} else {
+				fmt.Println(err.Error())
+				os.Exit(1)
+			}
+			if len(statusBar.walletString) == 0 || !statusBar.success {
+				fmt.Println("Error creating the wallet." + statusBar.errMsg)
+				os.Exit(1)
+			}
+			fmt.Println("ZCN wallet created")
+			clientConfig = string(statusBar.walletString)
+			file, err := os.Create(walletFilePath)
+			if err != nil {
+				fmt.Println(err.Error())
+				os.Exit(1)
+			}
+			defer file.Close()
+			fmt.Fprintf(file, clientConfig)
+
+			fresh = true
+		} else {
+			f, err := os.Open(walletFilePath)
+			if err != nil {
+				fmt.Println("Error opening the wallet", err)
+				os.Exit(1)
+			}
+			clientBytes, err := ioutil.ReadAll(f)
+			if err != nil {
+				fmt.Println("Error reading the wallet", err)
+				os.Exit(1)
+			}
+			clientConfig = string(clientBytes)
+		}
+		//minerjson, _ := json.Marshal(miners)
+		//sharderjson, _ := json.Marshal(sharders)
+		err = json.Unmarshal([]byte(clientConfig), wallet)
+		clientWallet = wallet
+		if err != nil {
+			fmt.Println("Invalid wallet at path:" + walletFilePath)
+			os.Exit(1)
+		}
 	}
-}
 
 	//init the storage sdk with the known miners, sharders and client wallet info
 	err = sdk.InitStorageSDK(clientConfig, blockWorker, chainID, signScheme, preferredBlobbers)
