@@ -105,6 +105,15 @@ func commitMetaTxn(path, crudOp, authTicket, lookupHash string, a *sdk.Allocatio
 	}
 }
 
+func commitFolderTxn(operation, preValue, currValue string, a *sdk.Allocation) {
+	resp, err := a.CommitFolderChange(operation, preValue, currValue)
+	if err != nil {
+		PrintError("Commit failed.", err)
+		os.Exit(1)
+	}
+	fmt.Println("Commit Metadata successful, Response :", resp)
+}
+
 func init() {
 	log.SetOutput(os.Stdout)
 	log.SetFlags(0)

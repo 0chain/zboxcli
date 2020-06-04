@@ -34,10 +34,13 @@ var deleteCmd = &cobra.Command{
 		}
 		remotepath := cmd.Flag("remotepath").Value.String()
 
-		fileMeta, err := allocationObj.GetFileMeta(remotepath)
-		if err != nil {
-			PrintError("Failed to fetch metadata for the given file", err.Error())
-			os.Exit(1)
+		var fileMeta *sdk.ConsolidatedFileMeta
+		if commit {
+			fileMeta, err = allocationObj.GetFileMeta(remotepath)
+			if err != nil {
+				PrintError("Failed to fetch metadata for the given file", err.Error())
+				os.Exit(1)
+			}
 		}
 
 		err = allocationObj.DeleteFile(remotepath)
