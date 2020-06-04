@@ -57,9 +57,10 @@ var downloadCmd = &cobra.Command{
 			if thumbnail {
 				errE = allocationObj.DownloadThumbnail(localpath, remotepath, statusBar)
 			} else {
-				startBlock, _ := cmd.Flags().GetInt("startblock")
-				if startBlock != 0 {
-					errE = allocationObj.DownloadFileByBlock(localpath, remotepath, startBlock, numBlocks, statusBar)
+				startBlock, _ := cmd.Flags().GetInt64("startblock")
+				endBlock, _ := cmd.Flags().GetInt64("endblock")
+				if startBlock != 0 && endBlock != 0 {
+					errE = allocationObj.DownloadFileByBlock(localpath, remotepath, startBlock, endBlock, numBlocks, statusBar)
 				}
 				errE = allocationObj.DownloadFile(localpath, remotepath, statusBar)
 			}
@@ -115,7 +116,8 @@ func init() {
 	downloadCmd.PersistentFlags().String("lookuphash", "", "The remote lookuphash of the object retrieved from the list")
 	downloadCmd.Flags().BoolP("thumbnail", "t", false, "pass this option to download only the thumbnail")
 	downloadCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
-	downloadCmd.Flags().IntP("startblock", "s", 0, "pass this option to download from specific block number")
+	downloadCmd.Flags().Int64P("startblock", "s", 0, "pass this option to download from specific block number")
+	downloadCmd.Flags().Int64P("endblock", "e", 0, "pass this option to download till specific block number")
 	downloadCmd.Flags().IntP("blockspermarker", "b", 10, "pass this option to download multiple blocks per marker")
 	downloadCmd.MarkFlagRequired("allocation")
 	downloadCmd.MarkFlagRequired("localpath")
