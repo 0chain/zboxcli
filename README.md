@@ -36,6 +36,7 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
 28. [Write pool](#Write-pool)
 29. [Costs](#Costs)
 30. [Blobber](#Blobbers)
+31. [Move uploaded files to another folder path on dStorage](#Move)
 
 zbox CLI provides a self-explaining "help" option that lists commands and parameters they need to perform the intended action
 
@@ -389,6 +390,18 @@ Command
 
     ./zbox copy --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac --remotepath /file.txt --destpath /existingFolder/file.txt
 
+### Move
+
+Use move command to move file to another folder path in dStorage. By using help for this command, you will see it takes parameters:
+
+- --allocation string --Allocation ID
+- --destpath string Destination path for the object. Existing directory the object should be copied to.
+- --remotepath string Remote path of object to move
+
+Command
+
+    ./zbox move --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac --remotepath /file.txt --destpath /existingFolder/file.txt
+
 ### List allocations
 
 Use list allocations command to list all allocations for a client.
@@ -685,7 +698,6 @@ non allocation owners.
 How much a local file uploading.
 
     ./zbox get-upload-cost --allocation ALLOC_ID --localpath ./path/file.ext
-
 
 # Blobbers
 
