@@ -59,7 +59,7 @@ var downloadCmd = &cobra.Command{
 			} else {
 				startBlock, _ := cmd.Flags().GetInt64("startblock")
 				endBlock, _ := cmd.Flags().GetInt64("endblock")
-				if startBlock != 0 && endBlock != 0 {
+				if startBlock != 0 || endBlock != 0 {
 					errE = allocationObj.DownloadFileByBlock(localpath, remotepath, startBlock, endBlock, numBlocks, statusBar)
 				}
 				errE = allocationObj.DownloadFile(localpath, remotepath, statusBar)
