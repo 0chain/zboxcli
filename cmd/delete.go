@@ -34,8 +34,22 @@ var deleteCmd = &cobra.Command{
 		}
 		remotepath := cmd.Flag("remotepath").Value.String()
 
+		statsMap, err := allocationObj.GetFileStats(remotepath)
+		if err != nil {
+			PrintError("Error in getting information about the object." + err.Error())
+			os.Exit(1)
+		}
+
+		isFile := false
+		for _, v := range statsMap {
+			if v != nil {
+				isFile = true
+				break
+			}
+		}
+
 		var fileMeta *sdk.ConsolidatedFileMeta
-		if commit {
+		if isFile && commit {
 			fileMeta, err = allocationObj.GetFileMeta(remotepath)
 			if err != nil {
 				PrintError("Failed to fetch metadata for the given file", err.Error())
@@ -48,13 +62,20 @@ var deleteCmd = &cobra.Command{
 			PrintError("Delete failed.", err.Error())
 			os.Exit(1)
 		}
+
 		fmt.Println(remotepath + " deleted")
+
 		if commit {
-			wg := &sync.WaitGroup{}
-			statusBar := &StatusBar{wg: wg}
-			wg.Add(1)
-			commitMetaTxn(remotepath, "Delete", "", "", allocationObj, fileMeta, statusBar)
-			wg.Wait()
+			fmt.Println("Commiting changes to blockchain ...")
+			if isFile {
+				wg := &sync.WaitGroup{}
+				statusBar := &StatusBar{wg: wg}
+				wg.Add(1)
+				commitMetaTxn(remotepath, "Delete", "", "", allocationObj, fileMeta, statusBar)
+				wg.Wait()
+			} else {
+				commitFolderTxn("Delete", remotepath, "", allocationObj)
+			}
 		}
 		return
 	},
