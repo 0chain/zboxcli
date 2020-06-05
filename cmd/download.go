@@ -61,8 +61,9 @@ var downloadCmd = &cobra.Command{
 				endBlock, _ := cmd.Flags().GetInt64("endblock")
 				if startBlock != 0 || endBlock != 0 {
 					errE = allocationObj.DownloadFileByBlock(localpath, remotepath, startBlock, endBlock, numBlocks, statusBar)
+				} else {
+					errE = allocationObj.DownloadFile(localpath, remotepath, statusBar)
 				}
-				errE = allocationObj.DownloadFile(localpath, remotepath, statusBar)
 			}
 		} else if len(authticket) > 0 {
 			allocationObj, err = sdk.GetAllocationFromAuthTicket(authticket)
