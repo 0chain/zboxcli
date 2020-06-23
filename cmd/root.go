@@ -18,6 +18,7 @@ import (
 )
 
 var cfgFile string
+var networkFile string
 var walletFile string
 var walletClientID string
 var walletClientKey string
@@ -43,6 +44,7 @@ var clientWallet *zcncrypto.Wallet
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is config.yaml)")
+	rootCmd.PersistentFlags().StringVar(&networkFile, "network", "", "network file to overwrite the network details (if required, default is network.yaml)")
 	rootCmd.PersistentFlags().StringVar(&walletFile, "wallet", "", "wallet file (default is wallet.json)")
 	rootCmd.PersistentFlags().StringVar(&walletClientID, "wallet_client_id", "", "wallet client_id")
 	rootCmd.PersistentFlags().StringVar(&walletClientKey, "wallet_client_key", "", "wallet client_key")
@@ -74,6 +76,7 @@ func getConfigDir() string {
 
 func initConfig() {
 	nodeConfig := viper.New()
+	networkConfig := viper.New()
 	var configDir string
 	if cDir != "" {
 		configDir = cDir
@@ -88,10 +91,18 @@ func initConfig() {
 		nodeConfig.SetConfigFile(configDir + "/" + "config.yaml")
 	}
 
+	networkConfig.AddConfigPath(configDir)
+	if &networkFile != nil && len(networkFile) > 0 {
+		networkConfig.SetConfigFile(configDir + "/" + networkFile)
+	} else {
+		networkConfig.SetConfigFile(configDir + "/" + "network.yaml")
+	}
+
 	if err := nodeConfig.ReadInConfig(); err != nil {
 		fmt.Println("Can't read config:", err)
 		os.Exit(1)
 	}
+
 	blockWorker := nodeConfig.GetString("block_worker")
 	preferredBlobbers = nodeConfig.GetStringSlice("preferred_blobbers")
 	signScheme := nodeConfig.GetString("signature_scheme")
@@ -115,6 +126,15 @@ func initConfig() {
 		fmt.Println("Error initializing core SDK.", err)
 		os.Exit(1)
 	}
+
+	if err := networkConfig.ReadInConfig(); err == nil {
+		miners := networkConfig.GetStringSlice("miners")
+		sharders := networkConfig.GetStringSlice("sharders")
+		if len(miners) > 0 && len(sharders) > 0 {
+			zcncore.SetNetwork(miners, sharders)
+		}
+	}
+
 	// is freshly created wallet?
 	var fresh bool
 
@@ -199,6 +219,15 @@ func initConfig() {
 		fmt.Println("Error in sdk init", err)
 		os.Exit(1)
 	}
+
+	if err := networkConfig.ReadInConfig(); err == nil {
+		miners := networkConfig.GetStringSlice("miners")
+		sharders := networkConfig.GetStringSlice("sharders")
+		if len(miners) > 0 && len(sharders) > 0 {
+			sdk.SetNetwork(miners, sharders)
+		}
+	}
+
 	sdk.SetNumBlockDownloads(10)
 
 	if fresh {
