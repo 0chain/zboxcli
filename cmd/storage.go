@@ -19,6 +19,7 @@ func printStorageSCConfig(conf *sdk.StorageSCConfig) {
 	fmt.Println("max_challenge_completion_time:", conf.MaxChallengeCompletionTime)
 	fmt.Println("min_offer_duration:           ", conf.MinOfferDuration)
 	fmt.Println("min_blobber_capacity:         ", conf.MinBlobberCapacity)
+	fmt.Println("max_delegates:                ", conf.MaxDelegates)
 	fmt.Println("readpool:")
 	fmt.Println("  min_lock:", conf.ReadPool.MinLock, "tok")
 	fmt.Println("  min_lock_period:", conf.ReadPool.MinLockPeriod)
