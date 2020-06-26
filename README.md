@@ -72,6 +72,19 @@ Sample config.yaml
 
 We use blockWorker to connect to the network instead of giving network details directly, It will fetch the network details automatically from the blockWorker's network API.
 
+#### Override Network Details
+
+By default it will use the miner/sharder values which it will get using the `block_worker_url/network`. In case you want to override those values and give custom miner/sharder to use, You can create a `network.yaml` in your ~/.zcn (config) folder and paste the miner/sharder values in below format.
+
+    miners:
+      - http://localhost:7071
+      - http://localhost:7072
+      - http://localhost:7073
+    sharders:
+      - http://localhost:7171
+
+Note: This is also useful for the Mac OS users running local cluster and having trouble with docker internal IPs (block_worker return docker IPs in local)
+
 ### Setup
 
 The zbox command line uses the ~/.zcn/config.yaml file at runtime to point to the network specified in that file.
