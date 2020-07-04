@@ -60,6 +60,26 @@ func printStakePoolInfo(info *sdk.StakePoolInfo) {
 	fmt.Println("  num_delegates:  ", info.Settings.NumDelegates)
 }
 
+func printStakePoolUserInfo(info *sdk.StakePoolUserInfo) {
+	if len(info.Pools) == 0 {
+		fmt.Print("no delegate pools")
+		return
+	}
+	for blobberID, dps := range info.Pools {
+		fmt.Println("- blobber_id: ", blobberID)
+		for _, dp := range dps {
+			fmt.Println("  - id:               ", dp.ID)
+			fmt.Println("    balance:          ", dp.Balance)
+			fmt.Println("    delegate_id:      ", dp.DelegateID)
+			fmt.Println("    rewards:          ", dp.Rewards)
+			fmt.Println("    penalty:          ", dp.Penalty)
+			fmt.Println("    interests:        ", dp.Interests, "(payed)")
+			fmt.Println("    pending_interests:", dp.Interests,
+				"(not payed yet, can be given by 'sp-pay-interests' command)")
+		}
+	}
+}
+
 // spInfo information
 var spInfo = &cobra.Command{
 	Use:   "sp-info",
@@ -85,6 +105,34 @@ var spInfo = &cobra.Command{
 			log.Fatalf("Failed to get stake pool info: %v", err)
 		}
 		printStakePoolInfo(info)
+	},
+}
+
+// spUserInfo information per user
+var spUserInfo = &cobra.Command{
+	Use:   "sp-user-info",
+	Short: "Stake pool information for a user.",
+	Long:  `Stake pool information for a user.`,
+	Args:  cobra.MinimumNArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+
+		var (
+			flags    = cmd.Flags()
+			clientID string
+			err      error
+		)
+
+		if flags.Changed("client_id") {
+			if clientID, err = flags.GetString("client_id"); err != nil {
+				log.Fatalf("can't get 'client_id' flag: %v", err)
+			}
+		}
+
+		var info *sdk.StakePoolUserInfo
+		if info, err = sdk.GetStakePoolUserInfo(clientID); err != nil {
+			log.Fatalf("Failed to get stake pool info: %v", err)
+		}
+		printStakePoolUserInfo(info)
 	},
 }
 
@@ -209,12 +257,16 @@ var spPayInterests = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(spInfo)
+	rootCmd.AddCommand(spUserInfo)
 	rootCmd.AddCommand(spLock)
 	rootCmd.AddCommand(spUnlock)
 	rootCmd.AddCommand(spPayInterests)
 
 	spInfo.PersistentFlags().String("blobber_id", "",
 		"for given blobber, default is current client")
+
+	spInfo.PersistentFlags().String("client_id", "",
+		"for given client, default is current client")
 
 	spLock.PersistentFlags().String("blobber_id", "",
 		"for given blobber, default is current client")
