@@ -127,6 +127,7 @@ Response
         listallocations   List allocations for the client
         ls-blobbers       Show active blobbers in storage SC.
         meta              get meta data of files from blobbers
+        move              move an object(file/folder) to another folder on blobbers
         newallocation     Creates a new allocation
         register          Registers the wallet with the blockchain
         rename            rename an object(file/folder) on blobbers
@@ -140,6 +141,7 @@ Response
         sp-lock           Lock tokens lacking in stake pool.
         sp-pay-interests  Pay interests not payed yet.
         sp-unlock         Unlock tokens in stake pool.
+        sp-user-info      Stake pool information for a user.
         start-repair      start repair file to blobbers
         stats             stats for file from blobbers
         sync              Sync files to/from blobbers
@@ -653,6 +655,12 @@ the tokens held by opened offers. The tokens collect interests.
 Unlock a stake pool by pool owner.
 
       ./zbox sp-unlock --blobber_id BLOBBER_ID --pool_id POOL_ID
+
+## User pools.
+
+Get information about all stake pools of current user.
+
+      ./zbox sp-user-info
 
 ## Pay interests
 
