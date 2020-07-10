@@ -188,8 +188,65 @@ var syncCmd = &cobra.Command{
 	},
 }
 
+// The getUploadCostCmd returns value in tokens to upload a file.
+var getDiffCmd = &cobra.Command{
+	Use:   "get-diff",
+	Short: "Get difference of local and allocation root",
+	Long:  `Get difference of local and allocation root`,
+	Args:  cobra.MinimumNArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+
+		fflags := cmd.Flags() // fflags is a *flag.FlagSet
+		if fflags.Changed("localpath") == false {
+			PrintError("Error: localpath flag is missing")
+			os.Exit(1)
+		}
+
+		localpath := cmd.Flag("localpath").Value.String()
+
+		if len(localpath) == 0 {
+			PrintError("Error: localpath flag is missing")
+			os.Exit(1)
+		}
+
+		if fflags.Changed("allocation") == false { // check if the flag "path" is set
+			PrintError("Error: allocation flag is missing") // If not, we'll let the user know
+			os.Exit(1)                                      // and os.Exit(1)
+		}
+		allocationID := cmd.Flag("allocation").Value.String()
+
+		localcache := ""
+		if fflags.Changed("localcache") {
+			localcache = cmd.Flag("localcache").Value.String()
+		}
+		exclPath := []string{}
+		if fflags.Changed("excludepath") {
+			exclPath, _ = cmd.Flags().GetStringArray("excludepath")
+		}
+
+		allocationObj, err := sdk.GetAllocation(allocationID)
+		if err != nil {
+			PrintError("Error fetching the allocation", err)
+			os.Exit(1)
+		}
+
+		// Create filter
+		filter := []string{".DS_Store", ".git"}
+		lDiff, err := allocationObj.GetAllocationDiff(localcache, localpath, filter, exclPath)
+		if err != nil {
+			PrintError("Error getting diff.", err)
+			os.Exit(1)
+		}
+
+		util.PrintJSON(lDiff)
+	},
+}
+
+// statsCmd.Flags().Bool("json", false, "pass this option to print response as json data")
+
 func init() {
 	rootCmd.AddCommand(syncCmd)
+	rootCmd.AddCommand(getDiffCmd)
 	syncCmd.PersistentFlags().String("allocation", "", "Allocation ID")
 	syncCmd.PersistentFlags().String("localpath", "", "Local dir path to sync")
 	syncCmd.PersistentFlags().String("localcache", "", `Local cache of remote snapshot.
@@ -200,5 +257,12 @@ After sync complete, remote snapshot will be updated to the same file for next u
 	syncCmd.MarkFlagRequired("localpath")
 	syncCmd.Flags().Bool("uploadonly", false, "pass this option to only upload/update the files")
 	syncCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction - only works with uploadonly")
-
+	getDiffCmd.PersistentFlags().String("allocation", "", "Allocation ID")
+	getDiffCmd.PersistentFlags().String("localpath", "", "Local dir path to sync")
+	getDiffCmd.PersistentFlags().String("localcache", "", `Local cache of remote snapshot.
+If file exists, this will be used for comparison with remote.
+After sync complete, remote snapshot will be updated to the same file for next use.`)
+	getDiffCmd.PersistentFlags().StringArray("excludepath", []string{}, "Remote folder paths exclude to sync")
+	getDiffCmd.MarkFlagRequired("allocation")
+	getDiffCmd.MarkFlagRequired("localpath")
 }
