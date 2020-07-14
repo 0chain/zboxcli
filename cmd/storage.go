@@ -20,6 +20,7 @@ func printStorageSCConfig(conf *sdk.StorageSCConfig) {
 	fmt.Println("min_offer_duration:           ", conf.MinOfferDuration)
 	fmt.Println("min_blobber_capacity:         ", conf.MinBlobberCapacity)
 	fmt.Println("max_delegates:                ", conf.MaxDelegates)
+	fmt.Println("max_charge:                   ", conf.MaxCharge*100, "%")
 	fmt.Println("readpool:")
 	fmt.Println("  min_lock:", conf.ReadPool.MinLock, "tok")
 	fmt.Println("  min_lock_period:", conf.ReadPool.MinLockPeriod)
@@ -161,6 +162,7 @@ var blobberInfoCmd = &cobra.Command{
 		fmt.Println("  min_stake:      ", blob.StakePoolSettings.MinStake, "tok")
 		fmt.Println("  max_stake:      ", blob.StakePoolSettings.MaxStake, "tok")
 		fmt.Println("  num_delegates:  ", blob.StakePoolSettings.NumDelegates)
+		fmt.Println("  service_charge: ", blob.StakePoolSettings.ServiceCharge*100, "%")
 	},
 }
 
@@ -265,6 +267,14 @@ var blobberUpdateCmd = &cobra.Command{
 			blob.StakePoolSettings.NumDelegates = nd
 		}
 
+		if flags.Changed("service_charge") {
+			var sc float64
+			if sc, err = flags.GetFloat64("service_charge"); err != nil {
+				log.Fatal(err)
+			}
+			blob.StakePoolSettings.ServiceCharge = sc
+		}
+
 		if _, err = sdk.UpdateBlobberSettings(blob); err != nil {
 			log.Fatal(err)
 		}
@@ -299,6 +309,7 @@ func init() {
 	buf.Float64("min_stake", 0.0, "update min_stake, optional")
 	buf.Float64("max_stake", 0.0, "update max_stake, optional")
 	buf.Int("num_delegates", 0, "update num_delegates, optional")
+	buf.Float64("service_charge", 0.0, "update service_charge, optional")
 	blobberUpdateCmd.MarkFlagRequired("blobber_id")
 
 	scConfig.PersistentFlags().String("allocation", "",

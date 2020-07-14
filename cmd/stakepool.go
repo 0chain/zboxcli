@@ -49,6 +49,7 @@ func printStakePoolInfo(info *sdk.StakePoolInfo) {
 	fmt.Println("penalty:  ", info.Penalty, "(total blobber penalty for all time)")
 
 	fmt.Println("rewards: (excluding interests)")
+	fmt.Println("  charge:  ", info.Rewards.Charge, "(for all time)")
 	fmt.Println("  blobber:  ", info.Rewards.Blobber, "(for all time)")
 	fmt.Println("  validator:", info.Rewards.Validator, "(for all time)")
 
