@@ -16,8 +16,24 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func sizePerBlobber(size int64, data, parity int) int64 {
-	return ((size + int64(data) - 1) / int64(data)) * (int64(data) + int64(parity))
+func sizePerBlobber(size int64, data, parity int) (part int64) {
+	var dp = data + parity
+	part = (size + int64(dp-1)) / int64(dp)
+	return
+}
+
+func perShard(size int64, data, parity int) (ps int64) {
+	ps = (size + int64(data) - 1) / int64(data)
+	return
+}
+
+func uploadCostForBlobber(price float64, size int64, data, parity int) (
+	cost common.Balance) {
+
+	var ps = (size + int64(data) - 1) / int64(data)
+	ps = ps * int64(data+parity)
+
+	return common.Balance(price * sizeInGB(ps))
 }
 
 // getallocationCmd represents the get allocation info command
@@ -146,17 +162,27 @@ func downloadCost(alloc *sdk.Allocation, meta *sdk.ConsolidatedFileMeta) {
 	}
 
 	var (
-		bsize  = sizePerBlobber(meta.Size, alloc.DataShards, alloc.ParityShards)
-		blocks = maxInt64(bsize/fileref.CHUNK_SIZE, 2)
-		size   = sizeInGB(blocks * fileref.CHUNK_SIZE)
-		cost   common.Balance
+		ps  = perShard(meta.Size, alloc.DataShards, alloc.ParityShards)
+		cps = (ps + fileref.CHUNK_SIZE - 1) / fileref.CHUNK_SIZE
+
+		size float64        // GB
+		cost common.Balance //
 	)
+
+	// the Go SDK requests block by 10
+	if cps%10 > 0 {
+		cps = ((cps/10)*10 + 10)
+	}
+
+	size = sizeInGB(cps * fileref.CHUNK_SIZE)
 
 	for _, d := range alloc.BlobberDetails {
 		cost += common.Balance(float64(d.Terms.ReadPrice) * size)
 	}
 
-	fmt.Printf("%s tokens for %d 64KB blocks (%s) of %s", cost, blocks,
+	cost = cost / common.Balance(len(alloc.BlobberDetails))
+
+	fmt.Printf("%s tokens for %d 64KB blocks (%s) of %s", cost, cps,
 		common.Size(meta.Size), meta.Path)
 	fmt.Println()
 }
@@ -255,13 +281,10 @@ var getDownloadCostCmd = &cobra.Command{
 
 func uploadCost(alloc *sdk.Allocation, size int64, path string) {
 
-	var (
-		gb   = sizeInGB(sizePerBlobber(size, alloc.DataShards, alloc.ParityShards))
-		cost common.Balance
-	)
-
+	var cost common.Balance
 	for _, d := range alloc.BlobberDetails {
-		cost += common.Balance(float64(d.Terms.WritePrice) * gb)
+		cost += uploadCostForBlobber(float64(d.Terms.WritePrice), size,
+			alloc.DataShards, alloc.ParityShards)
 	}
 
 	fmt.Printf("%s tokens for %s of %s", cost, common.Size(size), path)

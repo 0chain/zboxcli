@@ -42,13 +42,12 @@ func printStakePoolInfo(info *sdk.StakePoolInfo) {
 			fmt.Println("  rewards:          ", dp.Rewards)
 			fmt.Println("  penalty:          ", dp.Penalty)
 			fmt.Println("  interests:        ", dp.Interests, "(payed)")
-			fmt.Println("  pending_interests:", dp.Interests, "(not payed yet, can be given by 'sp-pay-interests' command)")
+			fmt.Println("  pending_interests:", dp.PendingInterests, "(not payed yet, can be given by 'sp-pay-interests' command)")
 		}
 	}
-	fmt.Println("interests:", info.Earnings, "(total interests for all delegate pools for all time)")
 	fmt.Println("penalty:  ", info.Penalty, "(total blobber penalty for all time)")
 
-	fmt.Println("rewards: (excluding interests)")
+	fmt.Println("rewards:")
 	fmt.Println("  charge:  ", info.Rewards.Charge, "(for all time)")
 	fmt.Println("  blobber:  ", info.Rewards.Blobber, "(for all time)")
 	fmt.Println("  validator:", info.Rewards.Validator, "(for all time)")
@@ -75,7 +74,7 @@ func printStakePoolUserInfo(info *sdk.StakePoolUserInfo) {
 			fmt.Println("    rewards:          ", dp.Rewards)
 			fmt.Println("    penalty:          ", dp.Penalty)
 			fmt.Println("    interests:        ", dp.Interests, "(payed)")
-			fmt.Println("    pending_interests:", dp.Interests,
+			fmt.Println("    pending_interests:", dp.PendingInterests,
 				"(not payed yet, can be given by 'sp-pay-interests' command)")
 		}
 	}
