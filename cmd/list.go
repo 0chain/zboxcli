@@ -3,6 +3,7 @@ package cmd
 import (
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
@@ -146,7 +147,28 @@ var listAllCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		util.PrintJSON(ref)
+		type fileResp struct {
+			Name string `json:"name"`
+			Path string `json:"path"`
+			Type string `json:"type"`
+			Size int64  `json:"size"`
+			Hash string `json:"hash"`
+		}
+
+		fileResps := make([]fileResp, 0)
+		for path, data := range ref {
+			paths := strings.SplitAfter(path, "/")
+			var resp = fileResp{
+				Name: paths[len(paths)-1],
+				Path: path,
+				Type: data.Type,
+				Size: data.Size,
+				Hash: data.Hash,
+			}
+			fileResps = append(fileResps, resp)
+		}
+
+		util.PrintJSON(fileResps)
 		return
 	},
 }
