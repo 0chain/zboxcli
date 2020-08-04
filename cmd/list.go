@@ -52,7 +52,7 @@ var listCmd = &cobra.Command{
 			if doJSON {
 				util.PrintJSON(ref.Children)
 				return
-			}			
+			}
 			header := []string{"Type", "Name", "Path", "Size", "Num Blocks", "Lookup Hash", "Is Encrypted"}
 			data := make([][]string, len(ref.Children))
 			for idx, child := range ref.Children {
@@ -96,7 +96,7 @@ var listCmd = &cobra.Command{
 				PrintError(err.Error())
 				os.Exit(1)
 			}
-			
+
 			if doJSON {
 				util.PrintJSON(ref.Children)
 				return
@@ -122,6 +122,35 @@ var listCmd = &cobra.Command{
 	},
 }
 
+var listAllCmd = &cobra.Command{
+	Use:   "list-all",
+	Short: "list all files from blobbers",
+	Long:  `list all files from blobbers`,
+	Args:  cobra.MinimumNArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		fflags := cmd.Flags()                      // fflags is a *flag.FlagSet
+		if fflags.Changed("allocation") == false { // check if the flag "path" is set
+			PrintError("Error: allocation flag is missing") // If not, we'll let the user know
+			os.Exit(1)                                      // and return
+		}
+
+		allocationID := cmd.Flag("allocation").Value.String()
+		allocationObj, err := sdk.GetAllocation(allocationID)
+		if err != nil {
+			PrintError("Error fetching the allocation", err)
+			os.Exit(1)
+		}
+		ref, err := allocationObj.GetRemoteFileMap(nil)
+		if err != nil {
+			PrintError(err.Error())
+			os.Exit(1)
+		}
+
+		util.PrintJSON(ref)
+		return
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(listCmd)
 	listCmd.PersistentFlags().String("allocation", "", "Allocation ID")
@@ -130,4 +159,8 @@ func init() {
 	listCmd.PersistentFlags().String("lookuphash", "", "The remote lookuphash of the object retrieved from the list")
 	listCmd.Flags().Bool("json", false, "pass this option to print response as json data")
 	listCmd.MarkFlagRequired("allocation")
+
+	rootCmd.AddCommand(listAllCmd)
+	listAllCmd.PersistentFlags().String("allocation", "", "Allocation ID")
+	listAllCmd.MarkFlagRequired("allocation")
 }
