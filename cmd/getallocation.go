@@ -36,6 +36,32 @@ func uploadCostForBlobber(price float64, size int64, data, parity int) (
 	return common.Balance(price * sizeInGB(ps))
 }
 
+func downloadCostFor1GB(alloc *sdk.Allocation) (cost common.Balance) {
+	var (
+		ps   = perShard(1*GB, alloc.DataShards, alloc.ParityShards)
+		cps  = (ps + fileref.CHUNK_SIZE - 1) / fileref.CHUNK_SIZE
+		size float64 // GB
+	)
+	// the Go SDK requests block by 10
+	if cps%10 > 0 {
+		cps = ((cps/10)*10 + 10)
+	}
+	size = sizeInGB(cps * fileref.CHUNK_SIZE)
+	for _, d := range alloc.BlobberDetails {
+		cost += common.Balance(float64(d.Terms.ReadPrice) * size)
+	}
+	cost = cost / common.Balance(len(alloc.BlobberDetails))
+	return
+}
+
+func uploadCostFor1GB(alloc *sdk.Allocation) (cost common.Balance) {
+	for _, d := range alloc.BlobberDetails {
+		cost += uploadCostForBlobber(float64(d.Terms.WritePrice), 1*GB,
+			alloc.DataShards, alloc.ParityShards)
+	}
+	return
+}
+
 // getallocationCmd represents the get allocation info command
 var getallocationCmd = &cobra.Command{
 	Use:   "get",
@@ -81,18 +107,7 @@ var getallocationCmd = &cobra.Command{
 		fmt.Println("  expiration_date:", common.Timestamp(alloc.Expiration).ToTime())
 		fmt.Println("  blobbers:")
 
-		var (
-			gbsize   = sizePerBlobber(1*GB, alloc.DataShards, alloc.ParityShards)
-			gbblocks = sizeInGB(maxInt64(gbsize/(64*KB), 2) * 64 * KB)
-
-			totalRead, totalWrite common.Balance
-		)
-
 		for _, d := range alloc.BlobberDetails {
-
-			totalRead += common.Balance(float64(d.Terms.ReadPrice) * gbblocks)
-			totalWrite += common.Balance(float64(d.Terms.WritePrice) * sizeInGB(gbsize))
-
 			fmt.Println("    - blobber_id:      ", d.BlobberID)
 			fmt.Println("      base URL:        ", getBaseURL(d.BlobberID, alloc.Blobbers))
 			fmt.Println("      size:            ", common.Size(d.Size))
@@ -132,8 +147,8 @@ var getallocationCmd = &cobra.Command{
 		fmt.Println("    last challenge redeemed:", alloc.Stats.LastestClosedChallengeTxn)
 
 		fmt.Println("  price:")
-		fmt.Println("    read_price: ", totalRead, "tok / GB (by 64KB)")
-		fmt.Println("    write_price:", totalWrite, "tok / GB")
+		fmt.Println("    read_price: ", downloadCostFor1GB(alloc), "tok / GB (by 64KB)")
+		fmt.Println("    write_price:", uploadCostFor1GB(alloc), "tok / GB")
 		return
 	},
 }
