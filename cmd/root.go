@@ -8,10 +8,13 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/0chain/gosdk/core/zcncrypto"
-	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"github.com/0chain/gosdk/zboxcore/blockchain"
+
+	"github.com/0chain/gosdk/core/zcncrypto"
+	"github.com/mitchellh/go-homedir"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
@@ -110,6 +113,9 @@ func initConfig() {
 	minSubmit = nodeConfig.GetInt("min_submit")
 	minCfm = nodeConfig.GetInt("min_confirmation")
 	CfmChainLength = nodeConfig.GetInt("confirmation_chain_length")
+	// additional settings depending network latency
+	maxTxnQuery := nodeConfig.GetInt("max_txn_query")
+	querySleepTime := nodeConfig.GetInt("query_sleep_time")
 
 	//TODO: move the private key storage to the keychain or secure storage
 
@@ -218,6 +224,14 @@ func initConfig() {
 	if err != nil {
 		fmt.Println("Error in sdk init", err)
 		os.Exit(1)
+	}
+
+	// additional settings depending network latency
+	if maxTxnQuery > 0 {
+		blockchain.SetMaxTxnQuery(maxTxnQuery)
+	}
+	if querySleepTime > 0 {
+		blockchain.SetQuerySleepTime(querySleepTime)
 	}
 
 	if err := networkConfig.ReadInConfig(); err == nil {
