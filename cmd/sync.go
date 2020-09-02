@@ -90,6 +90,8 @@ var syncCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
+		encryptpath := cmd.Flag("encryptpath").Value.String()
+
 		if fflags.Changed("allocation") == false { // check if the flag "path" is set
 			PrintError("Error: allocation flag is missing") // If not, we'll let the user know
 			os.Exit(1)                                      // and os.Exit(1)
@@ -147,10 +149,18 @@ var syncCmd = &cobra.Command{
 				err = allocationObj.DownloadFile(lPath, f.Path, statusBar)
 			case sdk.Upload:
 				wg.Add(1)
-				err = allocationObj.UploadFile(lPath, f.Path, statusBar)
+				if len(encryptpath) != 0 && strings.Contains(lPath, encryptpath) {
+					err = allocationObj.EncryptAndUploadFile(lPath, f.Path, statusBar)
+				} else {
+					err = allocationObj.UploadFile(lPath, f.Path, statusBar)
+				}
 			case sdk.Update:
 				wg.Add(1)
-				err = allocationObj.UpdateFile(lPath, f.Path, statusBar)
+				if len(encryptpath) != 0 && strings.Contains(lPath, encryptpath) {
+					err = allocationObj.EncryptAndUpdateFile(lPath, f.Path, statusBar)
+				} else {
+					err = allocationObj.UpdateFile(lPath, f.Path, statusBar)
+				}
 			case sdk.Delete:
 				fileMeta, err := allocationObj.GetFileMeta(f.Path)
 				if err != nil {
@@ -249,6 +259,7 @@ func init() {
 	rootCmd.AddCommand(getDiffCmd)
 	syncCmd.PersistentFlags().String("allocation", "", "Allocation ID")
 	syncCmd.PersistentFlags().String("localpath", "", "Local dir path to sync")
+	syncCmd.PersistentFlags().String("encryptpath", "", "Local dir path to upload as encrypted")
 	syncCmd.PersistentFlags().String("localcache", "", `Local cache of remote snapshot.
 If file exists, this will be used for comparison with remote.
 After sync complete, remote snapshot will be updated to the same file for next use.`)
