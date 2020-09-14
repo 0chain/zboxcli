@@ -4,14 +4,17 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/0chain/gosdk/core/common"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
+
 	"github.com/spf13/cobra"
 )
 
 func printStakePoolInfo(info *sdk.StakePoolInfo) {
-	fmt.Println("blobber_id: ", info.ID)
-	fmt.Println("total stake:", info.Balance)
+	fmt.Println("blobber_id:            ", info.ID)
+	fmt.Println("total stake:           ", info.Balance)
+	fmt.Println("going to unlock, total:", info.Unstake)
 
 	fmt.Println("capacity:")
 	fmt.Println("  free:       ", info.Free, "(for current write price)")
@@ -43,6 +46,14 @@ func printStakePoolInfo(info *sdk.StakePoolInfo) {
 			fmt.Println("  penalty:          ", dp.Penalty)
 			fmt.Println("  interests:        ", dp.Interests, "(payed)")
 			fmt.Println("  pending_interests:", dp.PendingInterests, "(not payed yet, can be given by 'sp-pay-interests' command)")
+			var gtu string
+			if dp.Unstake > 0 {
+				gtu = dp.Unstake.ToTime().String()
+			} else {
+				gtu = "<not going>"
+			}
+
+			fmt.Println("  going to unlock at:", gtu)
 		}
 	}
 	fmt.Println("penalty:  ", info.Penalty, "(total blobber penalty for all time)")
@@ -217,11 +228,24 @@ var spUnlock = &cobra.Command{
 			}
 		}
 
-		err = sdk.StakePoolUnlock(blobberID, poolID,
+		var unstake common.Timestamp
+		unstake, err = sdk.StakePoolUnlock(blobberID, poolID,
 			zcncore.ConvertToValue(fee))
+
+		// an error
 		if err != nil {
 			log.Fatalf("Failed to unlock tokens in stake pool: %v", err)
 		}
+
+		// can't unlock for now
+		if unstake > 0 {
+			fmt.Println("tokens can't be unlocked due to opened offers")
+			fmt.Printf("the pool marked as releasing, wait %s and retry to succeed", unstake.ToTime())
+			fmt.Println()
+			return
+		}
+
+		// success
 		fmt.Println("tokens has unlocked, pool deleted")
 	},
 }
