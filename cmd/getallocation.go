@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/0chain/gosdk/core/common"
 	"github.com/0chain/gosdk/zboxcore/blockchain"
@@ -147,8 +148,10 @@ var getallocationCmd = &cobra.Command{
 		fmt.Println("    last challenge redeemed:", alloc.Stats.LastestClosedChallengeTxn)
 
 		fmt.Println("  price:")
+		fmt.Println("    time unit:  ", alloc.TimeUnit)
 		fmt.Println("    read_price: ", downloadCostFor1GB(alloc), "tok / GB (by 64KB)")
-		fmt.Println("    write_price:", uploadCostFor1GB(alloc), "tok / GB")
+		fmt.Println("    write_price:", uploadCostFor1GB(alloc),
+			fmt.Sprintf("tok / GB / %s", alloc.TimeUnit))
 		return
 	},
 }
@@ -294,15 +297,34 @@ var getDownloadCostCmd = &cobra.Command{
 	},
 }
 
-func uploadCost(alloc *sdk.Allocation, size int64, path string) {
+// The uploadCost for a size and duration (if given). If the duration is zero
+// of less, then it returns upload cost until allocation ends.
+func uploadCost(alloc *sdk.Allocation, size int64, path string,
+	duration time.Duration) {
 
-	var cost common.Balance
+	var (
+		now  = time.Now()
+		cost common.Balance // total price for size / time_unit
+	)
 	for _, d := range alloc.BlobberDetails {
 		cost += uploadCostForBlobber(float64(d.Terms.WritePrice), size,
 			alloc.DataShards, alloc.ParityShards)
 	}
 
-	fmt.Printf("%s tokens for %s of %s", cost, common.Size(size), path)
+	switch {
+	case duration == 0:
+		fmt.Printf("%s tokens / %s for %s of %s",
+			cost, alloc.TimeUnit, common.Size(size), path)
+	case duration < 0:
+		fmt.Println("allocation expired, 'end' flag can't be used")
+		return
+	default:
+		var dtu = float64(duration) / float64(alloc.TimeUnit)
+		cost = common.Balance(float64(cost) * dtu)
+		fmt.Printf("%s tokens / %s for %s of %s",
+			cost, duration, common.Size(size), path)
+	}
+
 	fmt.Println()
 }
 
@@ -315,9 +337,11 @@ var getUploadCostCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		var (
-			fflags  = cmd.Flags()
-			allocID string
-			err     error
+			fflags   = cmd.Flags()
+			allocID  string
+			duration time.Duration
+			end      bool
+			err      error
 		)
 
 		if !fflags.Changed("allocation") {
@@ -340,11 +364,6 @@ var getUploadCostCmd = &cobra.Command{
 			log.Fatal("empty local path")
 		}
 
-		var alloc *sdk.Allocation
-		if alloc, err = sdk.GetAllocation(allocID); err != nil {
-			log.Fatal("fetching the allocation: ", err)
-		}
-
 		var fi os.FileInfo
 		if fi, err = os.Stat(localPath); err != nil {
 			log.Fatal(err)
@@ -354,7 +373,26 @@ var getUploadCostCmd = &cobra.Command{
 			log.Fatal("not a regular file")
 		}
 
-		uploadCost(alloc, fi.Size(), localPath)
+		if duration, err = fflags.GetDuration("duration"); err != nil {
+			log.Fatal("invalid 'duration' flag:", err)
+		}
+
+		if end, err = fflags.GetBool("end"); err != nil {
+			log.Fatal("invalid 'end' flag:", err)
+		}
+
+		var alloc *sdk.Allocation
+		if alloc, err = sdk.GetAllocation(allocID); err != nil {
+			log.Fatal("fetching the allocation: ", err)
+		}
+
+		// until allocation ends
+		if end {
+			var expiry = time.Unix(alloc.Expiration, 0)
+			duration = expiry.Sub(time.Now())
+		}
+
+		uploadCost(alloc, fi.Size(), localPath, duration)
 	},
 }
 

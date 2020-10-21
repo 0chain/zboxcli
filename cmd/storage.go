@@ -36,7 +36,8 @@ func printStorageSCConfig(conf *sdk.StorageSCConfig) {
 	fmt.Println("validator_reward:                    ", conf.ValidatorReward)
 	fmt.Println("blobber_slash:                       ", conf.BlobberSlash)
 	fmt.Println("max_read_price:                      ", conf.MaxReadPrice, "tok / GB")
-	fmt.Println("max_write_price:                     ", conf.MaxWritePrice, "tok / GB")
+	fmt.Println("max_write_price:                     ", conf.MaxWritePrice, "tok / GB / time_unit")
+	fmt.Println("time_unit:                           ", conf.TimeUnit)
 	fmt.Println("failed_challenges_to_cancel:         ", conf.FailedChallengesToCancel)
 	fmt.Println("failed_challenges_to_revoke_min_lock:", conf.FailedChallengesToRevokeMinLock)
 	fmt.Println("challenge_enabled:                   ", conf.ChallengeEnabled)
@@ -65,26 +66,22 @@ var scConfig = &cobra.Command{
 }
 
 func printBlobbers(nodes []*sdk.Blobber) {
-	fmt.Println("Blobbers:")
-	header := []string{
-		"URL", "ID", "CAP", "R / W PRICE", "DEMAND", "CCT", "DELEGATE",
+	if len(nodes) == 0 {
+		fmt.Println("no blobbers registered yet")
+		return
 	}
-	data := make([][]string, len(nodes))
 	for i, val := range nodes {
-		data[i] = []string{
-			val.BaseURL,
-			string(val.ID),
-			fmt.Sprintf("%s / %s",
-				val.Used.String(), val.Capacity.String()),
-			fmt.Sprintf("%s / %s",
-				val.Terms.ReadPrice.String(), val.Terms.WritePrice.String()),
-			fmt.Sprint(val.Terms.MinLockDemand),
-			val.Terms.ChallengeCompletionTime.String(),
-			val.StakePoolSettings.DelegateWallet,
-		}
+		fmt.Println("- id:                   ", val.ID)
+		fmt.Println("  url:                  ", val.BaseURL)
+		fmt.Println("  used / total capacity:", val.Used.String(), "/",
+			val.Capacity.String())
+		fmt.Println("  terms:")
+		fmt.Println("    read_price:         ", val.Terms.ReadPrice.String(), "tok / GB")
+		fmt.Println("    write_price:        ", val.Terms.WritePrice.String(), "tok / GB / time_unit")
+		fmt.Println("    min_lock_demand:    ", val.Terms.MinLockDemand)
+		fmt.Println("    cct:                ", val.Terms.ChallengeCompletionTime.String())
+		fmt.Println("    max_offer_duration: ", val.Terms.MaxOfferDuration.String())
 	}
-	util.WriteTable(os.Stdout, header, []string{}, data)
-	fmt.Println("")
 }
 
 // lsBlobers shows active blobbers
