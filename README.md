@@ -52,6 +52,8 @@ zbox CLI provides a self-explaining "help" option that lists commands and parame
 
 ### [How to build on Windows](https://github.com/0chain/zboxcli/wiki/Build-Windows)
 
+### [Alternative Platform Builds](https://github.com/0chain/zboxcli/wiki/Alternative-Platform-Builds)
+
 ## Getting started with zbox
 
 ### Before you start
