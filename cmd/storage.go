@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"log"
-	"os"
 	"time"
 
 	"github.com/0chain/gosdk/core/common"
@@ -70,7 +69,7 @@ func printBlobbers(nodes []*sdk.Blobber) {
 		fmt.Println("no blobbers registered yet")
 		return
 	}
-	for i, val := range nodes {
+	for _, val := range nodes {
 		fmt.Println("- id:                   ", val.ID)
 		fmt.Println("  url:                  ", val.BaseURL)
 		fmt.Println("  used / total capacity:", val.Used.String(), "/",

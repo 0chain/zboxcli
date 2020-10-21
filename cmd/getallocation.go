@@ -302,10 +302,8 @@ var getDownloadCostCmd = &cobra.Command{
 func uploadCost(alloc *sdk.Allocation, size int64, path string,
 	duration time.Duration) {
 
-	var (
-		now  = time.Now()
-		cost common.Balance // total price for size / time_unit
-	)
+	var cost common.Balance // total price for size / duration
+
 	for _, d := range alloc.BlobberDetails {
 		cost += uploadCostForBlobber(float64(d.Terms.WritePrice), size,
 			alloc.DataShards, alloc.ParityShards)
@@ -415,6 +413,8 @@ func init() {
 	ucpf := getUploadCostCmd.PersistentFlags()
 	ucpf.String("allocation", "", "allocation ID, required")
 	ucpf.String("localpath", "", "local file path, required")
+	ucpf.Duration("duration", 0, "expected duration keep uploaded file")
+	ucpf.Bool("end", false, "use the duration until allocation ends")
 	getUploadCostCmd.MarkFlagRequired("allocation")
 	getUploadCostCmd.MarkFlagRequired("localpath")
 }
