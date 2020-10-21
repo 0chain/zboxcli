@@ -112,7 +112,7 @@ var getallocationCmd = &cobra.Command{
 			fmt.Println("    - blobber_id:      ", d.BlobberID)
 			fmt.Println("      base URL:        ", getBaseURL(d.BlobberID, alloc.Blobbers))
 			fmt.Println("      size:            ", common.Size(d.Size))
-			fmt.Println("      min_lock_deman:  ", common.Balance(d.MinLockDemand))
+			fmt.Println("      min_lock_demand: ", common.Balance(d.MinLockDemand))
 			fmt.Println("      spent:           ", common.Balance(d.Spent), "(moved to challenge pool or to the blobber)")
 			fmt.Println("      penalty:         ", common.Balance(d.Penalty), "(blobber stake slash)")
 			fmt.Println("      read_reward:     ", common.Balance(d.ReadReward))
@@ -148,7 +148,7 @@ var getallocationCmd = &cobra.Command{
 		fmt.Println("    last challenge redeemed:", alloc.Stats.LastestClosedChallengeTxn)
 
 		fmt.Println("  price:")
-		fmt.Println("    time unit:  ", alloc.TimeUnit)
+		fmt.Println("    time_unit:  ", alloc.TimeUnit)
 		fmt.Println("    read_price: ", downloadCostFor1GB(alloc), "tok / GB (by 64KB)")
 		fmt.Println("    write_price:", uploadCostFor1GB(alloc),
 			fmt.Sprintf("tok / GB / %s", alloc.TimeUnit))
@@ -373,6 +373,8 @@ var getUploadCostCmd = &cobra.Command{
 
 		if duration, err = fflags.GetDuration("duration"); err != nil {
 			log.Fatal("invalid 'duration' flag:", err)
+		} else if duration < 0 {
+			log.Fatal("negative duration not allowed: ", duration)
 		}
 
 		if end, err = fflags.GetBool("end"); err != nil {
