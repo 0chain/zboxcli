@@ -36,6 +36,10 @@ var downloadCmd = &cobra.Command{
 		if numBlocks == 0 {
 			numBlocks = 10
 		}
+
+		startBlock, _ := cmd.Flags().GetInt64("startblock")
+		endBlock, _ := cmd.Flags().GetInt64("endblock")
+
 		sdk.SetNumBlockDownloads(numBlocks)
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
@@ -57,8 +61,6 @@ var downloadCmd = &cobra.Command{
 			if thumbnail {
 				errE = allocationObj.DownloadThumbnail(localpath, remotepath, statusBar)
 			} else {
-				startBlock, _ := cmd.Flags().GetInt64("startblock")
-				endBlock, _ := cmd.Flags().GetInt64("endblock")
 				if startBlock != 0 || endBlock != 0 {
 					errE = allocationObj.DownloadFileByBlock(localpath, remotepath, startBlock, endBlock, numBlocks, statusBar)
 				} else {
@@ -86,7 +88,11 @@ var downloadCmd = &cobra.Command{
 			if thumbnail {
 				errE = allocationObj.DownloadThumbnailFromAuthTicket(localpath, authticket, lookuphash, filename, statusBar)
 			} else {
-				errE = allocationObj.DownloadFromAuthTicket(localpath, authticket, lookuphash, filename, statusBar)
+				if startBlock != 0 || endBlock != 0 {
+					errE = allocationObj.DownloadFromAuthTicketByBlocks(localpath, authticket, startBlock, endBlock, numBlocks, lookuphash, filename, statusBar)
+				} else {
+					errE = allocationObj.DownloadFromAuthTicket(localpath, authticket, lookuphash, filename, statusBar)
+				}
 			}
 		}
 
