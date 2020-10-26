@@ -7,6 +7,7 @@ import (
 	"github.com/0chain/gosdk/core/common"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
+	"github.com/0chain/zboxcli/util"
 
 	"github.com/spf13/cobra"
 )
@@ -105,6 +106,8 @@ var spInfo = &cobra.Command{
 			err       error
 		)
 
+		doJSON, _ := cmd.Flags().GetBool("json")
+
 		if flags.Changed("blobber_id") {
 			if blobberID, err = flags.GetString("blobber_id"); err != nil {
 				log.Fatalf("can't get 'blobber_id' flag: %v", err)
@@ -115,7 +118,11 @@ var spInfo = &cobra.Command{
 		if info, err = sdk.GetStakePoolInfo(blobberID); err != nil {
 			log.Fatalf("Failed to get stake pool info: %v", err)
 		}
-		printStakePoolInfo(info)
+		if doJSON {
+			util.PrintJSON(info)
+		} else {
+			printStakePoolInfo(info)
+		}
 	},
 }
 
@@ -133,6 +140,8 @@ var spUserInfo = &cobra.Command{
 			err      error
 		)
 
+		doJSON, _ := cmd.Flags().GetBool("json")
+
 		if flags.Changed("client_id") {
 			if clientID, err = flags.GetString("client_id"); err != nil {
 				log.Fatalf("can't get 'client_id' flag: %v", err)
@@ -143,7 +152,11 @@ var spUserInfo = &cobra.Command{
 		if info, err = sdk.GetStakePoolUserInfo(clientID); err != nil {
 			log.Fatalf("Failed to get stake pool info: %v", err)
 		}
-		printStakePoolUserInfo(info)
+		if doJSON {
+			util.PrintJSON(info)
+		} else {
+			printStakePoolUserInfo(info)
+		}
 	},
 }
 
@@ -291,6 +304,9 @@ func init() {
 
 	spInfo.PersistentFlags().String("client_id", "",
 		"for given client, default is current client")
+	spInfo.PersistentFlags().Bool("json", false, "pass this option to print response as json data")
+
+	spUserInfo.PersistentFlags().Bool("json", false, "pass this option to print response as json data")
 
 	spLock.PersistentFlags().String("blobber_id", "",
 		"for given blobber, default is current client")
@@ -311,4 +327,5 @@ func init() {
 
 	spPayInterests.PersistentFlags().String("blobber_id", "",
 		"for given blobber, default is current client")
+
 }
