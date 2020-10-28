@@ -26,6 +26,7 @@ var downloadCmd = &cobra.Command{
 		lookuphash := cmd.Flag("lookuphash").Value.String()
 		thumbnail, _ := cmd.Flags().GetBool("thumbnail")
 		commit, _ := cmd.Flags().GetBool("commit")
+		rxPay, _ := cmd.Flags().GetBool("rx_pay")
 		if len(remotepath) == 0 && len(authticket) == 0 {
 			PrintError("Error: remotepath / authticket flag is missing")
 			os.Exit(1)
@@ -85,13 +86,18 @@ var downloadCmd = &cobra.Command{
 				PrintError("Error getting the lookuphash from authticket", err)
 				os.Exit(1)
 			}
+
 			if thumbnail {
-				errE = allocationObj.DownloadThumbnailFromAuthTicket(localpath, authticket, lookuphash, filename, statusBar)
+				errE = allocationObj.DownloadThumbnailFromAuthTicket(localpath,
+					authticket, lookuphash, filename, rxPay, statusBar)
 			} else {
 				if startBlock != 0 || endBlock != 0 {
-					errE = allocationObj.DownloadFromAuthTicketByBlocks(localpath, authticket, startBlock, endBlock, numBlocks, lookuphash, filename, statusBar)
+					errE = allocationObj.DownloadFromAuthTicketByBlocks(
+						localpath, authticket, startBlock, endBlock, numBlocks,
+						lookuphash, filename, rxPay, statusBar)
 				} else {
-					errE = allocationObj.DownloadFromAuthTicket(localpath, authticket, lookuphash, filename, statusBar)
+					errE = allocationObj.DownloadFromAuthTicket(localpath,
+						authticket, lookuphash, filename, rxPay, statusBar)
 				}
 			}
 		}
@@ -123,6 +129,7 @@ func init() {
 	downloadCmd.PersistentFlags().String("lookuphash", "", "The remote lookuphash of the object retrieved from the list")
 	downloadCmd.Flags().BoolP("thumbnail", "t", false, "pass this option to download only the thumbnail")
 	downloadCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
+	downloadCmd.Flags().Bool("rx_pay", false, "used to download by aithticket; pass true to pay for download yourself")
 	downloadCmd.Flags().Int64P("startblock", "s", 0, "pass this option to download from specific block number")
 	downloadCmd.Flags().Int64P("endblock", "e", 0, "pass this option to download till specific block number")
 	downloadCmd.Flags().IntP("blockspermarker", "b", 10, "pass this option to download multiple blocks per marker")
