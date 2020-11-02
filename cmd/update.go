@@ -1,12 +1,41 @@
 package cmd
 
 import (
+	"log"
 	"os"
+	"path/filepath"
 	"sync"
 
+	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
 )
+
+func getRemoteFileRef(alloc *sdk.Allocation, remotePath string) (
+	fr *sdk.ListResult) {
+
+	var dir, _ = filepath.Split(remotePath)
+
+	var lr, err = alloc.ListDir(dir)
+	if err != nil {
+		log.Fatalf("error listing directory %s: %v", dir, err)
+	}
+
+	for _, ch := range lr.Children {
+		if ch.Path == remotePath {
+			return ch
+		}
+	}
+
+	log.Fatal("file not found on blobbers: ", remotePath)
+	return
+}
+
+func getRemoteFileAttributes(alloc *sdk.Allocation, remotePath string) (
+	attrs fileref.Attributes) {
+
+	return getRemoteFileRef(alloc, remotePath).Attributes
+}
 
 // updateCmd represents update file command
 var updateCmd = &cobra.Command{
@@ -39,21 +68,29 @@ var updateCmd = &cobra.Command{
 		thumbnailpath := cmd.Flag("thumbnailpath").Value.String()
 		encrypt, _ := cmd.Flags().GetBool("encrypt")
 		commit, _ := cmd.Flags().GetBool("commit")
+
+		// get original file attributes
+		var attrs = getRemoteFileAttributes(allocationObj, remotepath)
+
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
 		if len(thumbnailpath) > 0 {
 			if encrypt {
-				err = allocationObj.EncryptAndUpdateFileWithThumbnail(localpath, remotepath, thumbnailpath, statusBar)
+				err = allocationObj.EncryptAndUpdateFileWithThumbnail(localpath,
+					remotepath, thumbnailpath, attrs, statusBar)
 			} else {
-				err = allocationObj.UpdateFileWithThumbnail(localpath, remotepath, thumbnailpath, statusBar)
+				err = allocationObj.UpdateFileWithThumbnail(localpath,
+					remotepath, thumbnailpath, attrs, statusBar)
 			}
 
 		} else {
 			if encrypt {
-				err = allocationObj.EncryptAndUpdateFile(localpath, remotepath, statusBar)
+				err = allocationObj.EncryptAndUpdateFile(localpath, remotepath,
+					attrs, statusBar)
 			} else {
-				err = allocationObj.UpdateFile(localpath, remotepath, statusBar)
+				err = allocationObj.UpdateFile(localpath, remotepath,
+					attrs, statusBar)
 			}
 		}
 		if err != nil {

@@ -54,7 +54,7 @@ var listCmd = &cobra.Command{
 				util.PrintJSON(ref.Children)
 				return
 			}
-			header := []string{"Type", "Name", "Path", "Size", "Num Blocks", "Lookup Hash", "Is Encrypted"}
+			header := []string{"Type", "Name", "Path", "Size", "Num Blocks", "Lookup Hash", "Is Encrypted", "Downloads payer"}
 			data := make([][]string, len(ref.Children))
 			for idx, child := range ref.Children {
 				size := strconv.FormatInt(child.Size, 10)
@@ -69,7 +69,16 @@ var listCmd = &cobra.Command{
 						isEncrypted = "NO"
 					}
 				}
-				data[idx] = []string{child.Type, child.Name, child.Path, size, strconv.FormatInt(child.NumBlocks, 10), child.LookupHash, isEncrypted}
+				data[idx] = []string{
+					child.Type,
+					child.Name,
+					child.Path,
+					size,
+					strconv.FormatInt(child.NumBlocks, 10),
+					child.LookupHash,
+					isEncrypted,
+					child.Attributes.WhoPaysForReads.String(),
+				}
 			}
 			util.WriteTable(os.Stdout, header, []string{}, data)
 		} else if len(authticket) > 0 {
@@ -102,7 +111,7 @@ var listCmd = &cobra.Command{
 				util.PrintJSON(ref.Children)
 				return
 			}
-			header := []string{"Type", "Name", "Size", "Num Blocks", "Lookup Hash", "Is Encrypted"}
+			header := []string{"Type", "Name", "Size", "Num Blocks", "Lookup Hash", "Is Encrypted", "Downloads payer"}
 			data := make([][]string, len(ref.Children))
 			for idx, child := range ref.Children {
 				size := strconv.FormatInt(child.Size, 10)
@@ -114,7 +123,15 @@ var listCmd = &cobra.Command{
 						isEncrypted = "NO"
 					}
 				}
-				data[idx] = []string{child.Type, child.Name, size, strconv.FormatInt(child.NumBlocks, 10), child.LookupHash, isEncrypted}
+				data[idx] = []string{
+					child.Type,
+					child.Name,
+					size,
+					strconv.FormatInt(child.NumBlocks, 10),
+					child.LookupHash,
+					isEncrypted,
+					child.Attributes.WhoPaysForReads.String(),
+				}
 			}
 			util.WriteTable(os.Stdout, header, []string{}, data)
 		}

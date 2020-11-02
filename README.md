@@ -154,6 +154,7 @@ Response
         wp-info           Write pool information.
         wp-lock           Lock some tokens in write pool.
         wp-unlock         Unlock some expired tokens in a write pool.
+        update-attributes Update file attributes.
 
 
     Flags:
@@ -289,6 +290,8 @@ Use upload command to upload a file. By using help for this command, you will se
 - --thumbnailpath -- Local thumbnail path of file to upload
 - --encrypt -- [OPTIONAL] pass this option to encrypt and upload the file
 - --commit -- [OPTIONAL] pass this option to commit the metadata transaction
+- --attr-who-pays-for-reads [OPTIONAL] set payer for downloads; default is 3rd_party,
+                         it can be 'owner' or '3rd_party'
 
 Command
 
@@ -737,5 +740,16 @@ Update blobber settings.
     ./zbox bl-update --blobber_id BLOBBER_ID [settings to update]
 
 Use `./zbox bl-update --help` to get list of setting can be updated.
+
+## Update file attributes
+
+Update file attributes.
+
+    ./zbox update-attributes --allocation ALLOC_ID --remotepath=/dir/file.txt \
+        --who-pays-for-reads=3rd_party
+
+Only one attribute is currently supported: who-pays-for-reads that can be:
+- `owner`, where allocation owner pays for own and 3rd_party reads
+- `3rd_party`, where 3rd party readers pays for their downloads themselves
 
 ---

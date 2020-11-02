@@ -1,11 +1,15 @@
 package cmd
 
 import (
+	"log"
 	"os"
 	"sync"
 
+	"github.com/0chain/gosdk/core/common"
+	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zboxcore/zboxutil"
+
 	"github.com/spf13/cobra"
 )
 
@@ -43,17 +47,33 @@ var uploadCmd = &cobra.Command{
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
+
+		var attrs fileref.Attributes
+		if fflags.Changed("attr-who-pays-for-reads") {
+			var (
+				wp  common.WhoPays
+				wps string
+			)
+			if wps, err = fflags.GetString("attr-who-pays-for-reads"); err != nil {
+				log.Fatalf("getting 'attr-who-pays-for-reads' flag: %v", err)
+			}
+			if err = wp.Parse(wps); err != nil {
+				log.Fatal(err)
+			}
+			attrs.WhoPaysForReads = wp // set given value
+		}
+
 		if len(thumbnailpath) > 0 {
 			if encrypt {
-				err = allocationObj.EncryptAndUploadFileWithThumbnail(localpath, remotepath, thumbnailpath, statusBar)
+				err = allocationObj.EncryptAndUploadFileWithThumbnail(localpath, remotepath, thumbnailpath, attrs, statusBar)
 			} else {
-				err = allocationObj.UploadFileWithThumbnail(localpath, remotepath, thumbnailpath, statusBar)
+				err = allocationObj.UploadFileWithThumbnail(localpath, remotepath, thumbnailpath, attrs, statusBar)
 			}
 		} else {
 			if encrypt {
-				err = allocationObj.EncryptAndUploadFile(localpath, remotepath, statusBar)
+				err = allocationObj.EncryptAndUploadFile(localpath, remotepath, attrs, statusBar)
 			} else {
-				err = allocationObj.UploadFile(localpath, remotepath, statusBar)
+				err = allocationObj.UploadFile(localpath, remotepath, attrs, statusBar)
 			}
 		}
 		if err != nil {
@@ -82,6 +102,7 @@ func init() {
 	uploadCmd.PersistentFlags().String("remotepath", "", "Remote path to upload")
 	uploadCmd.PersistentFlags().String("localpath", "", "Local path of file to upload")
 	uploadCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
+	uploadCmd.PersistentFlags().String("attr-who-pays-for-reads", "3rd_party", "Who pays for reads: owner or 3rd_party")
 	uploadCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
 	uploadCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
 	uploadCmd.MarkFlagRequired("allocation")

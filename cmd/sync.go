@@ -150,16 +150,24 @@ var syncCmd = &cobra.Command{
 			case sdk.Upload:
 				wg.Add(1)
 				if len(encryptpath) != 0 && strings.Contains(lPath, encryptpath) {
-					err = allocationObj.EncryptAndUploadFile(lPath, f.Path, statusBar)
+					err = allocationObj.EncryptAndUploadFile(lPath, f.Path,
+						getRemoteFileAttributes(allocationObj, f.Path),
+						statusBar)
 				} else {
-					err = allocationObj.UploadFile(lPath, f.Path, statusBar)
+					err = allocationObj.UploadFile(lPath, f.Path,
+						getRemoteFileAttributes(allocationObj, f.Path),
+						statusBar)
 				}
 			case sdk.Update:
 				wg.Add(1)
 				if len(encryptpath) != 0 && strings.Contains(lPath, encryptpath) {
-					err = allocationObj.EncryptAndUpdateFile(lPath, f.Path, statusBar)
+					err = allocationObj.EncryptAndUpdateFile(lPath, f.Path,
+						getRemoteFileAttributes(allocationObj, f.Path),
+						statusBar)
 				} else {
-					err = allocationObj.UpdateFile(lPath, f.Path, statusBar)
+					err = allocationObj.UpdateFile(lPath, f.Path,
+						getRemoteFileAttributes(allocationObj, f.Path),
+						statusBar)
 				}
 			case sdk.Delete:
 				fileMeta, err := allocationObj.GetFileMeta(f.Path)
