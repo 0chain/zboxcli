@@ -102,7 +102,7 @@ func init() {
 	uploadCmd.PersistentFlags().String("remotepath", "", "Remote path to upload")
 	uploadCmd.PersistentFlags().String("localpath", "", "Local path of file to upload")
 	uploadCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
-	uploadCmd.PersistentFlags().String("attr-who-pays-for-reads", "3rd_party", "Who pays for reads: owner or 3rd_party")
+	uploadCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
 	uploadCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
 	uploadCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
 	uploadCmd.MarkFlagRequired("allocation")

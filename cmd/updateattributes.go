@@ -119,7 +119,7 @@ func init() {
 	rootCmd.AddCommand(updateAttributesCmd)
 	updateAttributesCmd.PersistentFlags().String("allocation", "", "Allocation ID")
 	updateAttributesCmd.PersistentFlags().String("remotepath", "", "Remote path of object to rename")
-	updateAttributesCmd.PersistentFlags().String("who-pays-for-reads", "3rd_party",
+	updateAttributesCmd.PersistentFlags().String("who-pays-for-reads", "owner",
 		"Who pays for reads: owner or 3rd_party")
 	updateAttributesCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
 	updateAttributesCmd.MarkFlagRequired("allocation")
