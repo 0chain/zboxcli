@@ -58,9 +58,18 @@ var newallocationCmd = &cobra.Command{
 		if !flags.Changed("lock") {
 			log.Fatal("missing required 'lock' argument")
 		}
+		convertFromUSD, _ := cmd.Flags().GetBool("usd")
+
 		var lockf float64
 		if lockf, err = flags.GetFloat64("lock"); err != nil {
 			log.Fatal("error: invalid 'lock' value:", err)
+		}
+
+		if convertFromUSD {
+			lockf, err = zcncore.ConvertUSDToToken(lockf)
+			if err != nil {
+				log.Fatal("error: failed to convert to USD : ", err)
+			}
 		}
 		lock = zcncore.ConvertToValue(lockf)
 
@@ -142,6 +151,9 @@ func init() {
 	newallocationCmd.PersistentFlags().
 		Duration("mcct", 1*time.Hour,
 			"max challenge completion time, optional, default 1h")
+	newallocationCmd.Flags().
+		Bool("usd", false,
+			"pass this option to give token value in USD")
 
 	newallocationCmd.MarkFlagRequired("data")
 	newallocationCmd.MarkFlagRequired("parity")
