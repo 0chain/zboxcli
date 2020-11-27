@@ -11,3 +11,10 @@ jobs:
     
     - name: Install
       run: make install
+
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v2
+      with:
+        name: zbox-cli
+        path: zbox
+        retention-days: 5
