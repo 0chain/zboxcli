@@ -35,7 +35,7 @@ jobs:
         name: zbox-cli-windows
         path: zbox
         retention-days: 5
- build-mac:
+  build-mac:
     name: Build-mac
     runs-on: macos-latest
     steps:
