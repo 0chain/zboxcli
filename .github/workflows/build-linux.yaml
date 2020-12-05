@@ -1,8 +1,8 @@
-name: build-linux
+name: build-cli
 on: [push]
 jobs:
-  build:
-    name: Build
+  build-linux:
+    name: Build-linux
     runs-on: ubuntu-latest
     steps:
 
@@ -11,3 +11,44 @@ jobs:
     
     - name: Install
       run: make install
+
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v2
+      with:
+        name: zbox-cli-linux
+        path: zbox
+        retention-days: 5
+  build-windows:
+    name: Build-windows
+    runs-on: windows-latest
+    steps:
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+    
+    - name: Install
+      run: make install
+
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v2
+      with:
+        name: zbox-cli-windows
+        path: zbox
+        retention-days: 5
+  build-mac:
+    name: Build-mac
+    runs-on: macos-latest
+    steps:
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+    
+    - name: Install
+      run: make install
+
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v2
+      with:
+        name: zbox-cli-macos
+        path: zbox
+        retention-days: 5
