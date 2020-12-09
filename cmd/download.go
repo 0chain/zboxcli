@@ -80,11 +80,12 @@ var downloadCmd = &cobra.Command{
 				PrintError("Error getting the filename from authticket", err)
 				os.Exit(1)
 			}
-
-			lookuphash, err = at.GetLookupHash()
-			if err != nil {
-				PrintError("Error getting the lookuphash from authticket", err)
-				os.Exit(1)
+			if len(lookuphash) == 0 {
+				lookuphash, err = at.GetLookupHash()
+				if err != nil {
+					PrintError("Error getting the lookuphash from authticket", err)
+					os.Exit(1)
+				}
 			}
 
 			if thumbnail {
