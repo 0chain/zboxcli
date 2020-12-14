@@ -291,7 +291,7 @@ Use upload command to upload a file. By using help for this command, you will se
 - --encrypt -- [OPTIONAL] pass this option to encrypt and upload the file
 - --commit -- [OPTIONAL] pass this option to commit the metadata transaction
 - --attr-who-pays-for-reads [OPTIONAL] set payer for downloads; default is 3rd_party,
-                         it can be 'owner' or '3rd_party'
+  it can be 'owner' or '3rd_party'
 
 Command
 
@@ -324,6 +324,9 @@ Use download command to download your own or a shared file.
 - --lookuphash string [OPTIONAL] The remote lookuphash of the object retrieved from the list
 - --remotepath string Remote path to download
 - -t, --thumbnail pass this option to download only the thumbnail
+- -e, --endblock int pass this option to download till specific block number
+- -s, --startblock int pass this option to download from specific block number
+- --rx_pay used to download by authticket; pass true to pay for download yourself
 
 Command
 
@@ -749,6 +752,7 @@ Update file attributes.
         --who-pays-for-reads=3rd_party
 
 Only one attribute is currently supported: who-pays-for-reads that can be:
+
 - `owner`, where allocation owner pays for own and 3rd_party reads
 - `3rd_party`, where 3rd party readers pays for their downloads themselves
 
