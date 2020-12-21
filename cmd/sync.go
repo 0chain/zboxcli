@@ -6,6 +6,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
@@ -149,14 +150,11 @@ var syncCmd = &cobra.Command{
 				err = allocationObj.DownloadFile(lPath, f.Path, statusBar)
 			case sdk.Upload:
 				wg.Add(1)
+				var attrs fileref.Attributes
 				if len(encryptpath) != 0 && strings.Contains(lPath, encryptpath) {
-					err = allocationObj.EncryptAndUploadFile(lPath, f.Path,
-						getRemoteFileAttributes(allocationObj, f.Path),
-						statusBar)
+					err = allocationObj.EncryptAndUploadFile(lPath, f.Path, attrs, statusBar)
 				} else {
-					err = allocationObj.UploadFile(lPath, f.Path,
-						getRemoteFileAttributes(allocationObj, f.Path),
-						statusBar)
+					err = allocationObj.UploadFile(lPath, f.Path, attrs, statusBar)
 				}
 			case sdk.Update:
 				wg.Add(1)
