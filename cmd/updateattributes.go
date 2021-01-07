@@ -5,7 +5,6 @@ import (
 	"sync"
 
 	"github.com/0chain/gosdk/core/common"
-	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 
 	"github.com/spf13/cobra"
@@ -57,12 +56,12 @@ var updateAttributesCmd = &cobra.Command{
 			log.Fatal("fetching the allocation: ", err)
 		}
 
-		var fr = getRemoteFileRef(alloc, remotePath)
-		if fr.Type != fileref.FILE {
-			log.Fatal("not a file", remotePath)
+		meta, err := alloc.GetFileMeta(remotePath)
+		if err != nil {
+			log.Fatal("fetching the metadata: ", err)
 		}
 
-		var attrs = fr.Attributes
+		var attrs = meta.Attributes
 
 		// modify attributes by the flags
 		if fflags.Changed("who-pays-for-reads") {
@@ -84,13 +83,6 @@ var updateAttributesCmd = &cobra.Command{
 		if !changed {
 			log.Print("no changes")
 			return
-		}
-
-		var meta *sdk.ConsolidatedFileMeta
-		if commit {
-			if meta, err = alloc.GetFileMeta(remotePath); err != nil {
-				log.Fatalf("couldn't get file meta data: %v", err)
-			}
 		}
 
 		if err = alloc.UpdateObjectAttributes(remotePath, attrs); err != nil {
