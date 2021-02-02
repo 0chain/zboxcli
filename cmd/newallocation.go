@@ -54,10 +54,13 @@ var newallocationCmd = &cobra.Command{
 			lock  int64         // lock with given number of tokens
 			err   error         //
 		)
-
-		if !flags.Changed("lock") {
-			log.Fatal("missing required 'lock' argument")
+		costOnly, _ := cmd.Flags().GetBool("cost")
+		if !costOnly {
+			if !flags.Changed("lock") {
+				log.Fatal("missing required 'lock' argument")
+			}
 		}
+
 		convertFromUSD, _ := cmd.Flags().GetBool("usd")
 
 		var lockf float64
@@ -120,13 +123,21 @@ var newallocationCmd = &cobra.Command{
 
 		var expireAt = time.Now().Add(expire).Unix()
 
-		allocationID, err := sdk.CreateAllocation(*datashards, *parityshards,
-			*size, expireAt, readPrice, writePrice, mcct, lock)
-		if err != nil {
-			log.Fatal("Error creating allocation: ", err)
+		if costOnly {
+			minCost, err := sdk.GetAllocationMinLock(*datashards, *parityshards, *size, expireAt, readPrice, writePrice, mcct)
+			if err != nil {
+				log.Fatal("Error fetching cost: ", err)
+			}
+			log.Print("Cost for the given allocation: ", zcncore.ConvertToToken(minCost))
+		} else {
+			allocationID, err := sdk.CreateAllocation(*datashards, *parityshards,
+				*size, expireAt, readPrice, writePrice, mcct, lock)
+			if err != nil {
+				log.Fatal("Error creating allocation: ", err)
+			}
+			log.Print("Allocation created: ", allocationID)
+			storeAllocation(allocationID)
 		}
-		log.Print("Allocation created: ", allocationID)
-		storeAllocation(allocationID)
 		return
 	},
 }
@@ -154,6 +165,9 @@ func init() {
 	newallocationCmd.Flags().
 		Bool("usd", false,
 			"pass this option to give token value in USD")
+	newallocationCmd.Flags().
+		Bool("cost", false,
+			"pass this option to only get the min lock demand")
 
 	newallocationCmd.MarkFlagRequired("data")
 	newallocationCmd.MarkFlagRequired("parity")
