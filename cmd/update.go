@@ -3,7 +3,6 @@ package cmd
 import (
 	"log"
 	"os"
-	"path/filepath"
 	"sync"
 
 	"github.com/0chain/gosdk/zboxcore/fileref"
@@ -11,30 +10,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func getRemoteFileRef(alloc *sdk.Allocation, remotePath string) (
-	fr *sdk.ListResult) {
-
-	var dir, _ = filepath.Split(remotePath)
-
-	var lr, err = alloc.ListDir(dir)
-	if err != nil {
-		log.Fatalf("error listing directory %s: %v", dir, err)
-	}
-
-	for _, ch := range lr.Children {
-		if ch.Path == remotePath {
-			return ch
-		}
-	}
-
-	log.Fatal("file not found on blobbers: ", remotePath)
-	return
-}
-
 func getRemoteFileAttributes(alloc *sdk.Allocation, remotePath string) (
 	attrs fileref.Attributes) {
 
-	return getRemoteFileRef(alloc, remotePath).Attributes
+	fileMeta, err := alloc.GetFileMeta(remotePath)
+	if err != nil {
+		log.Fatal("Unable to fetch existing file meta data for update")
+	}
+	return fileMeta.Attributes
 }
 
 // updateCmd represents update file command
