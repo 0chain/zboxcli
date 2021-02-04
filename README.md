@@ -757,3 +757,15 @@ Only one attribute is currently supported: who-pays-for-reads that can be:
 - `3rd_party`, where 3rd party readers pays for their downloads themselves
 
 ---
+
+# Troubleshooting
+
+1. Both `rp-info` and `rp-lock` are not working.
+
+```
+./zbox rp-info
+Failed to get read pool info: error requesting read pool info: consensus_failed: consensus failed on sharders
+```
+
+This can happen if read pool is not yet created for wallet. Read pool is usually created when new wallet is created by `zbox` or `zwallet`.
+However, if wallet is created through `zwallet recoverwallet`, read pool may not have been created. Simply run `zbox rp-create`
