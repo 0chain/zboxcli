@@ -37,6 +37,8 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
 29. [Costs](#Costs)
 30. [Blobber](#Blobbers)
 31. [Move uploaded files to another folder path on dStorage](#Move)
+32. [Add Collaborator for a file](#Add-collaborator)
+33. [Remove Collaborator for a file](#Delete-collaborator)
 
 zbox CLI provides a self-explaining "help" option that lists commands and parameters they need to perform the intended action
 
@@ -559,6 +561,41 @@ Command
 Response
 
     Status completed callback. Type = application/octet-stream. Name = hello.txt
+
+### Add collaborator
+
+Use command add-collab to add a collaborator for a file
+
+- --allocation string -- Allocation ID
+- --collabid string -- Collaborator's clientID
+- --remotepath string -- Remote path to list from
+
+Command
+
+    ./zbox add-collab --allocation 0834e2848e3006714423f485cfc1c22266368d655026152bd762cd0cdd0a4aeb --remotepath /file.txt
+    --collabid 271aeadc4c5f909ad967fa62fbeb261aaca48aec90ddbf9b48f269cebde623c7
+
+Response
+
+Response will be a confirmation that collaborator is added on all blobbers for the given file
+You can check all collaborators for a file in metadata json response
+
+### Delete collaborator
+
+Use command delete-collab to remove a collaborator for a file
+
+- --allocation string -- Allocation ID
+- --collabid string -- Collaborator's clientID
+- --remotepath string -- Remote path to list from
+
+Command
+
+    ./zbox delete-collab --allocation 0834e2848e3006714423f485cfc1c22266368d655026152bd762cd0cdd0a4aeb --remotepath /file.txt
+    --collabid 271aeadc4c5f909ad967fa62fbeb261aaca48aec90ddbf9b48f269cebde623c7
+
+Response
+
+Response will be a confirmation that collaborator is removed on all blobbers for the given file
 
 # Cancel allocation
 
