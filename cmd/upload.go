@@ -3,6 +3,7 @@ package cmd
 import (
 	"log"
 	"os"
+	"strings"
 	"sync"
 
 	"github.com/0chain/gosdk/core/common"
@@ -47,7 +48,9 @@ var uploadCmd = &cobra.Command{
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
-
+		if strings.HasPrefix(remotepath, "/Encrypted") {
+			encrypt = true
+		}
 		var attrs fileref.Attributes
 		if fflags.Changed("attr-who-pays-for-reads") {
 			var (

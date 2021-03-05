@@ -52,6 +52,10 @@ var updateCmd = &cobra.Command{
 		encrypt, _ := cmd.Flags().GetBool("encrypt")
 		commit, _ := cmd.Flags().GetBool("commit")
 
+		if remotepath == "/Encrypted" {
+			PrintError("Error: can not update Encrypted Folder")
+			os.Exit(1)
+		}
 		// get original file attributes
 		var attrs = getRemoteFileAttributes(allocationObj, remotepath)
 
