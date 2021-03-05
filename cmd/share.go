@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
@@ -48,6 +49,10 @@ var shareCmd = &cobra.Command{
 		}
 		if !isFile {
 			refType = fileref.DIRECTORY
+			if strings.HasPrefix(remotepath, "/Encrypted") {
+				PrintError("Error: Can not share folder (inside) Encrypted Folder")
+				os.Exit(1)
+			}
 		}
 
 		var fileName string
