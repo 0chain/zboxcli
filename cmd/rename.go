@@ -61,12 +61,6 @@ var renameCmd = &cobra.Command{
 				os.Exit(1)
 			}
 		}
-		if !isFile {
-			if remotepath == "/Encrypted" {
-				PrintError("Error: Can not rename Encrypted Folder")
-				os.Exit(1)
-			}
-		}
 		err = allocationObj.RenameObject(remotepath, destname)
 		if err != nil {
 			PrintError(err.Error())

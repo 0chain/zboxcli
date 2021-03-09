@@ -34,11 +34,6 @@ var deleteCmd = &cobra.Command{
 		}
 		remotepath := cmd.Flag("remotepath").Value.String()
 
-		if remotepath == "/Encrypted" {
-			PrintError("Error: Can not delete Encrypted Folder")
-			os.Exit(1)
-		}
-
 		statsMap, err := allocationObj.GetFileStats(remotepath)
 		if err != nil {
 			PrintError("Error in getting information about the object." + err.Error())

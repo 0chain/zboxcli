@@ -5,13 +5,10 @@ import (
 	"log"
 	"math"
 	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 
-	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
 	"github.com/spf13/cobra"
@@ -140,37 +137,6 @@ var newallocationCmd = &cobra.Command{
 			}
 			log.Print("Allocation created: ", allocationID)
 			storeAllocation(allocationID)
-			allocationObj, err := sdk.GetAllocation(allocationID)
-			if err != nil {
-				PrintError("Error fetching the allocation.", err)
-				os.Exit(1)
-			}
-			localpath, _ := filepath.Abs("../zboxcli/Encrypted/test.txt") // path from the working directory
-
-			remotepath := "/Encrypted/test.txt"
-			encrypt := true
-			wg := &sync.WaitGroup{}
-			statusBar := &StatusBar{wg: wg}
-			wg.Add(1)
-			var attrs fileref.Attributes
-			if encrypt {
-				err = allocationObj.EncryptAndUploadFile(localpath, remotepath, attrs, statusBar)
-			} else {
-				err = allocationObj.UploadFile(localpath, remotepath, attrs, statusBar)
-			}
-			if err != nil {
-				PrintError("Upload failed.", err)
-				os.Exit(1)
-			}
-			wg.Wait()
-			if !statusBar.success {
-				os.Exit(1)
-			}
-			err = allocationObj.DeleteFile(remotepath)
-			if err != nil {
-				PrintError("Delete failed.", err.Error())
-				os.Exit(1)
-			}
 		}
 		return
 	},
