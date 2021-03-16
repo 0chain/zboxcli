@@ -798,8 +798,11 @@ Only one attribute is currently supported: who-pays-for-reads that can be:
 ## Streaming
 
 Since zboxcli is wrapper to gosdk methods, streaming feature should be implemented together with player for each platforms (Android, IOS, Mac, Windows).
+
 IOS documentation: https://github.com/0chain/0box-ios
+
 Android documentation: https://github.com/0chain/0boxAndroid
+
 Mac documentation: https://github.com/0chain/0BoxSyncMac
 
 For platforms using zboxcli commands, implementation are similar to platforms above, i.e.:
@@ -811,8 +814,11 @@ For platforms using zboxcli commands, implementation are similar to platforms ab
 Improvements was done in 
 
 downloadFileByBlocks - properly returns file-chunks with correct byte range, gosdk v1.2.4 and above only.
+
 getFileMeta - returns actuaBlockNumbers and actualFileSize (exclude thumbnail size)
+
 getFileMetaByAuth - same updates as getFileMeta
+
 listAllocation - returns actuaBlockNumbers and actualFileSize (exclude thumbnail size)
 
 # Troubleshooting
