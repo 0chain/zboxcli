@@ -43,14 +43,12 @@ func (s *StatusBar) Error(allocationID string, filePath string, op int, err erro
 		defer s.wg.Done()
 	}
 
-	var errDetail interface{}
+	var errDetail interface{} = "Unknown Error"
 	if err != nil {
 		errDetail = err.Error()
-	} else {
-		errDetail = ""
 	}
 
-	PrintError("Error in file operation.", errDetail)
+	PrintError("Error in file operation:", errDetail)
 }
 
 func (s *StatusBar) CommitMetaCompleted(request, response string, err error) {
