@@ -42,13 +42,14 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
 
 zbox CLI provides a self-explaining "help" option that lists commands and parameters they need to perform the intended action
 
-## How to get it?
 
-    git clone https://github.com/0chain/zboxcli.git
+## Getting started with zbox
 
 ## Pre-requisites
 
     Go V1.12 or higher.
+
+## Build Guides
 
 ### [How to build on Linux](https://github.com/0chain/zboxcli/wiki/Build-Linux)
 
@@ -56,16 +57,11 @@ zbox CLI provides a self-explaining "help" option that lists commands and parame
 
 ### [Alternative Platform Builds](https://github.com/0chain/zboxcli/wiki/Alternative-Platform-Builds)
 
-## Getting started with zbox
 
-### Before you start
 
-Before you start playing with zbox, you need to access the blockchain. Go to network folder in the repo, and choose a network. Copy it to your ~/.zcn folder and then rename it as config.yaml file.
+### Use custom miner/sharder (Optional)
 
-    mkdir ~/.zcn
-    cp network/one.yaml ~/.zcn/config.yaml
-
-Sample config.yaml
+As mentioned in build guides, a ./zcn folder is created to store configuration files for zboxcli. Here is a sample network config file
 
       ---
       block_worker: http://localhost:9091
@@ -74,11 +70,9 @@ Sample config.yaml
       min_confirmation: 50 # in percentage
       confirmation_chain_length: 3
 
-We use blockWorker to connect to the network instead of giving network details directly, It will fetch the network details automatically from the blockWorker's network API.
-
-#### Override Network Details
-
-By default it will use the miner/sharder values which it will get using the `block_worker_url/network`. In case you want to override those values and give custom miner/sharder to use, You can create a `network.yaml` in your ~/.zcn (config) folder and paste the miner/sharder values in below format.
+A blockWorker is used to connect to the network instead of giving network details directly, It will fetch the network details automatically from the blockWorker's network API.
+By default it will use the miner/sharder values which it will get using the `block_worker_url/network`. 
+In case you want to override those values and give custom miner/sharder to use, You have to create a `network.yaml` in your ~/.zcn (config) folder and paste the miner/sharder values in below format.
 
     miners:
       - http://localhost:7071
@@ -87,13 +81,9 @@ By default it will use the miner/sharder values which it will get using the `blo
     sharders:
       - http://localhost:7171
 
-Note: This is also useful for the Mac OS users running local cluster and having trouble with docker internal IPs (block_worker return docker IPs in local)
+Note: This is helpful for the Mac OS users running local cluster and having trouble with docker internal IPs (block_worker return docker IPs in local)
 
-### Setup
-
-The zbox command line uses the ~/.zcn/config.yaml file at runtime to point to the network specified in that file.
-
-## Commands
+## Running zbox commands
 
 Note in this document, we will show only the commands, response will vary depending on your usage, so may not be provided in all places.
 
