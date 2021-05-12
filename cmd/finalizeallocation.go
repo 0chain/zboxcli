@@ -83,7 +83,7 @@ allocation flow.`,
 			log.Fatal("invalid 'allocation' flag: ", err)
 		}
 
-		txnHash, err := sdk.CancelAlloctioan(allocID)
+		txnHash, err := sdk.CancelAllocation(allocID)
 		if err != nil {
 			log.Fatal("Error creating allocation:", err)
 		}
