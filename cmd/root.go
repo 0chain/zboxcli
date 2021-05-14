@@ -37,9 +37,9 @@ var CfmChainLength int
 
 var rootCmd = &cobra.Command{
 	Use:   "zbox",
-	Short: "0Box is a decentralized storage application written on the 0Chain platform",
-	Long: `0Box is a decentralized storage application written on the 0Chain platform.
-			Complete documentation is available at https://0chain.net`,
+	Short: "zbox is a decentralized storage application written on the 0Chain platform",
+	Long: `zbox is a decentralized storage application written on the 0Chain platform.
+			Complete documentation is available at https://docs.0chain.net/0chain/`,
 }
 
 var clientWallet *zcncrypto.Wallet
