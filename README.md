@@ -58,13 +58,13 @@ zbox CLI provides a self-explaining "help" option that lists commands and parame
 Go V1.12 or higher.
 ```
 
-## Build Guides
+## Installation Guides
 
-### [How to build on Linux](https://github.com/0chain/zboxcli/wiki/Build-Linux)
+### [How to install on Linux](https://github.com/0chain/zboxcli/wiki/Build-Linux)
 
-### [How to build on Windows](https://github.com/0chain/zboxcli/wiki/Build-Windows)
+### [How to install on Windows](https://github.com/0chain/zboxcli/wiki/Build-Windows)
 
-### [Alternative Platform Builds](https://github.com/0chain/zboxcli/wiki/Alternative-Platform-Builds)
+### [Other Platform Builds](https://github.com/0chain/zboxcli/wiki/Alternative-Platform-Builds)
 
 ### Use custom miner/sharder 
 
