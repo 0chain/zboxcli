@@ -1,62 +1,56 @@
 # zbox - a CLI for 0Chain dStorage
 
-zbox is a command line interface (CLI) tool to understand the capabilities of 0Chain dStorage and prototype your app. The utility is built using 0Chain's goSDK library written in Go. Check out a [video](https://youtu.be/TPrkRjdaHrY) on how to use the CLI to create an allocation (storage volume) and upload, download, update, delete, and share files and folders to dStor on the 0Chain dStorage platform.
+zbox is a command line interface (CLI) tool to understand the capabilities of 0Chain dStorage and prototype your app. The utility is built using 0Chain's goSDK library written in Go. Check out a [video](https://youtu.be/TPrkRjdaHrY) on how to use the CLI to create an allocation (storage volume) and upload, download, update, delete, and share files and folders on the 0Chain dStorage platform.
 
-## Features
+[zbox](https://github.com/0chain/zboxcli#Command-with-no-arguments) supports the following features
 
-[zbox](#Command-with-no-arguments) supports the following features
+1. [Register a Wallet](https://github.com/0chain/zboxcli#Register)
+2. [Get detailed Allocation](https://github.com/0chain/zboxcli#Get)
+3. [Create an allocation](https://github.com/0chain/zboxcli#Create-new-allocation)
+4. [List allocations](https://github.com/0chain/zboxcli#List-allocations)
+5. [Update an allocation](https://github.com/0chain/zboxcli#Update-allocation)
+6. [Cancel allocation](https://github.com/0chain/zboxcli#Cancel-allocation)
+7. [Finalize allocation](https://github.com/0chain/zboxcli#Finalize-allocation)
+8. [List blobbers](https://github.com/0chain/zboxcli#List-blobbers)
+9. [Detail blobber information](https://github.com/0chain/zboxcli#Detailed-blobber-information)
+10. [Update blobber settings](https://github.com/0chain/zboxcli#Update-blobber-settings)
+11. [Upload a file to dStorage](https://github.com/0chain/zboxcli#Upload)
+12. [Download the uploaded file from dStorage](https://github.com/0chain/zboxcli#Download)
+13. [Update the uploaded file on dStorage](https://github.com/0chain/zboxcli#Update)
+14. [Delete the uploaded file on dStorage](https://github.com/0chain/zboxcli#Delete)
+15. [Share the uploaded file on dStorage to the public](https://github.com/0chain/zboxcli#Share)
+16. [List the uploaded files and folders](https://github.com/0chain/zboxcli#List)
+17. [Copy uploaded files to another folder path on dStorage](https://github.com/0chain/zboxcli#Copy)
+18. [Move uploaded files to another folder path on dStorage](https://github.com/0chain/zboxcli#Move)
+19. [Get meta data of files](https://github.com/0chain/zboxcli#Get-metadata)
+20. [Rename an object in allocation](https://github.com/0chain/zboxcli#Rename)
+21. [Get file stats](https://github.com/0chain/zboxcli#Stats)
+22. [Repair a file on dStorage](https://github.com/0chain/zboxcli#Repair)
+23. [Sync your local folder to remote](https://github.com/0chain/zboxcli#Sync)
+24. [Update file attributes](https://github.com/0chain/zboxcli#Update-file-attributes)
+25. [Get wallet information](https://github.com/0chain/zboxcli#Get-wallet)
+26. [Add Collaborator for a file](https://github.com/0chain/zboxcli#Add-collaborator)
+27. [Remove Collaborator for a file](https://github.com/0chain/zboxcli#Delete-collaborator)
+28. [Challenge pool information](https://github.com/0chain/zboxcli#Challenge-pool-information)
+29. [Create read pool if not exists](https://github.com/0chain/zboxcli#Create-read-pool)
+30. [Detailed read pool information](https://github.com/0chain/zboxcli#Read-pool-info)
+31. [Lock tokens into read pool](https://github.com/0chain/zboxcli#Lock-tokens-into-read-pool)
+32. [Unlock tokens from expired read pool](https://github.com/0chain/zboxcli#Unlock-tokens-from-read-pool)
+33. [Storage SC configurations](https://github.com/0chain/zboxcli#Storage-SC-configurations)
+34. [Detailed stake pool information](https://github.com/0chain/zboxcli#Stake-pool-info)
+35. [Lock tokens into stake pool](https://github.com/0chain/zboxcli#Lock-tokens-into-stake-pool)
+36. [Unlock tokens from expired stake pool](https://github.com/0chain/zboxcli#Unlock-tokens-from-stake-pool)
+37. [Stake pools info of current user](https://github.com/0chain/zboxcli#Stake-pools-info-of-current-user)
+38. [Pay interests](https://github.com/0chain/zboxcli#Pay-interests)
+39. [Detailed write pool information](https://github.com/0chain/zboxcli#Write-pool-info)
+40. [Lock tokens into write pool](https://github.com/0chain/zboxcli#Lock-tokens-into-write-pool)
+41. [Unlock tokens from expired write pool](https://github.com/0chain/zboxcli#Unlock-tokens-from-write-pool)
+42. [Get download cost](https://github.com/0chain/zboxcli#Download-cost)
+43. [Get upload cost](https://github.com/0chain/zboxcli#Upload-cost)
 
-1. [Register a Wallet](#Register)
-2. [Get detailed Allocation](#Get)
-3. [Create an allocation](#Create-new-allocation)
-4. [List allocations](#List-allocations)
-5. [Update an allocation](#Update-allocation)
-6. [Cancel allocation](#Cancel-allocation)
-7. [Finalize allocation](#Finalize-allocation)
-8. [List blobbers](#List-blobbers)
-9. [Detail blobber information](#Detailed-blobber-information)
-10. [Update blobber settings](#Update-blobber-settings)
-11. [Upload a file to dStorage](#Upload)
-12. [Download the uploaded file from dStorage](#Download)
-13. [Update the uploaded file on dStorage](#Update)
-14. [Delete the uploaded file on dStorage](#Delete)
-15. [Share the uploaded file on dStorage to the public](#Share)
-16. [List the uploaded files and folders](#List)
-17. [Copy uploaded files to another folder path on dStorage](#Copy)
-18. [Move uploaded files to another folder path on dStorage](#Move)
-19. [Get meta data of files](#Get-metadata)
-20. [Rename an object in allocation](#Rename)
-21. [Get file stats](#Stats)
-22. [Repair a file on dStorage](#Repair)
-23. [Sync your local folder to remote](#Sync)
-24.  [Update file attributes](#Update-file-attributes)
-25. [Get wallet information](#Get-wallet)
-26. [Add Collaborator for a file](#Add-collaborator)
-27. [Remove Collaborator for a file](#Delete-collaborator)
-28. [Challenge pool information](#Challenge-pool-information)
-29. [Create read pool if not exists](#Create-read-pool)
-30. [Detailed read pool information](#Read-pool-info)
-31. [Lock tokens into read pool](#Lock-tokens-into-read-pool)
-32. [Unlock tokens from expired read pool](#Unlock-tokens-from-read-pool)
-33. [Storage SC configurations](#Storage-SC-configurations) 
-24. [Detailed stake pool information](#Stake-pool-info)
-35. [Lock tokens into stake pool](#Lock-tokens-into-stake-pool)
-36. [Unlock tokens from expired stake pool](#Unlock-tokens-from-stake-pool)
-37. [Stake pools info of current user](#Stake-pools-info-of-current-user)
-38. [Pay interests](#Pay-interests)
-39. [Detailed write pool information](#Write-pool-info)
-40. [Lock tokens into write pool](#Lock-tokens-into-write-pool)
-41. [Unlock tokens from expired write pool](#Unlock-tokens-from-write-pool) 
-42. [Get download cost](#Download-cost)
-43. [Get upload cost](#Upload-cost)
+zbox CLI provides a self-explaining "help" option that lists commands and parameters they need to perform the intended action
 
-zbox CLI provides a self-explaining "help" option that lists commands and parameters they need to perform the intended action.
-
-## How to get it?
-
-```
-git clone https://github.com/0chain/zboxcli.git
-```
+## Getting started with zbox
 
 ## Pre-requisites
 
@@ -64,39 +58,28 @@ git clone https://github.com/0chain/zboxcli.git
 Go V1.12 or higher.
 ```
 
+## Build Guides
+
 ### [How to build on Linux](https://github.com/0chain/zboxcli/wiki/Build-Linux)
 
 ### [How to build on Windows](https://github.com/0chain/zboxcli/wiki/Build-Windows)
 
 ### [Alternative Platform Builds](https://github.com/0chain/zboxcli/wiki/Alternative-Platform-Builds)
 
-## Getting started with zbox
+### Use custom miner/sharder 
 
-### Before you start
-
-Before you start playing with zbox, you need to access the blockchain. Go to network folder in the repo, and choose a network. Copy it to your ~/.zcn folder and then rename it as config.yaml file.
+As mentioned in build guides, a ./zcn folder is created to store configuration files for zboxcli. Here is a sample network config file
 
 ```
-mkdir ~/.zcn
-cp network/one.yaml ~/.zcn/config.yaml
+  ---
+  block_worker: http://localhost:9091
+  signature_scheme: bls0chain
+  min_submit: 50 # in percentage
+  min_confirmation: 50 # in percentage
+  confirmation_chain_length: 3
 ```
 
-Sample config.yaml
-
-```
----
-block_worker: http://localhost:9091
-signature_scheme: bls0chain
-min_submit: 50 # in percentage
-min_confirmation: 50 # in percentage
-confirmation_chain_length: 3
-```
-
-We use blockWorker to connect to the network instead of giving network details directly, It will fetch the network details automatically from the blockWorker's network API.
-
-#### Override Network Details
-
-By default, it will use the miner/sharder values which it will get using the `block_worker_url/network`. In case you want to override those values and give custom miner/sharder to use, You can create a `network.yaml` in your ~/.zcn (config) folder and paste the miner/sharder values in below format.
+A blockWorker is used to connect to the network instead of giving network details directly, It will fetch the network details automatically from the blockWorker's network API. By default it will use the miner/sharder values which it will get using the `block_worker_url/network`. In case you want to override those values and give custom miner/sharder to use, You have to create a `network.yaml` in your ~/.zcn (config) folder and paste the miner/sharder values in below format.
 
 ```
 miners:
@@ -107,41 +90,35 @@ sharders:
   - http://localhost:7171
 ```
 
-Note: This is also useful for the macOS users running local cluster and having trouble with docker internal IPs (block_worker return docker IPs in local).
+Note: This is helpful for the Mac OS users running local cluster and having trouble with docker internal IPs (block_worker return docker IPs in local)
 
-### Setup
+## Running zbox commands
 
-The zbox command line uses the ~/.zcn/config.yaml file at runtime to point to the network specified in that file.
-
-## Commands
-
-Note in this document, we will show only the commands, response will vary depending on your usage, so may not be provided in all places.
+Note in this document, we will only show the commands for particular functionalities, the response will vary depending on your usage and may not be provided in all places. To get a more descriptive view of all the zbox functionalities check zbox cli documentation at docs.0chain.net.
 
 ### Command with no arguments
 
 When you run `zbox` with no arguments, it will list all the supported commands.
 
 ```
-./zbox
-0Box is a decentralized storage application written on the 0Chain platform.
-                        Complete documentation is available at https://0chain.net
+./zbox 
+zbox is a decentralized storage application written on the 0Chain platform.
+                        Complete documentation is available at https://docs.0chain.net/0chain/
 
 Usage:
   zbox [command]
 
 Available Commands:
+  add-collab        add collaborator for a file
   alloc-cancel      Cancel an allocation
-  newallocation      Creates a new allocation
   alloc-fini        Finalize an expired allocation
-  updateallocation      Updates allocation's expiry and size
   bl-info           Get blobber info
   bl-update         Update blobber settings by its delegate_wallet owner
-  add-collab        add collaborator for a file
-  delete-collab     delete collaborator for a file
-  commit            commit a file changes to chain 
+  commit            commit a file changes to chain
   copy              copy an object(file/folder) to another folder on blobbers
   cp-info           Challenge pool information.
   delete            delete file from blobbers
+  delete-collab     delete collaborator for a file
   download          download file from blobbers
   get               Gets the allocation info
   get-diff          Get difference of local and allocation root
@@ -151,10 +128,11 @@ Available Commands:
   help              Help about any command
   list              list files from blobbers
   list-all          list all files from blobbers
-  listallocations    List allocations for the client
+  listallocations   List allocations for the client
   ls-blobbers       Show active blobbers in storage SC.
   meta              get meta data of files from blobbers
   move              move an object(file/folder) to another folder on blobbers
+  newallocation     Creates a new allocation
   register          Registers the wallet with the blockchain
   rename            rename an object(file/folder) on blobbers
   rp-create         Create read pool if missing
@@ -174,6 +152,7 @@ Available Commands:
   sync              Sync files to/from blobbers
   update            update file to blobbers
   update-attributes update object attributes on blobbers
+  updateallocation  Updates allocation's expiry and size
   upload            upload file to blobbers
   version           Prints version information
   wp-info           Write pool information.
@@ -191,11 +170,12 @@ Flags:
       --wallet_client_key string   wallet client_key
 
 Use "zbox [command] --help" for more information about a command.
+
 ```
 
 ### Register
 
-Command `register` registers a wallet that will be used both by the blockchain and blobbers, and is created in the ~/.zcn directory. If you have created a wallet with another network, you will need to remove and recreate it. If you want to create multiple wallets with multiple allocations, make sure you store the wallet information. zbox uses the keys in ~/.zcn/wallet.json when it executes the commands.
+Command `register`  creates a wallet if not created and registers it for use by the blockchain and blobbers. The wallet is created in the ~/.zcn directory and uses the keys stored in ~/.zcn/wallet.json. You can create multiple wallets with multiple allocations but make sure to specify a wallet file for every wallet.
 
 #### Usage
 
@@ -223,61 +203,73 @@ Global Flags:
 
 ```
 ./zbox register
+```
+
+Response:
+
+```
 ZCN wallet created
 Wallet registered
 ```
 
 ### Create new allocation
 
-Command `newallocation` reserves hard disk space on the blobbers. Let's see the parameters it takes by using --help.
+Command `newallocation` reserves hard disk space on the blobbers. Let's see the parameters it takes by using `--help`.
 
 #### Usage
 
 ```
 ./zbox newallocation --help
-Creates a new allocation
 
+Creates a new allocation
 Usage:
   zbox newallocation [flags]
 
 Flags:
       --allocationFileName string   --allocationFileName allocation.txt (default "allocation.txt")
+      --cost                        pass this option to only get the min lock demand
       --data int                    --data 2 (default 2)
-      --expire duration             duration to allocation expiration (default 720h)
+      --expire duration             duration to allocation expiration (default 720h0m0s)
   -h, --help                        help for newallocation
-      --lock string                 lock write pool with given number of tokens, or use 'auto' (default "0")
-      --mcct duration               max challenge completion time, optional, default 1 hour
+      --lock float                  lock write pool with given number of tokens, required
+      --mcct duration               max challenge completion time, optional, default 1h (default 1h0m0s)
       --parity int                  --parity 2 (default 2)
       --read_price string           select blobbers by provided read price range, use form 0.5-1.5, default is [0; inf)
       --size int                    --size 10000 (default 2147483648)
+      --usd                         pass this option to give token value in USD
       --write_price string          select blobbers by provided write price range, use form 1.5-2.5, default is [0; inf)
 
 Global Flags:
-      --config string      config file (default is config.yaml)
-      --configDir string   configuration directory (default is $HOME/.zcn)
-      --verbose            prints sdk log in stderr (default false)
-      --wallet string      wallet file (default is wallet.json)
+      --config string              config file (default is config.yaml)
+      --configDir string           configuration directory (default is $HOME/.zcn)
+      --network string             network file to overwrite the network details (if required, default is network.yaml)
+      --verbose                    prints sdk log in stderr (default false)
+      --wallet string              wallet file (default is wallet.json)
+      --wallet_client_id string    wallet client_id
+      --wallet_client_key string   wallet client_key
+
+
 ```
 
-As you can see the `newallocation` command takes allocationFileName where the volume information is stored locally.
-All the parameters have default values. With more data shards, you can upload or download files faster.
-With more parity shards, you have higher availability.
+As you can see the `newallocation` command takes allocationFileName where the volume information is stored locally. All the parameters have default values. With more data shards, you can upload or download files faster. With more parity shards, you have higher availability.
 
 #### Example
 
-Create a new allocation with default values. If you have not registered a wallet,
-it will automatically create a wallet. The `newallocation` also, on success,
-creates related write pool. Use `--lock` flag to add some tokens to the pool
-in the transaction. Also, the allocation information is stored under `$HOME/.zcn/allocation.txt`.
+To create a new allocation with default values,use `newallocation` with a `--lock` flag to add some tokens to the write pool .On success a related write pool is created and the allocation information is stored under `$HOME/.zcn/allocation.txt`.
 
 ```
-./zbox newallocation
+./zbox newallocation --lock 0.5
+```
+
+Response:
+
+```
 Allocation created : d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
 ```
 
 ### Update allocation
 
-Command `updateallocation` updates hard disk space and expiry on the blobbers. Let's see the parameters it takes by using --help.
+Command `updateallocation` updates hard disk space and expiry on the blobbers. Let's see the parameters it takes by using `--help` flag..
 
 #### Usage
 
@@ -307,21 +299,23 @@ Global Flags:
 
 #### Example
 
-Update an allocation with adjust storage expiration time, and adjust allocation size as bytes.
+Update an allocation for different storage expiration time, and  allocation size(in bytes).
 
 ```
 ./zbox updateallocation --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac --expiry 48h --size 4096
+```
+
+Response:
+
+```
 Allocation updated with txId : fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
 ```
 
-You can see more txn details using above txID in block explorer.
+You can see more txn details using above txID in block explorer [here](https://one.devnet-0chain.net/).
 
 ### Cancel allocation
 
-Cancel allocation immediately and return all tokens from challenge pool
-back to user (to write pool). This case blobber will not give their min
-lock demand. If blobbers already got some tokens, the tokens will not be
-returned.
+Cancel allocation immediately return all tokens from challenge pool back to user (to write pool) and cancels the allocation. In this case blobber will not give their min lock demand. If blobbers already got some tokens, the tokens will not be returned.
 
 #### Usage
 
@@ -355,13 +349,9 @@ Global Flags:
 ./zbox alloc-cancel --allocation <allocation_id>
 ```
 
-It returns tokens to user's write pool, creating one expired if necessary.
-
 ### Finalize allocation
 
-Finalize an expired allocation. When allocation expired, after its
-challenge completion time (after the expiration) an allocation can be
-finalized by owner or one of allocation blobbers.
+Finalize an expired allocation. When an allocation is expired, after its challenge completion time (after the expiration), it can be finalized by the owner or one of the allocation blobbers.
 
 #### Usage
 
@@ -393,8 +383,6 @@ Global Flags:
 ```
 ./zbox alloc-fini --allocation <allocation_id>
 ```
-
-
 
 ### List blobbers
 
@@ -447,21 +435,43 @@ Global Flags:
     max_offer_duration:  744h0m0s
 ```
 
-
 ### Detailed blobber information
 
-Get blobber detailed information.
+Use `bl-info` command to get detailed blobber information.
 
 #### Usage
 
 ```
-./zbox bl-info --blobber_id <blobber_id>
+./zbox bl-info --h
+Get blobber info
+
+Usage:
+  zbox bl-info [flags]
+
+Flags:
+      --blobber_id string   blobber ID, required
+  -h, --help                help for bl-info
+      --json                pass this option to print response as json data
+
+Global Flags:
+      --config string              config file (default is config.yaml)
+      --configDir string           configuration directory (default is $HOME/.zcn)
+      --network string             network file to overwrite the network details (if required, default is network.yaml)
+      --verbose                    prints sdk log in stderr (default false)
+      --wallet string              wallet file (default is wallet.json)
+      --wallet_client_id string    wallet client_id
+      --wallet_client_key string   wallet client_key
 ```
 
 #### Example
 
 ```
 ./zbox bl-info --blobber_id f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25
+```
+
+Response:
+
+```
 id:                f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25
 url:               http://zerominer.xyz:5051
 capacity:          1.0 GiB
@@ -483,7 +493,7 @@ settings:
 
 ### Update blobber settings
 
-Use `./zbox bl-update --help` to get list of setting can be updated.
+Use `./zbox bl-update --help` to get list of settings that can be updated.
 
 #### Usage
 
@@ -561,23 +571,35 @@ Global Flags:
 
 #### Example
 
-**upload file with no encryption**
+**Upload file with no encryption**
 
 ```
 ./zbox upload --localpath /absolute-path-to-local-file/hello.txt --remotepath /myfiles/hello.txt --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
+```
+
+Response:
+
+```
 12390 / 12390 [================================================================================] 100.00% 3s
 Status completed callback. Type = application/octet-stream. Name = hello.txt
 ```
 
-**upload file with encryption**
+**Upload file with encryption**
 
-Use upload command with optional encrypt parameter to upload a file in encrypted format. This can be downloaded as normal from same wallet/allocation or utilize Proxy Re-Encryption facility (see [download](#Download) command).
+Use upload command with optional encrypt parameter to upload a file in encrypted format. This can be downloaded as normal from same wallet/allocation or utilize Proxy Re-Encryption facility (see [download](https://github.com/0chain/zboxcli#Download) command).
 
 ```
 ./zbox upload --encrypt --localpath <absolute path to file>/sensitivedata.txt --remotepath /myfiles/sensitivedata.txt --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
+```
+
+Response:
+
+```
 12390 / 12390 [================================================================================] 100.00% 3s
 Status completed callback. Type = application/octet-stream. Name = sensitivedata.txt
 ```
+
+
 
 ### Download
 
@@ -602,7 +624,7 @@ Flags:
       --localpath string      Local path of file to download
       --lookuphash string     The remote lookuphash of the object retrieved from the list
       --remotepath string     Remote path to download
-      --rx_pay                used to download by aithticket; pass true to pay for download yourself
+      --rx_pay                used to download by authticket; pass true to pay for download yourself
   -s, --startblock int        pass this option to download from specific block number
   -t, --thumbnail             pass this option to download only the thumbnail
 
@@ -614,12 +636,18 @@ Global Flags:
       --wallet string              wallet file (default is wallet.json)
       --wallet_client_id string    wallet client_id
       --wallet_client_key string   wallet client_key
+
 ```
 
 #### Example
 
 ```
 ./zbox download --allocation 3c0d32560ea18d9d0d76808216a9c634f661979d29ba59cc8dafccb3e5b95341 --remotepath /myfiles/horse.jpeg --localpath ../horse.jpeg
+```
+
+Response:
+
+```
 4 / 4 [=======================================================================] 100.00% 3s
 Status completed callback. Type = application/octet-stream. Name = horse.jpeg
 ```
@@ -633,11 +661,11 @@ Downloaded file will be in the localpath specified.
 
 ### Update
 
-Use `update` command to update content of an existing file in the remote path. Similar to [upload](#Upload) command.
+Use `update` command to update content of an existing file in the remote path. Similar to [upload](https://github.com/0chain/zboxcli#Upload) command.
 
 ### Delete
 
-Use `delete` command to delete your file on allocation.
+Use `delete` command to delete your file on the allocation.
 
 #### Usage
 
@@ -668,10 +696,16 @@ Global Flags:
 
 ```
 ./zbox delete --allocation 3c0d32560ea18d9d0d76808216a9c634flist661979d29ba59cc8dafccb3e5b95341 --remotepath /myfiles/horse.jpeg
+```
+
+Response:
+
+```
 /myfiles/horse.jpeg deleted
 ```
 
-File successfully deleted (Can be verified using [list](#List))
+
+File successfully deleted (Can be verified using [list](https://github.com/0chain/zboxcli#List))
 
 ### Share
 
@@ -705,27 +739,39 @@ Global Flags:
 
 #### Example
 
-**public share**
+**Public share**
 
 ```
 ./zbox share --allocation 3c0d32560ea18d9d0d76808216a9c634f661979d29ba59cc8dafccb3e5b95341 --remotepath /myfiles/hello.txt
+```
+
+Response:
+
+```
 Auth token :eyJjbGllbnRfaWQiOiIiLCJvd25lcl9pZCI6ImI2ZGU1NjJiNTdhMGI1OTNkMDQ4MDYyNGY3OWE1NWVkNDZkYmE1NDQ0MDQ1OTViZWUwMjczMTQ0ZTAxMDM0YWUiLCJhbGxvY2F0aW9uX2lkIjoiODY5NWI5ZTdmOTg2ZDRhNDQ3YjY0ZGUwMjBiYTg2ZjUzYjNiNWUyYzQ0MmFiY2ViNmNkNjU3NDI3MDIwNjdkYyIsImZpbGVfcGF0aF9oYXNoIjoiMjBkYzc5OGIwNGViYWIzMDE1ODE3Yzg1ZDIyYWVhNjRhNTIzMDViYWQ2Zjc0NDlhY2QzODI4YzhkNzBjNzZhMyIsImZpbGVfbmFtZSI6IjEudHh0IiwicmVmZXJlbmNlX3R5cGUiOiJmIiwiZXhwaXJhdGlvbiI6MTYyNjQyMDM1OSwidGltZXN0YW1wIjoxNjE4NjQ0MzU5LCJyZV9lbmNyeXB0aW9uX2tleSI6IiIsInNpZ25hdHVyZSI6ImFjNzIzZjdhMWQ0ZDBmMjc2ZmQ3Yzc2NWMxOTcyZTlhODc2OGI0MjU1ODkyMmMwNjEyZjMxNjBjMGZiODQ5MGMifQ==
 ```
 
-**encrypted share**
+
+**Encrypted share**
 
 Use clientid and encryptionpublickey of the user to share with.
 
 ```
 ./zbox share --allocation 3c0d32560ea18d9d0d76808216a9c634f661979d29ba59cc8dafccb3e5b95341 --remotepath /myfiles/hello.txt --clientid b6de562b57a0b593d0480624f79a55ed46dba544404595bee0273144e01034ae --encryptionpublickey 1JuT4AbQnmIaOMTuWn07t98xQRsSqXAxZYfwCI1yQLM=
+```
+
+Response:
+
+```
 Auth token :eyJjbGllbnRfaWQiOiJiNmRlNTYyYjU3YTBiNTkzZDA0ODA2MjRmNzlhNTVlZDQ2ZGJhNTQ0NDA0NTk1YmVlMDI3MzE0NGUwMTAzNGFlIiwib3duZXJfaWQiOiJiNmRlNTYyYjU3YTBiNTkzZDA0ODA2MjRmNzlhNTVlZDQ2ZGJhNTQ0NDA0NTk1YmVlMDI3MzE0NGUwMTAzNGFlIiwiYWxsb2NhdGlvbl9pZCI6Ijg2OTViOWU3Zjk4NmQ0YTQ0N2I2NGRlMDIwYmE4NmY1M2IzYjVlMmM0NDJhYmNlYjZjZDY1NzQyNzAyMDY3ZGMiLCJmaWxlX3BhdGhfaGFzaCI6IjIwZGM3OThiMDRlYmFiMzAxNTgxN2M4NWQyMmFlYTY0YTUyMzA1YmFkNmY3NDQ5YWNkMzgyOGM4ZDcwYzc2YTMiLCJmaWxlX25hbWUiOiIxLnR4dCIsInJlZmVyZW5jZV90eXBlIjoiZiIsImV4cGlyYXRpb24iOjE2MjY0MjA1NzQsInRpbWVzdGFtcCI6MTYxODY0NDU3NCwicmVfZW5jcnlwdGlvbl9rZXkiOiJ7XCJyMVwiOlwiOUpnci9aVDh6VnpyME1BcWFidlczdnhoWEZoVkdMSGpzcVZtVUQ1QTJEOD1cIixcInIyXCI6XCIrVEk2Z1pST3JCR3ZURG9BNFlicmNWNXpoSjJ4a0I4VU5SNTlRckwrNUhZPVwiLFwicjNcIjpcInhySjR3bENuMWhqK2Q3RXU5TXNJRzVhNnEzRXVzSlZ4a2N6YXN1K0VqQW89XCJ9Iiwic2lnbmF0dXJlIjoiZTk3NTYyOTAyODU4OTBhY2QwYTcyMzljNTFhZjc0YThmNjU2OTFjOTUwMzRjOWM0ZDJlMTFkMTQ0MTk0NmExYSJ9
 ```
 
-Response contains auth token an encrypted string that can be shared.
+
+Response contains an auth token- an encrypted string that can be shared.
 
 ### List
 
-Use `list` command to list files in given path.
+Use `list` command to list files in given remote path of the dStorage.
 
 #### Usage
 
@@ -757,14 +803,16 @@ Global Flags:
 #### Example
 
 ```
-./zbox list --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --remotepath /
-  TYPE | NAME  |  PATH  | SIZE  | NUM BLOCKS |                           LOOKUP HASH                            | IS ENCRYPTED | DOWNLOADS PAYER  
-+------+-------+--------+-------+------------+------------------------------------------------------------------+--------------+-----------------+
-  f    | 1.txt | /1.txt | 12390 |          6 | 20dc798b04ebab3015817c85d22aea64a52305bad6f7449acd3828c8d70c76a3 | YES          | owner            
+./zbox list --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --remotepath /  
 ```
 
-Response will be a list with information for each file/folder in the given path. The information includes lookuphash which is require for download via authticket
-(Optional file list in json format)
+Response:
+
+```
+Auth token :eyJjbGllbnRfaWQiOiJiNmRlNTYyYjU3YTBiNTkzZDA0ODA2MjRmNzlhNTVlZDQ2ZGJhNTQ0NDA0NTk1YmVlMDI3MzE0NGUwMTAzNGFlIiwib3duZXJfaWQiOiJiNmRlNTYyYjU3YTBiNTkzZDA0ODA2MjRmNzlhNTVlZDQ2ZGJhNTQ0NDA0NTk1YmVlMDI3MzE0NGUwMTAzNGFlIiwiYWxsb2NhdGlvbl9pZCI6Ijg2OTViOWU3Zjk4NmQ0YTQ0N2I2NGRlMDIwYmE4NmY1M2IzYjVlMmM0NDJhYmNlYjZjZDY1NzQyNzAyMDY3ZGMiLCJmaWxlX3BhdGhfaGFzaCI6IjIwZGM3OThiMDRlYmFiMzAxNTgxN2M4NWQyMmFlYTY0YTUyMzA1YmFkNmY3NDQ5YWNkMzgyOGM4ZDcwYzc2YTMiLCJmaWxlX25hbWUiOiIxLnR4dCIsInJlZmVyZW5jZV90eXBlIjoiZiIsImV4cGlyYXRpb24iOjE2MjY0MjA1NzQsInRpbWVzdGFtcCI6MTYxODY0NDU3NCwicmVfZW5jcnlwdGlvbl9rZXkiOiJ7XCJyMVwiOlwiOUpnci9aVDh6VnpyME1BcWFidlczdnhoWEZoVkdMSGpzcVZtVUQ1QTJEOD1cIixcInIyXCI6XCIrVEk2Z1pST3JCR3ZURG9BNFlicmNWNXpoSjJ4a0I4VU5SNTlRckwrNUhZPVwiLFwicjNcIjpcInhySjR3bENuMWhqK2Q3RXU5TXNJRzVhNnEzRXVzSlZ4a2N6YXN1K0VqQW89XCJ9Iiwic2lnbmF0dXJlIjoiZTk3NTYyOTAyODU4OTBhY2QwYTcyMzljNTFhZjc0YThmNjU2OTFjOTUwMzRjOWM0ZDJlMTFkMTQ0MTk0NmExYSJ9
+```
+
+Response will be a list with information for each file/folder in the given path. The information includes lookuphash which is require for download via authticket.
 
 ### Copy
 
@@ -799,13 +847,19 @@ Global Flags:
 #### Example
 
 ```
-./zbox copy --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac --remotepath /file.txt --destpath /existingFolder
+./zbox copy --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac --remotepath 
+```
+
+Response:
+
+```
+/file.txt --destpath /existingFolder
 /file.txt copied
 ```
 
 ### Move
 
-Use `move` command to move file to another folder path in dStorage.
+Use `move` command to move file to another remote folder path on dStorage.
 
 ```
 ./zbox move -h
@@ -834,13 +888,19 @@ Global Flags:
 #### Example
 
 ```
-./zbox move --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac --remotepath /file.txt --destpath /existingFolder
+./zbox move --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac --remotepath 
+```
+
+Response:
+
+```
+/file.txt --destpath /existingFolder
 /file.txt moved
 ```
 
 ### List allocations
 
-Use `listallocations` command to list all allocations for a client.
+Use `listallocations` command to list all allocations for the client.
 
 #### Usage
 
@@ -869,6 +929,11 @@ Global Flags:
 
 ```
 ./zbox listallocations
+```
+
+Response:
+
+```
                                  ID                                |    SIZE    |          EXPIRATION           | DATASHARDS | PARITYSHARDS | FINALIZED | CANCELED |   R  PRICE   |   W  PRICE    
 +------------------------------------------------------------------+------------+-------------------------------+------------+--------------+-----------+----------+--------------+--------------+
   8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc | 6442450944 | 2021-05-24 00:27:23 +0700 +07 |          4 |            2 | false     | false    | 0.0599999994 | 0.0599999994  
@@ -876,7 +941,7 @@ Global Flags:
 
 ### Sync
 
-`sync` command helps to sync all files in localfolder recursively to remote.
+sync command helps in syncing all files from the local folder recursively to the remote.
 
 #### Usage
 
@@ -913,6 +978,11 @@ Global Flags:
 
 ```
 ./zbox sync --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --localpath /home/dung/Desktop/alloc --localcache /home/dung/Desktop/localcache.json
+```
+
+Response:
+
+```
   OPERATION |      PATH       
 +-----------+----------------+
   Download  | /1.txt          
@@ -930,12 +1000,11 @@ Sync Complete
 Local cache saved.
 ```
 
-It will sync your localpath with the remote and do all the requried CRUD operations.
+It will sync your localpath with the remote and do all the required CRUD operations.
 
 ### Update file attributes
 
-Use `update-attributes` command Update file attributes.
-Only one attribute is currently supported: who-pays-for-reads that can be:
+Use `update-attributes` command to update file attributes. Only one attribute is currently supported: who-pays-for-reads that can be:
 
 - `owner`, where allocation owner pays for own and 3rd_party reads
 - `3rd_party`, where 3rd party readers pays for their downloads themselves
@@ -970,12 +1039,18 @@ Global Flags:
 
 ```
 ./zbox update-attributes --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --remotepath /1.txt --who-pays-for-reads 3rd_party
+
+```
+
+Response:
+
+```
 attributes updated
 ```
 
 ### Get wallet
 
-Use `getwallet` command to get additional wallet information including Encryption Public Key required for Proxy Re-Encryption.
+Use `getwallet` command to get additional wallet information including Encryption Public Key,Client ID which are required for Private File Sharing.
 
 #### Usage
 
@@ -1004,6 +1079,11 @@ Global Flags:
 
 ```
 ./zbox getwallet
+```
+
+Response:
+
+```
                                                              PUBLIC KEY                                                            |                             CLIENTID                             |            ENCRYPTION PUBLIC KEY              
 +----------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------+----------------------------------------------+
   3e7fa2dd6b924adfdf69e36cc61cb5d9012226dac619250ce5fc37eae25a05118008944d1727221b6d14b0998c5813acd13066040976598c5366e86519377001 | b6de562b57a0b593d0480624f79a55ed46dba544404595bee0273144e01034ae | 1JuT4AbQnmIaOMTuWn07t98xQRsSqXAxZYfwCI1yQLM=  
@@ -1013,7 +1093,7 @@ Response will give details for current selected wallet (or wallet file specified
 
 ### Get
 
-Use `get` command to get the information about the allocation like total size of the allocation, used size, number of challenges and the result of that, etc.
+Use `get` command to get the information about the allocation such as total size , used size, number of challenges and challenges passed/failed/open/redeemed.
 
 #### Usage
 
@@ -1043,6 +1123,11 @@ Global Flags:
 
 ```
 ./zbox get --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc
+```
+
+Response:
+
+```
 allocation:
   id:              8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc
   tx:              026c9d331e9c93aee4f3247507c20bdd4b7429bd81d27845bfab83f9c9c082e6 (latest create/update allocation transaction hash)
@@ -1069,11 +1154,9 @@ allocation:
         challenge_completion_time: 2m0s
 ```
 
-Response will have information about blobbers allocated and stats for the allocation. Stats contain important information about the size of the allocation, size used, number of write markers, and challenges passed/failed/open/redeemed
-
 ### Get metadata
 
-Use `meta` command to get meta data for the given remote file. Use with help to know more about possible flags.
+Use `meta` command to get meta data for a given remote file. Use `-h` to know more about possible flags.
 
 #### Usage
 
@@ -1104,29 +1187,41 @@ Global Flags:
 
 #### Example
 
-**no auth ticket specified**
+**Without any authticket**
 
 ```
 ./zbox meta --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --remotepath /1.txt
+```
+
+Response:
+
+```
   TYPE | NAME  |  PATH  |                           LOOKUP HASH                            | SIZE |        MIME TYPE         |                   HASH                    
 +------+-------+--------+------------------------------------------------------------------+------+--------------------------+------------------------------------------+
   f    | 1.txt | /1.txt | 20dc798b04ebab3015817c85d22aea64a52305bad6f7449acd3828c8d70c76a3 |    4 | application/octet-stream | 03cfd743661f07975fa2f1220c5194cbaff48451 
 ```
 
-**with auth ticket specified**
+**With authticket **
 
 ```
 ./zbox meta --lookuphash 20dc798b04ebab3015817c85d22aea64a52305bad6f7449acd3828c8d70c76a3 --authticket eyJjbGllbnRfaWQiOiJiNmRlNTYyYjU3YTBiNTkzZDA0ODA2MjRmNzlhNTVlZDQ2ZGJhNTQ0NDA0NTk1YmVlMDI3MzE0NGUwMTAzNGFlIiwib3duZXJfaWQiOiJiNmRlNTYyYjU3YTBiNTkzZDA0ODA2MjRmNzlhNTVlZDQ2ZGJhNTQ0NDA0NTk1YmVlMDI3MzE0NGUwMTAzNGFlIiwiYWxsb2NhdGlvbl9pZCI6Ijg2OTViOWU3Zjk4NmQ0YTQ0N2I2NGRlMDIwYmE4NmY1M2IzYjVlMmM0NDJhYmNlYjZjZDY1NzQyNzAyMDY3ZGMiLCJmaWxlX3BhdGhfaGFzaCI6IjIwZGM3OThiMDRlYmFiMzAxNTgxN2M4NWQyMmFlYTY0YTUyMzA1YmFkNmY3NDQ5YWNkMzgyOGM4ZDcwYzc2YTMiLCJmaWxlX25hbWUiOiIxLnR4dCIsInJlZmVyZW5jZV90eXBlIjoiZiIsImV4cGlyYXRpb24iOjE2MjY0MjA1NzQsInRpbWVzdGFtcCI6MTYxODY0NDU3NCwicmVfZW5jcnlwdGlvbl9rZXkiOiJ7XCJyMVwiOlwiOUpnci9aVDh6VnpyME1BcWFidlczdnhoWEZoVkdMSGpzcVZtVUQ1QTJEOD1cIixcInIyXCI6XCIrVEk2Z1pST3JCR3ZURG9BNFlicmNWNXpoSjJ4a0I4VU5SNTlRckwrNUhZPVwiLFwicjNcIjpcInhySjR3bENuMWhqK2Q3RXU5TXNJRzVhNnEzRXVzSlZ4a2N6YXN1K0VqQW89XCJ9Iiwic2lnbmF0dXJlIjoiZTk3NTYyOTAyODU4OTBhY2QwYTcyMzljNTFhZjc0YThmNjU2OTFjOTUwMzRjOWM0ZDJlMTFkMTQ0MTk0NmExYSJ9
-  TYPE | NAME  |                           LOOKUP HASH                            | SIZE |        MIME TYPE         |                   HASH                    
+  
+```
+
+Response:
+
+```
+TYPE | NAME  |                           LOOKUP HASH                            | SIZE |        MIME TYPE         |                   HASH                    
 +------+-------+------------------------------------------------------------------+------+--------------------------+------------------------------------------+
   f    | 1.txt | 20dc798b04ebab3015817c85d22aea64a52305bad6f7449acd3828c8d70c76a3 |    4 | application/octet-stream | 03cfd743661f07975fa2f1220c5194cbaff48451  
 ```
+
 
 Response will be meta data for the given filepath/lookuphash (if using authTicket)
 
 ### Rename
 
-`rename` command helps in renaming a file already exists in dStorage.
+`rename` command helps in renaming a file existing already on dStorage.
 
 #### Usage
 
@@ -1158,12 +1253,17 @@ Global Flags:
 
 ```
 ./zbox rename --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --remotepath /1.txt --destname x.txt
+```
+
+Response:
+
+```
 /1.txt renamed
 ```
 
 ### Stats
 
-`stats` command helps in getting upload, download and challenge information on a file.
+`stats` command helps in getting upload, download and challenge information for a file.
 
 ```
 ./zbox stats -h
@@ -1192,6 +1292,11 @@ Global Flags:
 
 ```
 ./zbox stats --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --remotepath /1.txt
+```
+
+Response:
+
+```
                               BLOBBER                              | NAME  |  PATH  | SIZE | UPLOADS | BLOCK DOWNLOADS | CHALLENGES | BLOCKCHAIN AWARE  
 +------------------------------------------------------------------+-------+--------+------+---------+-----------------+------------+------------------+
   9c14598d5d39cb27177add6efabdadfb0a0478abe5d471ffe9080751dc89321c | 1.txt | /1.txt | 2065 |       3 |               1 |          0 | true              
@@ -1204,7 +1309,7 @@ Global Flags:
 
 ### Repair
 
-Use `start-repair` command to repair a file.
+Use `start-repair` command to repair a file on dStorage.
 
 #### Usage
 
@@ -1235,12 +1340,17 @@ Global Flags:
 
 ```
 ./zbox start-repair --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --repairpath / --rootpath /home/dung/Desktop/alloc
+```
+
+Response:
+
+```
 Repair file completed, Total files repaired:  0
 ```
 
 ### Add collaborator
 
-Use `add-collab` command to add a collaborator for a file
+Use `add-collab` command to add a collaborator for a file on dStorage.
 
 #### Usage
 
@@ -1271,11 +1381,15 @@ Global Flags:
 
 ```
 ./zbox add-collab --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --remotepath /1.txt --collabid d477d12134c2d7ba5ab71ac8ad37f244224695ef3215be990c3215d531c5a329
+```
+
+Response will be a confirmation that collaborator is added on all blobbers for the given file .
+
+```
 Collaborator d477d12134c2d7ba5ab71ac8ad37f244224695ef3215be990c3215d531c5a329 added successfully for the file /1.txt
 ```
 
-Response will be a confirmation that collaborator is added on all blobbers for the given file
-You can check all collaborators for a file in metadata json response
+You can check all collaborators for a file in metadata json response.
 
 ### Delete collaborator
 
@@ -1310,10 +1424,13 @@ Global Flags:
 
 ```
 ./zbox delete-collab --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --remotepath /1.txt --collabid d477d12134c2d7ba5ab71ac8ad37f244224695ef3215be990c3215d531c5a329
-Collaborator d477d12134c2d7ba5ab71ac8ad37f244224695ef3215be990c3215d531c5a329 removed successfully for the file /1.txt
 ```
 
-Response will be a confirmation that collaborator is removed on all blobbers for the given file
+Response will be a confirmation that collaborator is removed on all blobbers for the given file.
+
+```
+Collaborator d477d12134c2d7ba5ab71ac8ad37f244224695ef3215be990c3215d531c5a329 removed successfully for the file /1.txt
+```
 
 ### Challenge pool information
 
@@ -1346,21 +1463,24 @@ Global Flags:
 #### Example
 
 ```
-./zbox cp-info --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc
+./zbox cp-info --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc   
+```
+
+Response:
+
+```
 POOL ID: 6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7:challengepool:8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc
     BALANCE    |             START             |            EXPIRE             | FINIALIZED  
 +--------------+-------------------------------+-------------------------------+------------+
-  0.0000002796 | 2021-04-17 00:27:23 +0700 +07 | 2021-05-24 00:29:23 +0700 +07 | false       
+  0.0000002796 | 2021-04-17 00:27:23 +0700 +07 | 2021-05-24 00:29:23 +0700 +07 | false    
 ```
 
-Where time bounds and the finalization are allocations related. Balance is
-current challenge pool balance.
+
+ Balance is the current challenge pool balance. Start,Expire time and the finalization are allocations related.
 
 ### Create read pool
 
-Use `rp-create` to create read pool.
-
-#### Usage
+Use `rp-create` to create a read pool.
 
 ```
 ./zbox rp-create
@@ -1376,8 +1496,7 @@ Use `rp-info` to get read pool information.
 
 ### Lock tokens into read pool
 
-Lock some tokens in read pool associated with an allocation. The tokens
-will be divided between allocation blobbers by their read price.
+Lock some tokens in read pool associated with an allocation. The tokens will be divided between allocation blobbers by their read price.
 
 #### Usage
 
@@ -1387,8 +1506,7 @@ will be divided between allocation blobbers by their read price.
 
 ### Unlock tokens from read pool
 
-Use `rp-unlock` to unlock tokens from an expired read pool by pool id. See `rp-info` for the POOL_ID and
-the expiration.
+Use `rp-unlock` to unlock tokens from an expired read pool by pool id. See `rp-info` for the POOL_ID and the expiration.
 
 #### Usage
 
@@ -1416,9 +1534,7 @@ Use `sp-info` to get stake pool information and settings.
 
 ### Lock tokens into stake pool
 
-Lock crates delegate pool for current client and given blobber. The tokens
-locked for the blobber stake and can be unlocked any time, excluding where
-the tokens held by opened offers. The tokens collect interests.
+Lock creates delegate pool for current client and given blobber. The tokens locked for the blobber stake can be unlocked any time, excluding where the tokens held by opened offers. The tokens collect interests.
 
 #### Usage
 
@@ -1446,11 +1562,7 @@ Get information about all stake pools of current user.
 
 ### Pay interests
 
-Some changes in stake pool pays all pending rewards to calculate next rewards
-correctly and don't complicate stake pool. But if there are no changes interests
-will not be paid. The `sp-pay-interests` can be used to pay the interests. The
-command never fails. It pays interest for all delegates. Use `sp-info` to check
-interests can be paid.
+Changes in stake pool pays all pending rewards to calculate next rewards correctly and don't complicate stake pool. But if there are no changes interests will not be paid. To pay the interests  `sp-pay-interests`  command can be used to pays interest for all delegates. Use `sp-info` to check interests can be paid or not.
 
 #### Usage
 
@@ -1478,8 +1590,7 @@ Filtering by allocation.
 
 ### Lock tokens into write pool
 
-Lock tokens in a write pool associated with an allocation. All tokens will
-be divided between allocation blobbers depending on their write price.
+`wp-lock` can be used to lock tokens in a write pool associated with an allocation. All tokens will be divided between allocation blobbers depending on their write price.
 
 #### Usage
 
@@ -1489,11 +1600,8 @@ be divided between allocation blobbers depending on their write price.
 
 ### Unlock tokens from write pool
 
-Unlock an expired write pool by its POOL_ID. See wp-info for the id and the
-expiration. An expired write pool, associated with an allocation, can be
-locked until allocation finalization even if it's expired. It possible in
-cases where related blobber doesn't give their min lock demands. The
-finalization will pay the demand an unlock the pool.
+`wp-unlock` unlocks an expired write pool by its POOL_ID. See `wp-info` for the pool id and the expiration. 
+An expired write pool, associated with an allocation, can be locked until allocation finalization even if it's expired. It possible in cases where related blobber doesn't give their min lock demands. The finalization will pay the demand and unlock the pool.
 
 #### Usage
 
@@ -1503,7 +1611,7 @@ finalization will pay the demand an unlock the pool.
 
 ### Download cost
 
-How much a remote file downloading.
+`get-download-cost` determines the cost for downloading the remote file from dStorage.
 
 #### Usage
 
@@ -1511,12 +1619,11 @@ How much a remote file downloading.
 ./zbox get-download-cost --allocation <allocation_id> --remotepath /path/file.ext
 ```
 
-Also, there are `authticket` and `lookuphash` flags to get the cost for
-non allocation owners.
+Also, there are `authticket` and `lookuphash` flags to get the cost for non allocation owners.
 
 ### Upload cost
 
-How much a local file uploading.
+`get-upload-cost` determines the cost for uploading a local file on dStorage.
 
 #### Usage
 
@@ -1524,11 +1631,11 @@ How much a local file uploading.
 ./zbox get-upload-cost --allocation <allocation_id> --localpath ./path/file.ext
 ```
 
----
+------
 
 ## Streaming
 
-Since zboxcli is wrapper to gosdk methods, streaming feature should be implemented together with player for each platforms (Android, IOS, Mac, Windows).
+Streaming feature can be implemented together with player for each platforms (Android, IOS, Mac, Windows).
 
 IOS documentation: https://github.com/0chain/0box-ios
 
@@ -1558,8 +1665,13 @@ listAllocation - returns actuaBlockNumbers and actualFileSize (exclude thumbnail
 
 ```
 ./zbox rp-info
+```
+
+Response:
+
+```
 Failed to get read pool info: error requesting read pool info: consensus_failed: consensus failed on sharders
 ```
 
-This can happen if read pool is not yet created for wallet. Read pool is usually created when new wallet is created by `zbox` or `zwallet`.
-However, if wallet is created through `zwallet recoverwallet`, read pool may not have been created. Simply run `zbox rp-create`
+This can happen if read pool is not yet created for wallet. Read pool is usually created when new wallet is created by `zbox` or `zwallet`. However, if wallet is recovered through `zwallet recoverwallet`, read pool may not have been created. Simply run `zbox rp-create`  to create a read pool.
+
