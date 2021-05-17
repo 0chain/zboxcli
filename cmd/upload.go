@@ -108,6 +108,7 @@ func init() {
 	uploadCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
 	uploadCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
 	uploadCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
+	uploadCmd.Flags().Bool("marketplace", false, "pass this option to encrypt and upload the file for marketplace")
 	uploadCmd.MarkFlagRequired("allocation")
 	uploadCmd.MarkFlagRequired("localpath")
 	uploadCmd.MarkFlagRequired("remotepath")
