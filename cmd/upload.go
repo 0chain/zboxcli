@@ -45,7 +45,7 @@ var uploadCmd = &cobra.Command{
 		thumbnailpath := cmd.Flag("thumbnailpath").Value.String()
 		encrypt, _ := cmd.Flags().GetBool("encrypt")
 		commit, _ := cmd.Flags().GetBool("commit")
-		for_marketplace, _ := cmd.Flags().GetBool("for_marketplace")
+		pre_at_blobber, _ := cmd.Flags().GetBool("pre-at-blobber")
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
@@ -66,7 +66,7 @@ var uploadCmd = &cobra.Command{
 			}
 			attrs.WhoPaysForReads = wp // set given value
 		}
-		attrs.ForMarketplace = for_marketplace
+		attrs.PreAtBlobber = pre_at_blobber
 
 		if len(thumbnailpath) > 0 {
 			if encrypt {
@@ -110,7 +110,7 @@ func init() {
 	uploadCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
 	uploadCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
 	uploadCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
-	uploadCmd.Flags().Bool("for_marketplace", false, "pass this option to encrypt and upload the file for marketplace")
+	uploadCmd.Flags().Bool("pre-at-blobber", false, "pass this option to use pre key at blobber")
 	uploadCmd.MarkFlagRequired("allocation")
 	uploadCmd.MarkFlagRequired("localpath")
 	uploadCmd.MarkFlagRequired("remotepath")
