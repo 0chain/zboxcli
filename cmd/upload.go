@@ -43,9 +43,11 @@ var uploadCmd = &cobra.Command{
 		remotepath := cmd.Flag("remotepath").Value.String()
 		localpath := cmd.Flag("localpath").Value.String()
 		thumbnailpath := cmd.Flag("thumbnailpath").Value.String()
-		encrypt, _ := cmd.Flags().GetBool("encrypt")
 		commit, _ := cmd.Flags().GetBool("commit")
 		pre_at_blobber, _ := cmd.Flags().GetBool("pre-at-blobber")
+		encrypt, _ := cmd.Flags().GetBool("encrypt")
+		// when pre_at_blobber is true, encrypt must also be true
+		encrypt = encrypt || pre_at_blobber
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
