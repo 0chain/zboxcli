@@ -294,6 +294,8 @@ Use upload command to upload a file. By using help for this command, you will se
 - --commit -- [OPTIONAL] pass this option to commit the metadata transaction
 - --attr-who-pays-for-reads [OPTIONAL] set payer for downloads; default is 3rd_party,
   it can be 'owner' or '3rd_party'
+- --pre-at-blobber [OPTIONAL] uploads such that proxy re-encryption is done during download,
+  file is encrypted by default in this mode
 
 Command
 
