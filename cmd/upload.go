@@ -43,8 +43,8 @@ var uploadCmd = &cobra.Command{
 		remotepath := cmd.Flag("remotepath").Value.String()
 		localpath := cmd.Flag("localpath").Value.String()
 		thumbnailpath := cmd.Flag("thumbnailpath").Value.String()
-		commit, _ := cmd.Flags().GetBool("commit")
 		encrypt, _ := cmd.Flags().GetBool("encrypt")
+		commit, _ := cmd.Flags().GetBool("commit")
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
