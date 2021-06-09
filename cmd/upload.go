@@ -101,7 +101,7 @@ var uploadCmd = &cobra.Command{
 
 			fileMeta := sdk.FileMeta{
 				Path:       localpath,
-				Size:       fileInfo.Size(),
+				ActualSize: fileInfo.Size(),
 				MimeType:   mimeType,
 				RemoteName: fileName,
 				RemotePath: remotepath,
