@@ -21,7 +21,7 @@ var walletinfoCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		doJSON, _ := cmd.Flags().GetBool("json")
 
-		header := []string{"Public Key", "ClientID", "Encryption Public Key"}
+		header := []string{"Public FileKey", "ClientID", "Encryption Public FileKey"}
 		data := make([][]string, 1)
 		encPubKey, err := sdk.GetClientEncryptedPublicKey()
 		if err != nil {

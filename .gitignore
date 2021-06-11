@@ -22,3 +22,6 @@ zbox
 zboxcli
 sample/zbox
 sample/zboxcli
+vendor
+.env
+.idea

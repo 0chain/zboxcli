@@ -49,6 +49,7 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
 41. [Unlock tokens from expired write pool](https://github.com/0chain/zboxcli#Unlock-tokens-from-write-pool)
 42. [Get download cost](https://github.com/0chain/zboxcli#Download-cost)
 43. [Get upload cost](https://github.com/0chain/zboxcli#Upload-cost)
+44. [Migrate from S3](https://github.com/0chain/zboxcli#S3-migration)
 
 zbox CLI provides a self-explaining "help" option that lists commands and parameters they need to perform the intended action
 
@@ -1638,6 +1639,80 @@ Also, there are `authticket` and `lookuphash` flags to get the cost for non allo
 ```
 
 ------
+
+### S3 migration
+
+Use `migrate-s3` command to migrate files from s3 to 0chain. Set up s3 credentials and make sure that the associated role has read access.
+
+#### Usage
+
+```
+migrate user data from S3 to 0chain
+
+Usage:
+  zbox migrate-s3 [flags]
+
+Flags:
+      --allocation string   allocation ID for dStorage
+      --bucket strings      specific s3 buckets to use
+      --commit              pass this option to commit the metadata transaction
+      --concurrency int     number of concurrent files to process concurrently during migration (default 10)
+      --delete-source       pass this option to remove migrated files files from source (s3)
+      --encrypt             pass this option to encrypt and upload the file
+  -h, --help                help for migrate-s3
+      --prefix string       s3 file prefix to use during migration
+  -r, --region string       s3 region
+
+Global Flags:
+      --config string              config file (default is config.yaml)
+      --configDir string           configuration directory (default is $HOME/.zcn)
+      --network string             network file to overwrite the network details (if required, default is network.yaml)
+      --verbose                    prints sdk log in stderr (default false)
+      --wallet string              wallet file (default is wallet.json)
+      --wallet_client_id string    wallet client_id
+      --wallet_client_key string   wallet client_key
+
+```
+
+#### Example
+
+**migrate files from a specific bucket with no encryption**
+
+```
+./zbox migrate-s3 --bucket="migration-source-bucket" --region="us-east-2" --allocation $(ALLOC)
+starting streaming upload worker
+ 1356 / 1356 [============================================] 100.00% 3s
+Status completed callback. Type = text/plain. Name = 1.txt
+ 1356 / 1356 [============================================] 100.00% 3s
+Status completed callback. Type = text/plain. Name = 2.txt
+ 1356 / 1356 [============================================] 100.00% 4s
+Status completed callback. Type = text/plain. Name = 5.txt
+ 1356 / 1356 [============================================] 100.00% 4s
+Status completed callback. Type = text/plain. Name = 3.txt
+ 1356 / 1356 [============================================] 100.00% 4s
+Status completed callback. Type = text/plain. Name = 4.txt
+ 1356 / 1356 [============================================] 100.00% 6s
+Status completed callback. Type = text/plain. Name = 6.txt
+migration done
+```
+
+** migrate files from s3 using prefix, and delete migrated source file
+
+```
+./zbox migrate-s3 --bucket="iamrz1-migration" --region="us-east-2" --prefix x --delete-source --allocation $ALLOC
+starting migration from s3
+ 88 / 88 [==============================================================] 100.00% 1s
+Status completed callback. Type = text/plain. Name = darkc0de.txt
+2021/05/21 12:39:40 s3-migration.go:72: migration complete
+```
+
+**upload file with encryption**
+
+Migrate files form source in encrypted format. This can be downloaded as normal from same wallet/allocation or utilize Proxy Re-Encryption facility (see [download](#Download) command).
+
+```
+WIP
+```
 
 ## Streaming
 

@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
-	"github.com/0chain/zboxcli/util"
 	"github.com/0chain/gosdk/zcncore"
+	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )
 
@@ -158,7 +158,6 @@ func init() {
 	wpInfo.PersistentFlags().String("allocation", "",
 		"allocation, optional")
 	wpInfo.Flags().Bool("json", false, "pass this option to print response as json data")
-
 
 	wpLock.PersistentFlags().Duration("duration", 0,
 		"lock duration, required")
