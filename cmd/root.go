@@ -26,7 +26,7 @@ var walletFile string
 var walletClientID string
 var walletClientKey string
 var cDir string
-var bVerbose bool
+var bSilent bool
 var allocUnderRepair bool
 
 var preferredBlobbers []string
@@ -52,7 +52,8 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&walletClientID, "wallet_client_id", "", "wallet client_id")
 	rootCmd.PersistentFlags().StringVar(&walletClientKey, "wallet_client_key", "", "wallet client_key")
 	rootCmd.PersistentFlags().StringVar(&cDir, "configDir", "", "configuration directory (default is $HOME/.zcn)")
-	rootCmd.PersistentFlags().BoolVar(&bVerbose, "verbose", false, "prints sdk log in stderr (default false)")
+	rootCmd.PersistentFlags().BoolVar(&bSilent, "silent", false, "Do not show interactive sdk logs (shown by default)")
+
 }
 
 func Execute() {
@@ -119,9 +120,9 @@ func initConfig() {
 
 	//TODO: move the private key storage to the keychain or secure storage
 
-	//set the log file
-	zcncore.SetLogFile("cmdlog.log", bVerbose)
-	sdk.SetLogFile("cmdlog.log", bVerbose)
+	// set the log file
+	zcncore.SetLogFile("cmdlog.log", !bSilent)
+	sdk.SetLogFile("cmdlog.log", !bSilent)
 
 	err := zcncore.InitZCNSDK(blockWorker, signScheme,
 		zcncore.WithChainID(chainID),
