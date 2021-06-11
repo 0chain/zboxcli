@@ -13,7 +13,6 @@ import (
 
 	"github.com/0chain/gosdk/zboxcore/blockchain"
 
-	"github.com/0chain/gosdk/core/util"
 	"github.com/0chain/gosdk/core/zcncrypto"
 	"github.com/mitchellh/go-homedir"
 
@@ -29,7 +28,6 @@ var walletClientKey string
 var cDir string
 var bVerbose bool
 var allocUnderRepair bool
-var devserver bool
 
 var preferredBlobbers []string
 var clientConfig string
@@ -55,7 +53,6 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&walletClientKey, "wallet_client_key", "", "wallet client_key")
 	rootCmd.PersistentFlags().StringVar(&cDir, "configDir", "", "configuration directory (default is $HOME/.zcn)")
 	rootCmd.PersistentFlags().BoolVar(&bVerbose, "verbose", false, "prints sdk log in stderr (default false)")
-	rootCmd.PersistentFlags().BoolVar(&devserver, "devserver", false, "use devserver intead of 0chain's servers. please update config on $HOME/.zcn/devserver.yml")
 }
 
 func Execute() {
@@ -126,11 +123,6 @@ func initConfig() {
 	//set the log file
 	zcncore.SetLogFile("cmdlog.log", bVerbose)
 	sdk.SetLogFile("cmdlog.log", bVerbose)
-
-	//Use devserver instead of 0chain's servers, please mock api response on $HOME/.zcn/dev-server.yml
-	if devserver {
-		util.Use(util.StartDevServer(getConfigDir() + "/devserver.yml"))
-	}
 
 	err := zcncore.InitZCNSDK(blockWorker, signScheme,
 		zcncore.WithChainID(chainID),
