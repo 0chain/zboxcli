@@ -71,50 +71,7 @@ var uploadCmd = &cobra.Command{
 
 		if stream {
 
-			chunkSize, _ := cmd.Flags().GetInt("chunksize")
-
-			fileReader, err := os.Open(localpath)
-			if err != nil {
-				goto ThrownErr
-			}
-			defer fileReader.Close()
-
-			fileInfo, err := fileReader.Stat()
-			if err != nil {
-				goto ThrownErr
-			}
-
-			mimeType, err := zboxutil.GetFileContentType(fileReader)
-			if err != nil {
-				goto ThrownErr
-			}
-
-			remotepath = zboxutil.RemoteClean(remotepath)
-			isabs := zboxutil.IsRemoteAbs(remotepath)
-			if !isabs {
-				err = common.NewError("invalid_path", "Path should be valid and absolute")
-				goto ThrownErr
-			}
-			remotepath = zboxutil.GetFullRemotePath(localpath, remotepath)
-
-			_, fileName := filepath.Split(remotepath)
-
-			fileMeta := sdk.FileMeta{
-				Path:       localpath,
-				ActualSize: fileInfo.Size(),
-				MimeType:   mimeType,
-				RemoteName: fileName,
-				RemotePath: remotepath,
-				Attributes: attrs,
-			}
-
-			streamUpload := sdk.CreateStreamUpload(allocationObj, fileMeta, fileReader,
-				sdk.WithThumbnailFile(thumbnailpath),
-				sdk.WithChunkSize(chunkSize),
-				sdk.WithEncrypt(encrypt),
-				sdk.WithStatusCallback(statusBar))
-
-			err = streamUpload.Start()
+			err = startStreamUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, attrs, statusBar)
 
 		} else {
 
@@ -134,7 +91,6 @@ var uploadCmd = &cobra.Command{
 
 		}
 
-	ThrownErr:
 		if err != nil {
 			PrintError("Upload failed.", err)
 			os.Exit(1)
@@ -153,6 +109,53 @@ var uploadCmd = &cobra.Command{
 
 		return
 	},
+}
+
+func startStreamUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath, thumbnailPath, remotePath string, encrypt bool, attrs fileref.Attributes, statusBar sdk.StatusCallback) error {
+	chunkSize, _ := cmd.Flags().GetInt("chunksize")
+
+	fileReader, err := os.Open(localPath)
+	if err != nil {
+		return err
+	}
+	defer fileReader.Close()
+
+	fileInfo, err := fileReader.Stat()
+	if err != nil {
+		return err
+	}
+
+	mimeType, err := zboxutil.GetFileContentType(fileReader)
+	if err != nil {
+		return err
+	}
+
+	remotePath = zboxutil.RemoteClean(remotePath)
+	isabs := zboxutil.IsRemoteAbs(remotePath)
+	if !isabs {
+		err = common.NewError("invalid_path", "Path should be valid and absolute")
+		return err
+	}
+	remotePath = zboxutil.GetFullRemotePath(localPath, remotePath)
+
+	_, fileName := filepath.Split(remotePath)
+
+	fileMeta := sdk.FileMeta{
+		Path:       localPath,
+		ActualSize: fileInfo.Size(),
+		MimeType:   mimeType,
+		RemoteName: fileName,
+		RemotePath: remotePath,
+		Attributes: attrs,
+	}
+
+	streamUpload := sdk.CreateStreamUpload(allocationObj, fileMeta, fileReader,
+		sdk.WithThumbnailFile(thumbnailPath),
+		sdk.WithChunkSize(chunkSize),
+		sdk.WithEncrypt(encrypt),
+		sdk.WithStatusCallback(statusBar))
+
+	return streamUpload.Start()
 }
 
 func init() {
