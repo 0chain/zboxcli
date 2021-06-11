@@ -22,4 +22,4 @@ require (
 )
 
 // temporary, for development
-//replace github.com/0chain/gosdk => ../gosdk
+replace github.com/0chain/gosdk => ../gosdk

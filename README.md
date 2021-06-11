@@ -2,6 +2,8 @@
 
 zbox is a command line interface (CLI) tool to understand the capabilities of 0Chain dStorage and prototype your app. The utility is built using 0Chain's goSDK library written in Go. Check out a [video](https://youtu.be/TPrkRjdaHrY) on how to use the CLI to create an allocation (storage volume) and upload, download, update, delete, and share files and folders on the 0Chain dStorage platform.
 
+![Storage](https://user-images.githubusercontent.com/65766301/120052450-0ab66700-c043-11eb-91ab-1f7aa69e133a.png)
+
 [zbox](https://github.com/0chain/zboxcli#Command-with-no-arguments) supports the following features
 
 1. [Register a Wallet](https://github.com/0chain/zboxcli#Register)
@@ -215,6 +217,8 @@ Wallet registered
 ### Create new allocation
 
 Command `newallocation` reserves hard disk space on the blobbers. Let's see the parameters it takes by using `--help`.
+
+![allocation](https://user-images.githubusercontent.com/65766301/120052477-27529f00-c043-11eb-91bb-573558325b20.png)
 
 #### Usage
 
@@ -755,6 +759,7 @@ Auth token :eyJjbGllbnRfaWQiOiIiLCJvd25lcl9pZCI6ImI2ZGU1NjJiNTdhMGI1OTNkMDQ4MDYy
 **Encrypted share**
 
 Use clientid and encryptionpublickey of the user to share with.
+![Private File Sharing](https://user-images.githubusercontent.com/65766301/120052575-962ff800-c043-11eb-9cf7-433383d532a3.png)
 
 ```
 ./zbox share --allocation 3c0d32560ea18d9d0d76808216a9c634f661979d29ba59cc8dafccb3e5b95341 --remotepath /myfiles/hello.txt --clientid b6de562b57a0b593d0480624f79a55ed46dba544404595bee0273144e01034ae --encryptionpublickey 1JuT4AbQnmIaOMTuWn07t98xQRsSqXAxZYfwCI1yQLM=
@@ -1310,7 +1315,8 @@ Response:
 ### Repair
 
 Use `start-repair` command to repair a file on dStorage.
-
+![repair](https://user-images.githubusercontent.com/65766301/120052600-b364c680-c043-11eb-9bf2-038ab244fed6.png)
+\
 #### Usage
 
 ```
@@ -1351,7 +1357,7 @@ Repair file completed, Total files repaired:  0
 ### Add collaborator
 
 Use `add-collab` command to add a collaborator for a file on dStorage.
-
+![collaboration](https://user-images.githubusercontent.com/65766301/120052678-0f2f4f80-c044-11eb-8ca6-1a032659eac3.png)
 #### Usage
 
 ```
@@ -1637,6 +1643,7 @@ Also, there are `authticket` and `lookuphash` flags to get the cost for non allo
 
 Streaming feature can be implemented together with player for each platforms (Android, IOS, Mac, Windows).
 
+![streaming-android](https://user-images.githubusercontent.com/65766301/120052635-ce373b00-c043-11eb-94a5-a9711078ee54.png)
 IOS documentation: https://github.com/0chain/0box-ios
 
 Android documentation: https://github.com/0chain/0boxAndroid
