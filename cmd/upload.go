@@ -3,6 +3,7 @@ package cmd
 import (
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 
@@ -45,6 +46,8 @@ var uploadCmd = &cobra.Command{
 		thumbnailpath := cmd.Flag("thumbnailpath").Value.String()
 		encrypt, _ := cmd.Flags().GetBool("encrypt")
 		commit, _ := cmd.Flags().GetBool("commit")
+		stream, _ := cmd.Flags().GetBool("stream")
+
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
@@ -66,19 +69,28 @@ var uploadCmd = &cobra.Command{
 			attrs.WhoPaysForReads = wp // set given value
 		}
 
-		if len(thumbnailpath) > 0 {
-			if encrypt {
-				err = allocationObj.EncryptAndUploadFileWithThumbnail(localpath, remotepath, thumbnailpath, attrs, statusBar)
-			} else {
-				err = allocationObj.UploadFileWithThumbnail(localpath, remotepath, thumbnailpath, attrs, statusBar)
-			}
+		if stream {
+
+			err = startStreamUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, attrs, statusBar)
+
 		} else {
-			if encrypt {
-				err = allocationObj.EncryptAndUploadFile(localpath, remotepath, attrs, statusBar)
+
+			if len(thumbnailpath) > 0 {
+				if encrypt {
+					err = allocationObj.EncryptAndUploadFileWithThumbnail(localpath, remotepath, thumbnailpath, attrs, statusBar)
+				} else {
+					err = allocationObj.UploadFileWithThumbnail(localpath, remotepath, thumbnailpath, attrs, statusBar)
+				}
 			} else {
-				err = allocationObj.UploadFile(localpath, remotepath, attrs, statusBar)
+				if encrypt {
+					err = allocationObj.EncryptAndUploadFile(localpath, remotepath, attrs, statusBar)
+				} else {
+					err = allocationObj.UploadFile(localpath, remotepath, attrs, statusBar)
+				}
 			}
+
 		}
+
 		if err != nil {
 			PrintError("Upload failed.", err)
 			os.Exit(1)
@@ -99,6 +111,53 @@ var uploadCmd = &cobra.Command{
 	},
 }
 
+func startStreamUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath, thumbnailPath, remotePath string, encrypt bool, attrs fileref.Attributes, statusBar sdk.StatusCallback) error {
+	chunkSize, _ := cmd.Flags().GetInt("chunksize")
+
+	fileReader, err := os.Open(localPath)
+	if err != nil {
+		return err
+	}
+	defer fileReader.Close()
+
+	fileInfo, err := fileReader.Stat()
+	if err != nil {
+		return err
+	}
+
+	mimeType, err := zboxutil.GetFileContentType(fileReader)
+	if err != nil {
+		return err
+	}
+
+	remotePath = zboxutil.RemoteClean(remotePath)
+	isabs := zboxutil.IsRemoteAbs(remotePath)
+	if !isabs {
+		err = common.NewError("invalid_path", "Path should be valid and absolute")
+		return err
+	}
+	remotePath = zboxutil.GetFullRemotePath(localPath, remotePath)
+
+	_, fileName := filepath.Split(remotePath)
+
+	fileMeta := sdk.FileMeta{
+		Path:       localPath,
+		ActualSize: fileInfo.Size(),
+		MimeType:   mimeType,
+		RemoteName: fileName,
+		RemotePath: remotePath,
+		Attributes: attrs,
+	}
+
+	streamUpload := sdk.CreateStreamUpload(allocationObj, fileMeta, fileReader,
+		sdk.WithThumbnailFile(thumbnailPath),
+		sdk.WithChunkSize(chunkSize),
+		sdk.WithEncrypt(encrypt),
+		sdk.WithStatusCallback(statusBar))
+
+	return streamUpload.Start()
+}
+
 func init() {
 	rootCmd.AddCommand(uploadCmd)
 	uploadCmd.PersistentFlags().String("allocation", "", "Allocation ID")
@@ -108,6 +167,8 @@ func init() {
 	uploadCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
 	uploadCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
 	uploadCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
+	uploadCmd.Flags().Bool("stream", false, "pass this option to enable stream upload for large file")
+	uploadCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "pass this option to custom chunk size for upload")
 	uploadCmd.MarkFlagRequired("allocation")
 	uploadCmd.MarkFlagRequired("localpath")
 	uploadCmd.MarkFlagRequired("remotepath")
