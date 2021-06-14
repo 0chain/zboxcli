@@ -93,7 +93,7 @@ func filterActiveBlobbers(blobbers []*sdk.Blobber) []*sdk.Blobber {
 			result = append(result, blobbers[i])
 
 		} else {
-			fmt.Println("Health check failed for Blobber: ", blobbers[i].BaseURL)
+			fmt.Println("Inactive Blobber: ", blobbers[i].BaseURL)
 		}
 
 	}
@@ -318,7 +318,7 @@ func init() {
 
 	scConfig.Flags().Bool("json", false, "pass this option to print response as json data")
 	lsBlobers.Flags().Bool("json", false, "pass this option to print response as json data")
-	lsBlobers.Flags().Bool("active", false, "shows active list of blobbers on --ls-blobber flag")
+	lsBlobers.Flags().Bool("active", false, "shows active list of blobbers on ls-blobbers")
 
 	blobberInfoCmd.Flags().String("blobber_id", "", "blobber ID, required")
 	blobberInfoCmd.Flags().Bool("json", false,
