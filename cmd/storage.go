@@ -74,6 +74,7 @@ func printBlobbers(nodes []*sdk.Blobber) {
 		fmt.Println("  url:                  ", val.BaseURL)
 		fmt.Println("  used / total capacity:", val.Used.String(), "/",
 			val.Capacity.String())
+		fmt.Println("  last_health_check:	 ", val.LastHealthCheck)
 		fmt.Println("  terms:")
 		fmt.Println("    read_price:         ", val.Terms.ReadPrice.String(), "tok / GB")
 		fmt.Println("    write_price:        ", val.Terms.WritePrice.String(), "tok / GB / time_unit")
@@ -81,6 +82,23 @@ func printBlobbers(nodes []*sdk.Blobber) {
 		fmt.Println("    cct:                ", val.Terms.ChallengeCompletionTime.String())
 		fmt.Println("    max_offer_duration: ", val.Terms.MaxOfferDuration.String())
 	}
+}
+
+func filterActiveBlobbers(blobbers []*sdk.Blobber) []*sdk.Blobber {
+
+	result := []*sdk.Blobber{}
+
+	for i := range blobbers {
+		if time.Now().Unix()*1000-int64(blobbers[i].LastHealthCheck*1000) < 3600000 {
+			result = append(result, blobbers[i])
+
+		} else {
+			fmt.Println("Health check failed for Blobber: ", blobbers[i].BaseURL)
+		}
+
+	}
+
+	return result
 }
 
 // lsBlobers shows active blobbers
@@ -91,15 +109,27 @@ var lsBlobers = &cobra.Command{
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		doJSON, _ := cmd.Flags().GetBool("json")
+		doActive, _ := cmd.Flags().GetBool("active")
+
 		var list, err = sdk.GetBlobbers()
 		if err != nil {
 			log.Fatalf("Failed to get storage SC configurations: %v", err)
 		}
-		if doJSON {
-			util.PrintJSON(list)
-			return
+
+		if doActive {
+			if doJSON {
+
+				util.PrintJSON(filterActiveBlobbers(list))
+				return
+			}
+			printBlobbers(filterActiveBlobbers(list))
+		} else {
+			if doJSON {
+				util.PrintJSON(list)
+				return
+			}
+			printBlobbers(list)
 		}
-		printBlobbers(list)
 	},
 }
 
@@ -288,6 +318,7 @@ func init() {
 
 	scConfig.Flags().Bool("json", false, "pass this option to print response as json data")
 	lsBlobers.Flags().Bool("json", false, "pass this option to print response as json data")
+	lsBlobers.Flags().Bool("active", false, "shows active list of blobbers on --ls-blobber flag")
 
 	blobberInfoCmd.Flags().String("blobber_id", "", "blobber ID, required")
 	blobberInfoCmd.Flags().Bool("json", false,
