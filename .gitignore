@@ -22,3 +22,5 @@ zbox
 zboxcli
 sample/zbox
 sample/zboxcli
+.vscode
+__debug_bin__
