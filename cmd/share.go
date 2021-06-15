@@ -54,6 +54,7 @@ var shareCmd = &cobra.Command{
 		_, fileName = filepath.Split(remotepath)
 		refereeClientID := cmd.Flag("clientid").Value.String()
 		revoke, _ := cmd.Flags().GetBool("revoke")
+		expiration, _ := cmd.Flags().GetInt64("expiration-seconds")
 		if revoke {
 			err := allocationObj.RevokeShare(remotepath, fileName)
 			if err != nil {
@@ -63,7 +64,7 @@ var shareCmd = &cobra.Command{
 			fmt.Println("Share revoked for client " + refereeClientID)
 		} else {
 			encryptionpublickey := cmd.Flag("encryptionpublickey").Value.String()
-			ref, err := allocationObj.GetAuthTicket(remotepath, fileName, refType, refereeClientID, encryptionpublickey)
+			ref, err := allocationObj.GetAuthTicket(remotepath, fileName, refType, refereeClientID, encryptionpublickey, expiration)
 			if err != nil {
 				PrintError(err.Error())
 				os.Exit(1)
@@ -79,6 +80,7 @@ func init() {
 	shareCmd.PersistentFlags().String("remotepath", "", "Remote path to share")
 	shareCmd.PersistentFlags().String("clientid", "", "ClientID of the user to share with. Leave blank for public share")
 	shareCmd.PersistentFlags().String("encryptionpublickey", "", "Encryption public key of the client you want to share with. Can be retrieved by the getwallet command")
+	shareCmd.PersistentFlags().Int64("expiration-seconds", 0, "Authticket will expire when the seconds specified have elapsed after the instant of its creation")
 	shareCmd.PersistentFlags().Bool("revoke", false, "Revoke share for remotepath")
 	shareCmd.MarkFlagRequired("allocation")
 	shareCmd.MarkFlagRequired("remotepath")
