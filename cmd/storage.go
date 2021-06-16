@@ -84,21 +84,13 @@ func printBlobbers(nodes []*sdk.Blobber) {
 	}
 }
 
-func filterActiveBlobbers(blobbers []*sdk.Blobber) []*sdk.Blobber {
-
-	result := []*sdk.Blobber{}
-
+func filterActiveBlobbers(blobbers []*sdk.Blobber) (activeBlobbers []*sdk.Blobber) {
 	for i := range blobbers {
-		if time.Now().Unix()*1000-int64(blobbers[i].LastHealthCheck*1000) < 3600000 {
-			result = append(result, blobbers[i])
-
-		} else {
-			fmt.Println("Inactive Blobber: ", blobbers[i].BaseURL)
+		if blobbers[i].LastHealthCheck.Within(60 * 60) {
+			activeBlobbers = append(activeBlobbers, blobbers[i])
 		}
-
 	}
-
-	return result
+	return
 }
 
 // lsBlobers shows active blobbers
@@ -117,19 +109,15 @@ var lsBlobers = &cobra.Command{
 		}
 
 		if doActive {
-			if doJSON {
+			list = filterActiveBlobbers(list)
+		}
 
-				util.PrintJSON(filterActiveBlobbers(list))
-				return
-			}
-			printBlobbers(filterActiveBlobbers(list))
+		if doJSON {
+			util.PrintJSON(list)
 		} else {
-			if doJSON {
-				util.PrintJSON(list)
-				return
-			}
 			printBlobbers(list)
 		}
+
 	},
 }
 
