@@ -54,7 +54,6 @@ var shareCmd = &cobra.Command{
 		_, fileName = filepath.Split(remotepath)
 		refereeClientID := cmd.Flag("clientid").Value.String()
 		revoke, _ := cmd.Flags().GetBool("revoke")
-		expiration, _ := cmd.Flags().GetInt64("expiration-seconds")
 		if revoke {
 			err := allocationObj.RevokeShare(remotepath, refereeClientID)
 			if err != nil {
@@ -63,6 +62,7 @@ var shareCmd = &cobra.Command{
 			}
 			fmt.Println("Share revoked for client " + refereeClientID)
 		} else {
+			expiration, _ := cmd.Flags().GetInt64("expiration-seconds")
 			encryptionpublickey := cmd.Flag("encryptionpublickey").Value.String()
 			ref, err := allocationObj.GetAuthTicket(remotepath, fileName, refType, refereeClientID, encryptionpublickey, expiration)
 			if err != nil {
