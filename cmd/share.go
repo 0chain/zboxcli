@@ -56,7 +56,7 @@ var shareCmd = &cobra.Command{
 		revoke, _ := cmd.Flags().GetBool("revoke")
 		expiration, _ := cmd.Flags().GetInt64("expiration-seconds")
 		if revoke {
-			err := allocationObj.RevokeShare(remotepath, fileName)
+			err := allocationObj.RevokeShare(remotepath, refereeClientID)
 			if err != nil {
 				PrintError(err.Error())
 				os.Exit(1)
