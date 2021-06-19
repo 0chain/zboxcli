@@ -7,9 +7,9 @@ import (
 import "github.com/0chain/gosdk/zboxcore/sdk"
 
 var addCmd = &cobra.Command{
-	Use:   "newallocation",
-	Short: "Creates a new allocation",
-	Long:  `Creates a new allocation`,
+	Use:   "add",
+	Short: "Adds free storage assigner",
+	Long:  "Adds free storage assigner",
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		var err error
@@ -27,7 +27,7 @@ var addCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal("invalid 'limit' flag: ", err)
 		}
-		max, err := flags.GetString("max")
+		max, err := flags.GetFloat64("max")
 		if err != nil {
 			log.Fatal("invalid 'max' flag: ", err)
 		}
@@ -42,16 +42,16 @@ var addCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(addCmd)
-	newallocationCmd.PersistentFlags().
+	addCmd.PersistentFlags().
 		Float64("limit", 1.0,
 			"maximum number of tokens to use in a free allocation")
-	newallocationCmd.PersistentFlags().
+	addCmd.PersistentFlags().
 		Float64("max", 1.0,
 			"the total number of tokens that can be given in free allocations")
-	newallocationCmd.Flags().
-		String("giver_id", "",
+	addCmd.Flags().
+		String("name", "",
 			"the account number that will be creating free storage markers")
-	newallocationCmd.Flags().
+	addCmd.Flags().
 		String("key", "",
 			"the public key used for singing markers")
 
