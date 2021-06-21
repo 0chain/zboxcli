@@ -8,7 +8,7 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
 - [Running zbox](https://github.com/0chain/zboxcli#Command-with-no-arguments) 
 - [Global Flags](#global-flags)
 - [Commands](#commands)
-  - Creating and Managing Allocations]
+  - Creating and Managing Allocations
     - [Register a Wallet](https://github.com/0chain/zboxcli#Register)
     - [Get detailed Allocation](https://github.com/0chain/zboxcli#Get)
     - [Create an allocation](https://github.com/0chain/zboxcli#Create-new-allocation)
