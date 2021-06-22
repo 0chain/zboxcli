@@ -1,10 +1,11 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
 	"log"
+
+	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/spf13/cobra"
 )
-import "github.com/0chain/gosdk/zboxcore/sdk"
 
 var addCmd = &cobra.Command{
 	Use:   "add",
