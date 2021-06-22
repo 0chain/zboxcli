@@ -29,12 +29,11 @@ var updateAllocationCmd = &cobra.Command{
 		if flags.Changed("free_storage") {
 			lock, freeStorageMarker := processFreeStorageFlags(flags)
 
-			allocationID, err := sdk.CreateFreeUpdateAllocation(freeStorageMarker, allocID, lock)
+			txnHash, err := sdk.CreateFreeUpdateAllocation(freeStorageMarker, allocID, lock)
 			if err != nil {
-				log.Fatal("Error creating free allocation: ", err)
+				log.Fatal("Error free update allocation: ", err)
 			}
-			log.Print("Allocation created: ", allocationID)
-			storeAllocation(allocationID)
+			log.Print("Allocation updated with txId : " + txnHash)
 			return
 		}
 
