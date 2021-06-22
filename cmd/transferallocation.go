@@ -44,7 +44,7 @@ var transferAllocationCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal("Error adding curator:", err)
 		}
-		log.Print("ownership of allocaton" + allocationId + "transfered to" + newOwnerId)
+		log.Print("transferred ownership of allocation " + allocationId + " to " + newOwnerId)
 	},
 }
 
