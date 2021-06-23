@@ -4,61 +4,66 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
 
 ![Storage](https://user-images.githubusercontent.com/65766301/120052450-0ab66700-c043-11eb-91ab-1f7aa69e133a.png)
 
-[zbox](https://github.com/0chain/zboxcli#Command-with-no-arguments) supports the following features
+- [Getting Started](#getting-started)
+- [Running zbox](https://github.com/0chain/zboxcli#Command-with-no-arguments) 
+- [Global Flags](#global-flags)
+- [Commands](#commands)
+  - Creating and Managing Allocations
+    - [Register a Wallet](https://github.com/0chain/zboxcli#Register)
+    - [Get detailed Allocation](https://github.com/0chain/zboxcli#Get)
+    - [Create an allocation](https://github.com/0chain/zboxcli#Create-new-allocation)
+    - [List allocations](https://github.com/0chain/zboxcli#List-allocations)
+    - [Update an allocation](https://github.com/0chain/zboxcli#Update-allocation)
+    - [Cancel allocation](https://github.com/0chain/zboxcli#Cancel-allocation)
+    - [Finalize allocation](https://github.com/0chain/zboxcli#Finalize-allocation)
+  - Uploading and Managing Files
+    - [Upload a file to dStorage](https://github.com/0chain/zboxcli#Upload)
+    - [Download the uploaded file from dStorage](https://github.com/0chain/zboxcli#Download)
+    - [Update the uploaded file on dStorage](https://github.com/0chain/zboxcli#Update)
+    - [Delete the uploaded file on dStorage](https://github.com/0chain/zboxcli#Delete)
+    - [List the uploaded files and folders](https://github.com/0chain/zboxcli#List)
+    - [Copy uploaded files to another folder path on dStorage](https://github.com/0chain/zboxcli#Copy)
+    - [Move uploaded files to another folder path on dStorage](https://github.com/0chain/zboxcli#Move)
+    - [Rename a file on dStorage](https://github.com/0chain/zboxcli#Rename)
+    - [Get meta data of files](https://github.com/0chain/zboxcli#Get-metadata)
+    - [Get file stats](https://github.com/0chain/zboxcli#Stats)
+    - [Update file attributes](https://github.com/0chain/zboxcli#Update-file-attributes)
+    - [Get download cost](https://github.com/0chain/zboxcli#Download-cost)
+    - [Get upload cost](https://github.com/0chain/zboxcli#Upload-cost)
+  - Advanced Features
+    - [Repair a file on dStorage](https://github.com/0chain/zboxcli#Repair)
+    - [Sync your local folder to remote](https://github.com/0chain/zboxcli#Sync)
+    - [Share the uploaded file on dStorage](https://github.com/0chain/zboxcli#Share)
+    - [Add Collaborator for a file](https://github.com/0chain/zboxcli#Add-collaborator)
+    - [Remove Collaborator for a file](https://github.com/0chain/zboxcli#Delete-collaborator)
+    - [Streaming](https://github.com/0chain/zboxcli#Streaming)
+  - Locking and unlocking tokens    
+    - [Get wallet information](https://github.com/0chain/zboxcli#Get-wallet)
+    - [Challenge pool information](https://github.com/0chain/zboxcli#Challenge-pool-information)
+    - [Create read pool if not exists](https://github.com/0chain/zboxcli#Create-read-pool)
+    - [Detailed read pool information](https://github.com/0chain/zboxcli#Read-pool-info)
+    - [Lock tokens into read pool](https://github.com/0chain/zboxcli#Lock-tokens-into-read-pool)
+    - [Unlock tokens from expired read pool](https://github.com/0chain/zboxcli#Unlock-tokens-from-read-pool)
+    - [Detailed write pool information](https://github.com/0chain/zboxcli#Write-pool-info)
+    - [Lock tokens into write pool](https://github.com/0chain/zboxcli#Lock-tokens-into-write-pool)
+    - [Unlock tokens from expired write pool](https://github.com/0chain/zboxcli#Unlock-tokens-from-write-pool)
+    - [Detailed stake pool information](https://github.com/0chain/zboxcli#Stake-pool-info)
+    - [Lock tokens into stake pool](https://github.com/0chain/zboxcli#Lock-tokens-into-stake-pool)
+    - [Unlock tokens from expired stake pool](https://github.com/0chain/zboxcli#Unlock-tokens-from-stake-pool)
+    - [Stake pools info of current user](https://github.com/0chain/zboxcli#Stake-pools-info-of-current-user)
+    - [Pay interests](https://github.com/0chain/zboxcli#Pay-interests)
+  - zbox Configuration info
+    - [Storage SC configurations](https://github.com/0chain/zboxcli#Storage-SC-configurations)
+    - [List blobbers](https://github.com/0chain/zboxcli#List-blobbers)
+    - [Detail blobber information](https://github.com/0chain/zboxcli#Detailed-blobber-information)
+    - [Update blobber settings](https://github.com/0chain/zboxcli#Update-blobber-settings)
+    
 
-1. [Register a Wallet](https://github.com/0chain/zboxcli#Register)
-2. [Get detailed Allocation](https://github.com/0chain/zboxcli#Get)
-3. [Create an allocation](https://github.com/0chain/zboxcli#Create-new-allocation)
-4. [List allocations](https://github.com/0chain/zboxcli#List-allocations)
-5. [Update an allocation](https://github.com/0chain/zboxcli#Update-allocation)
-6. [Cancel allocation](https://github.com/0chain/zboxcli#Cancel-allocation)
-7. [Finalize allocation](https://github.com/0chain/zboxcli#Finalize-allocation)
-8. [List blobbers](https://github.com/0chain/zboxcli#List-blobbers)
-9. [Detail blobber information](https://github.com/0chain/zboxcli#Detailed-blobber-information)
-10. [Update blobber settings](https://github.com/0chain/zboxcli#Update-blobber-settings)
-11. [Upload a file to dStorage](https://github.com/0chain/zboxcli#Upload)
-12. [Download the uploaded file from dStorage](https://github.com/0chain/zboxcli#Download)
-13. [Update the uploaded file on dStorage](https://github.com/0chain/zboxcli#Update)
-14. [Delete the uploaded file on dStorage](https://github.com/0chain/zboxcli#Delete)
-15. [Share the uploaded file on dStorage to the public](https://github.com/0chain/zboxcli#Share)
-16. [List the uploaded files and folders](https://github.com/0chain/zboxcli#List)
-17. [Copy uploaded files to another folder path on dStorage](https://github.com/0chain/zboxcli#Copy)
-18. [Move uploaded files to another folder path on dStorage](https://github.com/0chain/zboxcli#Move)
-19. [Get meta data of files](https://github.com/0chain/zboxcli#Get-metadata)
-20. [Rename an object in allocation](https://github.com/0chain/zboxcli#Rename)
-21. [Get file stats](https://github.com/0chain/zboxcli#Stats)
-22. [Repair a file on dStorage](https://github.com/0chain/zboxcli#Repair)
-23. [Sync your local folder to remote](https://github.com/0chain/zboxcli#Sync)
-24. [Update file attributes](https://github.com/0chain/zboxcli#Update-file-attributes)
-25. [Get wallet information](https://github.com/0chain/zboxcli#Get-wallet)
-26. [Add Collaborator for a file](https://github.com/0chain/zboxcli#Add-collaborator)
-27. [Remove Collaborator for a file](https://github.com/0chain/zboxcli#Delete-collaborator)
-28. [Challenge pool information](https://github.com/0chain/zboxcli#Challenge-pool-information)
-29. [Create read pool if not exists](https://github.com/0chain/zboxcli#Create-read-pool)
-30. [Detailed read pool information](https://github.com/0chain/zboxcli#Read-pool-info)
-31. [Lock tokens into read pool](https://github.com/0chain/zboxcli#Lock-tokens-into-read-pool)
-32. [Unlock tokens from expired read pool](https://github.com/0chain/zboxcli#Unlock-tokens-from-read-pool)
-33. [Storage SC configurations](https://github.com/0chain/zboxcli#Storage-SC-configurations)
-34. [Detailed stake pool information](https://github.com/0chain/zboxcli#Stake-pool-info)
-35. [Lock tokens into stake pool](https://github.com/0chain/zboxcli#Lock-tokens-into-stake-pool)
-36. [Unlock tokens from expired stake pool](https://github.com/0chain/zboxcli#Unlock-tokens-from-stake-pool)
-37. [Stake pools info of current user](https://github.com/0chain/zboxcli#Stake-pools-info-of-current-user)
-38. [Pay interests](https://github.com/0chain/zboxcli#Pay-interests)
-39. [Detailed write pool information](https://github.com/0chain/zboxcli#Write-pool-info)
-40. [Lock tokens into write pool](https://github.com/0chain/zboxcli#Lock-tokens-into-write-pool)
-41. [Unlock tokens from expired write pool](https://github.com/0chain/zboxcli#Unlock-tokens-from-write-pool)
-42. [Get download cost](https://github.com/0chain/zboxcli#Download-cost)
-43. [Get upload cost](https://github.com/0chain/zboxcli#Upload-cost)
 
-zbox CLI provides a self-explaining "help" option that lists commands and parameters they need to perform the intended action
+   - [Troubleshooting](#troubleshooting)
 
-## Getting started with zbox
 
-## Pre-requisites
-
-```
-Go V1.12 or higher.
-```
+## Getting Started
 
 ## Installation Guides
 
@@ -94,13 +99,9 @@ sharders:
 
 Note: This is helpful for the Mac OS users running local cluster and having trouble with docker internal IPs (block_worker return docker IPs in local)
 
-## Running zbox commands
+## Running zbox
 
-Note in this document, we will only show the commands for particular functionalities, the response will vary depending on your usage and may not be provided in all places. To get a more descriptive view of all the zbox functionalities check zbox cli documentation at docs.0chain.net.
-
-### Command with no arguments
-
-When you run `zbox` with no arguments, it will list all the supported commands.
+When you run the `zbox` command in terminal with no arguments, it will list all the available commands and the global flags.
 
 ```
 ./zbox 
@@ -174,6 +175,26 @@ Flags:
 Use "zbox [command] --help" for more information about a command.
 
 ```
+### Global Flags
+
+ Global Flags are parameters in zbox that can be used with any command to override the default configuration.zbox supports the following global parameters.
+
+| Flags                      | Description                                                  | Usage                                             |
+| -------------------------- | ------------------------------------------------------------ | ------------------------------------------------- |
+| --config string            | Specify a zbox configuration file (default is [$HOME/.zcn/config.yaml](#zcnconfigyaml)) | zbox [command] --config config1.yaml              |
+| --configDir string         | Specify a zbox configuration directory (default is $HOME/.zcn) | zbox [command] --configDir /$HOME/.zcn2           |
+| -h, --help                 | Gives more information about a particular command.           | zbox [command] --help                             |
+| --network string           | Specify a network file to overwrite the network details(default is [$HOME/.zcn/network.yaml](#zcnnetworkyaml)) | zbox [command] --network network1.yaml            |
+| --verbose                  | Provides additional details as to what the particular command is doing. | zbox [command] --verbose                          |
+| --wallet string            | Specify a wallet file or 2nd wallet (default is $HOME/.zcn/wallet.json) | zbox [command] --wallet wallet2.json              |
+| --wallet_client_id string  | Specify a wallet client id (By default client_id specified in $HOME/.zcn/wallet.json is used) | zbox [command] --wallet_client_id <client_id>     |
+| --wallet_client_key string | Specify a wallet client_key (By default client_key specified in $HOME/.zcn/wallet.json is used) | zbox [command] --wallet_client_key  < client_key> |
+
+ 
+## Commands
+
+Note in this document, we will only show the commands for particular functionalities, the response will vary depending on your usage and may not be provided in all places. To get a more descriptive view of all the zbox functionalities check zbox cli documentation at docs.0chain.net.
+
 
 ### Register
 
@@ -1666,7 +1687,9 @@ getFileMetaByAuth - same updates as getFileMeta
 
 listAllocation - returns actuaBlockNumbers and actualFileSize (exclude thumbnail size)
 
-# Troubleshooting
+
+
+## Troubleshooting
 
 1. Both `rp-info` and `rp-lock` are not working.
 
