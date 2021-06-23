@@ -11,6 +11,7 @@ import (
 	. "github.com/0chain/gosdk/zboxcore/logger"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/zboxcli/util"
+
 	// "github.com/0chain/gosdk/zcncore"
 	"github.com/0chain/gosdk/zboxcore/fileref"
 
@@ -106,6 +107,7 @@ var getallocationCmd = &cobra.Command{
 		fmt.Println("  parity_shards:  ", alloc.ParityShards)
 		fmt.Println("  size:           ", common.Size(alloc.Size))
 		fmt.Println("  expiration_date:", common.Timestamp(alloc.Expiration).ToTime())
+		fmt.Println("  immutable:", alloc.IsImmutable)
 		fmt.Println("  blobbers:")
 
 		for _, d := range alloc.BlobberDetails {
