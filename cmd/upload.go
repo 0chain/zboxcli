@@ -70,8 +70,8 @@ var uploadCmd = &cobra.Command{
 		}
 
 		if stream {
-
-			err = startStreamUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, attrs, statusBar)
+			chunkSize, _ := cmd.Flags().GetInt("chunksize")
+			err = startStreamUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar)
 
 		} else {
 
@@ -111,8 +111,7 @@ var uploadCmd = &cobra.Command{
 	},
 }
 
-func startStreamUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath, thumbnailPath, remotePath string, encrypt bool, attrs fileref.Attributes, statusBar sdk.StatusCallback) error {
-	chunkSize, _ := cmd.Flags().GetInt("chunksize")
+func startStreamUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath, thumbnailPath, remotePath string, encrypt bool, chunkSize int, attrs fileref.Attributes, statusBar sdk.StatusCallback) error {
 
 	fileReader, err := os.Open(localPath)
 	if err != nil {
