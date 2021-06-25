@@ -65,7 +65,7 @@ func init() {
 		"adjust allocation size, bytes")
 	updateAllocationCmd.PersistentFlags().Duration("expiry", 0,
 		"adjust storage expiration time, duration")
-	copyCmd.Flags().Bool("set_immutable", false, "set the allocation's data to be immutable")
+	updateAllocationCmd.Flags().Bool("set_immutable", false, "set the allocation's data to be immutable")
 
 	updateAllocationCmd.MarkFlagRequired("allocation")
 	updateAllocationCmd.MarkFlagRequired("size")
