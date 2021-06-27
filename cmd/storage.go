@@ -101,21 +101,23 @@ var lsBlobers = &cobra.Command{
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		doJSON, _ := cmd.Flags().GetBool("json")
-		doActive, _ := cmd.Flags().GetBool("active")
+		doAll, _ := cmd.Flags().GetBool("all")
 
 		var list, err = sdk.GetBlobbers()
+		var defaultList = filterActiveBlobbers(list)
+
 		if err != nil {
 			log.Fatalf("Failed to get storage SC configurations: %v", err)
 		}
 
-		if doActive {
-			list = filterActiveBlobbers(list)
+		if doAll {
+			defaultList = list
 		}
 
 		if doJSON {
-			util.PrintJSON(list)
+			util.PrintJSON(defaultList)
 		} else {
-			printBlobbers(list)
+			printBlobbers(defaultList)
 		}
 
 	},
@@ -306,7 +308,7 @@ func init() {
 
 	scConfig.Flags().Bool("json", false, "pass this option to print response as json data")
 	lsBlobers.Flags().Bool("json", false, "pass this option to print response as json data")
-	lsBlobers.Flags().Bool("active", false, "shows active list of blobbers on ls-blobbers")
+	lsBlobers.Flags().Bool("all", false, "shows active and non active list of blobbers on ls-blobbers")
 
 	blobberInfoCmd.Flags().String("blobber_id", "", "blobber ID, required")
 	blobberInfoCmd.Flags().Bool("json", false,
