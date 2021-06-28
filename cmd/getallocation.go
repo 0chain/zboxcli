@@ -8,11 +8,10 @@ import (
 
 	"github.com/0chain/gosdk/core/common"
 	"github.com/0chain/gosdk/zboxcore/blockchain"
+	"github.com/0chain/gosdk/zboxcore/fileref"
 	. "github.com/0chain/gosdk/zboxcore/logger"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/zboxcli/util"
-	// "github.com/0chain/gosdk/zcncore"
-	"github.com/0chain/gosdk/zboxcore/fileref"
 
 	"github.com/spf13/cobra"
 )
@@ -125,6 +124,17 @@ var getallocationCmd = &cobra.Command{
 			fmt.Println("        min_lock_demand:          ", d.Terms.MinLockDemand*100, "%")
 			fmt.Println("        max_offer_duration:       ", d.Terms.MaxOfferDuration)
 			fmt.Println("        challenge_completion_time:", d.Terms.ChallengeCompletionTime)
+		}
+
+		if len(alloc.Curators) < 1 {
+			fmt.Println("  no curators")
+		} else if len(alloc.Curators) == 1 {
+			fmt.Println("  curator: " + alloc.Curators[0])
+		} else {
+			fmt.Println("  curators:")
+			for _, curator := range alloc.Curators {
+				fmt.Println("  ", curator)
+			}
 		}
 
 		fmt.Println("  read_price_range:         ", priceRangeString(alloc.ReadPriceRange), "(requested)")
