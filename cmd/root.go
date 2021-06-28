@@ -26,7 +26,7 @@ var walletFile string
 var walletClientID string
 var walletClientKey string
 var cDir string
-var bVerbose bool
+var bSilent bool
 var allocUnderRepair bool
 
 var preferredBlobbers []string
@@ -37,9 +37,9 @@ var CfmChainLength int
 
 var rootCmd = &cobra.Command{
 	Use:   "zbox",
-	Short: "0Box is a decentralized storage application written on the 0Chain platform",
-	Long: `0Box is a decentralized storage application written on the 0Chain platform.
-			Complete documentation is available at https://0chain.net`,
+	Short: "zbox is a decentralized storage application written on the 0Chain platform",
+	Long: `zbox is a decentralized storage application written on the 0Chain platform.
+			Complete documentation is available at https://docs.0chain.net/0chain/`,
 }
 
 var clientWallet *zcncrypto.Wallet
@@ -52,7 +52,8 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&walletClientID, "wallet_client_id", "", "wallet client_id")
 	rootCmd.PersistentFlags().StringVar(&walletClientKey, "wallet_client_key", "", "wallet client_key")
 	rootCmd.PersistentFlags().StringVar(&cDir, "configDir", "", "configuration directory (default is $HOME/.zcn)")
-	rootCmd.PersistentFlags().BoolVar(&bVerbose, "verbose", false, "prints sdk log in stderr (default false)")
+	rootCmd.PersistentFlags().BoolVar(&bSilent, "silent", false, "Do not show interactive sdk logs (shown by default)")
+
 }
 
 func Execute() {
@@ -119,9 +120,9 @@ func initConfig() {
 
 	//TODO: move the private key storage to the keychain or secure storage
 
-	//set the log file
-	zcncore.SetLogFile("cmdlog.log", bVerbose)
-	sdk.SetLogFile("cmdlog.log", bVerbose)
+	// set the log file
+	zcncore.SetLogFile("cmdlog.log", !bSilent)
+	sdk.SetLogFile("cmdlog.log", !bSilent)
 
 	err := zcncore.InitZCNSDK(blockWorker, signScheme,
 		zcncore.WithChainID(chainID),
