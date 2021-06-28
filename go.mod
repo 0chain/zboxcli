@@ -3,7 +3,7 @@ module github.com/0chain/zboxcli
 go 1.13
 
 require (
-	github.com/0chain/gosdk v1.2.7-0.20210628085042-5c0ae46ee967
+	github.com/0chain/gosdk v1.2.7-0.20210628095526-6a2ca8e5ee05
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751 // indirect
 	github.com/alecthomas/units v0.0.0-20190924025748-f65c72e2690d // indirect
 	github.com/fatih/color v1.7.0 // indirect

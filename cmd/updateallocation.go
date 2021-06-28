@@ -17,7 +17,6 @@ var updateAllocationCmd = &cobra.Command{
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		var flags = cmd.Flags()
-
 		if flags.Changed("allocation") == false {
 			log.Fatal("Error: allocation flag is missing")
 		}
@@ -25,6 +24,17 @@ var updateAllocationCmd = &cobra.Command{
 		allocID, err := flags.GetString("allocation")
 		if err != nil {
 			log.Fatal("invalid 'allocation_id' flag: ", err)
+		}
+
+		if flags.Changed("free_storage") {
+			lock, freeStorageMarker := processFreeStorageFlags(flags)
+
+			txnHash, err := sdk.CreateFreeUpdateAllocation(freeStorageMarker, allocID, lock)
+			if err != nil {
+				log.Fatal("Error free update allocation: ", err)
+			}
+			log.Print("Allocation updated with txId : " + txnHash)
+			return
 		}
 
 		var lockf float64
@@ -63,7 +73,9 @@ func init() {
 		"adjust allocation size, bytes")
 	updateAllocationCmd.PersistentFlags().Duration("expiry", 0,
 		"adjust storage expiration time, duration")
+	updateAllocationCmd.Flags().
+		String("free_storage", "",
+			"json file containing marker for free storage")
 	updateAllocationCmd.MarkFlagRequired("allocation")
-	updateAllocationCmd.MarkFlagRequired("size")
-	updateAllocationCmd.MarkFlagRequired("expiry")
+
 }
