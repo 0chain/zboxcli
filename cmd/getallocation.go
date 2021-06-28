@@ -105,6 +105,7 @@ var getallocationCmd = &cobra.Command{
 		fmt.Println("  parity_shards:  ", alloc.ParityShards)
 		fmt.Println("  size:           ", common.Size(alloc.Size))
 		fmt.Println("  expiration_date:", common.Timestamp(alloc.Expiration).ToTime())
+		fmt.Println("  immutable:      ", alloc.IsImmutable)
 		fmt.Println("  blobbers:")
 
 		for _, d := range alloc.BlobberDetails {
