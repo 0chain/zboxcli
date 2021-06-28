@@ -47,7 +47,7 @@ var updateAllocationCmd = &cobra.Command{
 		txnHash, err := sdk.UpdateAllocation(size,
 			int64(expiry/time.Second), allocID, lock)
 		if err != nil {
-			log.Fatal("Error creating allocation:", err)
+			log.Fatal("Error updating allocation:", err)
 		}
 		log.Print("Allocation updated with txId : " + txnHash)
 	},
