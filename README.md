@@ -36,7 +36,7 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
     - [Share the uploaded file on dStorage](https://github.com/0chain/zboxcli#Share)
     - [Add Collaborator for a file](https://github.com/0chain/zboxcli#Add-collaborator)
     - [Remove Collaborator for a file](https://github.com/0chain/zboxcli#Delete-collaborator)
-    - [Video Streaming](https://github.com/0chain/zboxcli#Video-Streaming)
+    - [Video Streaming](https://github.com/0chain/zboxcli#Streaming)
   - Locking and unlocking tokens    
     - [Get wallet information](https://github.com/0chain/zboxcli#Get-wallet)
     - [Challenge pool information](https://github.com/0chain/zboxcli#Challenge-pool-information)
@@ -1659,7 +1659,7 @@ Also, there are `authticket` and `lookuphash` flags to get the cost for non allo
 
 ------
 
-### Video Streaming
+### Streaming
 
 Video streaming with Zbox CLI can be implemented with players for different operating platforms(iOS, Android Mac).Zbox CLI does not have a player itself and use the the downloadFileByBlocks helper function to properly returns file-chunks with correct byte range.
 
