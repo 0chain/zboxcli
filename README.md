@@ -1659,7 +1659,7 @@ Also, there are `authticket` and `lookuphash` flags to get the cost for non allo
 
 ------
 
-## Video Streaming
+### Video Streaming
 
 Video streaming with Zbox CLI can be implemented with players for different operating platforms(iOS, Android Mac).Zbox CLI does not have a player itself and use the the downloadFileByBlocks helper function to properly returns file-chunks with correct byte range.
 
