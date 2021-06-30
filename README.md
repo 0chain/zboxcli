@@ -246,6 +246,7 @@ Command `newallocation` reserves hard disk space on the blobbers. Let's see the 
 ./zbox newallocation --help
 
 Creates a new allocation
+
 Usage:
   zbox newallocation [flags]
 
@@ -254,6 +255,7 @@ Flags:
       --cost                        pass this option to only get the min lock demand
       --data int                    --data 2 (default 2)
       --expire duration             duration to allocation expiration (default 720h0m0s)
+      --free_storage string         json file containing marker for free storage
   -h, --help                        help for newallocation
       --lock float                  lock write pool with given number of tokens, required
       --mcct duration               max challenge completion time, optional, default 1h (default 1h0m0s)
@@ -267,23 +269,45 @@ Global Flags:
       --config string              config file (default is config.yaml)
       --configDir string           configuration directory (default is $HOME/.zcn)
       --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
+      --silent                     Do not show interactive sdk logs (shown by default)
       --wallet string              wallet file (default is wallet.json)
       --wallet_client_id string    wallet client_id
       --wallet_client_key string   wallet client_key
-
-
 ```
 
-As you can see the `newallocation` command takes allocationFileName where the volume information is stored locally. All the parameters have default values. With more data shards, you can upload or download files faster. With more parity shards, you have higher availability.
+As you can see the `newallocation` command takes allocationFileName where the volume information 
+is stored locally. All the parameters have default values. With more data shards, you can upload 
+or download files faster. With more parity shards, you have higher availability.
 
 #### Example
 
-To create a new allocation with default values,use `newallocation` with a `--lock` flag to add some tokens to the write pool .On success a related write pool is created and the allocation information is stored under `$HOME/.zcn/allocation.txt`.
-
-```
+To create a new allocation with default values,use `newallocation` with a `--lock` flag to add 
+some tokens to the write pool .On success a related write pool is created and the allocation 
+information is stored under `$HOME/.zcn/allocation.txt`.
+```shell
 ./zbox newallocation --lock 0.5
 ```
+New allocation has to modes; either the user can pay for it, or a free storage marker 
+can be redeemed. Someone with permission to provide free storage signs a marker and 
+gives it to you in the form of a `.json` file. The allocation's parameters come 
+predefined, so we only need the path to the marker file.
+```shell
+./zbox newallocation --lock 0.5 --free_storage markers/my_marker.json
+```
+
+<details>
+  <summary> New allocation </summary>
+
+  ![image](https://user-images.githubusercontent.com/6240686/124009436-835b6b00-d9d5-11eb-8f09-94c058bd402e.png)
+
+</details>
+
+<details>
+  <summary> Free storage new allocation </summary>
+
+  ![image](https://user-images.githubusercontent.com/6240686/124010041-3926b980-d9d6-11eb-80f1-f062c92751ed.png)
+
+</details>
 
 Response:
 
@@ -293,7 +317,8 @@ Allocation created : d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4f
 
 ### Update allocation
 
-Command `updateallocation` updates hard disk space and expiry on the blobbers. Let's see the parameters it takes by using `--help` flag..
+Command `updateallocation` updates hard disk space and expiry on the blobbers. 
+Let's see the parameters it takes by using `--help` flag..
 
 #### Usage
 
@@ -334,7 +359,7 @@ redeem a free storage marker.
 ```
 
 Free storage updates use a json file signed by the provider of the free storage, 
-they use predefined size and expiration hence no need to enter these values.  
+they use predefined size and expiration hence no need to enter these values. 
 Allocations funded with free storage become identical to any other allocation, 
 after updating, as the blockchain keeps no history of the source of the funding.
 
@@ -349,14 +374,14 @@ Allocation updated with txId : fb84185dae620bbba8386286726f1efcd20d2516bcf1a4482
 ```
 
 <details>
-  <summary>update allocation </summary>
+  <summary>Update allocation </summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124003064-65d6d300-d9ce-11eb-808d-2d59340b00e7.png)
 
 </details>
 
 <details>
-  <summary> free storage update allocation </summary>
+  <summary>Free storage update allocation </summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124003924-602dbd00-d9cf-11eb-910c-1d286c2a173c.png)
 

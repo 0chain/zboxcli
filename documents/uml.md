@@ -1,33 +1,93 @@
  ```puml
+title Free storage new allocation
+zbox -> sc : newallocation --free-storage
+note left
+    Free storage mareker
+    * maker issuer name
+    * client to give tokens to
+    * number of free tokens     
+    * timestamp to prevent reuse
+    * signed
+end note       
+    sc <- blockchain : corporations details
+    sc -> sc : validate free storage marker
+    blockchain -> sc : blobbers
+    sc -> sc : select allocation blobbers
+    sc -> sc : new allocation
+    group new allocation
+        sc -> sc : set:\n* in paramters\n* selected blobbers\n* now
+        sc -> sc : new write pool
+        group new write pool
+            sc -> sc : mint tokens for write pool
+        end 
+        sc -> blockchain : wrie pool
+        sc -> sc : new challenge pool    
+        sc -> blockchain : challenge pool    
+    end
+    sc -> blockchain : new allocation
+sc -> zbox : allocation id 
+```
+
+```puml
+title New allocation
+zbox -> sc : new allocation
+note left
+    * data shards
+    * paraty shards
+    * size
+    * expiration
+    * preferred blobbers
+    * read price range
+    * write price range
+    * max challenge time
+end note
+    blockchain -> sc : blobbers
+    sc -> sc : select allocation blobbers
+    sc -> sc : new allocation
+    group new allocation
+        sc -> sc : set:\n* in paramters\n* selected blobbers\n* now
+        sc -> sc : new write pool
+        group new write pool
+            sc -> sc : transfer owner toekns to write pool
+        end 
+        sc -> blockchain : wrie pool
+        sc -> sc : new challenge pool    
+        sc -> blockchain : challenge pool    
+    end
+    sc -> blockchain : new allocation
+sc -> zbox : new allocation id
+```
+
+```puml
 title update free storage marker
 zbox -> sc : updateallocation --free-storage 
 note left
-Free storage mareker
-* maker issuer name
-* client to give tokens to
-* number of free tokens     
-* timestamp to prevent reuse
-* signed
+    Free storage mareker
+    * maker issuer name
+    * client to give tokens to
+    * number of free tokens     
+    * timestamp to prevent reuse
+    * signed
 end note   
-sc <- blockchain : maker issuer's details
-sc -> sc : validate free storage marker
-blockchain -> sc : allocation
-alt confirm all allocation blobbers have enough capacity
-    sc ->x zbox : blobber doesn't have enough free space
-end
-alt check expiration agaisnt allocation blobbers' max offer duration
-    sc ->x zbox : blobber doesn't allow so long offers
-end
-group allocation
-    sc -> sc : update alllocation as required\nsize expireation and immutable
-    blockchain -> sc : owner wrtie pool
-    sc -> sc : ammend write pool lock duration
-    blockchain -> sc : challenge pool
-    sc -> sc : mint new tokens for challenge pool
-    sc -> blockchain : challenge pool
-    sc -> blockchain : write pool
-end
-sc -> blockchain : allocation
+    sc <- blockchain : maker issuer's details
+    sc -> sc : validate free storage marker
+    blockchain -> sc : allocation
+    alt confirm all allocation blobbers have enough capacity
+        sc ->x zbox : blobber doesn't have enough free space
+    end
+    alt check expiration agaisnt allocation blobbers' max offer duration
+        sc ->x zbox : blobber doesn't allow so long offers
+    end
+    group allocation
+        sc -> sc : update alllocation as required\nsize expireation and immutable
+        blockchain -> sc : owner wrtie pool
+        sc -> sc : ammend write pool lock duration
+        blockchain -> sc : challenge pool
+        sc -> sc : mint new tokens for challenge pool
+        sc -> blockchain : challenge pool
+        sc -> blockchain : write pool
+    end
+    sc -> blockchain : allocation
 sc -> zbox : transaction id
 ```
 
@@ -41,23 +101,23 @@ note left
     expiration
     set immutable?
 end note
-blockchain -> sc : allocation
-alt confirm all allocation blobbers have enough capacity
-    sc ->x zbox : blobber doesn't have enough free space
-end
-alt check expiration agaisnt allocation blobbers' max offer duration
-    sc ->x zbox : blobber doesn't allow so long offers
-end
-group allocation
-    sc -> sc : update alllocation as required\nsize expireation and immutable
-    blockchain -> sc : owner wrtie pool
-    sc -> sc : ammend write pool lock duration
-    blockchain -> sc : challenge pool
-    sc -> sc : transfer tokens between\nwrite pool amd challenge pool
-    sc -> blockchain : challenge pool
-    sc -> blockchain : write pool
-end
-sc -> blockchain : allocation
+    blockchain -> sc : allocation
+    alt confirm all allocation blobbers have enough capacity
+        sc ->x zbox : blobber doesn't have enough free space
+    end
+    alt check expiration agaisnt allocation blobbers' max offer duration
+        sc ->x zbox : blobber doesn't allow so long offers
+    end
+    group allocation
+        sc -> sc : update alllocation as required\nsize expireation and immutable
+        blockchain -> sc : owner wrtie pool
+        sc -> sc : ammend write pool lock duration
+        blockchain -> sc : challenge pool
+        sc -> sc : transfer tokens between\nwrite pool amd challenge pool
+        sc -> blockchain : challenge pool
+        sc -> blockchain : write pool
+    end
+    sc -> blockchain : allocation
 sc -> zbox : transaction id
 ```
     
