@@ -48,7 +48,7 @@ end note
         sc -> sc : set:\n* in paramters\n* selected blobbers\n* now
         sc -> sc : new write pool
         group new write pool
-            sc -> sc : transfer owner toekns to write pool
+            sc -> sc : transfer owner tokens to write pool
         end 
         sc -> blockchain : wrie pool
         sc -> sc : new challenge pool    

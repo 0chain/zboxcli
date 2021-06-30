@@ -298,7 +298,7 @@ predefined, so we only need the path to the marker file.
 <details>
   <summary> New allocation </summary>
 
-  ![image](https://user-images.githubusercontent.com/6240686/124009436-835b6b00-d9d5-11eb-8f09-94c058bd402e.png)
+![image](https://user-images.githubusercontent.com/6240686/124010595-e8fc2700-d9d6-11eb-83b9-dc10cbeb75e0.png)
 
 </details>
 
