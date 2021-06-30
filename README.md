@@ -1511,6 +1511,12 @@ Use `rp-create` to create a read pool.
 ```
 ./zbox rp-create
 ```
+<details>
+  <summary>rp-create sequence diagram</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/123973204-77f74800-d9b3-11eb-8165-96741cc0b291.png)
+
+</details>
 
 ### Read pool info
 
@@ -1530,6 +1536,30 @@ Lock some tokens in read pool associated with an allocation. The tokens will be 
 ./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1
 ```
 
+`rp-lock` Uses two different formats, you can either define a specific blobber
+to lock the tokens, or not and the amount to lock in each blobber pool will
+be determined automatically.
+
+<details>
+  <summary>rp-lock with a specific blobber</summary>
+
+```shell
+./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1 --blobber f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25 
+```
+![image](https://user-images.githubusercontent.com/6240686/123973055-5302d500-d9b3-11eb-844a-90aa4b43f56b.png)
+
+</details>
+
+<details>
+  <summary>rp-lock spread across all blobbers</summary>
+
+```shell
+./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1
+```
+![image](https://user-images.githubusercontent.com/6240686/123973442-abd26d80-d9b3-11eb-9e37-c8e6551ed48c.png)
+
+</details>
+
 ### Unlock tokens from read pool
 
 Use `rp-unlock` to unlock tokens from an expired read pool by pool id. See `rp-info` for the POOL_ID and the expiration.
@@ -1539,6 +1569,12 @@ Use `rp-unlock` to unlock tokens from an expired read pool by pool id. See `rp-i
 ```
 ./zbox rp-unlock --pool_id <pool_id>
 ```
+<details>
+  <summary>rp-unlock</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/123973808-ff44bb80-d9b3-11eb-9b70-c952fd95858f.png)
+
+</details>
 
 ### Storage SC configurations
 
