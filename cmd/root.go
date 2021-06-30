@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/0chain/gosdk/core/logger"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -119,6 +120,9 @@ func initConfig() {
 	querySleepTime := nodeConfig.GetInt("query_sleep_time")
 
 	//TODO: move the private key storage to the keychain or secure storage
+
+	// syncing loggers
+	logger.SyncLoggers([]*logger.Logger{zcncore.GetLogger(), sdk.GetLogger()})
 
 	// set the log file
 	zcncore.SetLogFile("cmdlog.log", !bSilent)
