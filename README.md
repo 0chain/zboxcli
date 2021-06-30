@@ -305,17 +305,19 @@ Usage:
   zbox updateallocation [flags]
 
 Flags:
-      --allocation string   Allocation ID
-      --expiry duration     adjust storage expiration time, duration
-  -h, --help                help for updateallocation
-      --lock float          lock write pool with given number of tokens, required
-      --size int            adjust allocation size, bytes
+      --allocation string     Allocation ID
+      --expiry duration       adjust storage expiration time, duration
+      --free_storage string   json file containing marker for free storage
+  -h, --help                  help for updateallocation
+      --lock float            lock write pool with given number of tokens, required
+      --set_immutable         set the allocation's data to be immutable
+      --size int              adjust allocation size, bytes
 
 Global Flags:
       --config string              config file (default is config.yaml)
       --configDir string           configuration directory (default is $HOME/.zcn)
       --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
+      --silent                     Do not show interactive sdk logs (shown by default)
       --wallet string              wallet file (default is wallet.json)
       --wallet_client_id string    wallet client_id
       --wallet_client_key string   wallet client_key
@@ -323,10 +325,21 @@ Global Flags:
 
 #### Example
 
-Update an allocation for different storage expiration time, and  allocation size(in bytes).
+Update an allocation for different storage expiration time, and  allocation size(in bytes). 
+Update allocation has two modes, you can either pay for the update using your own tokens, or
+redeem a free storage marker.
 
 ```
 ./zbox updateallocation --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac --expiry 48h --size 4096
+```
+
+Free storage updates use a json file signed by the provider of the free storage, 
+they use predefined size and expiration hence no need to enter these values.  
+Allocations funded with free storage become identical to any other allocation, 
+after updating, as the blockchain keeps no history of the source of the funding.
+
+```shell
+./zbox updateallocation --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac --free_storage "markers/my_marker.json"
 ```
 
 Response:
@@ -334,6 +347,20 @@ Response:
 ```
 Allocation updated with txId : fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
 ```
+
+<details>
+  <summary>update allocation </summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124003064-65d6d300-d9ce-11eb-808d-2d59340b00e7.png)
+
+</details>
+
+<details>
+  <summary> free storage update allocation </summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124003924-602dbd00-d9cf-11eb-910c-1d286c2a173c.png)
+
+</details>
 
 You can see more txn details using above txID in block explorer [here](https://one.devnet-0chain.net/).
 
@@ -1536,9 +1563,10 @@ Lock some tokens in read pool associated with an allocation. The tokens will be 
 ./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1
 ```
 
-`rp-lock` Uses two different formats, you can either define a specific blobber
-to lock the tokens, or not and the amount to lock in each blobber pool will
-be determined automatically.
+* Uses two different formats, you can either define a specific blobber
+to lock all tokens, or spread across all the allocations blobbers automatically.
+* If the user does not have a pre-existing read pool, then the smart-contract
+creates one.
 
 <details>
   <summary>rp-lock with a specific blobber</summary>
@@ -1553,9 +1581,13 @@ be determined automatically.
 <details>
   <summary>rp-lock spread across all blobbers</summary>
 
+Tokens are spread between the blobber pools weighted by 
+each blobber's Terms.ReadPrice.
+
 ```shell
 ./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1
 ```
+
 ![image](https://user-images.githubusercontent.com/6240686/123973442-abd26d80-d9b3-11eb-9e37-c8e6551ed48c.png)
 
 </details>
@@ -1660,6 +1692,35 @@ Filtering by allocation.
 ./zbox wp-lock --allocation <allocation_id> --duration 40m --tokens 1
 ```
 
+* Uses two different formats, you can either define a specific blobber
+  to lock all tokens, or spread across all the allocations blobbers automatically.
+* If the user does not have a pre-existing read pool, then the smart-contract
+  creates one.
+
+<details>
+  <summary>rp-lock with a specific blobber</summary>
+
+```shell
+./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1 --blobber f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25 
+```
+![image](https://user-images.githubusercontent.com/6240686/123988183-b4c93c00-d9bf-11eb-825c-9a5849fedbbf.png)
+
+</details>
+
+<details>
+  <summary>rp-lock spread across all blobbers</summary>
+
+Tokens are spread between the blobber pools weighted by
+each blobber's Terms.ReadPrice.
+
+```shell
+./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1
+```
+
+![image](https://user-images.githubusercontent.com/6240686/123979735-e5f23e00-d9b8-11eb-8232-339a4a3374d0.png)
+
+</details>
+
 ### Unlock tokens from write pool
 
 `wp-unlock` unlocks an expired write pool by its POOL_ID. See `wp-info` for the pool id and the expiration. 
@@ -1670,6 +1731,13 @@ An expired write pool, associated with an allocation, can be locked until alloca
 ```
 ./zbox wp-unlock --pool_id <pool_id>
 ```
+
+<details>
+  <summary>rp-unlock</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/123980742-b09a2000-d9b9-11eb-8987-c18ff90ee705.png)
+
+</details>
 
 ### Download cost
 

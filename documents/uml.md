@@ -1,3 +1,66 @@
+ ```puml
+title update free storage marker
+zbox -> sc : updateallocation --free-storage 
+note left
+Free storage mareker
+* maker issuer name
+* client to give tokens to
+* number of free tokens     
+* timestamp to prevent reuse
+* signed
+end note   
+sc <- blockchain : maker issuer's details
+sc -> sc : validate free storage marker
+blockchain -> sc : allocation
+alt confirm all allocation blobbers have enough capacity
+    sc ->x zbox : blobber doesn't have enough free space
+end
+alt check expiration agaisnt allocation blobbers' max offer duration
+    sc ->x zbox : blobber doesn't allow so long offers
+end
+group allocation
+    sc -> sc : update alllocation as required\nsize expireation and immutable
+    blockchain -> sc : owner wrtie pool
+    sc -> sc : ammend write pool lock duration
+    blockchain -> sc : challenge pool
+    sc -> sc : mint new tokens for challenge pool
+    sc -> blockchain : challenge pool
+    sc -> blockchain : write pool
+end
+sc -> blockchain : allocation
+sc -> zbox : transaction id
+```
+
+```puml
+title Update allocation
+zbox -> sc : update allocation
+note left
+    owner = sender
+    allocation id
+    size
+    expiration
+    set immutable?
+end note
+blockchain -> sc : allocation
+alt confirm all allocation blobbers have enough capacity
+    sc ->x zbox : blobber doesn't have enough free space
+end
+alt check expiration agaisnt allocation blobbers' max offer duration
+    sc ->x zbox : blobber doesn't allow so long offers
+end
+group allocation
+    sc -> sc : update alllocation as required\nsize expireation and immutable
+    blockchain -> sc : owner wrtie pool
+    sc -> sc : ammend write pool lock duration
+    blockchain -> sc : challenge pool
+    sc -> sc : transfer tokens between\nwrite pool amd challenge pool
+    sc -> blockchain : challenge pool
+    sc -> blockchain : write pool
+end
+sc -> blockchain : allocation
+sc -> zbox : transaction id
+```
+    
 ```puml
 title Create read pool
 zbox -> sc : rp-create
@@ -71,6 +134,122 @@ else read pool id not expired
     sc ->x zbox : read pool not expired
 end
 ```
+
+```puml
+title Lock tokens in write pool for given bobber
+zbox -> sc : rp-lock, token value
+note left
+    * lock duration
+    * allocation id
+    * blobber id to lock for
+end note 
+sc -> sc : new allocation pool
+group new allocation pool
+    sc -> sc : add new blobber pool\nbalance value
+    sc -> sc : transfer tokens
+    sc -> sc : add set expiration
+end
+blockchain -> sc : writepool
+group write pool
+sc -> sc : add new allocation pool
+end 
+sc -> blockchain : save write pool
+sc -> zbox
+```
+
+```puml
+title Lock tokens in write pool no blobber specified
+zbox -> sc : rp-lock, token value
+note left
+    * lock duration
+    * allocation id
+end note 
+sc -> sc : new allocation pool
+group new allocation pool
+    blockchain -> sc : get allocation blobbers
+    loop each blobber
+        sc -> sc : new blobber pool\nbalance value \n split by write price
+    end
+    sc -> sc : add new blobber pools
+    sc -> sc : transfer tokens
+    sc -> sc : add set expiration
+end
+blockchain -> sc : readpool
+group write pool
+sc -> sc : add new allocation pool
+end 
+sc -> blockchain : save write pool
+sc -> zbox
+```
+
+```puml
+title Unlock write pool
+zbox -> sc : rp-unlock
+note left
+    * write pool id
+end note 
+blockchain -> sc : write pool
+alt write pool with id expired
+    group write pool
+        sc -> sc : remove pool id
+    end
+    sc -> blockchain : transfer tokens from\nwrite pool id to user
+    sc -> blockchain : save write pool
+    sc -> zbox
+else write pool id not expired
+    sc ->x zbox : write pool not expired
+end
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
