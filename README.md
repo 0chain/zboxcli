@@ -11,12 +11,13 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
   - Creating and Managing Allocations
     - [Register a Wallet](https://github.com/0chain/zboxcli#Register)
     - [Get detailed Allocation](https://github.com/0chain/zboxcli#Get)
+    - [List allocations](https://github.com/0chain/zboxcli#List-allocations)     
     - [Create new allocation](#Create-new-allocation)
     - [Update allocation](#update-allocation)
     - [Cancel allocation](#cancel-allocation)
     - [Finalise allocation](#finalise-allocation)
     - [Add curator](#add-curator)
-    - [List allocations](https://github.com/0chain/zboxcli#List-allocations)
+    - [Transfer allocation ownership](#transfer-allocation-ownership)
   - Uploading and Managing Files
     - [Upload a file to dStorage](https://github.com/0chain/zboxcli#Upload)
     - [Download the uploaded file from dStorage](https://github.com/0chain/zboxcli#Download)
@@ -432,10 +433,10 @@ allocation maintains a list of these curators.
 e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429 added as a curator to allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
 ```
 
-## Transfer ownership of an allocation
+## Transfer allocation ownership
 
 `transferallocation` changes the owner of an allocation. Only a curator, previously added by an  
-[addcurator](#addcurator-adds-a-curator) command can change an allocation's ownership.
+[addcurator](#add-curator) command can change an allocation's ownership.
 `transferallocation` does not move any funds, only changes the owner, owner public key
 field of the allocation.
 
