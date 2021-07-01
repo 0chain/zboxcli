@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/0chain/gosdk/zboxcore/fileref"
 	"os"
 	"sync"
 
@@ -47,6 +48,38 @@ var downloadCmd = &cobra.Command{
 		wg.Add(1)
 		var errE, err error
 		var allocationObj *sdk.Allocation
+		if len(authticket) > 0 {
+			if len(remotepath) == 0 {
+				PrintError("remotepath is required when using authticket", err)
+				os.Exit(1)
+			}
+			allocationObj, err = sdk.GetAllocationFromAuthTicket(authticket)
+			if err != nil {
+				PrintError("Error fetching the allocation", err)
+				os.Exit(1)
+			}
+			if len(lookuphash) == 0 {
+				lookuphash = fileref.GetReferenceLookup(allocationObj.Tx, remotepath)
+				PrintInfo("uttam")
+				PrintInfo(lookuphash)
+				PrintInfo(fileref.GetReferenceLookup(allocationObj.Tx, "/fol"))
+			}
+
+			if thumbnail {
+				errE = allocationObj.DownloadThumbnailFromAuthTicket(localpath,
+					authticket, lookuphash, remotepath, rxPay, statusBar)
+			} else {
+				if startBlock != 0 || endBlock != 0 {
+					errE = allocationObj.DownloadFromAuthTicketByBlocks(
+						localpath, authticket, startBlock, endBlock, numBlocks,
+						lookuphash, remotepath, rxPay, statusBar)
+				} else {
+					errE = allocationObj.DownloadFromAuthTicket(localpath,
+						authticket, lookuphash, remotepath, rxPay, statusBar)
+				}
+			}
+		}
+
 		if len(remotepath) > 0 {
 			if fflags.Changed("allocation") == false { // check if the flag "path" is set
 				PrintError("Error: allocation flag is missing") // If not, we'll let the user know
@@ -66,39 +99,6 @@ var downloadCmd = &cobra.Command{
 					errE = allocationObj.DownloadFileByBlock(localpath, remotepath, startBlock, endBlock, numBlocks, statusBar)
 				} else {
 					errE = allocationObj.DownloadFile(localpath, remotepath, statusBar)
-				}
-			}
-		} else if len(authticket) > 0 {
-			allocationObj, err = sdk.GetAllocationFromAuthTicket(authticket)
-			if err != nil {
-				PrintError("Error fetching the allocation", err)
-				os.Exit(1)
-			}
-			at := sdk.InitAuthTicket(authticket)
-			filename, err := at.GetFileName()
-			if err != nil {
-				PrintError("Error getting the filename from authticket", err)
-				os.Exit(1)
-			}
-			if len(lookuphash) == 0 {
-				lookuphash, err = at.GetLookupHash()
-				if err != nil {
-					PrintError("Error getting the lookuphash from authticket", err)
-					os.Exit(1)
-				}
-			}
-
-			if thumbnail {
-				errE = allocationObj.DownloadThumbnailFromAuthTicket(localpath,
-					authticket, lookuphash, filename, rxPay, statusBar)
-			} else {
-				if startBlock != 0 || endBlock != 0 {
-					errE = allocationObj.DownloadFromAuthTicketByBlocks(
-						localpath, authticket, startBlock, endBlock, numBlocks,
-						lookuphash, filename, rxPay, statusBar)
-				} else {
-					errE = allocationObj.DownloadFromAuthTicket(localpath,
-						authticket, lookuphash, filename, rxPay, statusBar)
 				}
 			}
 		}
