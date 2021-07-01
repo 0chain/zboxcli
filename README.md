@@ -190,12 +190,12 @@ Use "zbox [command] --help" for more information about a command.
 | --wallet_client_key string | Specify a wallet client_key (By default client_key specified in $HOME/.zcn/wallet.json is used) | zbox [command] --wallet_client_key  < client_key> |
 
  
-## Commands
+# Commands
 
 Note in this document, we will only show the commands for particular functionalities, the response will vary depending on your usage and may not be provided in all places. To get a more descriptive view of all the zbox functionalities check zbox cli documentation at docs.0chain.net.
 
 
-#### `register` - Registering wallet
+## `register` - Registering wallet
 
 `register` is used when needed to register a given wallet to the blockchain. This could be that the blockchain network is reset and you wished to register the same wallet at `~/.zcn/wallet.json`.
 
@@ -213,18 +213,18 @@ Sample output
 Wallet registered
 ```
 
-### newallocation - Create new allocation
+## newallocation - Create new allocation
 
 Command `newallocation` reserves hard disk space on the blobbers. Later `upload`
 can be used to save files to the blobber. `newallocation` has three modes triggered by the presence or absence of the `cost` 
 and `free_storage` parameters.
 * `cost` Converts `newallocation` into a query that returns the cost of the allocation
   determined by the remaining parameters.
-* `free_storage` Creates an allocation using a free storage marker.All other
+* `free_storage` Creates an allocation using a free storage marker. All other
   parameters except `cost` will be ignored. The allocation settings will be set
   automatically by `0chain`, from preconfigured values.  
-* `otherwise` Creates an allocation applying the settings indicated by the 
-  parameters remaining.  
+* `otherwise` Creates an allocation applying the settings indicated by the
+  remaining parameters.  
 
 
 | Parameter          | Description                                               | Default        | Valid Values |
@@ -238,7 +238,7 @@ and `free_storage` parameters.
 | mcct               | max challenge completion time                             | 1h             | duration     |
 | parity             | number of parity shards, effects availability             | 2              | int          |
 | read_price         | filter blobbers by read price range                       | 0-inf          | range        |
-| size               | size of space reserved on blobbers                        | 2147483648     | int          |
+| size               | size of space reserved on blobbers                        | 2147483648     | bytes          |
 | usd                | give token value in USD                                   |                | flag         |
 | write_price        | filter blobbers by write price range                      | 0-inf          | range        |
 
@@ -259,7 +259,7 @@ and `free_storage` parameters.
 
 </details>
 
-### Free storage allocation
+#### Free storage allocation
 
 Entities give free `0chain` storage in the form of markers. A marker takes the 
 form of a json file
@@ -277,7 +277,9 @@ form of a json file
 * `free_tokens` The amount free tokens; equivalent to the `size` filed.
 * `timestamp` Used to prevent multiple applications of the same marker.
 * `signature` Signed by the assigner, validated using public key on the blockchain.
-All allocation settings, other than `size`, will be set automatically by 0chain.
+All allocation settings, other than `lock`, will be set automatically by 0chain. 
+  Once created, an allocation funded by a free storage marker becomes identical to
+  any other allocation; Its history forgotten.
   
 ```shell
 ./zbox newallocation --free_allocation markers/referal_marker.json
@@ -305,63 +307,23 @@ Response:
 Allocation created : d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
 ```
 
-### Update allocation
+## updateallocation - Update allocation
 
-Command `updateallocation` updates hard disk space and expiry on the blobbers. 
-Let's see the parameters it takes by using `--help` flag..
-
-#### Usage
-
-```
-./zbox updateallocation -h
-Updates allocation's expiry and size
-
-Usage:
-  zbox updateallocation [flags]
-
-Flags:
-      --allocation string     Allocation ID
-      --expiry duration       adjust storage expiration time, duration
-      --free_storage string   json file containing marker for free storage
-  -h, --help                  help for updateallocation
-      --lock float            lock write pool with given number of tokens, required
-      --set_immutable         set the allocation's data to be immutable
-      --size int              adjust allocation size, bytes
-
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --silent                     Do not show interactive sdk logs (shown by default)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-```
-
-#### Example
-
-Update an allocation for different storage expiration time, and  allocation size(in bytes). 
-Update allocation has two modes, you can either pay for the update using your own tokens, or
-redeem a free storage marker.
-
-```
-./zbox updateallocation --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac --expiry 48h --size 4096
-```
-
-Free storage updates use a json file signed by the provider of the free storage, 
-they use predefined size and expiration hence no need to enter these values. 
-Allocations funded with free storage become identical to any other allocation, 
-after updating, as the blockchain keeps no history of the source of the funding.
-
-```shell
-./zbox updateallocation --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac --free_storage "markers/my_marker.json"
-```
-
-Response:
-
-```
-Allocation updated with txId : fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
-```
+`updateallocation` updates allocation settings. It has two modes depending on 
+the presence of the `free_storage` field. 
+* `free_storage` Uses a free storage marker to fund this allocation update; settings
+  predefined by `0chain`. See [newallocation](#free_storage_allocation) for further details.
+* `otherwise` Update an allocation applying the settings indicated by the
+  remaining parameters.  
+  
+| Parameter     | Required | Description                                            | Valid Values |
+|---------------|----------|--------------------------------------------------------|--------------|
+| allocation    | yes      | allocation id                                          | string       |
+| expiry        |          | adjust storage expiration time                         | duration     |
+| free_storage  |          | free storage marker file                               | string       |
+| lock          | yes*     | lock additional tokens in write pool                    | int          |
+| set_immutable |          | sets allocation so that data can no longer be modified | boolean      |
+| size          |          | adjust allocation size                                 | bytes        |
 
 <details>
   <summary>Update allocation </summary>
@@ -376,6 +338,21 @@ Allocation updated with txId : fb84185dae620bbba8386286726f1efcd20d2516bcf1a4482
 ![image](https://user-images.githubusercontent.com/6240686/124003924-602dbd00-d9cf-11eb-910c-1d286c2a173c.png)
 
 </details>
+
+```
+./zbox updateallocation --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac --expiry 48h --size 4096
+```
+
+
+```shell
+./zbox updateallocation --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac --free_storage "markers/my_marker.json"
+```
+
+Output:
+
+```
+Allocation updated with txId : fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
+```
 
 You can see more txn details using above txID in block explorer [here](https://one.devnet-0chain.net/).
 
