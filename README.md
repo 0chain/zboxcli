@@ -195,7 +195,7 @@ Use "zbox [command] --help" for more information about a command.
 Note in this document, we will only show the commands for particular functionalities, the response will vary depending on your usage and may not be provided in all places. To get a more descriptive view of all the zbox functionalities check zbox cli documentation at docs.0chain.net.
 
 
-## `register` - Registering wallet
+## `register` Register wallet
 
 `register` is used when needed to register a given wallet to the blockchain. This could be that the blockchain network is reset and you wished to register the same wallet at `~/.zcn/wallet.json`.
 
@@ -213,7 +213,7 @@ Sample output
 Wallet registered
 ```
 
-## newallocation - Create new allocation
+## newallocation Create new allocation
 
 Command `newallocation` reserves hard disk space on the blobbers. Later `upload`
 can be used to save files to the blobber. `newallocation` has three modes triggered by the presence or absence of the `cost` 
@@ -307,7 +307,7 @@ Response:
 Allocation created : d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
 ```
 
-## updateallocation - Update allocation
+## updateallocation Update allocation
 
 `updateallocation` updates allocation settings. It has two modes depending on 
 the presence of the `free_storage` field. 
@@ -324,6 +324,7 @@ the presence of the `free_storage` field.
 | lock          | yes*     | lock additional tokens in write pool                    | int          |
 | set_immutable |          | sets allocation so that data can no longer be modified | boolean      |
 | size          |          | adjust allocation size                                 | bytes        |
+* only required if free_storage not set.
 
 <details>
   <summary>Update allocation </summary>
@@ -356,35 +357,24 @@ Allocation updated with txId : fb84185dae620bbba8386286726f1efcd20d2516bcf1a4482
 
 You can see more txn details using above txID in block explorer [here](https://one.devnet-0chain.net/).
 
-### Cancel allocation
+### alloc-cancel Cancel allocation
 
-Cancel allocation immediately return all tokens from challenge pool back to user (to write pool) and cancels the allocation. In this case blobber will not give their min lock demand. If blobbers already got some tokens, the tokens will not be returned.
+Cancel allocation immediately return all tokens from challenge pool back to user
+(to write pool) and cancels the allocation. In this case blobber will
+not give their min lock demand. If blobbers already got some tokens, 
+the tokens will not be returned. Cancelling an allocation can only occur
+if the amount of failed challenges exceed a preset threshold.
 
-#### Usage
+| Parameter  | Required | Description   | Valid Values |
+|------------|----------|---------------|--------------|
+| allocation | yes      | allocation id | string       |
 
-```
-./zbox alloc-cancel -h
-Cancel allocation used to terminate an allocation where, because
-of blobbers, it can't be used. Thus, the blobbers will not receive their
-min_lock_demand. Other aspects of the cancellation follows the finalize
-allocation flow.
+<details>
+  <summary>Cancel allocation</summary>
 
-Usage:
-  zbox alloc-cancel [flags]
+![image](https://user-images.githubusercontent.com/6240686/124147442-9aa66100-da86-11eb-8b88-cd20306bfde1.png)
 
-Flags:
-      --allocation string   Allocation ID
-  -h, --help                help for alloc-cancel
-
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-```
+</details>
 
 #### Example
 
@@ -392,34 +382,22 @@ Global Flags:
 ./zbox alloc-cancel --allocation <allocation_id>
 ```
 
-### Finalize allocation
+## alloc-fini Finalize allocation
 
-Finalize an expired allocation. When an allocation is expired, after its challenge completion time (after the expiration), it can be finalized by the owner or one of the allocation blobbers.
+Finalize an expired allocation. When an allocation expires, 
+after its challenge completion time (after the expiration), 
+it can be finalized by the owner or one of the allocation blobbers.
 
-#### Usage
+| Parameter  | Required | Description   | Valid Values |
+|------------|----------|---------------|--------------|
+| allocation | yes      | allocation id | string       |
 
-```
-./zbox alloc-fini -h
-Finalize an expired allocation by allocation owner or one of
-blobbers of the allocation. It moves all tokens have to be moved between pools
-and empties write pool moving left tokens to client.
+<details>
+  <summary>Cancel allocation</summary>
 
-Usage:
-  zbox alloc-fini [flags]
+![image](https://user-images.githubusercontent.com/6240686/124149297-5c11a600-da88-11eb-9274-1fb756d93358.png)
 
-Flags:
-      --allocation string   Allocation ID
-  -h, --help                help for alloc-fini
-
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-```
+</details>
 
 #### Example
 
@@ -427,7 +405,7 @@ Global Flags:
 ./zbox alloc-fini --allocation <allocation_id>
 ```
 
-### List blobbers
+## ls-blobbers List blobbers
 
 Use `ls-blobbers` command to show active blobbers in storage SC.
 

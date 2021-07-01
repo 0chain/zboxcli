@@ -1,4 +1,63 @@
  ```puml
+title Finilize allocation
+zbox -> sc : alloc-fini
+note left
+    * allocation id
+end note
+    alt check allocation expired
+        sc ->x zbox : allocation not expired
+    end
+    blockchain -> sc :blobbers
+    sc -> sc : blobber challenge pass rates
+    blockchain -> sc : challenge pool
+    blockchain -> sc : write pool   
+    group challenge pool
+        sc -> sc : min lock demand\ncp -> blobbers + stake holders
+        sc -> sc : passed challenges\ncp -> blobbers + stake holders
+        sc -> sc : pay interest\nsc -> blobbers' stake holders 
+        sc -> blockchain : minted interest payments
+        sc -> sc : return any reaming funds\ncp -> write pool
+    end
+    sc -> blockchain : write pool
+    sc -> blockchain : challenge pool
+    blockchain -> sc : all allocations
+    sc -> sc : remove allocation id 
+    sc -> blockchain : all allocatinos    
+sc -> zbox : allocation id 
+```
+
+ ```puml
+title Cancel allocation
+zbox -> sc : alloc-cancel 
+note left
+    * allocation id
+end note
+    alt check allocation not expired
+        sc ->x zbox : cancelling expired allocation
+    end
+    alt check sufficent challenges have failed
+        sc ->x zbox : not enough failed challenges
+    end
+    blockchain -> sc :blobbers
+    sc -> sc : blobber challenge pass rates
+    blockchain -> sc : challenge pool
+    blockchain -> sc : write pool   
+    group challenge pool
+        sc -> sc : min lock demand\ncp -> blobbers + stake holders
+        sc -> sc : passed challenges\ncp -> blobbers + stake holders
+        sc -> sc : pay interest\nsc -> blobbers' stake holders 
+        sc -> blockchain : minted interest payments
+        sc -> sc : return any reaming funds\ncp -> write pool
+    end
+    sc -> blockchain : write pool
+    sc -> blockchain : challenge pool
+    blockchain -> sc : all allocations
+    sc -> sc : remove allocation id 
+    sc -> blockchain : all allocatinos    
+sc -> zbox : allocation id 
+```
+
+ ```puml
 title Free storage new allocation
 zbox -> sc : newallocation --free-storage
 note left
