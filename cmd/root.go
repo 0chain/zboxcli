@@ -12,9 +12,9 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/0chain/gosdk/zboxcore/blockchain"
+	"github.com/0chain/zboxcli/util"
 
 	"github.com/0chain/gosdk/core/zcncrypto"
-	"github.com/mitchellh/go-homedir"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
@@ -63,21 +63,6 @@ func Execute() {
 	}
 }
 
-func getConfigDir() string {
-	if cDir != "" {
-		return cDir
-	}
-	var configDir string
-	// Find home directory.
-	home, err := homedir.Dir()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	configDir = home + string(os.PathSeparator) + ".zcn"
-	return configDir
-}
-
 func initConfig() {
 	nodeConfig := viper.New()
 	networkConfig := viper.New()
@@ -85,7 +70,7 @@ func initConfig() {
 	if cDir != "" {
 		configDir = cDir
 	} else {
-		configDir = getConfigDir()
+		configDir = util.GetConfigDir()
 	}
 	// Search config in home directory with name ".cobra" (without extension).
 	nodeConfig.AddConfigPath(configDir)

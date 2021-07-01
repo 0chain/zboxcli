@@ -6,11 +6,13 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/0chain/gosdk/core/common"
 	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zboxcore/zboxutil"
+	"github.com/0chain/zboxcli/live"
 
 	"github.com/spf13/cobra"
 )
@@ -31,10 +33,16 @@ var uploadCmd = &cobra.Command{
 			PrintError("Error: remotepath flag is missing")
 			os.Exit(1)
 		}
-		if fflags.Changed("localpath") == false {
-			PrintError("Error: localpath flag is missing")
-			os.Exit(1)
+
+		live, _ := cmd.Flags().GetBool("live")
+
+		if !live {
+			if fflags.Changed("localpath") == false {
+				PrintError("Error: localpath flag is missing")
+				os.Exit(1)
+			}
 		}
+
 		allocationID := cmd.Flag("allocation").Value.String()
 		allocationObj, err := sdk.GetAllocation(allocationID)
 		if err != nil {
@@ -68,8 +76,11 @@ var uploadCmd = &cobra.Command{
 			}
 			attrs.WhoPaysForReads = wp // set given value
 		}
-
-		if stream {
+		if live {
+			chunkSize, _ := cmd.Flags().GetInt("chunksize")
+			delay, _ := cmd.Flags().GetInt("delay")
+			err = startLiveUpload(cmd, allocationObj, remotepath, encrypt, chunkSize, attrs, time.Duration(delay)*time.Second)
+		} else if stream {
 			chunkSize, _ := cmd.Flags().GetInt("chunksize")
 			err = startStreamUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar)
 
@@ -157,6 +168,48 @@ func startStreamUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localP
 	return streamUpload.Start()
 }
 
+func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, remotePath string, encrypt bool, chunkSize int, attrs fileref.Attributes, delay time.Duration) error {
+
+	webcam, err := live.OpenWebcam()
+	if err != nil {
+		return err
+	}
+	defer webcam.Close()
+
+	mimeType := "video/avi"
+
+	remotePath = zboxutil.RemoteClean(remotePath)
+	isabs := zboxutil.IsRemoteAbs(remotePath)
+	if !isabs {
+		err = common.NewError("invalid_path", "Path should be valid and absolute")
+		return err
+	}
+	remotePath = zboxutil.GetFullRemotePath(webcam.GetVideoFile(), remotePath)
+
+	_, fileName := filepath.Split(remotePath)
+
+	liveMeta := sdk.LiveMeta{
+		MimeType:   mimeType,
+		RemoteName: fileName,
+		RemotePath: remotePath,
+		Attributes: attrs,
+	}
+
+	liveUpload := sdk.CreateLiveUpload(allocationObj, liveMeta, webcam,
+		sdk.WithLiveChunkSize(chunkSize),
+		sdk.WithLiveEncrypt(encrypt),
+		sdk.WithLiveStatusCallback(func() sdk.StatusCallback {
+			wg := &sync.WaitGroup{}
+			statusBar := &StatusBar{wg: wg}
+			wg.Add(1)
+
+			return statusBar
+		}),
+		sdk.WithLiveDelay(delay))
+
+	return liveUpload.Start()
+}
+
 func init() {
 	rootCmd.AddCommand(uploadCmd)
 	uploadCmd.PersistentFlags().String("allocation", "", "Allocation ID")
@@ -168,7 +221,9 @@ func init() {
 	uploadCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
 	uploadCmd.Flags().Bool("stream", false, "pass this option to enable stream upload for large file")
 	uploadCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "pass this option to custom chunk size for upload")
+	uploadCmd.Flags().Bool("live", false, "pass this option to enable live upload for webcam streaming")
+	uploadCmd.Flags().Int("delay", 5, "how much seconds has a clips. 5 seconds is default")
 	uploadCmd.MarkFlagRequired("allocation")
-	uploadCmd.MarkFlagRequired("localpath")
 	uploadCmd.MarkFlagRequired("remotepath")
+	//uploadCmd.MarkFlagRequired("localpath")
 }
