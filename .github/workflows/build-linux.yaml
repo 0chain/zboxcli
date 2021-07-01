@@ -1,5 +1,5 @@
 name: build-cli
-on: [push]
+on: [push, pull_request]
 jobs:
   build-linux:
     name: Build-linux
