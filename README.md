@@ -195,89 +195,96 @@ Use "zbox [command] --help" for more information about a command.
 Note in this document, we will only show the commands for particular functionalities, the response will vary depending on your usage and may not be provided in all places. To get a more descriptive view of all the zbox functionalities check zbox cli documentation at docs.0chain.net.
 
 
-### Register
+#### `register` - Registering wallet
 
-Command `register`  creates a wallet if not created and registers it for use by the blockchain and blobbers. The wallet is created in the ~/.zcn directory and uses the keys stored in ~/.zcn/wallet.json. You can create multiple wallets with multiple allocations but make sure to specify a wallet file for every wallet.
+`register` is used when needed to register a given wallet to the blockchain. This could be that the blockchain network is reset and you wished to register the same wallet at `~/.zcn/wallet.json`.
 
-#### Usage
+![image](https://user-images.githubusercontent.com/6240686/124104251-fb6b7480-da59-11eb-9397-9151b04de363.png)
 
-```
-./zbox register -h
-Registers the wallet with the blockchain
+Sample command
 
-Usage:
-  zbox register [flags]
-
-Flags:
-  -h, --help   help for register
-
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
+```sh
+./zwallet register
 ```
 
-#### Example
+Sample output
 
 ```
-./zbox register
-```
-
-Response:
-
-```
-ZCN wallet created
 Wallet registered
 ```
 
-### Create new allocation
+### newallocation - Create new allocation
 
-Command `newallocation` reserves hard disk space on the blobbers. Let's see the parameters it takes by using `--help`.
+Command `newallocation` reserves hard disk space on the blobbers. Later `upload`
+can be used to save files to the blobber. `newallocation` has three modes triggered by the presence or absence of the `cost` 
+and `free_storage` parameters.
+* `cost` Converts `newallocation` into a query that returns the cost of the allocation
+  determined by the remaining parameters.
+* `free_storage` Creates an allocation using a free storage marker.All other
+  parameters except `cost` will be ignored. The allocation settings will be set
+  automatically by `0chain`, from preconfigured values.  
+* `otherwise` Creates an allocation applying the settings indicated by the 
+  parameters remaining.  
+
+
+| Parameter          | Description                                               | Default        | Valid Values |
+|--------------------|-----------------------------------------------------------|----------------|--------------|
+| allocationFileName | local file to store allocation information                | allocation.txt | file path    |
+| cost               | returns the cost of the allocation, no allocation created |                | flag         |
+| data               | number of data shards, effects upload and download speeds | 2              | int          |
+| expire             | duration to allocation expiration                         | 720h           | duration     |
+| free_storage       | free storage marker file.                                 |                | file path    |
+| lock               | lock write pool with given number of tokens               |                | float        |
+| mcct               | max challenge completion time                             | 1h             | duration     |
+| parity             | number of parity shards, effects availability             | 2              | int          |
+| read_price         | filter blobbers by read price range                       | 0-inf          | range        |
+| size               | size of space reserved on blobbers                        | 2147483648     | int          |
+| usd                | give token value in USD                                   |                | flag         |
+| write_price        | filter blobbers by write price range                      | 0-inf          | range        |
+
+
+<details>
+  <summary> New allocation </summary>
 
 ![allocation](https://user-images.githubusercontent.com/65766301/120052477-27529f00-c043-11eb-91bb-573558325b20.png)
 
-#### Usage
+![image](https://user-images.githubusercontent.com/6240686/124010595-e8fc2700-d9d6-11eb-83b9-dc10cbeb75e0.png)
 
+</details>
+
+<details>
+  <summary> Free storage new allocation </summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124010041-3926b980-d9d6-11eb-80f1-f062c92751ed.png)
+
+</details>
+
+### Free storage allocation
+
+Entities give free `0chain` storage in the form of markers. A marker takes the 
+form of a json file
+```json
+{
+  "assigner": "my_corporation",
+  "recipient": "f174cdda7e24aeac0288afc2e8d8b20eda06b18333efd447725581dc80552977",
+  "free_tokens": 2.1,
+  "timestamp": 2000000,
+  "signature": "9edb86c8710d5e3ee4fde247c638fd6b81af67e7bb3f9d60700aec8e310c1f06"
+}
 ```
-./zbox newallocation --help
-
-Creates a new allocation
-
-Usage:
-  zbox newallocation [flags]
-
-Flags:
-      --allocationFileName string   --allocationFileName allocation.txt (default "allocation.txt")
-      --cost                        pass this option to only get the min lock demand
-      --data int                    --data 2 (default 2)
-      --expire duration             duration to allocation expiration (default 720h0m0s)
-      --free_storage string         json file containing marker for free storage
-  -h, --help                        help for newallocation
-      --lock float                  lock write pool with given number of tokens, required
-      --mcct duration               max challenge completion time, optional, default 1h (default 1h0m0s)
-      --parity int                  --parity 2 (default 2)
-      --read_price string           select blobbers by provided read price range, use form 0.5-1.5, default is [0; inf)
-      --size int                    --size 10000 (default 2147483648)
-      --usd                         pass this option to give token value in USD
-      --write_price string          select blobbers by provided write price range, use form 1.5-2.5, default is [0; inf)
-
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --silent                     Do not show interactive sdk logs (shown by default)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
+* `assigner` A label for the entity gifting the free storage.
+* `recipient` The marker has to be run by the recipient to be valid.
+* `free_tokens` The amount free tokens; equivalent to the `size` filed.
+* `timestamp` Used to prevent multiple applications of the same marker.
+* `signature` Signed by the assigner, validated using public key on the blockchain.
+All allocation settings, other than `size`, will be set automatically by 0chain.
+  
+```shell
+./zbox newallocation --free_allocation markers/referal_marker.json
 ```
-
-As you can see the `newallocation` command takes allocationFileName where the volume information 
-is stored locally. All the parameters have default values. With more data shards, you can upload 
-or download files faster. With more parity shards, you have higher availability.
+```shell
+Allocation created : d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
+```  
 
 #### Example
 
@@ -287,27 +294,10 @@ information is stored under `$HOME/.zcn/allocation.txt`.
 ```shell
 ./zbox newallocation --lock 0.5
 ```
-New allocation has to modes; either the user can pay for it, or a free storage marker 
-can be redeemed. Someone with permission to provide free storage signs a marker and 
-gives it to you in the form of a `.json` file. The allocation's parameters come 
-predefined, so we only need the path to the marker file.
+
 ```shell
 ./zbox newallocation --lock 0.5 --free_storage markers/my_marker.json
 ```
-
-<details>
-  <summary> New allocation </summary>
-
-![image](https://user-images.githubusercontent.com/6240686/124010595-e8fc2700-d9d6-11eb-83b9-dc10cbeb75e0.png)
-
-</details>
-
-<details>
-  <summary> Free storage new allocation </summary>
-
-  ![image](https://user-images.githubusercontent.com/6240686/124010041-3926b980-d9d6-11eb-80f1-f062c92751ed.png)
-
-</details>
 
 Response:
 
