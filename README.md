@@ -312,7 +312,7 @@ Allocation created : d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4f
 `updateallocation` updates allocation settings. It has two modes depending on 
 the presence of the `free_storage` field. 
 * `free_storage` Uses a free storage marker to fund this allocation update; settings
-  predefined by `0chain`. See [newallocation](#free_storage_allocation) for further details.
+  predefined by `0chain`. See [newallocation](#free-storage-allocation) for further details.
 * `otherwise` Update an allocation applying the settings indicated by the
   remaining parameters.  
   
