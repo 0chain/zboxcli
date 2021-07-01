@@ -50,18 +50,40 @@ var downloadCmd = &cobra.Command{
 		var errE, err error
 		var allocationObj *sdk.Allocation
 		if len(authticket) > 0 {
-			if len(remotepath) == 0 {
-				PrintError("remotepath is required when using authticket", err)
+			at, err := sdk.InitAuthTicket(authticket).Unmarshall()
+
+			if err != nil {
+				PrintError(err)
 				os.Exit(1)
 			}
+
 			allocationObj, err = sdk.GetAllocationFromAuthTicket(authticket)
 			if err != nil {
 				PrintError("Error fetching the allocation", err)
 				os.Exit(1)
 			}
-			lookuphash = fileref.GetReferenceLookup(allocationObj.Tx, remotepath)
-			pathnames := strings.Split(remotepath, "/")
-			filename := pathnames[len(pathnames) - 1]
+
+			var filename string
+
+			if at.RefType == fileref.FILE {
+				filename = at.FileName
+				lookuphash = at.FilePathHash
+			} else if len(lookuphash) > 0 {
+				fileMeta, err := allocationObj.GetFileMetaFromAuthTicket(authticket, lookuphash)
+				if err != nil {
+					PrintError("Either remotepath or lookuphash is required when using authticket of directory type")
+					os.Exit(1)
+				}
+				filename = fileMeta.Name
+			} else if len(remotepath) > 0 {
+				lookuphash = fileref.GetReferenceLookup(allocationObj.Tx, remotepath)
+
+				pathnames := strings.Split(remotepath, "/")
+				filename = pathnames[len(pathnames) - 1]
+			} else {
+				PrintError("Either remotepath or lookuphash is required when using authticket of directory type")
+				os.Exit(1)
+			}
 
 			if thumbnail {
 				errE = allocationObj.DownloadThumbnailFromAuthTicket(localpath,
