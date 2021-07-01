@@ -393,7 +393,7 @@ it can be finalized by the owner or one of the allocation blobbers.
 | allocation | yes      | allocation id | string       |
 
 <details>
-  <summary>Cancel allocation</summary>
+  <summary>Finalize allocation</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124149297-5c11a600-da88-11eb-9274-1fb756d93358.png)
 
@@ -405,32 +405,72 @@ it can be finalized by the owner or one of the allocation blobbers.
 ./zbox alloc-fini --allocation <allocation_id>
 ```
 
+## addcurator Adds a curator
+
+A curator refers to a user that can transfer owner of an allocation. Each
+allocation maintains a list of these curators.
+
+| Parameter  | Required | Description                           | Valid Values |
+|------------|----------|---------------------------------------|--------------|
+| allocation | yes      | allocation id                         | string       |
+| curator    | yes      | id of new curator to add to allocation | string       |
+
+<details>
+  <summary>Add curator</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124155030-f7594a00-da8d-11eb-802b-869ec64281c5.png)
+
+</details>
+
+```shell
+./zbox addcurator --allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d --curator  e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429
+```
+
+```shell
+e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429 added as a curator to allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
+```
+
+## transferallocation Transfer ownership of an allocation
+
+Changes the owner of an allocation. Only a curator, previously added by an  
+[addcurator](#addcurator-adds-a-curator) command can change an allocation's ownership.
+`transferallocation` does not move any funds, only changes the owner, owner public key
+field of the allocation.
+
+| Parameter     | Required | Description             | Valid Values |
+|---------------|----------|-------------------------|--------------|
+| allocation    | yes      | allocatino id           | string       |
+| new_owner     | yes      | id of the new owner     | string       |
+| new_owner_key | yes      | public key of new owner | string       |
+
+<details>
+  <summary>Transfer allocation ownership</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124157614-de05cd00-da90-11eb-93ee-7bd8b3f50b88.png)
+
+</details>
+
+```shell
+./zbox trnasferallocation --allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d \
+    --new_owner 8b87739cd6c966c150a8a6e7b327435d4a581d9d9cc1d86a88c8a13ae1ad7a96
+    --new_owner_key a2df94e69954e51999f768aeca40bf0678e168fa9eb21ee5c82c32a9c25fb71fe9a340b726456d6e557f92854975ef04270291cdc1853e56000b0a6b48312d13
+```
+
+Output
+
+```shell
+transferred ownership of fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d to 8b87739cd6c966c150a8a6e7b327435d4a581d9d9cc1d86a88c8a13ae1ad7a96
+```
+
+
 ## ls-blobbers List blobbers
 
 Use `ls-blobbers` command to show active blobbers in storage SC.
 
-#### Usage
-
-```
-./zbox ls-blobbers -h
-Show active blobbers in storage SC.
-
-Usage:
-  zbox ls-blobbers [flags]
-
-Flags:
-  -h, --help   help for ls-blobbers
-      --json   pass this option to print response as json data
-
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-```
+| Parameter | Required | Description                          | Valid Values |
+|-----------|----------|--------------------------------------|--------------|
+| all       | no       | shows active and non active blobbers | flag         |
+| json      | no       | display result in .json format       | flag         |
 
 #### Example
 

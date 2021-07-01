@@ -1,4 +1,42 @@
- ```puml
+```puml
+title Transfer allocation ownership
+zbox -> sc : transfer allocatno owner
+note left
+    * allocatino id
+    * new onwer id
+    * new owner pubic key
+end note
+    blockchain -> sc : allocation
+    alt check sender is curator
+        sc ->x zbox : only curators can transfer allocation
+    end
+    group allocation
+        sc -> sc : chaner owner\nchange owner public key
+        blockchain -> sc : new owner write pool
+        sc -> sc : new empty alloaction write pool
+        sc -> blockchain : save write pool
+    end 
+    sc -> blockchain : save allocation
+sc -> zbox     
+``` 
+
+```puml
+title Add curator
+zbox -> sc : addcurator
+note left
+    * allocatino id
+    * curator id
+end note
+    blockchain -> sc : allocation
+    group allocation
+        sc -> sc : append curator
+    end 
+    sc -> blockchain : save allocation
+sc -> zbox     
+``` 
+
+
+```puml
 title Finilize allocation
 zbox -> sc : alloc-fini
 note left
@@ -18,11 +56,11 @@ end note
         sc -> blockchain : minted interest payments
         sc -> sc : return any reaming funds\ncp -> write pool
     end
-    sc -> blockchain : write pool
-    sc -> blockchain : challenge pool
+    sc -> blockchain : save write pool
+    sc -> blockchain : save challenge pool
     blockchain -> sc : all allocations
     sc -> sc : remove allocation id 
-    sc -> blockchain : all allocatinos    
+    sc -> blockchain : save all allocatinos    
 sc -> zbox : allocation id 
 ```
 
@@ -49,9 +87,9 @@ end note
         sc -> blockchain : minted interest payments
         sc -> sc : return any reaming funds\ncp -> write pool
     end
-    sc -> blockchain : write pool
-    sc -> blockchain : challenge pool
-    blockchain -> sc : all allocations
+    sc -> blockchain : save write pool
+    sc -> blockchain : save challenge pool
+    blockchain -> sc : save all allocations
     sc -> sc : remove allocation id 
     sc -> blockchain : all allocatinos    
 sc -> zbox : allocation id 
