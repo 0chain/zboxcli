@@ -76,9 +76,7 @@ var downloadCmd = &cobra.Command{
 						authticket, lookuphash, filename, rxPay, statusBar)
 				}
 			}
-		}
-
-		if len(remotepath) > 0 {
+		} else if len(remotepath) > 0 {
 			if fflags.Changed("allocation") == false { // check if the flag "path" is set
 				PrintError("Error: allocation flag is missing") // If not, we'll let the user know
 				os.Exit(1)                                      // and return
