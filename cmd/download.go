@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/0chain/gosdk/zboxcore/fileref"
 	"os"
+	"strings"
 	"sync"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
@@ -58,24 +59,21 @@ var downloadCmd = &cobra.Command{
 				PrintError("Error fetching the allocation", err)
 				os.Exit(1)
 			}
-			if len(lookuphash) == 0 {
-				lookuphash = fileref.GetReferenceLookup(allocationObj.Tx, remotepath)
-				PrintInfo("uttam")
-				PrintInfo(lookuphash)
-				PrintInfo(fileref.GetReferenceLookup(allocationObj.Tx, "/fol"))
-			}
+			lookuphash = fileref.GetReferenceLookup(allocationObj.Tx, remotepath)
+			pathnames := strings.Split(remotepath, "/")
+			filename := pathnames[len(pathnames) - 1]
 
 			if thumbnail {
 				errE = allocationObj.DownloadThumbnailFromAuthTicket(localpath,
-					authticket, lookuphash, remotepath, rxPay, statusBar)
+					authticket, lookuphash, filename, rxPay, statusBar)
 			} else {
 				if startBlock != 0 || endBlock != 0 {
 					errE = allocationObj.DownloadFromAuthTicketByBlocks(
 						localpath, authticket, startBlock, endBlock, numBlocks,
-						lookuphash, remotepath, rxPay, statusBar)
+						lookuphash, filename, rxPay, statusBar)
 				} else {
 					errE = allocationObj.DownloadFromAuthTicket(localpath,
-						authticket, lookuphash, remotepath, rxPay, statusBar)
+						authticket, lookuphash, filename, rxPay, statusBar)
 				}
 			}
 		}
