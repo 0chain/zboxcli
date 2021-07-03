@@ -1,4 +1,84 @@
 ```puml
+title Download
+boundary zbox 
+collections blobbers
+database store
+control 0chain
+entity blockchain
+zbox -> blobbers : download
+note left
+    * allocation id
+    * auth ticket
+    * block to download
+    * remotepath    
+    * start block
+    * number of blocks
+end note
+    blobbers -> 0chain : request allocaton
+        blockchain -> 0chain : allocation
+    0chain -> blobbers : allocation
+    store -> blobbers : collaborators
+    alt check sender is owner or\ncollaborator or\nauth ticket validates
+        blobbers ->x zbox : unauthorised user
+    end
+    blobbers -> blobbers : check enugh tokens\nin local read pool
+    store -> blobbers : file data blocks    
+    blobbers -> 0chain : commit read marker
+    note left
+        * allocation id
+        * payer id (owner or collaborator)
+        * timestamp
+        * read counter
+        * signature
+    end note          
+    blobbers -> zbox : file data
+        blockchain -> 0chain : previous reads in block 
+        0chain -> 0chain : validate read marker
+        blockchain -> 0chain : blobber's stake pool
+        blockchain -> 0chain : payer's read pool
+        0chain -> 0chain : pay blobber's stake holders
+        0chain -> blockchain : save blobber's stake pool
+        0chain -> blockchain : save payer's read pool       
+zbox -> zbox : decrypt data
+zbox -> zbox : save to local file 
+alt commit true
+zbox -> 0chain : save metadata
+        0chain -> blockchain :  save metadata
+        0chain -> zbox
+end    
+```
+
+```puml
+title Upload
+boundary zbox 
+collections blobbers
+database store
+control 0chain
+entity blockchain
+zbox -> zbox : encrypt
+zbox -> zbox : add thumbnail
+zbox -> blobbers : upload
+note left
+    * allocation id
+    * file data
+    * remotepath    
+end note
+    blobbers -> 0chain : request allocaton
+        blockchain -> 0chain : allocation
+    0chain -> blobbers : allocation
+    alt check sender == owner
+        blobbers ->x zbox : needs to be performed\nby the owner
+    end
+    blobbers -> store : save file data
+    blobbers -> zbox
+alt commit true
+zbox -> 0chain : save metadata
+    0chain -> blockchain :  save metadata
+0chain -> zbox
+end    
+```
+
+```puml
 title Transfer allocation ownership
 zbox -> sc : transfer allocatno owner
 note left

@@ -19,8 +19,8 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
     - [Add curator](#add-curator)
     - [Transfer allocation ownership](#transfer-allocation-ownership)
   - Uploading and Managing Files
-    - [Upload a file to dStorage](https://github.com/0chain/zboxcli#Upload)
-    - [Download the uploaded file from dStorage](https://github.com/0chain/zboxcli#Download)
+    - [Upload a file to dStorage](#upload)
+    - [Download the uploaded file from dStorage](#download)
     - [Update the uploaded file on dStorage](https://github.com/0chain/zboxcli#Update)
     - [Delete the uploaded file on dStorage](https://github.com/0chain/zboxcli#Delete)
     - [List the uploaded files and folders](https://github.com/0chain/zboxcli#List)
@@ -201,7 +201,7 @@ Note in this document, we will only show the commands for particular functionali
 
 `register` is used when needed to register a given wallet to the blockchain. This could be that the blockchain network is reset and you wished to register the same wallet at `~/.zcn/wallet.json`.
 
-![image](https://user-images.githubusercontent.com/6240686/124104251-fb6b7480-da59-11eb-9397-9151b04de363.png)
+![image](https://user-images.githubusercontent.com/6240686/124297241-c858dc00-db52-11eb-89e3-9146e3f9b840.png)
 
 Sample command
 
@@ -599,38 +599,28 @@ Update blobber read price
 ./zbox bl-update --blobber_id 0ece681f6b00221c5567865b56040eaab23795a843ed629ce71fb340a5566ba3 --read_price 0.1
 ```
 
-### Upload
+## Upload
 
-Use `upload` command to upload a file.
+Use `upload` command to upload a file. The user must be the owner of the allocation.
+You can request the file be encrypted before upload, and can send thumbnails 
+with the file. 
 
-#### Usage
+| Parameter               | Required | Description                            | Default | Valid values                            |
+|-------------------------|----------|----------------------------------------|---------|-----------------------------------------|
+| allocation              | yes      | allocation id, sender must be allocation owner                   |         | string                                  |
+| commit                  | no       | save metadata to blockchain                                      | false   | boolean                                 |
+| encrypt                 | no       | encrypt file before upload                                       | false   | boolean                                 |
+| localpath               | yes      | local path of the file to upload                                 |         | file path                               |
+| remotepath              | yes      | remote path to upload file to, use to access file later          |         | string                              |
+| thumbnailpath           | no       | local path of thumbnaSil                                         |         | file path                               |
 
-```
-./zbox upload -h
-upload file to blobbers
 
-Usage:
-  zbox upload [flags]
+<details>
+  <summary> Upload</summary>
 
-Flags:
-      --allocation string                Allocation ID
-      --attr-who-pays-for-reads string   Who pays for reads: owner or 3rd_party (default "owner")
-      --commit                           pass this option to commit the metadata transaction
-      --encrypt                          pass this option to encrypt and upload the file
-  -h, --help                             help for upload
-      --localpath string                 Local path of file to upload
-      --remotepath string                Remote path to upload
-      --thumbnailpath string             Local thumbnail path of file to upload
+![image](https://user-images.githubusercontent.com/6240686/124287350-cf2e2180-db47-11eb-8079-40f069a5e0c2.png)
 
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-```
+</details>
 
 #### Example
 
@@ -649,7 +639,9 @@ Status completed callback. Type = application/octet-stream. Name = hello.txt
 
 **Upload file with encryption**
 
-Use upload command with optional encrypt parameter to upload a file in encrypted format. This can be downloaded as normal from same wallet/allocation or utilize Proxy Re-Encryption facility (see [download](https://github.com/0chain/zboxcli#Download) command).
+Use upload command with optional encrypt parameter to upload a file in encrypted 
+format. This can be downloaded as normal from same wallet/allocation or utilize 
+Proxy Re-Encryption facility (see [download](https://github.com/0chain/zboxcli#Download) command).
 
 ```
 ./zbox upload --encrypt --localpath <absolute path to file>/sensitivedata.txt --remotepath /myfiles/sensitivedata.txt --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
@@ -662,45 +654,36 @@ Response:
 Status completed callback. Type = application/octet-stream. Name = sensitivedata.txt
 ```
 
+## Download
+
+Use `download` command to download your own or a shared file. 
+* `owner` The owner of the allocation can always download files, in this case the owner pays for the download.
+* `collaborator` A collaborator can download files, the owner pays. To add collaborators to an allocation, use
+  [add-collab](#add-collaborator).
+* `authticket` To download a file using `authticket`, you must have previous be given an auth
+  ticket using the [share](#share) command. Use rx_pay to indicate who pays, `rx_pay = true` you pay,
+  `rx_pay = false` the allocation owner pays.
 
 
-### Download
+| Parameter       | Required | Description                                                              | Default | Valid values |
+|-----------------|----------|--------------------------------------------------------------------------|---------|--------------|
+| allocation      | yes      | allocation id                                                            |         | string       |
+| authticket      | no       | auth ticked if not owner of the allocation, use share to get auth ticket |         | string       |
+| blockspermarker | no       | download multiple blocks per marker                                      | 10      | int          |
+| commit          | no       | save metadata to blockchain                                              | false   | boolean      |
+| endblock        | no       | download until specified block number                                    |         | int          |
+| localpath       | yes      | local path to which to download the file to                              |         | file path    |
+| remotepath      | yes      | remote path to which the file was uploaded                               |         | string       |
+| rx_pay          | no       | `authticket` must be valid, true = sender pays, false = allocation owner pays                                      | false   | boolean      |
+| startblock      | no       | start download from specified block                                      |         | int          |
+| thumbail        | no       | only download the thumbnail                                              | false   | boolean      |
 
-Use `download` command to download your own or a shared file.
+<details>
+  <summary> Download</summary>
 
-#### Usage
+![image](https://user-images.githubusercontent.com/6240686/124352519-7bc7dc00-dbf8-11eb-8e1a-1ac54c972abb.png)
 
-```
-./zbox download -h
-download file from blobbers
-
-Usage:
-  zbox download [flags]
-
-Flags:
-      --allocation string     Allocation ID
-      --authticket string     Auth ticket fot the file to download if you dont own it
-  -b, --blockspermarker int   pass this option to download multiple blocks per marker (default 10)
-      --commit                pass this option to commit the metadata transaction
-  -e, --endblock int          pass this option to download till specific block number
-  -h, --help                  help for download
-      --localpath string      Local path of file to download
-      --lookuphash string     The remote lookuphash of the object retrieved from the list
-      --remotepath string     Remote path to download
-      --rx_pay                used to download by authticket; pass true to pay for download yourself
-  -s, --startblock int        pass this option to download from specific block number
-  -t, --thumbnail             pass this option to download only the thumbnail
-
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-
-```
+</details>
 
 #### Example
 
