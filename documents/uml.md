@@ -1,4 +1,64 @@
 ```puml
+title Update
+boundary zbox 
+collections blobbers
+database store
+control 0chain
+entity blockchain
+zbox -> zbox : encrypt
+zbox -> zbox : add thumbnail
+zbox -> blobbers : upload
+note left
+    * allocation id
+    * file data
+    * remotepath    
+end note
+    blobbers -> 0chain : request allocaton
+        blockchain -> 0chain : allocation
+    0chain -> blobbers : allocation
+    alt check sender == owner
+        blobbers ->x zbox : needs to be performed\nby the owner
+    end
+    blobbers -> store : save updated file
+    blobbers -> zbox
+alt commit true
+zbox -> 0chain : save metadata
+    0chain -> blockchain :  save metadata
+0chain -> zbox
+end    
+```
+
+
+```puml
+title Delete
+boundary zbox 
+collections blobbers
+database store
+control 0chain
+entity blockchain
+zbox -> zbox : encrypt
+zbox -> zbox : add thumbnail
+zbox -> blobbers : upload
+note left
+    * allocation id
+    * remotepath    
+end note
+    blobbers -> 0chain : request allocaton
+        blockchain -> 0chain : allocation
+    0chain -> blobbers : allocation
+    alt check sender == owner
+        blobbers ->x zbox : delete needs to be\nperformed by the owner
+    end
+    blobbers -> store : delete file\nremotepath
+    blobbers -> zbox
+alt commit true
+zbox -> 0chain : save metadata
+    0chain -> blockchain :  save metadata
+0chain -> zbox
+end    
+```
+
+```puml
 title Download
 boundary zbox 
 collections blobbers
@@ -8,7 +68,7 @@ entity blockchain
 zbox -> blobbers : download
 note left
     * allocation id
-    * auth ticket
+    * auth ticket + rx_pay
     * block to download
     * remotepath    
     * start block
@@ -21,6 +81,7 @@ end note
     alt check sender is owner or\ncollaborator or\nauth ticket validates
         blobbers ->x zbox : unauthorised user
     end
+    blobbers -> blobbers : set payer owner unless\nauth ticket & (rx_pay = true)
     blobbers -> blobbers : check enugh tokens\nin local read pool
     store -> blobbers : file data blocks    
     blobbers -> 0chain : commit read marker

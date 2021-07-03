@@ -663,7 +663,7 @@ Use `download` command to download your own or a shared file.
 * `authticket` To download a file using `authticket`, you must have previous be given an auth
   ticket using the [share](#share) command. Use rx_pay to indicate who pays, `rx_pay = true` you pay,
   `rx_pay = false` the allocation owner pays.
-
+Use `startblock` and `endblock` to only download part of the file.   
 
 | Parameter       | Required | Description                                                              | Default | Valid values |
 |-----------------|----------|--------------------------------------------------------------------------|---------|--------------|
@@ -681,7 +681,7 @@ Use `download` command to download your own or a shared file.
 <details>
   <summary> Download</summary>
 
-![image](https://user-images.githubusercontent.com/6240686/124352519-7bc7dc00-dbf8-11eb-8e1a-1ac54c972abb.png)
+![image](https://user-images.githubusercontent.com/6240686/124352957-79b34c80-dbfb-11eb-883f-4bb583b9a618.png)
 
 </details>
 
@@ -705,38 +705,43 @@ Note: You can download by using only 1 on the below combination:
 
 Downloaded file will be in the localpath specified.
 
-### Update
+## Update
 
-Use `update` command to update content of an existing file in the remote path. Similar to [upload](https://github.com/0chain/zboxcli#Upload) command.
+Use `update` command to update content of an existing file in the remote path. 
+Like [upload](https://github.com/0chain/zboxcli#Upload) command.
 
-### Delete
+| Parameter     | Required | Description                   | Default | Valid values |
+|---------------|----------|-------------------------------|---------|--------------|
+| allocation    | yes      | allocation id                 |         | string       |
+| encrypt       | no       | encrypt file before upload    | false   | boolean      |
+| localpath     | yes      | local file to upload          |         | file path    |
+| remotepath    | yes      | remote file to upload         |         | string       |
+| thumbnailpath | no       | local fumbnail file to upload |         | file path    |
+| commit        | no       | save meta data to blockchain  | false   | boolean      |
+
+<details>
+  <summary> Update</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124354473-14b02480-dc04-11eb-9463-5a91d4f6f02d.png)
+
+</details>
+
+## Delete
 
 Use `delete` command to delete your file on the allocation.
 
-#### Usage
+| Parameter  | Required | Description                   | Default | Valid values |
+|------------|----------|-------------------------------|---------|--------------|
+| allocation | yes      | allocation id                 |         | string       |
+| remotepath | yes      | remote path of file to delete |         | string       |
+| commit     | no       | save meta data to blockchain  | false   | boolean      |
 
-```
-./zbox delete -h
-delete file from blobbers
+<details>
+  <summary> Delete</summary>
 
-Usage:
-  zbox delete [flags]
+![image](https://user-images.githubusercontent.com/6240686/124353872-0f050f80-dc01-11eb-9e45-ddf2c888223b.png)
 
-Flags:
-      --allocation string   Allocation ID
-      --commit              pass this option to commit the metadata transaction
-  -h, --help                help for delete
-      --remotepath string   Remote path of the object to delete
-
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-```
+</details>
 
 #### Example
 
