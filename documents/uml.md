@@ -1,4 +1,20 @@
 ```puml
+boundary zbox 
+control 0chain
+zbox -> 0chain : request allocation info
+0chain -> zbox : allocation info
+zbox -> zbox : validate
+zbox -> zbox : generate auto ticket
+note left
+    * allocation id
+    * client id
+    * encryption public key
+    * remote path
+end note
+```
+
+
+```puml
 title Update
 boundary zbox 
 collections blobbers

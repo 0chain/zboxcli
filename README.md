@@ -708,7 +708,9 @@ Downloaded file will be in the localpath specified.
 ## Update
 
 Use `update` command to update content of an existing file in the remote path. 
-Like [upload](https://github.com/0chain/zboxcli#Upload) command.
+Like [upload](#upload) command. Only the owner of the allocation or a collaborator
+can update a file.  To add collaborators to an allocation, use
+[add-collab](#add-collaborator).
 
 | Parameter     | Required | Description                   | Default | Valid values |
 |---------------|----------|-------------------------------|---------|--------------|
@@ -728,7 +730,8 @@ Like [upload](https://github.com/0chain/zboxcli#Upload) command.
 
 ## Delete
 
-Use `delete` command to delete your file on the allocation.
+Use `delete` command to delete your file on the allocation. Only the owner
+of the application can delete a file.
 
 | Parameter  | Required | Description                   | Default | Valid values |
 |------------|----------|-------------------------------|---------|--------------|
@@ -755,38 +758,29 @@ Response:
 /myfiles/horse.jpeg deleted
 ```
 
-
 File successfully deleted (Can be verified using [list](https://github.com/0chain/zboxcli#List))
 
-### Share
+## Share
 
-Use `share` command to generate an authtoken that provides authorization to the holder to the specified file on the remotepath.
+Use `share` command to generate an authorisation ticket that provides authorisation to the holder to the specified file
+on the remotepath. Use the returned auth token with the `--authticket` parameter.
 
-#### Usage
+`auth tovlry` can be used with  [download](#download), [commit](#commit) and [list](#list), but only for files in the
+pre-defined remote path.
 
-```
-./zbox share -h
-share files from blobbers
+| Parameter           | Required | Description                                                       | Valid values |
+|---------------------|----------|-------------------------------------------------------------------|--------------|
+| allocation          | yes      | allocation id                                                     | string       |
+| clientid            | no       | id of user to share file with, leave blank for public share       | string       |
+| encryptionpublickey | no       | public key of the client to share file with, required if clientId | string       |
+| remotepath          | yes      | remote path of file to share                                      | string       |
 
-Usage:
-  zbox share [flags]
+<details>
+  <summary> Share</summary>
 
-Flags:
-      --allocation string            Allocation ID
-      --clientid string              ClientID of the user to share with. Leave blank for public share
-      --encryptionpublickey string   Encryption public key of the client you want to share with. Can be retrieved by the getwallet command
-  -h, --help                         help for share
-      --remotepath string            Remote path to share
+![image](https://user-images.githubusercontent.com/6240686/124355475-4aa3d780-dc09-11eb-9e64-4ccd1afd4fbe.png)
 
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-```
+</details>
 
 #### Example
 
