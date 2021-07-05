@@ -1,4 +1,55 @@
 ```puml
+title File stats
+boundary zbox 
+collections blobbers
+database store
+control 0chain
+entity blockchain
+zbox -> blobbers : file stats
+note left
+    * allocation id
+    * remotepath
+end note
+    blobbers -> 0chain : request allocaton
+        blockchain -> 0chain : allocation
+    0chain -> blobbers : allocation
+    store -> blobbers : collaborators
+    alt check sender is owner
+        blobbers ->x zbox : unauthorised user
+    end
+    store -> blobbers : object stats
+blobbers -> zbox : object stats
+```
+
+```puml
+title Rename
+boundary zbox 
+collections blobbers
+database store
+control 0chain
+entity blockchain
+zbox -> blobbers : rename
+note left
+    * allocation id
+    * remote path   
+    * new name
+end note
+    blobbers -> 0chain : request allocaton
+        blockchain -> 0chain : allocation
+    0chain -> blobbers : allocation
+    alt check sender == owner
+        blobbers ->x zbox : needs to be performed\nby the owner
+    end
+    blobbers -> store : rename object
+    blobbers -> zbox
+alt commit true
+zbox -> 0chain : save metadata
+    0chain -> blockchain :  save metadata
+0chain -> zbox
+end    
+```
+
+```puml
 title Get metadata
 boundary zbox 
 collections blobbers

@@ -1203,31 +1203,19 @@ Response will be metadata for the given filepath/lookuphash (if using authTicket
 
 `rename` command helps in renaming a file existing already on dStorage.
 
-#### Usage
+| Parameter  | Required | Description                                       | default | Valid values |
+|------------|----------|---------------------------------------------------|---------|--------------|
+| allocation | yes      | allocation id                                     |         | string       |
+| commit     | no       | save metadata to blockchain                       | false   | boolean      |
+| destname   | yes      | new neame of the object                           |         | string       |
+| remotepath | yes      | remote path of object, do not use with authticket |         | string       |
 
-```
-./zbox rename -h
-rename an object on blobbers
+<details>
+  <summary>Rename</summary>
 
-Usage:
-  zbox rename [flags]
+![image](https://user-images.githubusercontent.com/6240686/124487119-3ea14c80-dda6-11eb-93df-1e084653f212.png)
 
-Flags:
-      --allocation string   Allocation ID
-      --commit              pass this option to commit the metadata transaction
-      --destname string     New Name for the object (Only the name and not the path). Include the file extension if applicable
-  -h, --help                help for rename
-      --remotepath string   Remote path of object to rename
-
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-```
+</details>
 
 Example
 
@@ -1241,32 +1229,23 @@ Response:
 /1.txt renamed
 ```
 
-### Stats
+## Stats
 
 `stats` command helps in getting upload, download and challenge information for a file.
+Only the owner can get a files stats.
 
-```
-./zbox stats -h
-stats for file from blobbers
+| Parameter  | Required | Description                 | default | Valid values |
+|------------|----------|-----------------------------|---------|--------------|
+| allocation | yes      | allocation id               |         | string       |
+| json       | no       | print result in json format | false   | boolean      |
+| remotepath | yes      | file of which to get stats  |         | string       |
 
-Usage:
-  zbox stats [flags]
+<details>
+  <summary>File stats</summary>
 
-Flags:
-      --allocation string   Allocation ID
-  -h, --help                help for stats
-      --json                pass this option to print response as json data
-      --remotepath string   Remote path to list from
+![image](https://user-images.githubusercontent.com/6240686/124490093-9beacd00-dda9-11eb-8673-cf8a53475aec.png)
 
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-```
+</details>
 
 Example
 
@@ -1287,7 +1266,7 @@ Response:
   876b4cd610eb1aac63c53cdfd4d3a0ac91d94f2d6b858bb195f72b6dc0f33b55 | 1.txt | /1.txt | 2065 |       3 |               1 |          0 | true              
 ```
 
-### Repair
+## Repair
 
 Use `start-repair` command to repair a file on dStorage.
 ![repair](https://user-images.githubusercontent.com/65766301/120052600-b364c680-c043-11eb-9bf2-038ab244fed6.png)
