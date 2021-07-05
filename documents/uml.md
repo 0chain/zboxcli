@@ -1,4 +1,5 @@
 ```puml
+title Share
 boundary zbox 
 control 0chain
 zbox -> 0chain : request allocation info

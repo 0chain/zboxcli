@@ -763,7 +763,7 @@ File successfully deleted (Can be verified using [list](https://github.com/0chai
 ## Share
 
 Use `share` command to generate an authorisation ticket that provides authorisation to the holder to the specified file
-on the remotepath. Use the returned auth token with the `--authticket` parameter.
+on the `remotepath`. Use the returned auth token with the `--authticket` parameter.
 
 `auth tovlry` can be used with  [download](#download), [commit](#commit) and [list](#list), but only for files in the
 pre-defined remote path.
@@ -778,7 +778,7 @@ pre-defined remote path.
 <details>
   <summary> Share</summary>
 
-![image](https://user-images.githubusercontent.com/6240686/124355475-4aa3d780-dc09-11eb-9e64-4ccd1afd4fbe.png)
+![image](https://user-images.githubusercontent.com/6240686/124355532-876fce80-dc09-11eb-8166-bc7018480404.png)
 
 </details>
 
