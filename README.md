@@ -917,28 +917,16 @@ Response:
 
 Use `listallocations` command to list all allocations for the client.
 
-#### Usage
+| Parameter  | Required | Description                                                              | default | Valid values |
+|------------|----------|--------------------------------------------------------------------------|---------|--------------|
+|| json       | no       | output the response in json format                                       | false   | boolean      |
 
-```
-./zbox listallocations -h
-List allocations for the client
+<details>
+  <summary>List allocations</summary>
 
-Usage:
-  zbox listallocations [flags]
+![image](https://user-images.githubusercontent.com/6240686/124474346-51ad2000-dd98-11eb-96f1-348ac926be3c.png)
 
-Flags:
-  -h, --help   help for listallocations
-      --json   pass this option to print response as json data
-
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-```
+</details>
 
 Example
 
@@ -1108,31 +1096,20 @@ Response will give details for current selected wallet (or wallet file specified
 
 ### Get
 
-Use `get` command to get the information about the allocation such as total size , used size, number of challenges and challenges passed/failed/open/redeemed.
+Use `get` command to get the information about the allocation such as total size , used size, number of challenges 
+and challenges passed/failed/open/redeemed.
 
-#### Usage
+| Parameter  | Required | Description                  | default | Valid values |
+|------------|----------|------------------------------|---------|--------------|
+| allocation | yes      | allocation id                |         | string       |
+| json       | no       | print response in json format | false   | boolean      |
 
-```
-./zbox get -h
-Gets the allocation info
+<details>
+  <summary>Get</summary>
 
-Usage:
-  zbox get [flags]
+![image](https://user-images.githubusercontent.com/6240686/124476040-4f4bc580-dd9a-11eb-939c-464ffc6936db.png)
 
-Flags:
-      --allocation string   Allocation ID
-  -h, --help                help for get
-      --json                pass this option to print response as json data
-
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-```
+</details>
 
 Example
 
@@ -1171,36 +1148,24 @@ allocation:
 
 ### Get metadata
 
-Use `meta` command to get meta data for a given remote file. Use `-h` to know more about possible flags.
+Use `meta` command to get metadata for a given remote file. Use must either be the owner of the allocation on have ab
+auth ticket. Use [share](#share) to create an auth ticket for someone. To indicate the object use `remotepath` or
+`lookuphash` with an auth ticket.
 
-#### Usage
+| Parameter  | Required | Description                                                              | default | Valid values |
+|------------|----------|--------------------------------------------------------------------------|---------|--------------|
+| allocation | yes      | allocation id                                                            |         | string       |
+| authticket | no       | auth ticked if not owner of the allocation |         | string       |
+| json       | no       | print result in json format                                              | false   | boolean      |
+| lookuphash | no       | hash of object, use with auth ticket                                     |         | string       |
+| remotepath | no       | remote path of objecte, do not use with authticket                       |         | string       |
 
-```
-./zbox meta -h
-get meta data of files from blobbers
+<details>
+  <summary>Get metasata</summary>
 
-Usage:
-  zbox meta [flags]
+![image](https://user-images.githubusercontent.com/6240686/124484414-4c090780-dda3-11eb-818c-d95477618cfd.png)
 
-Flags:
-      --allocation string   Allocation ID
-      --authticket string   Auth ticket fot the file to download if you dont own it
-  -h, --help                help for meta
-      --json                pass this option to print response as json data
-      --lookuphash string   The remote lookuphash of the object retrieved from the list
-      --remotepath string   Remote path to list from
-
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-```
-
-Example
+</details>
 
 **Without any authticket**
 
@@ -1232,9 +1197,9 @@ TYPE | NAME  |                           LOOKUP HASH                            
 ```
 
 
-Response will be meta data for the given filepath/lookuphash (if using authTicket)
+Response will be metadata for the given filepath/lookuphash (if using authTicket)
 
-### Rename
+## Rename
 
 `rename` command helps in renaming a file existing already on dStorage.
 

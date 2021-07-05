@@ -1,4 +1,66 @@
 ```puml
+title Get metadata
+boundary zbox 
+collections blobbers
+database store
+control 0chain
+entity blockchain
+zbox -> blobbers : get metadata
+note left
+    * allocation id
+    * auth ticket
+    * remotepath or lookup hash
+end note
+    blobbers -> 0chain : request allocaton
+        blockchain -> 0chain : allocation
+    0chain -> blobbers : allocation
+    store -> blobbers : collaborators
+    alt check sender is owner or\ncollaborator or\nauth ticket validates
+        blobbers ->x zbox : unauthorised user
+    end
+    store -> blobbers : object metadata
+blobbers -> zbox : object metadata
+alt commit true
+zbox -> 0chain : save metadata
+        0chain -> blockchain :  save metadata
+        0chain -> zbox
+end    
+```
+
+```puml
+title Get allocation info
+boundary zbox
+control 0chain
+entity blockchain
+zbox -> 0chain : get allocation
+0chain -> blockchain : allocation
+blockchain -> 0chain : allocation
+0chain -> zbox : allocation
+```
+
+```puml
+title List allocations
+boundary zbox
+control 0chain
+entity blockchain
+zbox -> 0chain : get allocation
+0chain -> blockchain : get allocations for user
+blockchain -> 0chain : user allocations
+0chain -> zbox : user allocations
+```
+
+```puml
+title List allocations
+boundary zbox
+control 0chain
+entity blockchain
+zbox -> 0chain : get allocations for user
+0chain -> blockchain : get allocations for user
+blockchain -> 0chain : user allocations
+0chain -> zbox : user allocations
+```
+
+```puml
 title Move
 boundary zbox 
 collections blobbers
