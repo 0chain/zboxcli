@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"fmt"
 	"log"
 
+	"github.com/0chain/gosdk/core/common/errors"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
 )
@@ -11,7 +11,7 @@ import (
 func isFinalized(allocID string) (ok bool, err error) {
 	var alloc *sdk.Allocation
 	if alloc, err = sdk.GetAllocation(allocID); err != nil {
-		return false, fmt.Errorf("can't get allocation from sharders: %v", err)
+		return false, errors.Wrap(err, "can't get allocation from sharders:")
 	}
 	return alloc.Finalized, nil
 }
