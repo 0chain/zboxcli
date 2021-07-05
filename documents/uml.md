@@ -1,4 +1,26 @@
 ```puml
+title Upload cost
+boundary zbox 
+collections blobbers
+control 0chain
+zbox -> 0chain : get allocation
+0chain -> zbox : allocation
+zbox -> zbox : calculate upload cost
+```
+
+```puml
+title Download cost
+boundary zbox 
+collections blobbers
+control 0chain
+zbox -> 0chain : get allocation
+0chain -> zbox : allocation
+zbox -> blobbers : get file metadata
+blobbers -> zbox : file metadata
+zbox -> zbox : calculate download cost
+```
+
+```puml
 title File stats
 boundary zbox 
 collections blobbers

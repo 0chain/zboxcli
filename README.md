@@ -1005,53 +1005,7 @@ Local cache saved.
 
 It will sync your localpath with the remote and do all the required CRUD operations.
 
-### Update file attributes
-
-Use `update-attributes` command to update file attributes. Only one attribute is currently supported: who-pays-for-reads that can be:
-
-- `owner`, where allocation owner pays for own and 3rd_party reads
-- `3rd_party`, where 3rd party readers pays for their downloads themselves
-
-#### Usage
-
-```
-./zbox update-attributes -h
-update object attributes on blobbers
-
-Usage:
-  zbox update-attributes [flags]
-
-Flags:
-      --allocation string           Allocation ID
-      --commit                      pass this option to commit the metadata transaction
-  -h, --help                        help for update-attributes
-      --remotepath string           Remote path of object to rename
-      --who-pays-for-reads string   Who pays for reads: owner or 3rd_party (default "owner")
-
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-```
-
-Example
-
-```
-./zbox update-attributes --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --remotepath /1.txt --who-pays-for-reads 3rd_party
-
-```
-
-Response:
-
-```
-attributes updated
-```
-
-### Get wallet
+## Get wallet
 
 Use `getwallet` command to get additional wallet information including Encryption Public Key,Client ID which are required for Private File Sharing.
 
@@ -1094,7 +1048,7 @@ Response:
 
 Response will give details for current selected wallet (or wallet file specified by optional --wallet parameter)
 
-### Get
+## Get
 
 Use `get` command to get the information about the allocation such as total size , used size, number of challenges 
 and challenges passed/failed/open/redeemed.
@@ -1146,7 +1100,7 @@ allocation:
         challenge_completion_time: 2m0s
 ```
 
-### Get metadata
+## Get metadata
 
 Use `meta` command to get metadata for a given remote file. Use must either be the owner of the allocation on have ab
 auth ticket. Use [share](#share) to create an auth ticket for someone. To indicate the object use `remotepath` or
@@ -1648,7 +1602,22 @@ An expired write pool, associated with an allocation, can be locked until alloca
 
 ### Download cost
 
-`get-download-cost` determines the cost for downloading the remote file from dStorage.
+`get-download-cost` determines the cost for downloading the remote file from dStorage. The clinet
+must either be the owner, a collaborator or be using an auth ticket.
+
+| Parameter  | Required | Description                               | default | Valid values |
+|------------|----------|-------------------------------------------|---------|--------------|
+| allocation | yes      | allocation id                             |         | string       |
+| authticket | no       | auth ticket to use if not the owner       |         | string       |
+| lookuphash | no       | hash of remote file, use with auth ticket |         | string       |
+| remotepath | no       | file of which to get stats, use if owner  |         | string       |
+
+<details>
+  <summary>Download cost</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124497750-41ef0500-ddb3-11eb-99ea-115a4e234eda.png)
+
+</details>
 
 #### Usage
 
@@ -1656,13 +1625,26 @@ An expired write pool, associated with an allocation, can be locked until alloca
 ./zbox get-download-cost --allocation <allocation_id> --remotepath /path/file.ext
 ```
 
-Also, there are `authticket` and `lookuphash` flags to get the cost for non allocation owners.
 
 ### Upload cost
 
-`get-upload-cost` determines the cost for uploading a local file on dStorage.
+`get-upload-cost` determines the cost for uploading a local file on dStorage. 
+`--duration` Ignored if `--end` true, in which case the cost of upload calculated until
+the allocation expires.
 
-#### Usage
+| Parameter  | Required | Description                          | default | Valid values |
+|------------|----------|--------------------------------------|---------|--------------|
+| allocation | yes      | allocation id                        |         | string       |
+| duration   | no       | duration for which to upload file    |         | duration     |
+| end        | no       | upload file until allocation expires | false   | boolean      |
+| localpath   | yes      | local of path to calculate upload    |         | file path    |
+
+<details>
+  <summary>Upload cost</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124501898-51be1780-ddba-11eb-8c1a-d238cfd8f43f.png)
+
+</details>
 
 ```
 ./zbox get-upload-cost --allocation <allocation_id> --localpath ./path/file.ext
