@@ -290,7 +290,7 @@ All allocation settings, other than `lock`, will be set automatically by 0chain.
 Allocation created : d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
 ```  
 
-#### Example
+Example
 
 To create a new allocation with default values,use `newallocation` with a `--lock` flag to add 
 some tokens to the write pool .On success a related write pool is created and the allocation 
@@ -378,7 +378,7 @@ if the amount of failed challenges exceed a preset threshold.
 
 </details>
 
-#### Example
+Example
 
 ```
 ./zbox alloc-cancel --allocation <allocation_id>
@@ -401,7 +401,7 @@ it can be finalised by the owner or one of the allocation blobbers.
 
 </details>
 
-#### Example
+Example
 
 ```
 ./zbox alloc-fini --allocation <allocation_id>
@@ -474,7 +474,7 @@ Use `ls-blobbers` command to show active blobbers in storage SC.
 | all       | no       | shows active and non active blobbers | flag         |
 | json      | no       | display result in .json format       | flag         |
 
-#### Example
+Example
 
 ```
 ./zbox ls-blobbers
@@ -526,7 +526,7 @@ Global Flags:
       --wallet_client_key string   wallet client_key
 ```
 
-#### Example
+Example
 
 ```
 ./zbox bl-info --blobber_id f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25
@@ -591,7 +591,7 @@ Global Flags:
       --wallet_client_key string   wallet client_key
 ```
 
-#### Example
+Example
 
 Update blobber read price
 
@@ -616,13 +616,13 @@ with the file.
 
 
 <details>
-  <summary> Upload</summary>
+  <summary>Upload</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124287350-cf2e2180-db47-11eb-8079-40f069a5e0c2.png)
 
 </details>
 
-#### Example
+Example
 
 **Upload file with no encryption**
 
@@ -679,13 +679,13 @@ Use `startblock` and `endblock` to only download part of the file.
 | thumbail        | no       | only download the thumbnail                                              | false   | boolean      |
 
 <details>
-  <summary> Download</summary>
+  <summary>Download</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124352957-79b34c80-dbfb-11eb-883f-4bb583b9a618.png)
 
 </details>
 
-#### Example
+Example
 
 ```
 ./zbox download --allocation 3c0d32560ea18d9d0d76808216a9c634f661979d29ba59cc8dafccb3e5b95341 --remotepath /myfiles/horse.jpeg --localpath ../horse.jpeg
@@ -722,7 +722,7 @@ can update a file.  To add collaborators to an allocation, use
 | commit        | no       | save meta data to blockchain  | false   | boolean      |
 
 <details>
-  <summary> Update</summary>
+  <summary>Update</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124354473-14b02480-dc04-11eb-9463-5a91d4f6f02d.png)
 
@@ -740,13 +740,13 @@ of the application can delete a file.
 | commit     | no       | save meta data to blockchain  | false   | boolean      |
 
 <details>
-  <summary> Delete</summary>
+  <summary>=Delete</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124353872-0f050f80-dc01-11eb-9e45-ddf2c888223b.png)
 
 </details>
 
-#### Example
+Example
 
 ```
 ./zbox delete --allocation 3c0d32560ea18d9d0d76808216a9c634flist661979d29ba59cc8dafccb3e5b95341 --remotepath /myfiles/horse.jpeg
@@ -776,13 +776,13 @@ pre-defined remote path.
 | remotepath          | yes      | remote path of file to share                                      | string       |
 
 <details>
-  <summary> Share</summary>
+  <summary>Share</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124355532-876fce80-dc09-11eb-8166-bc7018480404.png)
 
 </details>
 
-#### Example
+Example
 
 **Public share**
 
@@ -800,6 +800,7 @@ Auth token :eyJjbGllbnRfaWQiOiIiLCJvd25lcl9pZCI6ImI2ZGU1NjJiNTdhMGI1OTNkMDQ4MDYy
 **Encrypted share**
 
 Use clientid and encryptionpublickey of the user to share with.
+
 ![Private File Sharing](https://user-images.githubusercontent.com/65766301/120052575-962ff800-c043-11eb-9cf7-433383d532a3.png)
 
 ```
@@ -815,38 +816,28 @@ Auth token :eyJjbGllbnRfaWQiOiJiNmRlNTYyYjU3YTBiNTkzZDA0ODA2MjRmNzlhNTVlZDQ2ZGJh
 
 Response contains an auth token- an encrypted string that can be shared.
 
-### List
+## List
 
-Use `list` command to list files in given remote path of the dStorage.
+Use `list` command to list files in given remote path of the dStorage. An auth ticket should be provided when
+not sent by the allocation owner. Using an auth ticket requires a `lookuphash` to indicate the object on which to list
+information. 
 
-#### Usage
+| Parameter  | Required | Description                                                              | default | Valid values |
+|------------|----------|--------------------------------------------------------------------------|---------|--------------|
+| allocation | yes      | allocation id                                                            |         | string       |
+| authticket | no       | auth ticked if not owner of the allocation, use share to get auth ticket |         | sting        |
+| json       | no       | output the response in json format                                       | false   | boolean      |
+| lookuphash | no       | hash of object to list, use with auth ticket.                            |         | string       |
+| remotepath | no       | remote path of objects to list, for auth ticket use lookuphash instead   |         | string       |
 
-```
-./zbox list -h
-list files from blobbers
+<details>
+  <summary>List</summary>
 
-Usage:
-  zbox list [flags]
+![image](https://user-images.githubusercontent.com/6240686/124466241-5a005d80-dd8e-11eb-9122-30dbbd98d8e3.png)
 
-Flags:
-      --allocation string   Allocation ID
-      --authticket string   Auth ticket fot the file to download if you dont own it
-  -h, --help                help for list
-      --json                pass this option to print response as json data
-      --lookuphash string   The remote lookuphash of the object retrieved from the list
-      --remotepath string   Remote path to list from
+</details>
 
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-```
-
-#### Example
+Example
 
 ```
 ./zbox list --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --remotepath /  
@@ -860,37 +851,25 @@ Auth token :eyJjbGllbnRfaWQiOiJiNmRlNTYyYjU3YTBiNTkzZDA0ODA2MjRmNzlhNTVlZDQ2ZGJh
 
 Response will be a list with information for each file/folder in the given path. The information includes lookuphash which is require for download via authticket.
 
-### Copy
+## Copy
 
-Use `copy` command to copy file to another folder path in dStorage.
+Use `copy` command to copy file to another folder path in dStorage. Only the owner of the allocation can copy an object.
 
-#### Usage
+| Parameter  | Required | Description                                       | default | Valid values |
+|------------|----------|---------------------------------------------------|---------|--------------|
+| allocation | yes      | allocation id                                     |         | string       |
+| commit     | no       | save metadata to blockchain                       | false   | boolean      |
+| remotepath | yes      | remote path of object to copy                     |         | string       |
+| destpath   | yes      | destination, an existing directory to copy object |         | string       |
 
-```
-./zbox copy -h
-copy an object to another folder on blobbers
+<details>
+  <summary>Copy</summary>
 
-Usage:
-  zbox copy [flags]
+![image](https://user-images.githubusercontent.com/6240686/124470632-c0d44580-dd93-11eb-89ba-f22081429616.png)
 
-Flags:
-      --allocation string   Allocation ID
-      --commit              pass this option to commit the metadata transaction
-      --destpath string     Destination path for the object. Existing directory the object should be copied to
-  -h, --help                help for copy
-      --remotepath string   Remote path of object to copy
+</details>
 
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-```
-
-#### Example
+Example
 
 ```
 ./zbox copy --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac --remotepath 
@@ -903,35 +882,25 @@ Response:
 /file.txt copied
 ```
 
-### Move
+## Move
 
 Use `move` command to move file to another remote folder path on dStorage.
 
-```
-./zbox move -h
-move an object to another folder on blobbers
+| Parameter  | Required | Description                                       | default | Valid values |
+|------------|----------|---------------------------------------------------|---------|--------------|
+| allocation | yes      | allocation id                                     |         | string       |
+| commit     | no       | save metadata to blockchain                       | false   | boolean      |
+| remotepath | yes      | remote path of object to copy                     |         | string       |
+| destpath   | yes      | destination, an existing directory to copy object |         | string       |
 
-Usage:
-  zbox move [flags]
+<details>
+  <summary>Move</summary>
 
-Flags:
-      --allocation string   Allocation ID
-      --commit              pass this option to commit the metadata transaction
-      --destpath string     Destination path for the object. Existing directory the object should be moved to
-  -h, --help                help for move
-      --remotepath string   Remote path of object to move
+![image](https://user-images.githubusercontent.com/6240686/124471576-eca3fb00-dd94-11eb-8e52-441489c7cb55.png)
 
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-```
+</details>
 
-#### Example
+Example
 
 ```
 ./zbox move --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac --remotepath 
@@ -971,7 +940,7 @@ Global Flags:
       --wallet_client_key string   wallet client_key
 ```
 
-#### Example
+Example
 
 ```
 ./zbox listallocations
@@ -1020,7 +989,7 @@ Global Flags:
       --wallet_client_key string   wallet client_key
 ```
 
-#### Example
+Example
 
 ```
 ./zbox sync --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --localpath /home/dung/Desktop/alloc --localcache /home/dung/Desktop/localcache.json
@@ -1081,7 +1050,7 @@ Global Flags:
       --wallet_client_key string   wallet client_key
 ```
 
-#### Example
+Example
 
 ```
 ./zbox update-attributes --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --remotepath /1.txt --who-pays-for-reads 3rd_party
@@ -1121,7 +1090,7 @@ Global Flags:
       --wallet_client_key string   wallet client_key
 ```
 
-#### Example
+Example
 
 ```
 ./zbox getwallet
@@ -1165,7 +1134,7 @@ Global Flags:
       --wallet_client_key string   wallet client_key
 ```
 
-#### Example
+Example
 
 ```
 ./zbox get --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc
@@ -1231,7 +1200,7 @@ Global Flags:
       --wallet_client_key string   wallet client_key
 ```
 
-#### Example
+Example
 
 **Without any authticket**
 
@@ -1295,7 +1264,7 @@ Global Flags:
       --wallet_client_key string   wallet client_key
 ```
 
-#### Example
+Example
 
 ```
 ./zbox rename --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --remotepath /1.txt --destname x.txt
@@ -1334,7 +1303,7 @@ Global Flags:
       --wallet_client_key string   wallet client_key
 ```
 
-#### Example
+Example
 
 ```
 ./zbox stats --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --remotepath /1.txt
@@ -1383,7 +1352,7 @@ Global Flags:
       --wallet_client_key string   wallet client_key
 ```
 
-#### Example
+Example
 
 ```
 ./zbox start-repair --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --repairpath / --rootpath /home/dung/Desktop/alloc
@@ -1424,7 +1393,7 @@ Global Flags:
       --wallet_client_key string   wallet client_key
 ```
 
-#### Example
+Example
 
 ```
 ./zbox add-collab --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --remotepath /1.txt --collabid d477d12134c2d7ba5ab71ac8ad37f244224695ef3215be990c3215d531c5a329
@@ -1467,7 +1436,7 @@ Global Flags:
       --wallet_client_key string   wallet client_key
 ```
 
-#### Example
+Example
 
 ```
 ./zbox delete-collab --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --remotepath /1.txt --collabid d477d12134c2d7ba5ab71ac8ad37f244224695ef3215be990c3215d531c5a329
@@ -1507,7 +1476,7 @@ Global Flags:
       --wallet_client_key string   wallet client_key
 ```
 
-#### Example
+Example
 
 ```
 ./zbox cp-info --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc   

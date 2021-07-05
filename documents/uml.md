@@ -1,4 +1,86 @@
 ```puml
+title Move
+boundary zbox 
+collections blobbers
+database store
+control 0chain
+entity blockchain
+zbox -> zbox : encrypt
+zbox -> zbox : add thumbnail
+zbox -> blobbers : move
+note left
+    * allocation id
+    * remote path   
+    * destination directory 
+end note
+    blobbers -> 0chain : request allocaton
+        blockchain -> 0chain : allocation
+    0chain -> blobbers : allocation
+    alt check sender == owner
+        blobbers ->x zbox : needs to be performed\nby the owner
+    end
+    blobbers -> store : move remote, destination
+    blobbers -> zbox
+alt commit true
+zbox -> 0chain : save metadata
+    0chain -> blockchain :  save metadata
+0chain -> zbox
+end    
+```
+
+```puml
+title Copy
+boundary zbox 
+collections blobbers
+database store
+control 0chain
+entity blockchain
+zbox -> zbox : encrypt
+zbox -> zbox : add thumbnail
+zbox -> blobbers : copy
+note left
+    * allocation id
+    * remote path   
+    * destination directory 
+end note
+    blobbers -> 0chain : request allocaton
+        blockchain -> 0chain : allocation
+    0chain -> blobbers : allocation
+    alt check sender == owner
+        blobbers ->x zbox : needs to be performed\nby the owner
+    end
+    blobbers -> store : copy remote, destination
+    blobbers -> zbox
+alt commit true
+zbox -> 0chain : save metadata
+    0chain -> blockchain :  save metadata
+0chain -> zbox
+end    
+```
+
+```puml
+title List
+boundary zbox
+control blobber
+database store 
+zbox -> blobber : list allocation objects
+note left
+    * allocation id
+    * auth ticket
+    * lookup hash (with auth ticket)
+    * remote path (without auth ticket)
+end note
+    alt sender not owner        
+        blobber -> blobber : validate auth ticket
+        blobber -> blobber : lookup remote object hash        
+    end
+    blobber -> store : request object infomation
+    store -> blobber : objects information
+    blobber -> zbox : object information
+```
+
+
+```puml
 title Share
 boundary zbox 
 control 0chain
