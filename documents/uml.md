@@ -1,4 +1,20 @@
 ```puml
+title Add collaborator
+boundary zbox 
+collections blobbers
+database store
+control 0chain
+zbox -> blobbers : add collaborator
+    blobbers -> 0chain : get allocation
+    0chain -> blobbers : allocation
+    alt check owner == sender
+        blobbers ->x zbox : allocation must be owner
+    end
+    blobbers -> store : add colaborator
+    blobbers -> zbox
+```
+
+```puml
 title Upload cost
 boundary zbox 
 collections blobbers

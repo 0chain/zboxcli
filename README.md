@@ -1262,34 +1262,25 @@ Response:
 Repair file completed, Total files repaired:  0
 ```
 
-### Add collaborator
+## Add collaborator
 
-Use `add-collab` command to add a collaborator for a file on dStorage.
+Use `add-collab` command to add a collaborator for a file on dStorage. 
+Collaborators can perform read actions on the collaboration file, with the owner paying.
+
 ![collaboration](https://user-images.githubusercontent.com/65766301/120052678-0f2f4f80-c044-11eb-8ca6-1a032659eac3.png)
-#### Usage
 
-```
-./zbox add-collab -h
-add collaborator for a file
+| Parameter  | Required | Description                  | default | Valid values |
+|------------|----------|------------------------------|---------|--------------|
+| allocation | yes      | allocation id                |         | string       |
+| collabid   | yes      | id of collaberator           |         | string       |
+| remotepath | yes      | file on which to collaberate |         | string       |
 
-Usage:
-  zbox add-collab [flags]
+<details>
+  <summary>rp-create sequence diagram</summary>
 
-Flags:
-      --allocation string   Allocation ID
-      --collabid string     Collaborator's clientID
-  -h, --help                help for add-collab
-      --remotepath string   Remote path to list from
+![image](https://user-images.githubusercontent.com/6240686/124504210-e9be0000-ddbe-11eb-819c-e74c8bf340dd.png)
 
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-```
+</details>
 
 Example
 
@@ -1305,34 +1296,22 @@ Collaborator d477d12134c2d7ba5ab71ac8ad37f244224695ef3215be990c3215d531c5a329 ad
 
 You can check all collaborators for a file in metadata json response.
 
-### Delete collaborator
+## Delete collaborator
 
 Use command delete-collab to remove a collaborator for a file
 
-#### Usage
+| Parameter  | Required | Description                  | default | Valid values |
+|------------|----------|------------------------------|---------|--------------|
+| allocation | yes      | allocation id                |         | string       |
+| collabid   | yes      | id of collaberator           |         | string       |
+| remotepath | yes      | file on which to collaberate |         | string       |
 
-```
-./zbox delete-collab -h
-delete collaborator for a file
+<details>
+  <summary>rp-create sequence diagram</summary>
 
-Usage:
-  zbox delete-collab [flags]
+![image](https://user-images.githubusercontent.com/6240686/124505356-3571a900-ddc1-11eb-9dd8-72927cefa790.png)
 
-Flags:
-      --allocation string   Allocation ID
-      --collabid string     Collaborator's clientID
-  -h, --help                help for delete-collab
-      --remotepath string   Remote path to list from
-
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-```
+</details>
 
 Example
 
@@ -1350,29 +1329,17 @@ Collaborator d477d12134c2d7ba5ab71ac8ad37f244224695ef3215be990c3215d531c5a329 re
 
 Use `cp-info` command to get the challenge pool brief information.
 
-#### Usage
+| Parameter  | Required | Description                 | default | Valid values |
+|------------|----------|-----------------------------|---------|--------------|
+| allocation | yes      | allocation id               |         | string       |
+| json       | no       | print result in json format | false   | boolean      |
 
-```
-./zbox cp-info -h
-Challenge pool information.
+<details>
+  <summary>Challenge pool stats</summary>
 
-Usage:
-  zbox cp-info [flags]
+![image](https://user-images.githubusercontent.com/6240686/124506637-fe50c700-ddc3-11eb-9e8e-f59f88c89b6c.png)
 
-Flags:
-      --allocation string   allocation identifier, required
-  -h, --help                help for cp-info
-      --json                pass this option to print response as json data
-
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-```
+</details>
 
 Example
 
@@ -1392,42 +1359,60 @@ POOL ID: 6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7:challe
 
  Balance is the current challenge pool balance. Start,Expire time and the finalization are allocations related.
 
-### Create read pool
+## Create read pool
 
-Use `rp-create` to create a read pool.
+Use `rp-create` to create a read pool, `rp-create` has no parameters.
 
-```
-./zbox rp-create
-```
 <details>
-  <summary>rp-create sequence diagram</summary>
+  <summary>Create read pool</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/123973204-77f74800-d9b3-11eb-8165-96741cc0b291.png)
 
 </details>
 
-### Read pool info
+```
+./zbox rp-create
+```
+
+## Read pool info
 
 Use `rp-info` to get read pool information.
+
+| Parameter  | Required | Description                 | default | Valid values |
+|------------|----------|-----------------------------|---------|--------------|
+| allocation | no       | allocation id               |         | string       |
+| json       | no       | print result in json format | false   | boolean      |
+
+<details>
+  <summary>Create read pool</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124507524-d8c4bd00-ddc5-11eb-853e-513957cf3dbb.png)
+
+</details>
 
 ```
 ./zbox rp-info
 ```
 
-### Lock tokens into read pool
+## Lock tokens into read pool
 
-Lock some tokens in read pool associated with an allocation. The tokens will be divided between allocation blobbers by their read price.
+Lock some tokens in read pool associated with an allocation. 
+* Uses two different formats, you can either define a specific blobber
+  to lock all tokens, or spread across all the allocations blobbers automatically.
+* If the user does not have a pre-existing read pool, then the smart-contract
+  creates one.
 
-#### Usage
+| Parameter  | Required | Description            | default | Valid values |
+|------------|----------|------------------------|---------|--------------|
+| allocation | yes      | allocation id          |         | string       |
+| blobber    | no       | blobber id to lock for |         | string       |
+| duration   | yes      | lock duration          |         | duratation   |
+| fee        |          | transaction fee        | 0       | int          |
+| tokens     | yes      | tokens to lock         |         | int          |
 
 ```
 ./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1
 ```
-
-* Uses two different formats, you can either define a specific blobber
-to lock all tokens, or spread across all the allocations blobbers automatically.
-* If the user does not have a pre-existing read pool, then the smart-contract
-creates one.
 
 <details>
   <summary>rp-lock with a specific blobber</summary>
@@ -1453,7 +1438,7 @@ each blobber's Terms.ReadPrice.
 
 </details>
 
-### Unlock tokens from read pool
+## Unlock tokens from read pool
 
 Use `rp-unlock` to unlock tokens from an expired read pool by pool id. See `rp-info` for the POOL_ID and the expiration.
 
@@ -1477,7 +1462,7 @@ Show storage SC configuration.
 ./zbox sc-config
 ```
 
-### Stake pool info
+## Stake pool info
 
 Use `sp-info` to get stake pool information and settings.
 
@@ -1487,7 +1472,7 @@ Use `sp-info` to get stake pool information and settings.
 ./zbox sp-info --blobber_id <blobber_id>
 ```
 
-### Lock tokens into stake pool
+## Lock tokens into stake pool
 
 Lock creates delegate pool for current client and given blobber. The tokens locked for the blobber stake can be unlocked any time, excluding where the tokens held by opened offers. The tokens collect interests.
 
@@ -1507,7 +1492,7 @@ Unlock a stake pool by pool owner.
 ./zbox sp-unlock --blobber_id <blobber_id> --pool_id <pool_id>
 ```
 
-### Stake pools info of current user
+## Stake pools info of current user
 
 Get information about all stake pools of current user.
 
@@ -1515,7 +1500,7 @@ Get information about all stake pools of current user.
 ./zbox sp-user-info
 ```
 
-### Pay interests
+## Pay interests
 
 Changes in stake pool pays all pending rewards to calculate next rewards correctly and don't complicate stake pool. But if there are no changes interests will not be paid. To pay the interests  `sp-pay-interests`  command can be used to pays interest for all delegates. Use `sp-info` to check interests can be paid or not.
 
@@ -1525,7 +1510,7 @@ Changes in stake pool pays all pending rewards to calculate next rewards correct
 ./zbox sp-pay-interests --blobber_id <blobber_id>
 ```
 
-### Write pool info
+## Write pool info
 
 Write pool information.
 
@@ -1543,7 +1528,7 @@ Filtering by allocation.
 ./zbox wp-info --allocation <allocation_id>
 ```
 
-### Lock tokens into write pool
+## Lock tokens into write pool
 
 `wp-lock` can be used to lock tokens in a write pool associated with an allocation. All tokens will be divided between allocation blobbers depending on their write price.
 
@@ -1600,7 +1585,7 @@ An expired write pool, associated with an allocation, can be locked until alloca
 
 </details>
 
-### Download cost
+## Download cost
 
 `get-download-cost` determines the cost for downloading the remote file from dStorage. The clinet
 must either be the owner, a collaborator or be using an auth ticket.
@@ -1625,8 +1610,7 @@ must either be the owner, a collaborator or be using an auth ticket.
 ./zbox get-download-cost --allocation <allocation_id> --remotepath /path/file.ext
 ```
 
-
-### Upload cost
+## Upload cost
 
 `get-upload-cost` determines the cost for uploading a local file on dStorage. 
 `--duration` Ignored if `--end` true, in which case the cost of upload calculated until
