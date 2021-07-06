@@ -6,13 +6,12 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/0chain/gosdk/core/common"
 	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zboxcore/zboxutil"
-	"github.com/0chain/zboxcli/live"
+	"github.com/0chain/zboxcli/util"
 
 	"github.com/spf13/cobra"
 )
@@ -78,8 +77,7 @@ var uploadCmd = &cobra.Command{
 		}
 		if live {
 			chunkSize, _ := cmd.Flags().GetInt("chunksize")
-			delay, _ := cmd.Flags().GetInt("delay")
-			err = startLiveUpload(cmd, allocationObj, remotepath, encrypt, chunkSize, attrs, time.Duration(delay)*time.Second)
+			err = startLiveUpload(cmd, allocationObj, localpath, remotepath, encrypt, chunkSize, attrs)
 		} else if stream {
 			chunkSize, _ := cmd.Flags().GetInt("chunksize")
 			err = startStreamUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar)
@@ -168,15 +166,25 @@ func startStreamUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localP
 	return streamUpload.Start()
 }
 
-func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, remotePath string, encrypt bool, chunkSize int, attrs fileref.Attributes, delay time.Duration) error {
+func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, feedURL string, remotePath string, encrypt bool, chunkSize int, attrs fileref.Attributes) error {
 
-	webcam, err := live.OpenWebcam()
+	format, _ := cmd.Flags().GetString("format")
+	proxy, _ := cmd.Flags().GetString("proxy")
+	delay, _ := cmd.Flags().GetInt("delay")
+	clipsSize, _ := cmd.Flags().GetInt("clipssize")
+
+	dir := util.GetConfigDir() + string(os.PathSeparator) + "youtubedl"
+
+	os.MkdirAll(dir, 0744)
+
+	reader, err := sdk.CreateYoutubeDL(feedURL, format, dir, proxy)
 	if err != nil {
 		return err
 	}
-	defer webcam.Close()
 
-	mimeType := "video/avi"
+	defer reader.Close()
+
+	mimeType := "video/mp4"
 
 	remotePath = zboxutil.RemoteClean(remotePath)
 	isabs := zboxutil.IsRemoteAbs(remotePath)
@@ -184,7 +192,7 @@ func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, remotePa
 		err = common.NewError("invalid_path", "Path should be valid and absolute")
 		return err
 	}
-	remotePath = zboxutil.GetFullRemotePath(webcam.GetVideoFile(), remotePath)
+	remotePath = zboxutil.GetFullRemotePath(reader.GetFileName(), remotePath)
 
 	_, fileName := filepath.Split(remotePath)
 
@@ -195,7 +203,7 @@ func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, remotePa
 		Attributes: attrs,
 	}
 
-	liveUpload := sdk.CreateLiveUpload(allocationObj, liveMeta, webcam,
+	liveUpload := sdk.CreateLiveUpload(allocationObj, liveMeta, reader,
 		sdk.WithLiveChunkSize(chunkSize),
 		sdk.WithLiveEncrypt(encrypt),
 		sdk.WithLiveStatusCallback(func() sdk.StatusCallback {
@@ -205,7 +213,8 @@ func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, remotePa
 
 			return statusBar
 		}),
-		sdk.WithLiveDelay(delay))
+		sdk.WithLiveDelay(delay),
+		sdk.WithLiveClipsSize(clipsSize))
 
 	return liveUpload.Start()
 }
@@ -220,10 +229,16 @@ func init() {
 	uploadCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
 	uploadCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
 	uploadCmd.Flags().Bool("stream", false, "pass this option to enable stream upload for large file")
-	uploadCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "pass this option to custom chunk size for upload")
-	uploadCmd.Flags().Bool("live", false, "pass this option to enable live upload for webcam streaming")
-	uploadCmd.Flags().Int("delay", 5, "how much seconds has a clips. 5 seconds is default")
+
+	uploadCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "how much bytes in a chunk for upload")
+
+	uploadCmd.Flags().Bool("live", false, "pass this option to enable upload for live streaming")
+	uploadCmd.Flags().Int("clipssize", 0, "how much bytes in a video clips. only works with --live")
+	uploadCmd.Flags().Int("delay", 5, "how much seconds has a clips. only works with --live")
+	uploadCmd.Flags().String("format", "best", "quality format of video. best is default. only works with --live")
+	uploadCmd.Flags().String("proxy", "", "Use the specified HTTP/HTTPS/SOCKS proxy. only works with --live")
+
 	uploadCmd.MarkFlagRequired("allocation")
 	uploadCmd.MarkFlagRequired("remotepath")
-	//uploadCmd.MarkFlagRequired("localpath")
+	uploadCmd.MarkFlagRequired("localpath")
 }
