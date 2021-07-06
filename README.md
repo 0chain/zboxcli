@@ -917,40 +917,21 @@ Response:
   8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc | 6442450944 | 2021-05-24 00:27:23 +0700 +07 |          4 |            2 | false     | false    | 0.0599999994 | 0.0599999994  
 ```
 
-### Sync
+## Sync
 
 sync command helps in syncing all files from the local folder recursively to the remote.
 
-#### Usage
+| Parameter   | Required | Description                                                                                   | default | Valid values |
+|-------------|----------|-----------------------------------------------------------------------------------------------|---------|--------------|
+| allocation  | yes      | allocation id                                                                                 |         | string       |
+| commit      | no       | commet metadata to blockchain                                                                 | false   | boolean      |
+| encryptpath | no       | local directory path to be uploaded as encrypted                                              | false   | boolean      |
+| exludepath  | no       | paths to exclude from sync                                                                    |         | string array |
+| localchache | no       | local chache of remote snapshot. Used for comparsion with remote. After sync will be updated. |         | string       |
+| localpath   | yes      | local directory to which to sync                                                              |         | file path    |
+| uploadonly  | no       | only upload and update files                                                                  | false   | boolean      |
 
-```
-./zbox sync -h
-Sync all files to/from blobbers from/to a localpath
 
-Usage:
-  zbox sync [flags]
-
-Flags:
-      --allocation string         Allocation ID
-      --commit                    pass this option to commit the metadata transaction - only works with uploadonly
-      --encryptpath string        Local dir path to upload as encrypted
-      --excludepath stringArray   Remote folder paths exclude to sync
-  -h, --help                      help for sync
-      --localcache string         Local cache of remote snapshot.
-                                  If file exists, this will be used for comparison with remote.
-                                  After sync complete, remote snapshot will be updated to the same file for next use.
-      --localpath string          Local dir path to sync
-      --uploadonly                pass this option to only upload/update the files
-
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-```
 
 Example
 
@@ -1182,30 +1163,12 @@ Response:
 Use `start-repair` command to repair a file on dStorage.
 ![repair](https://user-images.githubusercontent.com/65766301/120052600-b364c680-c043-11eb-9bf2-038ab244fed6.png)
 \
-#### Usage
 
-```
-./zbox start-repair -h
-start repair file to blobbers
-
-Usage:
-  zbox start-repair [flags]
-
-Flags:
-      --allocation string   Allocation ID
-  -h, --help                help for start-repair
-      --repairpath string   Path to repair
-      --rootpath string     File path for local files
-
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-```
+| Parameter  | Required | Description               | default | Valid values |
+|------------|----------|---------------------------|---------|--------------|
+| allocation | yes      | allocation id             |         | string       |
+| repairpath | yes      | remote path to repair     |         | string       |
+| rootpath   | yes      | file path for local files |         | string       |
 
 Example
 
@@ -1411,6 +1374,7 @@ See `rp-info` for the POOL_ID and the expiration.
 ![image](https://user-images.githubusercontent.com/6240686/124578670-53352180-de46-11eb-99a5-07debf17e351.png)
 
 </details>
+
 ```
 ./zbox rp-unlock --pool_id <pool_id>
 ```
@@ -1678,11 +1642,12 @@ the allocation expires.
 | localpath   | yes      | local of path to calculate upload    |         | file path    |
 
 <details>
-  <summary>Upload cost</summary>
+  <summary>Download cost</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124501898-51be1780-ddba-11eb-8c1a-d238cfd8f43f.png)
 
 </details>
+
 
 ```
 ./zbox get-upload-cost --allocation <allocation_id> --localpath ./path/file.ext
@@ -1690,7 +1655,7 @@ the allocation expires.
 
 ------
 
-### Streaming
+## Streaming
 
 Video streaming with Zbox CLI can be implemented with players for different operating platforms(iOS, Android Mac).Zbox CLI does not have a player itself and use the the downloadFileByBlocks helper function to properly returns file-chunks with correct byte range.
 
