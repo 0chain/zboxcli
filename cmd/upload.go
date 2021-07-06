@@ -33,13 +33,9 @@ var uploadCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		live, _ := cmd.Flags().GetBool("live")
-
-		if !live {
-			if fflags.Changed("localpath") == false {
-				PrintError("Error: localpath flag is missing")
-				os.Exit(1)
-			}
+		if fflags.Changed("localpath") == false {
+			PrintError("Error: localpath flag is missing")
+			os.Exit(1)
 		}
 
 		allocationID := cmd.Flag("allocation").Value.String()
@@ -75,6 +71,8 @@ var uploadCmd = &cobra.Command{
 			}
 			attrs.WhoPaysForReads = wp // set given value
 		}
+
+		live, _ := cmd.Flags().GetBool("live")
 		if live {
 			chunkSize, _ := cmd.Flags().GetInt("chunksize")
 			err = startLiveUpload(cmd, allocationObj, localpath, remotepath, encrypt, chunkSize, attrs)
@@ -177,7 +175,7 @@ func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, feedURL 
 
 	os.MkdirAll(dir, 0744)
 
-	reader, err := sdk.CreateYoutubeDL(feedURL, format, dir, proxy)
+	reader, err := sdk.CreateYoutubeDL(feedURL, format, dir, proxy, delay)
 	if err != nil {
 		return err
 	}
@@ -233,8 +231,8 @@ func init() {
 	uploadCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "how much bytes in a chunk for upload")
 
 	uploadCmd.Flags().Bool("live", false, "pass this option to enable upload for live streaming")
-	uploadCmd.Flags().Int("clipssize", 0, "how much bytes in a video clips. only works with --live")
-	uploadCmd.Flags().Int("delay", 5, "how much seconds has a clips. only works with --live")
+	uploadCmd.Flags().Int("clipssize", 10*1024*1024, "how much bytes in a video clips.10M is default size. only works with --live")
+	uploadCmd.Flags().Int("delay", 0, "how much seconds has a clips. only works with --live")
 	uploadCmd.Flags().String("format", "best", "quality format of video. best is default. only works with --live")
 	uploadCmd.Flags().String("proxy", "", "Use the specified HTTP/HTTPS/SOCKS proxy. only works with --live")
 
