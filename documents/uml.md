@@ -665,20 +665,23 @@ sc -> zbox
 ```
 
 ```puml
+boundary zbox
+control sc
+entity blockchain
 title Unlock read pool
 zbox -> sc : rp-unlock
 note left
     * read pool id
 end note 
 blockchain -> sc : read pool
-alt read pool with id expired
+alt read pool expired
     group read pool
-        sc -> sc : remove pool id
+        sc -> sc : remove pool
     end
-    sc -> blockchain : transfer tokens from\nread pool id to user
+    sc -> blockchain : transfer tokens from\nread pool to user
     sc -> blockchain : save read pool
     sc -> zbox
-else read pool id not expired
+else read pool not expired
     sc ->x zbox : read pool not expired
 end
 ```

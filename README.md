@@ -49,10 +49,10 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
     - [Detailed write pool information](https://github.com/0chain/zboxcli#Write-pool-info)
     - [Lock tokens into write pool](https://github.com/0chain/zboxcli#Lock-tokens-into-write-pool)
     - [Unlock tokens from expired write pool](https://github.com/0chain/zboxcli#Unlock-tokens-from-write-pool)
-    - [Detailed stake pool information](https://github.com/0chain/zboxcli#Stake-pool-info)
+    - [Detailed stake pool information](#stake-pool-info)
     - [Lock tokens into stake pool](https://github.com/0chain/zboxcli#Lock-tokens-into-stake-pool)
     - [Unlock tokens from expired stake pool](https://github.com/0chain/zboxcli#Unlock-tokens-from-stake-pool)
-    - [Stake pools info of current user](https://github.com/0chain/zboxcli#Stake-pools-info-of-current-user)
+    - [Stake pools info of current user](#stake-pools-info-of-user)
     - [Pay interests](https://github.com/0chain/zboxcli#Pay-interests)
   - zbox Configuration info
     - [Storage SC configurations](https://github.com/0chain/zboxcli#Storage-SC-configurations)
@@ -200,8 +200,6 @@ Note in this document, we will only show the commands for particular functionali
 ## Register wallet
 
 `register` is used when needed to register a given wallet to the blockchain. This could be that the blockchain network is reset and you wished to register the same wallet at `~/.zcn/wallet.json`.
-
-![image](https://user-images.githubusercontent.com/6240686/124297241-c858dc00-db52-11eb-89e3-9146e3f9b840.png)
 
 Sample command
 
@@ -1450,13 +1448,25 @@ Use `rp-unlock` to unlock tokens from an expired read pool by pool id. See `rp-i
 <details>
   <summary>rp-unlock</summary>
 
-![image](https://user-images.githubusercontent.com/6240686/123973808-ff44bb80-d9b3-11eb-9b70-c952fd95858f.png)
+![image](https://user-images.githubusercontent.com/6240686/124578670-53352180-de46-11eb-99a5-07debf17e351.png)
 
 </details>
 
-### Storage SC configurations
+## Storage SC configurations
 
 Show storage SC configuration.
+
+| Parameter  | Required | Description                 | default | Valid values |
+|------------|----------|-----------------------------|---------|--------------|
+| allocation | yes      | allocation id               |         | string       |
+| json       | no       | print result in json format | false   | boolean      |
+
+<details>
+  <summary>sc-config</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124578670-53352180-de46-11eb-99a5-07debf17e351.png)
+
+</details>
 
 ```
 ./zbox sc-config
@@ -1464,9 +1474,19 @@ Show storage SC configuration.
 
 ## Stake pool info
 
-Use `sp-info` to get stake pool information and settings.
+Use `sp-info` to get your stake pool information and settings.
 
-#### Usage
+| Parameter  | Required | Description                 | default        | Valid values |
+|------------|----------|-----------------------------|----------------|--------------|
+| blobber_id |          | id of blobber               | current client | string       |
+| json       | no       | print result in json format | false          | boolean      |
+
+<details>
+  <summary>sp-info</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124581849-63023500-de49-11eb-8927-50d9ff97671b.png)
+
+</details>
 
 ```
 ./zbox sp-info --blobber_id <blobber_id>
@@ -1474,9 +1494,24 @@ Use `sp-info` to get stake pool information and settings.
 
 ## Lock tokens into stake pool
 
-Lock creates delegate pool for current client and given blobber. The tokens locked for the blobber stake can be unlocked any time, excluding where the tokens held by opened offers. The tokens collect interests.
+Lock creates delegate pool for current client and given blobber. 
+The tokens locked for the blobber stake can be unlocked any time, excluding 
+where the tokens held by opened offers. The tokens collect interests.
+`sp-lock` returns the id of the new stake pool, this will be needed to reference
+to stake pool later.
 
-#### Usage
+| Parameter  | Required | Description     | default        | Valid values |
+|------------|----------|-----------------|----------------|--------------|
+| blobber_id |          | id of blobber   | current client | string       |
+| fee        | no       | transaction fee | 0              | float        |
+| tokens     | yes      | tokens to lock  |                | float        |
+
+<details>
+  <summary>sp-lock</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124585686-73b4aa00-de4d-11eb-83cb-334f7c54543e.png)
+
+</details>
 
 ```
 ./zbox sp-lock --blobber_id <blobber_id> --tokens 1.0
@@ -1484,27 +1519,64 @@ Lock creates delegate pool for current client and given blobber. The tokens lock
 
 ### Unlock tokens from stake pool
 
-Unlock a stake pool by pool owner.
+Unlock a stake pool by pool owner. If the stake pool cannot be unlocked due
+to opened offers, `sp-unlock` marks it to be unlocked later.
 
-#### Usage
+| Parameter  | Required | Description          | default        | Valid values |
+|------------|----------|----------------------|----------------|--------------|
+| blobber_id |          | id of blobber        | current client | string       |
+| fee        | no       | transaction fee      | 0              | float        |
+| pool id    | yes      | id of pool to unlock |                | string       |
+
+<details>
+  <summary>sp-unlock</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124597566-8e8e1b00-de5b-11eb-8926-867687aaa06a.png)
+
+</details>
+
 
 ```
 ./zbox sp-unlock --blobber_id <blobber_id> --pool_id <pool_id>
 ```
 
-## Stake pools info of current user
+## Stake pools info of user
 
 Get information about all stake pools of current user.
 
+| Parameter  | Required | Description                 | default        | Valid values |
+|------------|----------|-----------------------------|----------------|--------------|
+| client_id |          | id of client               | current client | string       |
+| json       | no       | print result in json format | false          | boolean      |
+
+
+<details>
+  <summary>sp-user-info</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124600324-7ff53300-de5e-11eb-9b78-5a4f9c59a536.png)
+
+</details>
 ```
 ./zbox sp-user-info
 ```
 
 ## Pay interests
 
-Changes in stake pool pays all pending rewards to calculate next rewards correctly and don't complicate stake pool. But if there are no changes interests will not be paid. To pay the interests  `sp-pay-interests`  command can be used to pays interest for all delegates. Use `sp-info` to check interests can be paid or not.
+Changes in stake pool pays all pending rewards to calculate next rewards correctly
+and don't complicate stake pool. But if there are no changes interests will not be paid.
+To pay the interests  `sp-pay-interests`  command can be used to
+pay interest for all delegates. Use `sp-info` to check interests can be paid or not.
 
-#### Usage
+| Parameter  | Required | Description          | default        | Valid values |
+|------------|----------|----------------------|----------------|--------------|
+| blobber_id |          | id of blobber        | current client | string       |
+
+<details>
+  <summary>sp-pay-interests</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124602256-93a19900-de60-11eb-9ddd-74f6e0570e47.png)
+
+</details>
 
 ```
 ./zbox sp-pay-interests --blobber_id <blobber_id>
@@ -1512,11 +1584,23 @@ Changes in stake pool pays all pending rewards to calculate next rewards correct
 
 ## Write pool info
 
-Write pool information.
+Write pool information. Use allocation id to filter results to a singe allocation.
 
-#### Usage
+| Parameter     | Required | Description                 | default | Valid values |
+|---------------|----------|-----------------------------|---------|--------------|
+| allocation id | no       | allocation id               |         | string       |
+| json          | no       | print result in json format | false   | boolean      |
+
+<details>
+  <summary>sp-pay-interests</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124603444-d9ab2c80-de61-11eb-82f2-900d540ba63f.png)
+
+</details>
+
 
 For all write pools.
+
 
 ```
 ./zbox wp-info
@@ -1530,18 +1614,20 @@ Filtering by allocation.
 
 ## Lock tokens into write pool
 
-`wp-lock` can be used to lock tokens in a write pool associated with an allocation. All tokens will be divided between allocation blobbers depending on their write price.
-
-#### Usage
-
-```
-./zbox wp-lock --allocation <allocation_id> --duration 40m --tokens 1
-```
-
+`wp-lock` can be used to lock tokens in a write pool associated with an allocation. 
+All tokens will be divided between allocation blobbers depending on their write price.
 * Uses two different formats, you can either define a specific blobber
   to lock all tokens, or spread across all the allocations blobbers automatically.
 * If the user does not have a pre-existing read pool, then the smart-contract
   creates one.
+
+| Parameter     | Required | Description                       | default | Valid values |
+|---------------|----------|-----------------------------------|---------|--------------|
+| allocation id | no       | allocation id                     |         | string       |
+| blobber       | no       | blobber id                        |         | string       |
+| duration      | yes      | duration for which to lock tokens |         | duration     |
+| fee           | no       | transaction fee                   | 0       | float        |
+| tokens        | yes      | number of tokens to lock          |         | float        |
 
 <details>
   <summary>rp-lock with a specific blobber</summary>
@@ -1566,8 +1652,12 @@ each blobber's Terms.ReadPrice.
 ![image](https://user-images.githubusercontent.com/6240686/123979735-e5f23e00-d9b8-11eb-8232-339a4a3374d0.png)
 
 </details>
+```
+./zbox wp-lock --allocation <allocation_id> --duration 40m --tokens 1
+```
 
-### Unlock tokens from write pool
+
+## Unlock tokens from write pool
 
 `wp-unlock` unlocks an expired write pool by its POOL_ID. See `wp-info` for the pool id and the expiration. 
 An expired write pool, associated with an allocation, can be locked until allocation finalization even if it's expired. It possible in cases where related blobber doesn't give their min lock demands. The finalization will pay the demand and unlock the pool.
