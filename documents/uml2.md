@@ -1,4 +1,28 @@
 ```puml
+title Lock tokens in stake pool
+boundary zbox 
+control storagesc
+entity blockchain
+zbox -> storagesc : txn: //update_blobber_settings//
+note left
+    * blobber
+end note
+    blockchain -> storagesc : blobbers
+    storagesc -> storagesc : update blobber
+    storagesc -> blockchain : save blobbers
+storagesc -> zbox : 
+```
+
+
+```puml
+title Get blobber information
+boundary zbox 
+control 0chain
+zbox -> 0chain : REST API //getBlobber//
+0chain -> zbox : blobber info
+```
+
+```puml
 title Get write pool information
 boundary zbox 
 control 0chain

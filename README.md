@@ -445,7 +445,7 @@ field of the allocation.
 | new_owner_key | yes      | public key of new owner | string       |
 
 <details>
-  <summary>Transfer allocation ownership</summary>
+  <summary>transferallocation</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124157614-de05cd00-da90-11eb-93ee-7bd8b3f50b88.png)
 
@@ -496,33 +496,21 @@ Example
     max_offer_duration:  744h0m0s
 ```
 
-### Detailed blobber information
+## Detailed blobber information
 
 Use `bl-info` command to get detailed blobber information.
 
-#### Usage
+| Parameter  | Required | Description                         | default | Valid values |
+|------------|----------|-------------------------------------|---------|--------------|
+| blobber id | yes      | blobber on which to get information |         | string       |
+| json       | no       | print result in json format         | false   | boolean      |
 
-```
-./zbox bl-info --h
-Get blobber info
+<details>
+  <summary>bl-info</summary>
 
-Usage:
-  zbox bl-info [flags]
+![image](https://user-images.githubusercontent.com/6240686/124609407-7fad6580-de67-11eb-896c-1f7be1faf7c0.png)
 
-Flags:
-      --blobber_id string   blobber ID, required
-  -h, --help                help for bl-info
-      --json                pass this option to print response as json data
-
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-```
+</details>
 
 Example
 
@@ -552,42 +540,31 @@ settings:
   service_charge:  30 %
 ```
 
-### Update blobber settings
+## Update blobber settings
 
-Use `./zbox bl-update --help` to get list of settings that can be updated.
+Use `./zbox bl-update to update a blobber's configuration settings. This updates the settings
+on the blockchain not the blobber.
 
-#### Usage
+| Parameter          | Required | Description                               | default | Valid values |
+|--------------------|----------|-------------------------------------------|---------|--------------|
+| blobber_id         | yes      | id of blobber of which to update settings |         | string       |
+| capacity           | no       | update blobber capacity                   |         | int          |
+| cct                | no       | update challenge completion time          |         | duration     |
+| max_offer_duration | no       | update max offer duration                 |         | duration     |
+| max_stake          | no       | update maximum stake                      |         | float        |
+| min_lock_demand    | no       | update minimum lock demand                |         | float        |
+| min_stake          | no       | update minimum stake                        |         | float        |
+| num_delegates      | no       | update maximum number of delegates          |         | int          |
+| read_price         | no       | update read price                        |         | float        |
+| service_charge     | no       | update service charge                     |         | float        |
+| write_price        | no       | update write price                        |         | float        |
 
-```
-./zbox bl-update -h
-Update blobber settings by its delegate_wallet owner
+<details>
+  <summary>bl-update</summary>
 
-Usage:
-  zbox bl-update [flags]
+![image](https://user-images.githubusercontent.com/6240686/124616924-6825ab00-de6e-11eb-80a7-13e8061dd20b.png)
 
-Flags:
-      --blobber_id string             blobber ID, required
-      --capacity int                  update blobber capacity bid, optional
-      --cct duration                  update challenge completion time (cct), optional
-  -h, --help                          help for bl-update
-      --max_offer_duration duration   update max_offer_duration, optional
-      --max_stake float               update max_stake, optional
-      --min_lock_demand float         update min_lock_demand, optional
-      --min_stake float               update min_stake, optional
-      --num_delegates int             update num_delegates, optional
-      --read_price float              update read_price, optional
-      --service_charge float          update service_charge, optional
-      --write_price float             update write_price, optional
-
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-```
+</details>
 
 Example
 
@@ -1005,30 +982,12 @@ It will sync your localpath with the remote and do all the required CRUD operati
 
 ## Get wallet
 
-Use `getwallet` command to get additional wallet information including Encryption Public Key,Client ID which are required for Private File Sharing.
+Use `getwallet` command to get additional wallet information including Encryption 
+Public Key,Client ID which are required for Private File Sharing.
 
-#### Usage
-
-```
-./zbox getwallet -h
-Get wallet information
-
-Usage:
-  zbox getwallet [flags]
-
-Flags:
-  -h, --help   help for getwallet
-      --json   pass this option to print response as json data
-
-Global Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-```
+| Parameter  | Required | Description                  | default | Valid values |
+|------------|----------|------------------------------|---------|--------------|
+| json       | no       | print response in json format | false   | boolean      |
 
 Example
 
@@ -1438,19 +1397,23 @@ each blobber's Terms.ReadPrice.
 
 ## Unlock tokens from read pool
 
-Use `rp-unlock` to unlock tokens from an expired read pool by pool id. See `rp-info` for the POOL_ID and the expiration.
+Use `rp-unlock` to unlock tokens from an expired read pool by pool id. 
+See `rp-info` for the POOL_ID and the expiration.
 
-#### Usage
+| Parameter | Required | Description          | default | Valid values |
+|-----------|----------|----------------------|---------|--------------|
+| fee       | no       | transaction fee      | 0       | float        |
+| pool_id   | yes      | id of pool to unlock |         | string       |
 
-```
-./zbox rp-unlock --pool_id <pool_id>
-```
 <details>
   <summary>rp-unlock</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124578670-53352180-de46-11eb-99a5-07debf17e351.png)
 
 </details>
+```
+./zbox rp-unlock --pool_id <pool_id>
+```
 
 ## Storage SC configurations
 
@@ -1662,11 +1625,10 @@ each blobber's Terms.ReadPrice.
 `wp-unlock` unlocks an expired write pool by its POOL_ID. See `wp-info` for the pool id and the expiration. 
 An expired write pool, associated with an allocation, can be locked until allocation finalization even if it's expired. It possible in cases where related blobber doesn't give their min lock demands. The finalization will pay the demand and unlock the pool.
 
-#### Usage
-
-```
-./zbox wp-unlock --pool_id <pool_id>
-```
+| Parameter | Required | Description          | default | Valid values |
+|-----------|----------|----------------------|---------|--------------|
+| fee       | no       | transaction fee      | 0       | float        |
+| pool_id   | yes      | id of pool to unlock |         | string       |
 
 <details>
   <summary>rp-unlock</summary>
@@ -1674,6 +1636,10 @@ An expired write pool, associated with an allocation, can be locked until alloca
 ![image](https://user-images.githubusercontent.com/6240686/123980742-b09a2000-d9b9-11eb-8987-c18ff90ee705.png)
 
 </details>
+
+```
+./zbox wp-unlock --pool_id <pool_id>
+```
 
 ## Download cost
 
@@ -1693,8 +1659,6 @@ must either be the owner, a collaborator or be using an auth ticket.
 ![image](https://user-images.githubusercontent.com/6240686/124497750-41ef0500-ddb3-11eb-99ea-115a4e234eda.png)
 
 </details>
-
-#### Usage
 
 ```
 ./zbox get-download-cost --allocation <allocation_id> --remotepath /path/file.ext
