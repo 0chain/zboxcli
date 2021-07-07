@@ -1,7 +1,10 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/spf13/pflag"
+	"io/ioutil"
 	"log"
 	"math"
 	"os"
@@ -45,16 +48,34 @@ var newallocationCmd = &cobra.Command{
 	Long:  `Creates a new allocation`,
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
+		var flags = cmd.Flags()
+		costOnly, _ := cmd.Flags().GetBool("cost")
+
+		if flags.Changed("free_storage") {
+			if costOnly {
+				log.Print("Cost for the given allocation: ", 0)
+				return
+			}
+			lock, freeStorageMarker := processFreeStorageFlags(flags)
+
+			allocationID, err := sdk.CreateFreeAllocation(freeStorageMarker, lock)
+			if err != nil {
+				log.Fatal("Error creating free allocation: ", err)
+			}
+			log.Print("Allocation created: ", allocationID)
+			storeAllocation(allocationID)
+			return
+		}
+
 		if datashards == nil || parityshards == nil || size == nil {
 			log.Fatal("Invalid allocation parameters.")
 		}
 
 		var (
-			flags = cmd.Flags() //
-			lock  int64         // lock with given number of tokens
-			err   error         //
+			lock int64 // lock with given number of tokens
+			err  error //
 		)
-		costOnly, _ := cmd.Flags().GetBool("cost")
+
 		if !costOnly {
 			if !flags.Changed("lock") {
 				log.Fatal("missing required 'lock' argument")
@@ -142,6 +163,35 @@ var newallocationCmd = &cobra.Command{
 	},
 }
 
+func processFreeStorageFlags(flags *pflag.FlagSet) (int64, string) {
+	if flags.Changed("read_price") {
+		log.Fatal("free storage, read_price is predefined")
+	}
+	if flags.Changed("write_price") {
+		log.Fatal("free storage, write_price is predefined")
+	}
+	if flags.Changed("mcct") {
+		log.Fatal("free storage, mcct is predefined")
+	}
+
+	filename, err := flags.GetString("free_storage")
+	if err != nil {
+		log.Fatal("invalid free)value: ", err)
+	}
+	freeStorageMarker, err := ioutil.ReadFile(filename)
+	if err != nil {
+		log.Fatal("cannot read in free_storage file", err)
+	}
+	var marker struct {
+		FreeTokens float64 `json:"free_tokens"`
+	}
+	err = json.Unmarshal(freeStorageMarker, &marker)
+	if err != nil {
+		log.Fatal("unmarshalling marker", err)
+	}
+	return zcncore.ConvertToValue(marker.FreeTokens), string(freeStorageMarker)
+}
+
 func init() {
 	rootCmd.AddCommand(newallocationCmd)
 	datashards = newallocationCmd.PersistentFlags().Int("data", 2, "--data 2")
@@ -168,11 +218,10 @@ func init() {
 	newallocationCmd.Flags().
 		Bool("cost", false,
 			"pass this option to only get the min lock demand")
+	newallocationCmd.Flags().
+		String("free_storage", "",
+			"json file containing marker for free storage")
 
-	newallocationCmd.MarkFlagRequired("data")
-	newallocationCmd.MarkFlagRequired("parity")
-	newallocationCmd.MarkFlagRequired("size")
-	newallocationCmd.MarkFlagRequired("allocationFileName")
 }
 
 func storeAllocation(allocationID string) {
