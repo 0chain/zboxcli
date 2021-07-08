@@ -73,6 +73,7 @@ var uploadCmd = &cobra.Command{
 		}
 
 		live, _ := cmd.Flags().GetBool("live")
+
 		if live {
 			chunkSize, _ := cmd.Flags().GetInt("chunksize")
 			err = startLiveUpload(cmd, allocationObj, localpath, remotepath, encrypt, chunkSize, attrs)
@@ -164,7 +165,57 @@ func startStreamUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localP
 	return streamUpload.Start()
 }
 
-func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, feedURL string, remotePath string, encrypt bool, chunkSize int, attrs fileref.Attributes) error {
+func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath string, remotePath string, encrypt bool, chunkSize int, attrs fileref.Attributes) error {
+
+	delay, _ := cmd.Flags().GetInt("delay")
+	clipsSize, _ := cmd.Flags().GetInt("clipssize")
+
+	reader, err := sdk.CreateFfmpegRecorder(localPath, delay)
+	if err != nil {
+		return err
+	}
+
+	defer reader.Close()
+
+	mimeType, err := reader.GetFileContentType()
+	if err != nil {
+		return err
+	}
+
+	remotePath = zboxutil.RemoteClean(remotePath)
+	isabs := zboxutil.IsRemoteAbs(remotePath)
+	if !isabs {
+		err = common.NewError("invalid_path", "Path should be valid and absolute")
+		return err
+	}
+	remotePath = zboxutil.GetFullRemotePath(localPath, remotePath)
+
+	_, fileName := filepath.Split(remotePath)
+
+	liveMeta := sdk.LiveMeta{
+		MimeType:   mimeType,
+		RemoteName: fileName,
+		RemotePath: remotePath,
+		Attributes: attrs,
+	}
+
+	liveUpload := sdk.CreateLiveUpload(allocationObj, liveMeta, reader,
+		sdk.WithLiveChunkSize(chunkSize),
+		sdk.WithLiveEncrypt(encrypt),
+		sdk.WithLiveStatusCallback(func() sdk.StatusCallback {
+			wg := &sync.WaitGroup{}
+			statusBar := &StatusBar{wg: wg}
+			wg.Add(1)
+
+			return statusBar
+		}),
+		sdk.WithLiveDelay(delay),
+		sdk.WithLiveClipsSize(clipsSize))
+
+	return liveUpload.Start()
+}
+
+func startLiveUploadWithYoutubeDL(cmd *cobra.Command, allocationObj *sdk.Allocation, feedURL string, remotePath string, encrypt bool, chunkSize int, attrs fileref.Attributes) error {
 
 	format, _ := cmd.Flags().GetString("format")
 	proxy, _ := cmd.Flags().GetString("proxy")
@@ -190,7 +241,7 @@ func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, feedURL 
 		err = common.NewError("invalid_path", "Path should be valid and absolute")
 		return err
 	}
-	remotePath = zboxutil.GetFullRemotePath(reader.GetFileName(), remotePath)
+	remotePath = zboxutil.GetFullRemotePath(reader.GetFileName(0), remotePath)
 
 	_, fileName := filepath.Split(remotePath)
 
@@ -231,10 +282,9 @@ func init() {
 	uploadCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "how much bytes in a chunk for upload")
 
 	uploadCmd.Flags().Bool("live", false, "pass this option to enable upload for live streaming")
-	uploadCmd.Flags().Int("clipssize", 10*1024*1024, "how much bytes in a video clips.10M is default size. only works with --live")
-	uploadCmd.Flags().Int("delay", 0, "how much seconds has a clips. only works with --live")
-	uploadCmd.Flags().String("format", "best", "quality format of video. best is default. only works with --live")
-	uploadCmd.Flags().String("proxy", "", "Use the specified HTTP/HTTPS/SOCKS proxy. only works with --live")
+	uploadCmd.Flags().Int("delay", 5, "how much seconds has a clips.default is 5 sencods. only works with --live")
+	// uploadCmd.Flags().String("format", "best", "quality format of video. best is default. only works with --live")
+	// uploadCmd.Flags().String("proxy", "", "Use the specified HTTP/HTTPS/SOCKS proxy. only works with --live")
 
 	uploadCmd.MarkFlagRequired("allocation")
 	uploadCmd.MarkFlagRequired("remotepath")
