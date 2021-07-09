@@ -3,7 +3,6 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/spf13/pflag"
 	"io/ioutil"
 	"log"
 	"math"
@@ -12,6 +11,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/spf13/pflag"
+
+	"github.com/0chain/gosdk/core/common/errors"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
 	"github.com/spf13/cobra"
@@ -26,7 +28,7 @@ var (
 func getPriceRange(val string) (pr sdk.PriceRange, err error) {
 	var ss = strings.Split(val, "-")
 	if len(ss) != 2 {
-		err = fmt.Errorf("invalid price range format: %q", val)
+		err = errors.New(fmt.Sprintf("invalid price range format: %q", val))
 		return
 	}
 	var minf, maxf float64
