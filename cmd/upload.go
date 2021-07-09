@@ -8,6 +8,7 @@ import (
 	"sync"
 
 	"github.com/0chain/gosdk/core/common"
+	thrown "github.com/0chain/gosdk/core/common/errors"
 	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zboxcore/zboxutil"
@@ -140,7 +141,7 @@ func startStreamUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localP
 	remotePath = zboxutil.RemoteClean(remotePath)
 	isabs := zboxutil.IsRemoteAbs(remotePath)
 	if !isabs {
-		err = common.NewError("invalid_path", "Path should be valid and absolute")
+		err = thrown.New("invalid_path", "Path should be valid and absolute")
 		return err
 	}
 	remotePath = zboxutil.GetFullRemotePath(localPath, remotePath)
@@ -185,7 +186,7 @@ func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPat
 	remotePath = zboxutil.RemoteClean(remotePath)
 	isabs := zboxutil.IsRemoteAbs(remotePath)
 	if !isabs {
-		err = common.NewError("invalid_path", "Path should be valid and absolute")
+		err = thrown.New("invalid_path", "Path should be valid and absolute")
 		return err
 	}
 	remotePath = zboxutil.GetFullRemotePath(localPath, remotePath)
@@ -238,7 +239,7 @@ func startLiveUploadWithYoutubeDL(cmd *cobra.Command, allocationObj *sdk.Allocat
 	remotePath = zboxutil.RemoteClean(remotePath)
 	isabs := zboxutil.IsRemoteAbs(remotePath)
 	if !isabs {
-		err = common.NewError("invalid_path", "Path should be valid and absolute")
+		err = thrown.New("invalid_path", "Path should be valid and absolute")
 		return err
 	}
 	remotePath = zboxutil.GetFullRemotePath(reader.GetFileName(0), remotePath)

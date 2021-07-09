@@ -36,7 +36,7 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
     - [Share the uploaded file on dStorage](https://github.com/0chain/zboxcli#Share)
     - [Add Collaborator for a file](https://github.com/0chain/zboxcli#Add-collaborator)
     - [Remove Collaborator for a file](https://github.com/0chain/zboxcli#Delete-collaborator)
-    - [Streaming](https://github.com/0chain/zboxcli#Streaming)
+    - [Video Streaming](https://github.com/0chain/zboxcli#Streaming)
   - Locking and unlocking tokens    
     - [Get wallet information](https://github.com/0chain/zboxcli#Get-wallet)
     - [Challenge pool information](https://github.com/0chain/zboxcli#Challenge-pool-information)
@@ -58,7 +58,6 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
     - [Detail blobber information](https://github.com/0chain/zboxcli#Detailed-blobber-information)
     - [Update blobber settings](https://github.com/0chain/zboxcli#Update-blobber-settings)
     
-
 
    - [Troubleshooting](#troubleshooting)
 
@@ -1660,32 +1659,71 @@ Also, there are `authticket` and `lookuphash` flags to get the cost for non allo
 
 ------
 
-## Streaming
+### Streaming
 
-Streaming feature can be implemented together with player for each platforms (Android, IOS, Mac, Windows).
+Video streaming with Zbox CLI can be implemented with players for different operating platforms(iOS, Android Mac).Zbox CLI does not have a player itself and use the the downloadFileByBlocks helper function to properly returns file-chunks with correct byte range.
 
 ![streaming-android](https://user-images.githubusercontent.com/65766301/120052635-ce373b00-c043-11eb-94a5-a9711078ee54.png)
-IOS documentation: https://github.com/0chain/0box-ios
 
-Android documentation: https://github.com/0chain/0boxAndroid
+#### How it works:
 
-Mac documentation: https://github.com/0chain/0BoxSyncMac
+When the user starts the video player (ExoPlayer for Android or AVPlayer for iOS), A ZChainDataSource starts chunked download and requests chunks of video from the buffer(a Middleman between streaming player and Zbox).
 
-For platforms using zboxcli commands, implementation are similar to platforms above, i.e.:
+After the arrival of the first chunk, the player starts requesting more chunks from the buffer, which requests the Zbox SDK. Zbox SDK, which is built using GO, makes use of the downloadFileByBlocks method to reliably download large files by chunking them into a sequence of parts that can be downloaded individually. Once the blocks are downloaded, they are read into input streams and added to the media source of the streaming player.
 
-1. Download file with downloadFileByBlocks method
-2. Read chunked files to byte array (inputstream)
-3. Add byte array to custom media source of player
+The task of downloading files and writing them to buffer using Zbox SDK happens constantly, and If players request random bits of video, they are delivered instantly by a buffer.
 
-Improvements was done in
+In a case, if the player didn't receive chunks (for example, it's still not downloaded), then the player switches to STALE state, and the video stream will pause. During the STALE state, a player tries to make multiple requests for chunks; if didn't receive a response, the video stream stops.
 
-downloadFileByBlocks - properly returns file-chunks with correct byte range, gosdk v1.2.4 and above only.
 
-getFileMeta - returns actuaBlockNumbers and actualFileSize (exclude thumbnail size)
+#### Usage
 
-getFileMetaByAuth - same updates as getFileMeta
+To understand how Zbox CLI provides downloading of files by blocks. Let's consider an allocation that has `audio. mp3 ` file stored on dStorage. Make sure the file has a large size(more than 64 kB(64000 bytes)) to download the file by blocks. The size and other attributes of the sample `audio. mp3` file can be viewed using
 
-listAllocation - returns actuaBlockNumbers and actualFileSize (exclude thumbnail size)
+```
+./zbox list --allocation $ALLOC --remotepath /myfiles
+```
+
+Response:
+
+```
+  TYPE |   NAME    |        PATH        |  SIZE   | NUM BLOCKS |LOOKUP HASH      | IS ENCRYPTED | DOWNLOADS PAYER
++------+-----------+--------------------+---------+------------+----------------
+  f    | audio.mp3 | /myfiles/audio.mp3 | 5992396 |         92 | 3cea39505cc30fb9f6fc5c6045284188feb14eac8ff3a19577701c4f6d973239 | NO           | owner
+
+```
+
+Here we can see the `audio.mp3` file of size (5993286) bytes having 92 blocks.If we want to download a certain number of blocks for the `audio.mp3` file we can use the `--endblock` or `--startblock` flag with `./zbox download` command. Other flags for download can be viewed using `./zbox download --help`
+
+
+```
+Flags:
+    
+  -b, --blockspermarker int   pass this option to download multiple blocks per marker (default 10)       
+  -e, --endblock int          pass this option to download till specific block number                     
+  -h, --help                  help for download
+  --localpath string          Local path of file to download                           
+  --remotepath string         Remote path to download
+   -s, --startblock int       Pass this option to download from specific block number                                                                                                         
+```
+
+For only downloading three blocks of `audio.mp3` file, we specify `--startblock` and`--endblock` with integer value of 1 and 3. `--blockspermarker` flag can also be specified to download multiple blocks at a time(default is 10).
+
+Sample command for downloading till 3rd block of the `audio.mp3` file would be:
+
+```
+./zbox download --localpath /root --remotepath /myfiles/audio.mp3 --allocation $ALLOC --startblock 1 --endblock 3 
+```
+
+Response:
+
+```
+ 393216 / 2996198 [====================>-----------------------------------------------------------------------------------------------------------------------------------------]  13.12% 1s
+Status completed callback. Type = audio/mpeg. Name = audio.mp3
+
+```
+
+As we can see, the downloaded file size(393216) is less than the original(2996198), which means zbox has downloaded some blocks of the file.
 
 
 
