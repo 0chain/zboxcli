@@ -104,78 +104,61 @@ Note: This is helpful for the Mac OS users running local cluster and having trou
 
 When you run the `zbox` command in terminal with no arguments, it will list all the available commands and the global flags.
 
-```
-./zbox 
-zbox is a decentralized storage application written on the 0Chain platform.
-                        Complete documentation is available at https://docs.0chain.net/0chain/
+**Command**|**Description**
+:-----:|:-----:
+add|Adds free storage assigner
+[add-collab](#add-collaborator)|add collaborator for a file
+[addcurator](#add-curator)|Adds a curator to an allocation
+[alloc-cancel](#cancel-allocation)|Cancel an allocation
+[alloc-fini](#finalise-allocation)|Finalize an expired allocation
+[bl-info](#detailed-blobber-information)|Get blobber info
+[bl-update](#update-blobber-settings)|Update blobber settings by its delegate\_wallet owner
+commit|commit a file changes to chain
+[copy](#copy)|copy an object(file/folder) to another folder on blobbers
+[cp-info](#challenge-pool-information)|Challenge pool information.
+[delete](#delete)|delete file from blobbers
+[delete-collab](#delete-collaborator)|delete collaborator for a file
+[download](#download)|download file from blobbers
+get|Gets the allocation info
+get-diff|Get difference of local and allocation root
+get-download-cost|Get downloading cost
+get-upload-cost|Get uploading cost
+getwallet|Get wallet information
+help|Help about any command
+list|list files from blobbers
+list-all|list all files from blobbers
+listallocations|List allocations for the client
+ls-blobbers|Show active blobbers in storage SC.
+meta|get meta data of files from blobbers
+move|move an object(file/folder) to another folder on blobbers
+newallocation|Creates a new allocation
+register|Registers the wallet with the blockchain
+rename|rename an object(file/folder) on blobbers
+rp-create|Create read pool if missing
+rp-info|Read pool information.
+rp-lock|Lock some tokens in read pool.
+rp-unlock|Unlock some expired tokens in a read pool.
+sc-config|Show storage SC configuration.
+share|share files from blobbers
+sign-data|Sign given data
+sp-info|Stake pool information.
+sp-lock|Lock tokens lacking in stake pool.
+sp-pay-interests|Pay interests not payed yet.
+sp-unlock|Unlock tokens in stake pool.
+sp-user-info|Stake pool information for a user.
+start-repair|start repair file to blobbers
+stats|stats for file from blobbers
+sync|Sync files to/from blobbers
+transferallocation|Transfer an allocation between owners
+update|update file to blobbers
+update-attributes|update object attributes on blobbers
+updateallocation|Updates allocation's expiry and size
+upload|upload file to blobbers
+version|Prints version information
+wp-info|Write pool information.
+wp-lock|Lock some tokens in write pool.
+wp-unlock|Unlock some expired tokens in a write pool.
 
-Usage:
-  zbox [command]
-
-Available Commands:
-  add-collab        add collaborator for a file
-  alloc-cancel      Cancel an allocation
-  alloc-fini        Finalize an expired allocation
-  bl-info           Get blobber info
-  bl-update         Update blobber settings by its delegate_wallet owner
-  commit            commit a file changes to chain
-  copy              copy an object(file/folder) to another folder on blobbers
-  cp-info           Challenge pool information.
-  delete            delete file from blobbers
-  delete-collab     delete collaborator for a file
-  download          download file from blobbers
-  get               Gets the allocation info
-  get-diff          Get difference of local and allocation root
-  get-download-cost Get downloading cost
-  get-upload-cost   Get uploading cost
-  getwallet         Get wallet information
-  help              Help about any command
-  list              list files from blobbers
-  list-all          list all files from blobbers
-  listallocations   List allocations for the client
-  ls-blobbers       Show active blobbers in storage SC.
-  meta              get meta data of files from blobbers
-  move              move an object(file/folder) to another folder on blobbers
-  newallocation     Creates a new allocation
-  register          Registers the wallet with the blockchain
-  rename            rename an object(file/folder) on blobbers
-  rp-create         Create read pool if missing
-  rp-info           Read pool information.
-  rp-lock           Lock some tokens in read pool.
-  rp-unlock         Unlock some expired tokens in a read pool.
-  sc-config         Show storage SC configuration.
-  share             share files from blobbers
-  sign-data         Sign given data
-  sp-info           Stake pool information.
-  sp-lock           Lock tokens lacking in stake pool.
-  sp-pay-interests  Pay interests not payed yet.
-  sp-unlock         Unlock tokens in stake pool.
-  sp-user-info      Stake pool information for a user.
-  start-repair      start repair file to blobbers
-  stats             stats for file from blobbers
-  sync              Sync files to/from blobbers
-  update            update file to blobbers
-  update-attributes update object attributes on blobbers
-  updateallocation  Updates allocation's expiry and size
-  upload            upload file to blobbers
-  version           Prints version information
-  wp-info           Write pool information.
-  wp-lock           Lock some tokens in write pool.
-  wp-unlock         Unlock some expired tokens in a write pool.
-
-Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-  -h, --help                       help for zbox
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --verbose                    prints sdk log in stderr (default false)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-
-Use "zbox [command] --help" for more information about a command.
-
-```
 ### Global Flags
 
  Global Flags are parameters in zbox that can be used with any command to override the default configuration.zbox supports the following global parameters.
@@ -539,6 +522,35 @@ settings:
   num_delegates:   50
   service_charge:  30 %
 ```
+
+## Lost all files
+
+`list-all` lists al the files stored with an allocation
+
+
+| Parameter               | Required | Description                            | Default | Valid values                            |
+|-------------------------|----------|----------------------------------------|---------|-----------------------------------------|
+| allocation              | yes      | allocation id, sender must be allocation owner                   |         | string                                  |
+
+```shell
+./zbox list-all --allocation 4ebeb69feeaeb3cd308570321981d61beea55db65cbeba4ba3b75c173c0f141b
+```
+
+## List all allocations
+
+`listallocations` provides a list of all allocations owned by the user.
+
+| Parameter          | Required | Description                               | default | Valid values |
+|--------------------|----------|-------------------------------------------|---------|--------------|
+| json         | no     | print output in json format |         | boolean       |
+
+```shell
+./zbox listallocations
+ZED | CANCELED | R  PRICE |   W  PRICE    
++------------------------------------------------------------------+-----------+-------------------------------+------------+--------------+-----------+----------+----------+--------------+
+  4ebeb69feeaeb3cd308570321981d61beea55db65cbeba4ba3b75c173c0f141b | 104857600 | 2021-07-16 13:34:29 +0100 BST |          1 |            1 | false     | false    |     0.02 | 0.1999999998 
+```
+
 
 ## Update blobber settings
 
@@ -961,6 +973,17 @@ Local cache saved.
 
 It will sync your localpath with the remote and do all the required CRUD operations.
 
+## Get differences 
+`get-diff` returns teh differences between local files and the files stored
+with the allocation.
+
+| Parameter   | Required | Description                                   | default | Valid values |
+|-------------|----------|-----------------------------------------------|---------|--------------|
+| allocation  | yes      | allocation id                                 |         | string       |
+| excludepath | no       | remote folder paths to exclude during syncing |         | string array |
+| localcache  | no       | local chache of remote snapshot               |         | string       |
+| localpath   | yes      | local director to sync                        |         | string       |
+
 ## Get wallet
 
 Use `getwallet` command to get additional wallet information including Encryption 
@@ -1313,7 +1336,6 @@ Use `rp-info` to get read pool information.
 ```
 ./zbox rp-info
 ```
-
 ## Lock tokens into read pool
 
 Lock some tokens in read pool associated with an allocation. 
