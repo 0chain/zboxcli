@@ -1469,7 +1469,8 @@ to stake pool later.
 ### Unlock tokens from stake pool
 
 Unlock a stake pool by pool owner. If the stake pool cannot be unlocked due
-to opened offers, `sp-unlock` marks it to be unlocked later.
+to opened offers, `sp-unlock` marks it to be unlocked later; this prevents
+the stake affecting new allocation blobber allocation.
 
 | Parameter  | Required | Description          | default        | Valid values |
 |------------|----------|----------------------|----------------|--------------|
