@@ -391,104 +391,107 @@ end
 
 ```puml
 title Transfer allocation ownership
-zbox -> sc : transfer allocatno owner
+zbox ->storagesc: transfer allocatno owner
 note left
     * allocatino id
     * new onwer id
     * new owner pubic key
 end note
-    blockchain -> sc : allocation
+    blockchain ->storagesc: allocation
     alt check sender is curator
-        sc ->x zbox : only curators can transfer allocation
+       storagesc->x zbox : only curators can transfer allocation
     end
     group allocation
-        sc -> sc : chaner owner\nchange owner public key
-        blockchain -> sc : new owner write pool
-        sc -> sc : new empty alloaction write pool
-        sc -> blockchain : save write pool
+       storagesc->storagesc: chaner owner\nchange owner public key
+        blockchain ->storagesc: new owner write pool
+       storagesc->storagesc: new empty alloaction write pool
+       storagesc-> blockchain : save write pool
     end 
-    sc -> blockchain : save allocation
+   storagesc-> blockchain : save allocation
 sc -> zbox     
 ``` 
 
 ```puml
 title Add curator
-zbox -> sc : addcurator
+zbox ->storagesc: addcurator
 note left
     * allocatino id
     * curator id
 end note
-    blockchain -> sc : allocation
+    blockchain ->storagesc: allocation
     group allocation
-        sc -> sc : append curator
+       storagesc->storagesc: append curator
     end 
-    sc -> blockchain : save allocation
+   storagesc-> blockchain : save allocation
 sc -> zbox     
 ``` 
 
 
 ```puml
 title Finilize allocation
-zbox -> sc : alloc-fini
+zbox ->storagesc: alloc-fini
 note left
     * allocation id
 end note
     alt check allocation expired
-        sc ->x zbox : allocation not expired
+       storagesc->x zbox : allocation not expired
     end
-    blockchain -> sc :blobbers
-    sc -> sc : blobber challenge pass rates
-    blockchain -> sc : challenge pool
-    blockchain -> sc : write pool   
+    blockchain ->storagesc:blobbers
+   storagesc->storagesc: blobber challenge pass rates
+    blockchain ->storagesc: challenge pool
+    blockchain ->storagesc: write pool   
     group challenge pool
-        sc -> sc : min lock demand\ncp -> blobbers + stake holders
-        sc -> sc : passed challenges\ncp -> blobbers + stake holders
-        sc -> sc : pay interest\nsc -> blobbers' stake holders 
-        sc -> blockchain : minted interest payments
-        sc -> sc : return any reaming funds\ncp -> write pool
+       storagesc->storagesc: min lock demand\ncp -> blobbers + stake holders
+       storagesc->storagesc: passed challenges\ncp -> blobbers + stake holders
+       storagesc->storagesc: pay interest\nsc -> blobbers' stake holders 
+       storagesc-> blockchain : minted interest payments
+       storagesc->storagesc: return any reaming funds\ncp -> write pool
     end
-    sc -> blockchain : save write pool
-    sc -> blockchain : save challenge pool
-    blockchain -> sc : all allocations
-    sc -> sc : remove allocation id 
-    sc -> blockchain : save all allocatinos    
+   storagesc-> blockchain : save write pool
+   storagesc-> blockchain : save challenge pool
+    blockchain ->storagesc: all allocations
+   storagesc->storagesc: remove allocation id 
+   storagesc-> blockchain : save all allocatinos    
 sc -> zbox : allocation id 
 ```
 
  ```puml
 title Cancel allocation
-zbox -> sc : alloc-cancel 
+zbox ->storagesc: alloc-cancel 
 note left
     * allocation id
 end note
     alt check allocation not expired
-        sc ->x zbox : cancelling expired allocation
+       storagesc->x zbox : cancelling expired allocation
     end
     alt check sufficent challenges have failed
-        sc ->x zbox : not enough failed challenges
+       storagesc->x zbox : not enough failed challenges
     end
-    blockchain -> sc :blobbers
-    sc -> sc : blobber challenge pass rates
-    blockchain -> sc : challenge pool
-    blockchain -> sc : write pool   
+    blockchain ->storagesc:blobbers
+   storagesc->storagesc: blobber challenge pass rates
+    blockchain ->storagesc: challenge pool
+    blockchain ->storagesc: write pool   
     group challenge pool
-        sc -> sc : min lock demand\ncp -> blobbers + stake holders
-        sc -> sc : passed challenges\ncp -> blobbers + stake holders
-        sc -> sc : pay interest\nsc -> blobbers' stake holders 
-        sc -> blockchain : minted interest payments
-        sc -> sc : return any reaming funds\ncp -> write pool
+       storagesc->storagesc: min lock demand\ncp -> blobbers + stake holders
+       storagesc->storagesc: passed challenges\ncp -> blobbers + stake holders
+       storagesc->storagesc: pay interest\nsc -> blobbers' stake holders 
+       storagesc-> blockchain : minted interest payments
+       storagesc->storagesc: return any reaming funds\ncp -> write pool
     end
-    sc -> blockchain : save write pool
-    sc -> blockchain : save challenge pool
-    blockchain -> sc : save all allocations
-    sc -> sc : remove allocation id 
-    sc -> blockchain : all allocatinos    
+   storagesc-> blockchain : save write pool
+   storagesc-> blockchain : save challenge pool
+    blockchain ->storagesc: save all allocations
+   storagesc->storagesc: remove allocation id 
+   storagesc-> blockchain : all allocatinos    
 sc -> zbox : allocation id 
 ```
 
  ```puml
 title Free storage new allocation
-zbox -> sc : newallocation --free-storage
+boundary zbox
+control storagesc
+entity blockchain
+zbox ->storagesc: free_allocation_request
 note left
     Free storage mareker
     * maker issuer name
@@ -497,28 +500,31 @@ note left
     * timestamp to prevent reuse
     * signed
 end note       
-    sc <- blockchain : corporations details
-    sc -> sc : validate free storage marker
-    blockchain -> sc : blobbers
-    sc -> sc : select allocation blobbers
-    sc -> sc : new allocation
+   storagesc<- blockchain : corporations details
+   storagesc->storagesc: validate free storage marker
+    blockchain ->storagesc: blobbers
+   storagesc->storagesc: select allocation blobbers
+   storagesc->storagesc: new allocation
     group new allocation
-        sc -> sc : set:\n* in paramters\n* selected blobbers\n* now
-        sc -> sc : new write pool
+       storagesc->storagesc: set:\n* in paramters\n* selected blobbers\n* now
+       storagesc->storagesc: new write pool
         group new write pool
-            sc -> sc : mint tokens for write pool
+           storagesc->storagesc: mint tokens for write pool
         end 
-        sc -> blockchain : wrie pool
-        sc -> sc : new challenge pool    
-        sc -> blockchain : challenge pool    
+       storagesc-> blockchain : wrie pool
+       storagesc->storagesc: new challenge pool    
+       storagesc-> blockchain : challenge pool    
     end
-    sc -> blockchain : new allocation
+   storagesc-> blockchain : new allocation
 sc -> zbox : allocation id 
 ```
 
 ```puml
 title New allocation
-zbox -> sc : new allocation
+boundary zbox
+control storagesc
+entity blockchain
+zbox -> storagesc : new_allocation_request
 note left
     * data shards
     * paraty shards
@@ -529,26 +535,26 @@ note left
     * write price range
     * max challenge time
 end note
-    blockchain -> sc : blobbers
-    sc -> sc : select allocation blobbers
-    sc -> sc : new allocation
+    blockchain -> storagesc : blobbers
+    storagesc -> storagesc : select allocation blobbers
+    storagesc -> storagesc : new allocation
     group new allocation
-        sc -> sc : set:\n* in paramters\n* selected blobbers\n* now
-        sc -> sc : new write pool
+        storagesc -> storagesc : set:\n* in paramters\n* selected blobbers\n* now
+        storagesc -> storagesc : new write pool
         group new write pool
-            sc -> sc : transfer owner tokens to write pool
+            storagesc -> storagesc : transfer owner tokens to write pool
         end 
-        sc -> blockchain : wrie pool
-        sc -> sc : new challenge pool    
-        sc -> blockchain : challenge pool    
+        storagesc -> blockchain : wrie pool
+        storagesc -> storagesc : new challenge pool    
+        storagesc -> blockchain : challenge pool    
     end
-    sc -> blockchain : new allocation
-sc -> zbox : new allocation id
+    storagesc -> blockchain : new allocation
+storagesc -> zbox : new allocation id
 ```
 
 ```puml
 title update free storage marker
-zbox -> sc : updateallocation --free-storage 
+zbox ->storagesc: updateallocation --free-storage 
 note left
     Free storage mareker
     * maker issuer name
@@ -557,31 +563,31 @@ note left
     * timestamp to prevent reuse
     * signed
 end note   
-    sc <- blockchain : maker issuer's details
-    sc -> sc : validate free storage marker
-    blockchain -> sc : allocation
+   storagesc<- blockchain : maker issuer's details
+   storagesc->storagesc: validate free storage marker
+    blockchain ->storagesc: allocation
     alt confirm all allocation blobbers have enough capacity
-        sc ->x zbox : blobber doesn't have enough free space
+       storagesc->x zbox : blobber doesn't have enough free space
     end
     alt check expiration agaisnt allocation blobbers' max offer duration
-        sc ->x zbox : blobber doesn't allow so long offers
+       storagesc->x zbox : blobber doesn't allow so long offers
     end
     group allocation
-        sc -> sc : update alllocation as required\nsize expireation and immutable
-        blockchain -> sc : owner wrtie pool
-        sc -> sc : ammend write pool lock duration
-        blockchain -> sc : challenge pool
-        sc -> sc : mint new tokens for challenge pool
-        sc -> blockchain : challenge pool
-        sc -> blockchain : write pool
+       storagesc->storagesc: update alllocation as required\nsize expireation and immutable
+        blockchain ->storagesc: owner wrtie pool
+       storagesc->storagesc: ammend write pool lock duration
+        blockchain ->storagesc: challenge pool
+       storagesc->storagesc: mint new tokens for challenge pool
+       storagesc-> blockchain : challenge pool
+       storagesc-> blockchain : write pool
     end
-    sc -> blockchain : allocation
+   storagesc-> blockchain : allocation
 sc -> zbox : transaction id
 ```
 
 ```puml
 title Update allocation
-zbox -> sc : update allocation
+zbox ->storagesc: update allocation
 note left
     owner = sender
     allocation id
@@ -589,51 +595,51 @@ note left
     expiration
     set immutable?
 end note
-    blockchain -> sc : allocation
+    blockchain ->storagesc: allocation
     alt confirm all allocation blobbers have enough capacity
-        sc ->x zbox : blobber doesn't have enough free space
+       storagesc->x zbox : blobber doesn't have enough free space
     end
     alt check expiration agaisnt allocation blobbers' max offer duration
-        sc ->x zbox : blobber doesn't allow so long offers
+       storagesc->x zbox : blobber doesn't allow so long offers
     end
     group allocation
-        sc -> sc : update alllocation as required\nsize expireation and immutable
-        blockchain -> sc : owner wrtie pool
-        sc -> sc : ammend write pool lock duration
-        blockchain -> sc : challenge pool
-        sc -> sc : transfer tokens between\nwrite pool amd challenge pool
-        sc -> blockchain : challenge pool
-        sc -> blockchain : write pool
+       storagesc->storagesc: update alllocation as required\nsize expireation and immutable
+        blockchain ->storagesc: owner wrtie pool
+       storagesc->storagesc: ammend write pool lock duration
+        blockchain ->storagesc: challenge pool
+       storagesc->storagesc: transfer tokens between\nwrite pool amd challenge pool
+       storagesc-> blockchain : challenge pool
+       storagesc-> blockchain : write pool
     end
-    sc -> blockchain : allocation
+   storagesc-> blockchain : allocation
 sc -> zbox : transaction id
 ```
     
 ```puml
 title Create read pool
-zbox -> sc : rp-create
-sc -> sc : new read pool
+zbox ->storagesc: rp-create
+sc ->storagesc: new read pool
 sc -> blockchain : read pool
 sc -> zbox
 ```
 
 ```puml
 title Lock tokens in read pool for given bobber
-zbox -> sc : rp-lock, token value
+zbox ->storagesc: rp-lock, token value
 note left
     * lock duration
     * allocation id
     * blobber id to lock for
 end note 
-sc -> sc : new allocation pool
+sc ->storagesc: new allocation pool
 group new allocation pool
-    sc -> sc : add new blobber pool\nbalance value
-    sc -> sc : transfer tokens
-    sc -> sc : add set expiration
+   storagesc->storagesc: add new blobber pool\nbalance value
+   storagesc->storagesc: transfer tokens
+   storagesc->storagesc: add set expiration
 end
-blockchain -> sc : readpool
+blockchain ->storagesc: readpool
 group read pool
-sc -> sc : add new allocation pool
+sc ->storagesc: add new allocation pool
 end 
 sc -> blockchain : save read pool
 sc -> zbox
@@ -641,24 +647,24 @@ sc -> zbox
 
 ```puml
 title Lock tokens in read pool no blobber specified
-zbox -> sc : rp-lock, token value
+zbox ->storagesc: rp-lock, token value
 note left
     * lock duration
     * allocation id
 end note 
-sc -> sc : new allocation pool
+sc ->storagesc: new allocation pool
 group new allocation pool
-    blockchain -> sc : get allocation blobbers
+    blockchain ->storagesc: get allocation blobbers
     loop each blobber
-        sc -> sc : new blobber pool\nbalance value \n split by read price
+       storagesc->storagesc: new blobber pool\nbalance value \n split by read price
     end
-    sc -> sc : add new blobber pools
-    sc -> sc : transfer tokens
-    sc -> sc : add set expiration
+   storagesc->storagesc: add new blobber pools
+   storagesc->storagesc: transfer tokens
+   storagesc->storagesc: add set expiration
 end
-blockchain -> sc : readpool
+blockchain ->storagesc: readpool
 group read pool
-sc -> sc : add new allocation pool
+sc ->storagesc: add new allocation pool
 end 
 sc -> blockchain : save read pool
 sc -> zbox
@@ -669,40 +675,40 @@ boundary zbox
 control sc
 entity blockchain
 title Unlock read pool
-zbox -> sc : rp-unlock
+zbox ->storagesc: rp-unlock
 note left
     * read pool id
 end note 
-blockchain -> sc : read pool
+blockchain ->storagesc: read pool
 alt read pool expired
     group read pool
-        sc -> sc : remove pool
+       storagesc->storagesc: remove pool
     end
-    sc -> blockchain : transfer tokens from\nread pool to user
-    sc -> blockchain : save read pool
-    sc -> zbox
+   storagesc-> blockchain : transfer tokens from\nread pool to user
+   storagesc-> blockchain : save read pool
+   storagesc-> zbox
 else read pool not expired
-    sc ->x zbox : read pool not expired
+   storagesc->x zbox : read pool not expired
 end
 ```
 
 ```puml
 title Lock tokens in write pool for given bobber
-zbox -> sc : rp-lock, token value
+zbox ->storagesc: rp-lock, token value
 note left
     * lock duration
     * allocation id
     * blobber id to lock for
 end note 
-sc -> sc : new allocation pool
+sc ->storagesc: new allocation pool
 group new allocation pool
-    sc -> sc : add new blobber pool\nbalance value
-    sc -> sc : transfer tokens
-    sc -> sc : add set expiration
+   storagesc->storagesc: add new blobber pool\nbalance value
+   storagesc->storagesc: transfer tokens
+   storagesc->storagesc: add set expiration
 end
-blockchain -> sc : writepool
+blockchain ->storagesc: writepool
 group write pool
-sc -> sc : add new allocation pool
+sc ->storagesc: add new allocation pool
 end 
 sc -> blockchain : save write pool
 sc -> zbox
@@ -710,24 +716,24 @@ sc -> zbox
 
 ```puml
 title Lock tokens in write pool no blobber specified
-zbox -> sc : rp-lock, token value
+zbox ->storagesc: rp-lock, token value
 note left
     * lock duration
     * allocation id
 end note 
-sc -> sc : new allocation pool
+sc ->storagesc: new allocation pool
 group new allocation pool
-    blockchain -> sc : get allocation blobbers
+    blockchain ->storagesc: get allocation blobbers
     loop each blobber
-        sc -> sc : new blobber pool\nbalance value \n split by write price
+       storagesc->storagesc: new blobber pool\nbalance value \n split by write price
     end
-    sc -> sc : add new blobber pools
-    sc -> sc : transfer tokens
-    sc -> sc : add set expiration
+   storagesc->storagesc: add new blobber pools
+   storagesc->storagesc: transfer tokens
+   storagesc->storagesc: add set expiration
 end
-blockchain -> sc : readpool
+blockchain ->storagesc: readpool
 group write pool
-sc -> sc : add new allocation pool
+sc ->storagesc: add new allocation pool
 end 
 sc -> blockchain : save write pool
 sc -> zbox
@@ -735,20 +741,20 @@ sc -> zbox
 
 ```puml
 title Unlock write pool
-zbox -> sc : rp-unlock
+zbox ->storagesc: rp-unlock
 note left
     * write pool id
 end note 
-blockchain -> sc : write pool
+blockchain ->storagesc: write pool
 alt write pool with id expired
     group write pool
-        sc -> sc : remove pool id
+       storagesc->storagesc: remove pool id
     end
-    sc -> blockchain : transfer tokens from\nwrite pool id to user
-    sc -> blockchain : save write pool
-    sc -> zbox
+   storagesc-> blockchain : transfer tokens from\nwrite pool id to user
+   storagesc-> blockchain : save write pool
+   storagesc-> zbox
 else write pool id not expired
-    sc ->x zbox : write pool not expired
+   storagesc->x zbox : write pool not expired
 end
 ```
 

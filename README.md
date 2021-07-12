@@ -231,14 +231,14 @@ and `free_storage` parameters.
 
 ![allocation](https://user-images.githubusercontent.com/65766301/120052477-27529f00-c043-11eb-91bb-573558325b20.png)
 
-![image](https://user-images.githubusercontent.com/6240686/124010595-e8fc2700-d9d6-11eb-83b9-dc10cbeb75e0.png)
+![image](https://user-images.githubusercontent.com/6240686/125315476-15953480-e32f-11eb-8a11-b069079911d3.png)
 
 </details>
 
 <details>
   <summary> Free storage new allocation </summary>
 
-![image](https://user-images.githubusercontent.com/6240686/124010041-3926b980-d9d6-11eb-80f1-f062c92751ed.png)
+![image](https://user-images.githubusercontent.com/6240686/125315943-876d7e00-e32f-11eb-95b8-908d5bf456bc.png)
 
 </details>
 
@@ -255,10 +255,10 @@ form of a json file
   "signature": "9edb86c8710d5e3ee4fde247c638fd6b81af67e7bb3f9d60700aec8e310c1f06"
 }
 ```
-* `assigner` A label for the entity gifting the free storage.
-* `recipient` The marker has to be run by the recipient to be valid.
-* `free_tokens` The amount free tokens; equivalent to the `size` filed.
-* `timestamp` Used to prevent multiple applications of the same marker.
+* `assigner` A label for the entity giving the free storage.
+* `recipient` The marker; has to be run by the recipient to be valid.
+* `free_tokens` The number of free tokens; equivalent to the `size` filed.
+* `timestamp` A unique timestamp. Used to prevent multiple applications of the same marker.
 * `signature` Signed by the assigner, validated using public key on the blockchain.
 All allocation settings, other than `lock`, will be set automatically by 0chain. 
   Once created, an allocation funded by a free storage marker becomes identical to
