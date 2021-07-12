@@ -554,7 +554,10 @@ storagesc -> zbox : new allocation id
 
 ```puml
 title update free storage marker
-zbox ->storagesc: updateallocation --free-storage 
+boundary zbox
+control storagesc
+entity blockchain
+zbox ->storagesc: free_update_allocation
 note left
     Free storage mareker
     * maker issuer name
@@ -587,7 +590,10 @@ sc -> zbox : transaction id
 
 ```puml
 title Update allocation
-zbox ->storagesc: update allocation
+boundary zbox
+control storagesc
+entity blockchain
+zbox ->storagesc: update_allocation_request
 note left
     owner = sender
     allocation id

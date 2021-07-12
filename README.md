@@ -312,14 +312,14 @@ the presence of the `free_storage` field.
 <details>
   <summary>Update allocation </summary>
 
-![image](https://user-images.githubusercontent.com/6240686/124003064-65d6d300-d9ce-11eb-808d-2d59340b00e7.png)
 
+![image](https://user-images.githubusercontent.com/6240686/125335948-0b7e3080-e345-11eb-82af-20fd1e4501df.png)
 </details>
 
 <details>
   <summary>Free storage update allocation </summary>
 
-![image](https://user-images.githubusercontent.com/6240686/124003924-602dbd00-d9cf-11eb-910c-1d286c2a173c.png)
+![image](https://user-images.githubusercontent.com/6240686/125335821-e984ae00-e344-11eb-9960-648a76550bc3.png)
 
 </details>
 
