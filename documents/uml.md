@@ -645,6 +645,9 @@ storagesc -> zbox
 
 ```puml
 title Lock tokens in read pool for given bobber
+boundary zbox
+control storagesc
+entity blockchain
 zbox ->storagesc: rp-lock, token value
 note left
     * lock duration
@@ -667,6 +670,9 @@ storagesc -> zbox
 
 ```puml
 title Lock tokens in read pool no blobber specified
+boundary zbox
+control storagesc
+entity blockchain
 zbox ->storagesc: rp-lock, token value
 note left
     * lock duration

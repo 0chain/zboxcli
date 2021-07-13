@@ -1226,7 +1226,7 @@ Collaborators can perform read actions on the collaboration file, with the owner
 | remotepath | yes      | file on which to collaberate |         | string       |
 
 <details>
-  <summary>rp-create sequence diagram</summary>
+  <summary>add-collab</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124504210-e9be0000-ddbe-11eb-819c-e74c8bf340dd.png)
 
@@ -1257,7 +1257,7 @@ Use command delete-collab to remove a collaborator for a file
 | remotepath | yes      | file on which to collaberate |         | string       |
 
 <details>
-  <summary>rp-create sequence diagram</summary>
+  <summary>delete-collab</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124505356-3571a900-ddc1-11eb-9dd8-72927cefa790.png)
 
@@ -1285,7 +1285,7 @@ Use `cp-info` command to get the challenge pool brief information.
 | json       | no       | print result in json format | false   | boolean      |
 
 <details>
-  <summary>Challenge pool stats</summary>
+  <summary>cp-info</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124506637-fe50c700-ddc3-11eb-9e8e-f59f88c89b6c.png)
 
@@ -1314,7 +1314,7 @@ POOL ID: 6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7:challe
 Use `rp-create` to create a read pool, `rp-create` has no parameters.
 
 <details>
-  <summary>Create read pool</summary>
+  <summary>rp-create</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/123973204-77f74800-d9b3-11eb-8165-96741cc0b291.png)
 
@@ -1334,7 +1334,7 @@ Use `rp-info` to get read pool information.
 | json       | no       | print result in json format | false   | boolean      |
 
 <details>
-  <summary>Create read pool</summary>
+  <summary>rp-info</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124507524-d8c4bd00-ddc5-11eb-853e-513957cf3dbb.png)
 
@@ -1369,7 +1369,7 @@ Lock some tokens in read pool associated with an allocation.
 ```shell
 ./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1 --blobber f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25 
 ```
-![image](https://user-images.githubusercontent.com/6240686/123973055-5302d500-d9b3-11eb-844a-90aa4b43f56b.png)
+![image](https://user-images.githubusercontent.com/6240686/125474085-c57c29a5-127e-4e8e-b560-c235ade869f1.png)
 
 </details>
 
@@ -1383,7 +1383,7 @@ each blobber's Terms.ReadPrice.
 ./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1
 ```
 
-![image](https://user-images.githubusercontent.com/6240686/123973442-abd26d80-d9b3-11eb-9e37-c8e6551ed48c.png)
+![image](https://user-images.githubusercontent.com/6240686/125474486-1c2e1dba-7e61-4e9c-94f4-2a1ebf06d2de.png)
 
 </details>
 
