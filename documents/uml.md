@@ -408,7 +408,7 @@ end note
        storagesc-> blockchain : save write pool
     end 
    storagesc-> blockchain : save allocation
-sc -> zbox     
+storagesc -> zbox     
 ``` 
 
 ```puml
@@ -423,58 +423,66 @@ end note
        storagesc->storagesc: append curator
     end 
    storagesc-> blockchain : save allocation
-sc -> zbox     
+storagesc -> zbox     
 ``` 
 
 
 ```puml
 title Finilize allocation
-zbox ->storagesc: alloc-fini
+boundary zbox 
+control storagesc
+entity blockchain
+zbox ->storagesc: finalize_allocation
 note left
     * allocation id
 end note
+    blockchain -> storagesc : allocation
     alt check allocation expired
        storagesc->x zbox : allocation not expired
     end
     blockchain ->storagesc:blobbers
-   storagesc->storagesc: blobber challenge pass rates
+    storagesc->storagesc: blobber challenge pass rates
     blockchain ->storagesc: challenge pool
     blockchain ->storagesc: write pool   
     group challenge pool
        storagesc->storagesc: min lock demand\ncp -> blobbers + stake holders
        storagesc->storagesc: passed challenges\ncp -> blobbers + stake holders
-       storagesc->storagesc: pay interest\nsc -> blobbers' stake holders 
+       storagesc->storagesc: mint interest\nstoragesc -> blobbers' stake holders 
        storagesc-> blockchain : minted interest payments
-       storagesc->storagesc: return any reaming funds\ncp -> write pool
+       storagesc->storagesc: reaming funds\ncp -> write pool
     end
    storagesc-> blockchain : save write pool
    storagesc-> blockchain : save challenge pool
     blockchain ->storagesc: all allocations
    storagesc->storagesc: remove allocation id 
    storagesc-> blockchain : save all allocatinos    
-sc -> zbox : allocation id 
+storagesc -> zbox : allocation id 
 ```
 
  ```puml
 title Cancel allocation
+boundary zbox 
+control storagesc
+entity blockchain
 zbox ->storagesc: alloc-cancel 
 note left
     * allocation id
 end note
+    blockchain -> storagesc : allocation
     alt check allocation not expired
        storagesc->x zbox : cancelling expired allocation
     end
+    blockchain ->storagesc: challenge pool
     alt check sufficent challenges have failed
        storagesc->x zbox : not enough failed challenges
     end
     blockchain ->storagesc:blobbers
-   storagesc->storagesc: blobber challenge pass rates
-    blockchain ->storagesc: challenge pool
+    storagesc->storagesc: blobber challenge pass rates
     blockchain ->storagesc: write pool   
     group challenge pool
        storagesc->storagesc: min lock demand\ncp -> blobbers + stake holders
        storagesc->storagesc: passed challenges\ncp -> blobbers + stake holders
-       storagesc->storagesc: pay interest\nsc -> blobbers' stake holders 
+       storagesc->storagesc: mint interest\nstoragesc -> blobbers' stake holders 
        storagesc-> blockchain : minted interest payments
        storagesc->storagesc: return any reaming funds\ncp -> write pool
     end
@@ -483,7 +491,7 @@ end note
     blockchain ->storagesc: save all allocations
    storagesc->storagesc: remove allocation id 
    storagesc-> blockchain : all allocatinos    
-sc -> zbox : allocation id 
+storagesc -> zbox : allocation id 
 ```
 
  ```puml
@@ -516,7 +524,7 @@ end note
        storagesc-> blockchain : challenge pool    
     end
    storagesc-> blockchain : new allocation
-sc -> zbox : allocation id 
+storagesc -> zbox : allocation id 
 ```
 
 ```puml
@@ -585,7 +593,7 @@ end note
        storagesc-> blockchain : write pool
     end
    storagesc-> blockchain : allocation
-sc -> zbox : transaction id
+storagesc -> zbox : transaction id
 ```
 
 ```puml
@@ -618,15 +626,15 @@ end note
        storagesc-> blockchain : write pool
     end
    storagesc-> blockchain : allocation
-sc -> zbox : transaction id
+storagesc -> zbox : transaction id
 ```
     
 ```puml
 title Create read pool
 zbox ->storagesc: rp-create
-sc ->storagesc: new read pool
-sc -> blockchain : read pool
-sc -> zbox
+storagesc ->storagesc: new read pool
+storagesc -> blockchain : read pool
+storagesc -> zbox
 ```
 
 ```puml
@@ -637,7 +645,7 @@ note left
     * allocation id
     * blobber id to lock for
 end note 
-sc ->storagesc: new allocation pool
+storagesc ->storagesc: new allocation pool
 group new allocation pool
    storagesc->storagesc: add new blobber pool\nbalance value
    storagesc->storagesc: transfer tokens
@@ -645,10 +653,10 @@ group new allocation pool
 end
 blockchain ->storagesc: readpool
 group read pool
-sc ->storagesc: add new allocation pool
+storagesc ->storagesc: add new allocation pool
 end 
-sc -> blockchain : save read pool
-sc -> zbox
+storagesc -> blockchain : save read pool
+storagesc -> zbox
 ```
 
 ```puml
@@ -658,7 +666,7 @@ note left
     * lock duration
     * allocation id
 end note 
-sc ->storagesc: new allocation pool
+storagesc ->storagesc: new allocation pool
 group new allocation pool
     blockchain ->storagesc: get allocation blobbers
     loop each blobber
@@ -670,10 +678,10 @@ group new allocation pool
 end
 blockchain ->storagesc: readpool
 group read pool
-sc ->storagesc: add new allocation pool
+storagesc ->storagesc: add new allocation pool
 end 
-sc -> blockchain : save read pool
-sc -> zbox
+storagesc -> blockchain : save read pool
+storagesc -> zbox
 ```
 
 ```puml
@@ -706,7 +714,7 @@ note left
     * allocation id
     * blobber id to lock for
 end note 
-sc ->storagesc: new allocation pool
+storagesc ->storagesc: new allocation pool
 group new allocation pool
    storagesc->storagesc: add new blobber pool\nbalance value
    storagesc->storagesc: transfer tokens
@@ -714,10 +722,10 @@ group new allocation pool
 end
 blockchain ->storagesc: writepool
 group write pool
-sc ->storagesc: add new allocation pool
+storagesc ->storagesc: add new allocation pool
 end 
-sc -> blockchain : save write pool
-sc -> zbox
+storagesc -> blockchain : save write pool
+storagesc -> zbox
 ```
 
 ```puml
@@ -727,7 +735,7 @@ note left
     * lock duration
     * allocation id
 end note 
-sc ->storagesc: new allocation pool
+storagesc ->storagesc: new allocation pool
 group new allocation pool
     blockchain ->storagesc: get allocation blobbers
     loop each blobber
@@ -739,10 +747,10 @@ group new allocation pool
 end
 blockchain ->storagesc: readpool
 group write pool
-sc ->storagesc: add new allocation pool
+storagesc ->storagesc: add new allocation pool
 end 
-sc -> blockchain : save write pool
-sc -> zbox
+storagesc -> blockchain : save write pool
+storagesc -> zbox
 ```
 
 ```puml

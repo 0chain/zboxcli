@@ -307,7 +307,7 @@ the presence of the `free_storage` field.
 | lock          | yes*     | lock additional tokens in write pool                    | int          |
 | set_immutable |          | sets allocation so that data can no longer be modified | boolean      |
 | size          |          | adjust allocation size                                 | bytes        |
-* only required if free_storage not set.
+`*` only required if free_storage not set.
 
 <details>
   <summary>Update allocation </summary>
@@ -342,9 +342,8 @@ You can see more txn details using above txID in block explorer [here](https://o
 
 ### Cancel allocation
 
-`alloc-cancel` immediately return all tokens from challenge pool back to user
-(to write pool) and cancels the allocation. In this case blobber will
-not give their min lock demand. If blobbers already got some tokens, 
+`alloc-cancel` immediately return all tokens from challenge pool back to the 
+allocation's owner and cancels the allocation. If blobbers already got some tokens, 
 the tokens will not be returned. Cancelling an allocation can only occur
 if the amount of failed challenges exceed a preset threshold.
 
@@ -355,7 +354,8 @@ if the amount of failed challenges exceed a preset threshold.
 <details>
   <summary>Cancel allocation</summary>
 
-![image](https://user-images.githubusercontent.com/6240686/124147442-9aa66100-da86-11eb-8b88-cd20306bfde1.png)
+![image](https://user-images.githubusercontent.com/6240686/125453211-a65caad7-3d46-4ea9-84ab-1ed8cd5f5820.png)
+
 
 </details>
 
@@ -378,7 +378,8 @@ it can be finalised by the owner or one of the allocation blobbers.
 <details>
   <summary>Finalise allocation</summary>
 
-![image](https://user-images.githubusercontent.com/6240686/124149297-5c11a600-da88-11eb-9274-1fb756d93358.png)
+![image](https://user-images.githubusercontent.com/6240686/125453928-5d881535-0426-4c93-96fd-aed3bf70ee17.png)
+
 
 </details>
 
