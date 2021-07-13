@@ -242,7 +242,7 @@ func startLiveUploadWithYoutubeDL(cmd *cobra.Command, allocationObj *sdk.Allocat
 		err = thrown.New("invalid_path", "Path should be valid and absolute")
 		return err
 	}
-	remotePath = zboxutil.GetFullRemotePath(reader.GetFileName(0), remotePath)
+	remotePath = zboxutil.GetFullRemotePath(reader.GetClipsFile(0), remotePath)
 
 	_, fileName := filepath.Split(remotePath)
 
@@ -283,7 +283,7 @@ func init() {
 	uploadCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "how much bytes in a chunk for upload")
 
 	uploadCmd.Flags().Bool("live", false, "pass this option to enable upload for live streaming")
-	uploadCmd.Flags().Int("delay", 5, "how much seconds has a clips.default is 5 sencods. only works with --live")
+	uploadCmd.Flags().Int("delay", 5, "how much seconds has a clips. default is 5 sencods. only works with --live")
 	// uploadCmd.Flags().String("format", "best", "quality format of video. best is default. only works with --live")
 	// uploadCmd.Flags().String("proxy", "", "Use the specified HTTP/HTTPS/SOCKS proxy. only works with --live")
 

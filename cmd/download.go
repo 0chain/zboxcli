@@ -33,6 +33,31 @@ var downloadCmd = &cobra.Command{
 		}
 
 		localpath := cmd.Flag("localpath").Value.String()
+		allocationID := cmd.Flag("allocation").Value.String()
+
+		live, _ := cmd.Flags().GetBool("live")
+
+		if live {
+			delay, _ := cmd.Flags().GetInt("delay")
+			capacity, _ := cmd.Flags().GetInt("capacity")
+			m3u8, err := createM3u8Downloader(localpath, remotepath, authticket, allocationID, lookuphash, rxPay, delay, capacity)
+
+			if err != nil {
+				PrintError("Error: download files and build playlist: ", err)
+				os.Exit(1)
+			}
+
+			err = m3u8.Start()
+
+			if err != nil {
+				PrintError("Error: download files and build playlist: ", err)
+				os.Exit(1)
+			}
+
+			return
+
+		}
+
 		numBlocks, _ := cmd.Flags().GetInt("blockspermarker")
 		if numBlocks == 0 {
 			numBlocks = 10
@@ -52,7 +77,7 @@ var downloadCmd = &cobra.Command{
 				PrintError("Error: allocation flag is missing") // If not, we'll let the user know
 				os.Exit(1)                                      // and return
 			}
-			allocationID := cmd.Flag("allocation").Value.String()
+
 			allocationObj, err = sdk.GetAllocation(allocationID)
 
 			if err != nil {
@@ -134,6 +159,10 @@ func init() {
 	downloadCmd.Flags().Int64P("startblock", "s", 0, "pass this option to download from specific block number")
 	downloadCmd.Flags().Int64P("endblock", "e", 0, "pass this option to download till specific block number")
 	downloadCmd.Flags().IntP("blockspermarker", "b", 10, "pass this option to download multiple blocks per marker")
+	downloadCmd.Flags().Bool("live", false, "enable m3u8 downloader,and build playlist on --localpath")
+	downloadCmd.Flags().Int("delay", 5, "how many seconds has a clips. default is 5 sencods. only works with --live")
+	downloadCmd.Flags().Int("capacity", 5, "how many files has the playlist. default is 5 . only works with --live")
+
 	downloadCmd.MarkFlagRequired("allocation")
 	downloadCmd.MarkFlagRequired("localpath")
 }
