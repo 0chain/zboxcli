@@ -413,9 +413,12 @@ storagesc -> zbox
 
 ```puml
 title Add curator
-zbox ->storagesc: addcurator
+boundary zbox 
+control storagesc
+entity blockchain
+zbox ->storagesc: add_curator
 note left
-    * allocatino id
+    * allocation id
     * curator id
 end note
     blockchain ->storagesc: allocation

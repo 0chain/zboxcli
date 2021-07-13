@@ -392,8 +392,8 @@ Example
 ## Add curator
 
 `addcurator` adds a curator to an allocation.
-A curator refers to a user that can transfer owner of an allocation. Each
-allocation maintains a list of these curators.
+A curator can transfer ownership of an allocation. Each allocation 
+maintains a list of these curators.
 
 | Parameter  | Required | Description                           | Valid Values |
 |------------|----------|---------------------------------------|--------------|
@@ -403,7 +403,7 @@ allocation maintains a list of these curators.
 <details>
   <summary>Add curator</summary>
 
-![image](https://user-images.githubusercontent.com/6240686/124155030-f7594a00-da8d-11eb-802b-869ec64281c5.png)
+![image](https://user-images.githubusercontent.com/6240686/125454687-9de43b37-62ac-45c6-8b1d-a5c883672d56.png)
 
 </details>
 
