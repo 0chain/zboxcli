@@ -227,7 +227,7 @@ and `free_storage` parameters.
 
 
 <details>
-  <summary> New allocation </summary>
+  <summary>newallocation </summary>
 
 ![allocation](https://user-images.githubusercontent.com/65766301/120052477-27529f00-c043-11eb-91bb-573558325b20.png)
 
@@ -236,7 +236,7 @@ and `free_storage` parameters.
 </details>
 
 <details>
-  <summary> Free storage new allocation </summary>
+  <summary>Free storage newallocation </summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/125315943-876d7e00-e32f-11eb-95b8-908d5bf456bc.png)
 
@@ -310,14 +310,14 @@ the presence of the `free_storage` field.
 `*` only required if free_storage not set.
 
 <details>
-  <summary>Update allocation </summary>
+  <summary>updateallocation </summary>
 
 
 ![image](https://user-images.githubusercontent.com/6240686/125335948-0b7e3080-e345-11eb-82af-20fd1e4501df.png)
 </details>
 
 <details>
-  <summary>Free storage update allocation </summary>
+  <summary>Free storage updateallocation</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/125335821-e984ae00-e344-11eb-9960-648a76550bc3.png)
 
@@ -352,7 +352,7 @@ if the amount of failed challenges exceed a preset threshold.
 | allocation | yes      | allocation id | string       |
 
 <details>
-  <summary>Cancel allocation</summary>
+  <summary>alloc-cancel</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/125453211-a65caad7-3d46-4ea9-84ab-1ed8cd5f5820.png)
 
@@ -376,7 +376,7 @@ it can be finalised by the owner or one of the allocation blobbers.
 | allocation | yes      | allocation id | string       |
 
 <details>
-  <summary>Finalise allocation</summary>
+  <summary>alloc-fini</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/125453928-5d881535-0426-4c93-96fd-aed3bf70ee17.png)
 
@@ -401,7 +401,7 @@ maintains a list of these curators.
 | curator    | yes      | id of new curator to add to allocation | string       |
 
 <details>
-  <summary>Add curator</summary>
+  <summary>addcurator</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/125454687-9de43b37-62ac-45c6-8b1d-a5c883672d56.png)
 
@@ -606,7 +606,7 @@ with the file.
 
 
 <details>
-  <summary>Upload</summary>
+  <summary>upload</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124287350-cf2e2180-db47-11eb-8079-40f069a5e0c2.png)
 
@@ -669,7 +669,7 @@ Use `startblock` and `endblock` to only download part of the file.
 | thumbail        | no       | only download the thumbnail                                              | false   | boolean      |
 
 <details>
-  <summary>Download</summary>
+  <summary>download</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124352957-79b34c80-dbfb-11eb-883f-4bb583b9a618.png)
 
@@ -712,7 +712,7 @@ can update a file.  To add collaborators to an allocation, use
 | commit        | no       | save meta data to blockchain  | false   | boolean      |
 
 <details>
-  <summary>Update</summary>
+  <summary>update</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124354473-14b02480-dc04-11eb-9463-5a91d4f6f02d.png)
 
@@ -730,7 +730,7 @@ of the application can delete a file.
 | commit     | no       | save meta data to blockchain  | false   | boolean      |
 
 <details>
-  <summary>=Delete</summary>
+  <summary>=delete</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124353872-0f050f80-dc01-11eb-9e45-ddf2c888223b.png)
 
@@ -768,7 +768,7 @@ the pre-defined remote path.
 | remotepath          | yes      | remote path of file to share                                      | string       |
 
 <details>
-  <summary>Share</summary>
+  <summary>share</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124355532-876fce80-dc09-11eb-8166-bc7018480404.png)
 
@@ -823,7 +823,7 @@ information.
 | remotepath | no       | remote path of objects to list, for auth ticket use lookuphash instead   |         | string       |
 
 <details>
-  <summary>List</summary>
+  <summary>list</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124466241-5a005d80-dd8e-11eb-9122-30dbbd98d8e3.png)
 
@@ -855,7 +855,7 @@ Use `copy` command to copy file to another folder path in dStorage. Only the own
 | destpath   | yes      | destination, an existing directory to copy object |         | string       |
 
 <details>
-  <summary>Copy</summary>
+  <summary>copy</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124470632-c0d44580-dd93-11eb-89ba-f22081429616.png)
 
@@ -886,7 +886,7 @@ Use `move` command to move file to another remote folder path on dStorage.
 | destpath   | yes      | destination, an existing directory to copy object |         | string       |
 
 <details>
-  <summary>Move</summary>
+  <summary>move</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124471576-eca3fb00-dd94-11eb-8e52-441489c7cb55.png)
 
@@ -914,7 +914,7 @@ Use `listallocations` command to list all allocations for the client.
 || json       | no       | output the response in json format                                       | false   | boolean      |
 
 <details>
-  <summary>List allocations</summary>
+  <summary>listallocations</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124474346-51ad2000-dd98-11eb-96f1-348ac926be3c.png)
 
@@ -1025,7 +1025,7 @@ and challenges passed/failed/open/redeemed.
 | json       | no       | print response in json format | false   | boolean      |
 
 <details>
-  <summary>Get</summary>
+  <summary>get</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124476040-4f4bc580-dd9a-11eb-939c-464ffc6936db.png)
 
@@ -1083,7 +1083,7 @@ to add a user as a collaborator. To indicate the object use `remotepath` or
 | remotepath | no       | remote path of objecte, do not use with authticket                       |         | string       |
 
 <details>
-  <summary>Get metasata</summary>
+  <summary>meta</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124484414-4c090780-dda3-11eb-818c-d95477618cfd.png)
 
@@ -1133,7 +1133,7 @@ Response will be metadata for the given filepath/lookuphash (if using authTicket
 | remotepath | yes      | remote path of object, do not use with authticket |         | string       |
 
 <details>
-  <summary>Rename</summary>
+  <summary>rename</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124487119-3ea14c80-dda6-11eb-93df-1e084653f212.png)
 
@@ -1163,7 +1163,7 @@ Only the owner can get a files stats.
 | remotepath | yes      | file of which to get stats  |         | string       |
 
 <details>
-  <summary>File stats</summary>
+  <summary>stats</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124490093-9beacd00-dda9-11eb-8673-cf8a53475aec.png)
 
