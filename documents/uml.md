@@ -391,7 +391,10 @@ end
 
 ```puml
 title Transfer allocation ownership
-zbox ->storagesc: transfer allocatno owner
+boundary zbox 
+control storagesc
+entity blockchain
+zbox ->storagesc: curator_transfer_allocation
 note left
     * allocatino id
     * new onwer id

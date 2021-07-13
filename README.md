@@ -417,10 +417,12 @@ e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429 added as a cura
 
 ## Transfer allocation ownership
 
-`transferallocation` changes the owner of an allocation. Only a curator, previously added by an  
-[addcurator](#add-curator) command can change an allocation's ownership.
-`transferallocation` does not move any funds, only changes the owner, owner public key
-field of the allocation.
+`transferallocation` changes the owner of an allocation. Only a curator, 
+previously added by an [addcurator](#add-curator) command can change an 
+allocation's ownership.
+
+`transferallocation` does not move any funds, only changes the owner, 
+and the owner's public key.
 
 | Parameter     | Required | Description             | Valid Values |
 |---------------|----------|-------------------------|--------------|
@@ -431,7 +433,7 @@ field of the allocation.
 <details>
   <summary>transferallocation</summary>
 
-![image](https://user-images.githubusercontent.com/6240686/124157614-de05cd00-da90-11eb-93ee-7bd8b3f50b88.png)
+![image](https://user-images.githubusercontent.com/6240686/125456952-115b5468-c4f8-4564-8160-86f8164c5ce6.png)
 
 </details>
 
