@@ -1477,7 +1477,7 @@ to stake pool later.
 
 Unlock a stake pool by pool owner. If the stake pool cannot be unlocked due
 to opened offers, `sp-unlock` marks it to be unlocked later; this prevents
-the stake affecting new allocation blobber allocation.
+the stake affecting blobber allocation for new allocations.
 
 | Parameter  | Required | Description          | default        | Valid values |
 |------------|----------|----------------------|----------------|--------------|
@@ -1648,7 +1648,7 @@ must either be the owner, a collaborator or be using an auth ticket.
 | remotepath | no       | file of which to get stats, use if owner  |         | string       |
 
 <details>
-  <summary>Download cost</summary>
+  <summary>get-download-cost</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124497750-41ef0500-ddb3-11eb-99ea-115a4e234eda.png)
 
@@ -1672,7 +1672,7 @@ the allocation expires.
 | localpath   | yes      | local of path to calculate upload    |         | file path    |
 
 <details>
-  <summary>Download cost</summary>
+  <summary>get-upload-cost</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124501898-51be1780-ddba-11eb-8c1a-d238cfd8f43f.png)
 
