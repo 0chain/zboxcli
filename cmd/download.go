@@ -39,8 +39,8 @@ var downloadCmd = &cobra.Command{
 
 		if live {
 			delay, _ := cmd.Flags().GetInt("delay")
-			capacity, _ := cmd.Flags().GetInt("capacity")
-			m3u8, err := createM3u8Downloader(localpath, remotepath, authticket, allocationID, lookuphash, rxPay, delay, capacity)
+
+			m3u8, err := createM3u8Downloader(localpath, remotepath, authticket, allocationID, lookuphash, rxPay, delay)
 
 			if err != nil {
 				PrintError("Error: download files and build playlist: ", err)
@@ -161,7 +161,6 @@ func init() {
 	downloadCmd.Flags().IntP("blockspermarker", "b", 10, "pass this option to download multiple blocks per marker")
 	downloadCmd.Flags().Bool("live", false, "enable m3u8 downloader,and build playlist on --localpath")
 	downloadCmd.Flags().Int("delay", 5, "how many seconds has a clips. default is 5 sencods. only works with --live")
-	downloadCmd.Flags().Int("capacity", 5, "how many files has the playlist. default is 5 . only works with --live")
 
 	downloadCmd.MarkFlagRequired("allocation")
 	downloadCmd.MarkFlagRequired("localpath")
