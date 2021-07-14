@@ -12,7 +12,6 @@ import (
 	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zboxcore/zboxutil"
-	"github.com/0chain/zboxcli/util"
 
 	"github.com/spf13/cobra"
 )
@@ -74,12 +73,17 @@ var uploadCmd = &cobra.Command{
 		}
 
 		live, _ := cmd.Flags().GetBool("live")
+		sync, _ := cmd.Flags().GetBool("sync")
+		chunkSize, _ := cmd.Flags().GetInt("chunksize")
 
 		if live {
-			chunkSize, _ := cmd.Flags().GetInt("chunksize")
+			// capture video and audio from local default camera and micrlphone, and upload it to zcn
 			err = startLiveUpload(cmd, allocationObj, localpath, remotepath, encrypt, chunkSize, attrs)
+		} else if sync {
+			// download video from remote live feed(eg youtube), and sync it to zcn
+			err = startSyncUpload(cmd, allocationObj, localpath, remotepath, encrypt, chunkSize, attrs)
 		} else if stream {
-			chunkSize, _ := cmd.Flags().GetInt("chunksize")
+
 			err = startStreamUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar)
 
 		} else {
@@ -169,7 +173,6 @@ func startStreamUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localP
 func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath string, remotePath string, encrypt bool, chunkSize int, attrs fileref.Attributes) error {
 
 	delay, _ := cmd.Flags().GetInt("delay")
-	clipsSize, _ := cmd.Flags().GetInt("clipssize")
 
 	reader, err := sdk.CreateFfmpegRecorder(localPath, delay)
 	if err != nil {
@@ -210,31 +213,33 @@ func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPat
 
 			return statusBar
 		}),
-		sdk.WithLiveDelay(delay),
-		sdk.WithLiveClipsSize(clipsSize))
+		sdk.WithLiveDelay(delay))
 
 	return liveUpload.Start()
 }
 
-func startLiveUploadWithYoutubeDL(cmd *cobra.Command, allocationObj *sdk.Allocation, feedURL string, remotePath string, encrypt bool, chunkSize int, attrs fileref.Attributes) error {
+func startSyncUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath, remotePath string, encrypt bool, chunkSize int, attrs fileref.Attributes) error {
 
 	format, _ := cmd.Flags().GetString("format")
 	proxy, _ := cmd.Flags().GetString("proxy")
 	delay, _ := cmd.Flags().GetInt("delay")
-	clipsSize, _ := cmd.Flags().GetInt("clipssize")
+	feed, _ := cmd.Flags().GetString("feed")
 
-	dir := util.GetConfigDir() + string(os.PathSeparator) + "youtubedl"
+	if len(feed) == 0 {
+		return thrown.New("invalid_path", "feed should be valid")
+	}
 
-	os.MkdirAll(dir, 0744)
-
-	reader, err := sdk.CreateYoutubeDL(feedURL, format, dir, proxy, delay)
+	reader, err := sdk.CreateYoutubeDL(localPath, feed, format, proxy, delay)
 	if err != nil {
 		return err
 	}
 
 	defer reader.Close()
 
-	mimeType := "video/mp4"
+	mimeType, err := reader.GetFileContentType()
+	if err != nil {
+		return err
+	}
 
 	remotePath = zboxutil.RemoteClean(remotePath)
 	isabs := zboxutil.IsRemoteAbs(remotePath)
@@ -242,7 +247,7 @@ func startLiveUploadWithYoutubeDL(cmd *cobra.Command, allocationObj *sdk.Allocat
 		err = thrown.New("invalid_path", "Path should be valid and absolute")
 		return err
 	}
-	remotePath = zboxutil.GetFullRemotePath(reader.GetClipsFile(0), remotePath)
+	remotePath = zboxutil.GetFullRemotePath(localPath, remotePath)
 
 	_, fileName := filepath.Split(remotePath)
 
@@ -253,7 +258,7 @@ func startLiveUploadWithYoutubeDL(cmd *cobra.Command, allocationObj *sdk.Allocat
 		Attributes: attrs,
 	}
 
-	liveUpload := sdk.CreateLiveUpload(allocationObj, liveMeta, reader,
+	syncUpload := sdk.CreateLiveUpload(allocationObj, liveMeta, reader,
 		sdk.WithLiveChunkSize(chunkSize),
 		sdk.WithLiveEncrypt(encrypt),
 		sdk.WithLiveStatusCallback(func() sdk.StatusCallback {
@@ -263,10 +268,9 @@ func startLiveUploadWithYoutubeDL(cmd *cobra.Command, allocationObj *sdk.Allocat
 
 			return statusBar
 		}),
-		sdk.WithLiveDelay(delay),
-		sdk.WithLiveClipsSize(clipsSize))
+		sdk.WithLiveDelay(delay))
 
-	return liveUpload.Start()
+	return syncUpload.Start()
 }
 
 func init() {
@@ -278,14 +282,18 @@ func init() {
 	uploadCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
 	uploadCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
 	uploadCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
+
 	uploadCmd.Flags().Bool("stream", false, "pass this option to enable stream upload for large file")
 
 	uploadCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "how much bytes in a chunk for upload")
 
 	uploadCmd.Flags().Bool("live", false, "pass this option to enable upload for live streaming")
 	uploadCmd.Flags().Int("delay", 5, "how much seconds has a clips. default is 5 sencods. only works with --live")
-	// uploadCmd.Flags().String("format", "best", "quality format of video. best is default. only works with --live")
-	// uploadCmd.Flags().String("proxy", "", "Use the specified HTTP/HTTPS/SOCKS proxy. only works with --live")
+
+	uploadCmd.Flags().Bool("sync", false, "sync live stream from remote live feed(eg. youtube), and upload to zcn")
+	uploadCmd.Flags().String("feed", "", "remote live stream feed (eg youtube live feed url). only works with --sync")
+	uploadCmd.Flags().String("format", "best", "quality format of video. best is default. only works with --sync")
+	uploadCmd.Flags().String("proxy", "", "Use the specified HTTP/HTTPS/SOCKS proxy. only works with --sync")
 
 	uploadCmd.MarkFlagRequired("allocation")
 	uploadCmd.MarkFlagRequired("remotepath")
