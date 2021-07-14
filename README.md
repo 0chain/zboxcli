@@ -1475,9 +1475,10 @@ to stake pool later.
 
 ### Unlock tokens from stake pool
 
-Unlock a stake pool by pool owner. If the stake pool cannot be unlocked due
-to opened offers, `sp-unlock` marks it to be unlocked later; this prevents
-the stake affecting blobber allocation for new allocations.
+Unlock a stake pool by pool owner. If the stake pool cannot be unlocked as 
+it would leave insufficient funds for opened offers, then `sp-unlock` tags 
+the stake pool to be unlocked later. This tag prevents the stake pool affecting 
+blobber allocation for any new allocations.
 
 | Parameter  | Required | Description          | default        | Valid values |
 |------------|----------|----------------------|----------------|--------------|
@@ -1519,9 +1520,8 @@ Get information about all stake pools of current user.
 
 ## Pay interests
 
-Changes in stake pool pays all pending rewards to calculate next rewards correctly
-and don't complicate stake pool. But if there are no changes interests will not be paid.
-To pay the interests  `sp-pay-interests`  command can be used to
+Changes in stake pool pays all pending rewards, But if there are no changes interests will not be paid.
+`sp-pay-interests`  command can be used to 
 pay interest for all delegates. Use `sp-info` to check interests can be paid or not.
 
 | Parameter  | Required | Description          | default        | Valid values |
