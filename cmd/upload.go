@@ -12,6 +12,7 @@ import (
 	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zboxcore/zboxutil"
+	"github.com/0chain/zboxcli/util"
 
 	"github.com/spf13/cobra"
 )
@@ -220,8 +221,8 @@ func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPat
 
 func startSyncUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath, remotePath string, encrypt bool, chunkSize int, attrs fileref.Attributes) error {
 
-	format, _ := cmd.Flags().GetString("format")
-	proxy, _ := cmd.Flags().GetString("proxy")
+	downloadArgs, _ := cmd.Flags().GetString("downloader-args")
+	ffmpegArgs, _ := cmd.Flags().GetString("ffmpeg-args")
 	delay, _ := cmd.Flags().GetInt("delay")
 	feed, _ := cmd.Flags().GetString("feed")
 
@@ -229,7 +230,7 @@ func startSyncUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPat
 		return thrown.New("invalid_path", "feed should be valid")
 	}
 
-	reader, err := sdk.CreateYoutubeDL(localPath, feed, format, proxy, delay)
+	reader, err := sdk.CreateYoutubeDL(localPath, feed, util.SplitArgs(downloadArgs), util.SplitArgs(ffmpegArgs), delay)
 	if err != nil {
 		return err
 	}
@@ -292,8 +293,8 @@ func init() {
 
 	uploadCmd.Flags().Bool("sync", false, "sync live stream from remote live feed(eg. youtube), and upload to zcn")
 	uploadCmd.Flags().String("feed", "", "remote live stream feed (eg youtube live feed url). only works with --sync")
-	uploadCmd.Flags().String("format", "best", "quality format of video. best is default. only works with --sync")
-	uploadCmd.Flags().String("proxy", "", "Use the specified HTTP/HTTPS/SOCKS proxy. only works with --sync")
+	uploadCmd.Flags().String("downloader-args", "-q", "give args to youtube-dl to download video. default is -q. only works with --sync")
+	uploadCmd.Flags().String("ffmpeg-args", "", "give args to ffmpeg to build output. only works with --sync")
 
 	uploadCmd.MarkFlagRequired("allocation")
 	uploadCmd.MarkFlagRequired("remotepath")
