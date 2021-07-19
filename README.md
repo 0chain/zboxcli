@@ -1351,6 +1351,10 @@ Lock some tokens in read pool associated with an allocation.
 * If the user does not have a pre-existing read pool, then the smart-contract
   creates one.
 
+Anyone can lock tokens with a read pool attached an allocation. These tokens can
+be used to pay read access to files stored with the allocation. To use these tokens 
+the user must be the allocation owner, collaborator or have an auth ticket. 
+
 | Parameter  | Required | Description            | default | Valid values |
 |------------|----------|------------------------|---------|--------------|
 | allocation | yes      | allocation id          |         | string       |
@@ -1577,6 +1581,9 @@ All tokens will be divided between allocation blobbers depending on their write 
   to lock all tokens, or spread across all the allocations blobbers automatically.
 * If the user does not have a pre-existing read pool, then the smart-contract
   creates one.
+  
+ Anyone can lock tokens with a write pool attached an allocation. These tokens can 
+ be used to pay for the allocation updates and min lock demand as needed.
 
 | Parameter     | Required | Description                       | default | Valid values |
 |---------------|----------|-----------------------------------|---------|--------------|
