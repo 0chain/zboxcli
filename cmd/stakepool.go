@@ -301,9 +301,6 @@ func init() {
 
 	spInfo.PersistentFlags().String("blobber_id", "",
 		"for given blobber, default is current client")
-
-	spInfo.PersistentFlags().String("client_id", "",
-		"for given client, default is current client")
 	spInfo.PersistentFlags().Bool("json", false, "pass this option to print response as json data")
 
 	spUserInfo.PersistentFlags().Bool("json", false, "pass this option to print response as json data")

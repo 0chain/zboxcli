@@ -44,7 +44,7 @@ func init() {
 	rootCmd.AddCommand(addCuratorCmd)
 	addCuratorCmd.PersistentFlags().
 		String("curator", "",
-			"new curator to add to transaction")
+			"new curator to add to allocation")
 	addCuratorCmd.PersistentFlags().
 		String("allocation", "",
 			"allocation that the curator is to be added")
