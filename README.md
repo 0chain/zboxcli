@@ -140,7 +140,7 @@ help|Help about any command
 [rp-unlock](#unlock-tokens-from-read-pool)|Unlock some expired tokens in a read pool.
 [sc-config](#storage-sc-configurations)|Show storage SC configuration.
 [share](#share)|share files from blobbers
-sign-data|Sign given data
+[sign-data](#sign-data)|Sign given data
 [sp-info](#stake-pool-info)|Stake pool information.
 [sp-lock](#lock-tokens-into-stake-pool)|Lock tokens lacking in stake pool.
 [sp-pay-interests](#pay-interests)|Pay interests not payed yet.
@@ -1683,6 +1683,20 @@ the allocation expires.
 ./zbox get-upload-cost --allocation <allocation_id> --localpath ./path/file.ext
 ```
 
+## Sign data|
+
+`sign-data` uses the information from your wallet to sign the input string option
+
+| Parameter   | Required | Description                                   | default | Valid values |
+|-------------|----------|-----------------------------------------------|---------|--------------|
+| data  | yes      | string to sign                                 |         | string       |
+
+
+```shell
+
+```
+./zbox sign-data "data to sign"
+Signature : 9432ab2ee602062afaf48c4016b373a65db48a8546a81c09dead40e54966399e
 ------
 
 ## Streaming
