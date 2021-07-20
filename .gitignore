@@ -27,3 +27,5 @@ sp_lock.sh
 rp_lock.sh
 .idea/
 .vscode
+vendor
+.env

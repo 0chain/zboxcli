@@ -55,3 +55,10 @@ help:
 	@echo "\tmake clean             - deletes all build output files"
 	@echo "\tmake gomod-download    - download the go modules"
 	@echo "\tmake gomod-clean       - clean the go modules"
+
+# todo: remove this before merging
+#migrate-s3:
+#	go run main.go migrate-s3 --bucket="iamrz1-migration" --region="us-east-2" --allocation $(ALLOC)
+#
+#s3-all:
+#	go run main.go migrate-s3 --allocation $(ALLOC)
