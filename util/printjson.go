@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-func PrintJSON(v interface{}){
+func PrintJSON(v interface{}) {
 	b, err := json.Marshal(v)
 	if err != nil {
 		log.Fatalf("Failed to convert data to json format : %v", err)

@@ -5,6 +5,10 @@ go 1.13
 require (
 	github.com/0chain/gosdk v1.2.7-0.20210630153828-e2162c36dbfe
 	github.com/jtguibas/cinema v0.0.0-20200208054232-ca271f28a020
+	github.com/aws/aws-sdk-go v1.38.33
+	github.com/fatih/color v1.7.0 // indirect
+	github.com/klauspost/cpuid v1.2.1 // indirect
+	github.com/magiconair/properties v1.8.1 // indirect
 	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/mattn/go-runewidth v0.0.10 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
