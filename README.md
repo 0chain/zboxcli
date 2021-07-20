@@ -639,7 +639,7 @@ Usage:
 Flags:
       --allocation string   allocation ID for dStorage
       --bucket strings      specific s3 buckets to use
-      --commit              pass this option to commit the metadata transaction
+      --commit              pass this option to commit the transaction metadata
       --concurrency int     number of concurrent files to process concurrently during migration (default 10)
       --delete-source       pass this option to remove migrated files files from source (s3)
       --encrypt             pass this option to encrypt and upload the file

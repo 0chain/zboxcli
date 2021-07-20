@@ -2,16 +2,22 @@ package cmd
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/0chain/gosdk/core/common"
+	"github.com/0chain/gosdk/core/encryption"
 	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk/zboxcore/zboxutil"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"io"
 	"log"
+	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -56,6 +62,17 @@ type MigrationConfig struct {
 	Prefix       string
 	Concurrency  int
 	DeleteSource bool
+}
+
+type UploadConfig struct {
+	SourceFile     io.Reader
+	SourceFileSize int64
+	SourceFileType string
+	RemoteFilePath string
+	Allocation     *sdk.Allocation
+	Commit         bool
+	Encrypt        bool
+	WhoPays        string
 }
 
 func (m *MigrationConfig) ToString() string {
@@ -153,7 +170,7 @@ func migrateFromS3(cmd *cobra.Command, args []string) error {
 
 	// list all the buckets
 	if len(migrationConfig.Buckets) == 0 {
-		buckets, err := ListS3Buckets(sess)
+		buckets, err := listS3Buckets(sess)
 		if err != nil {
 			log.Println(err)
 			return err
@@ -172,7 +189,7 @@ func migrateFromS3(cmd *cobra.Command, args []string) error {
 
 }
 
-func ListS3Buckets(sess *session.Session) ([]string, error) {
+func listS3Buckets(sess *session.Session) ([]string, error) {
 	// Create S3 service client
 	svc := s3.New(sess)
 	result, err := svc.ListBuckets(nil)
@@ -396,7 +413,6 @@ func GetS3Session(region string) *session.Session {
 	return configP
 }
 
-// Upload service
 type UploadService struct {
 	UploadConfig *MigrationConfig
 	FileConfig   *SourceFileConfig
@@ -422,43 +438,21 @@ func (u *UploadService) UploadStreamToDStorage() error {
 		}
 	}
 
-	wg := &sync.WaitGroup{}
-	statusBar := &StatusBar{wg: wg}
-	wg.Add(1)
-
-	var attrs fileref.Attributes
-	if u.UploadConfig.AppConfig.WhoPays != "" {
-		var wp common.WhoPays
-		if err = wp.Parse(u.UploadConfig.AppConfig.WhoPays); err != nil {
-			return fmt.Errorf("error parssing who-pays value. %s", err.Error())
-		}
-		attrs.WhoPaysForReads = wp // set given value
-	}
-	if u.UploadConfig.AppConfig.Encrypt {
-		//err = allocationObj.EncryptAndUploadFile(u.UploadConfig.LocalTempFilePath, u.UploadConfig.RemoteFilePath, attrs, statusBar)
-		log.Println("encryption has not been implemented for direct upload")
-	} else {
-		input := sdk.UploadStreamInput{
-			Size: u.FileConfig.SourceFileSize,
-			Data: u.FileConfig.SourceFileReader,
-			Type: u.FileConfig.SourceFileType,
-		}
-		err = allocationObj.UploadStream(&input, u.FileConfig.RemoteFilePath, attrs, statusBar)
+	uploadConfig := UploadConfig{
+		SourceFile:     u.FileConfig.SourceFileReader,
+		SourceFileSize: u.FileConfig.SourceFileSize,
+		SourceFileType: u.FileConfig.SourceFileType,
+		RemoteFilePath: u.FileConfig.RemoteFilePath,
+		Allocation:     allocationObj,
+		Commit:         u.UploadConfig.AppConfig.Commit,
+		Encrypt:        u.UploadConfig.AppConfig.Encrypt,
+		WhoPays:        u.UploadConfig.AppConfig.WhoPays,
 	}
 
+	err = uploadStreamToDStorageV2(&uploadConfig)
 	if err != nil {
-		return fmt.Errorf("upload failed. %s", err.Error())
-	}
-	wg.Wait()
-	if !statusBar.success {
-		log.Println("upload failed to complete.")
-		return fmt.Errorf("upload failed. statusbar. success : %v", statusBar.success)
-	}
-
-	if u.UploadConfig.AppConfig.Commit {
-		statusBar.wg.Add(1)
-		commitMetaTxn(u.FileConfig.RemoteFilePath, "Upload", "", "", allocationObj, nil, statusBar)
-		statusBar.wg.Wait()
+		log.Println(err)
+		return err
 	}
 
 	return nil
@@ -472,4 +466,117 @@ func deleteIncompleteUpload(allocationObj *sdk.Allocation, filePath string) erro
 	}
 
 	return nil
+}
+
+func uploadStreamToDStorageV2(u *UploadConfig) error {
+	log.Printf("uploading: file to remote '%s'", u.RemoteFilePath)
+	removeUploadProgress(u.Allocation, u.RemoteFilePath)
+	wg := &sync.WaitGroup{}
+	statusBar := &StatusBar{wg: wg}
+	wg.Add(1)
+
+	var err error
+	var attrs fileref.Attributes
+	if u.WhoPays != "" {
+		var wp common.WhoPays
+		if err = wp.Parse(u.WhoPays); err != nil {
+			return fmt.Errorf("error parssing who-pays value. %s", err.Error())
+		}
+		attrs.WhoPaysForReads = wp // set given value
+	}
+	if u.Encrypt {
+		//err = allocationObj.EncryptAndUploadFile(u.UploadConfig.LocalTempFilePath, u.UploadConfig.RemoteFilePath, attrs, statusBar)
+		log.Println("encryption has not been implemented for direct upload")
+	}
+
+	err = startS3Upload(u.Allocation, u.SourceFile, u.SourceFileSize, u.SourceFileType, u.RemoteFilePath, u.Encrypt, attrs, statusBar)
+	if err != nil {
+		return fmt.Errorf("upload failed. %s", err.Error())
+	}
+	wg.Wait()
+	if !statusBar.success {
+		return fmt.Errorf("upload failed. statusbar. success : %v", statusBar.success)
+	}
+
+	if u.Commit {
+		statusBar.wg.Add(1)
+		commitMetaTxn(u.RemoteFilePath, "Upload", "", "", u.Allocation, nil, statusBar)
+		statusBar.wg.Wait()
+	}
+
+	return nil
+}
+
+func startS3Upload(allocationObj *sdk.Allocation, fileReader io.Reader, size int64, mimeType, remotePath string, encrypt bool, attrs fileref.Attributes, statusBar sdk.StatusCallback) error {
+	remotePath = zboxutil.RemoteClean(remotePath)
+	isabs := zboxutil.IsRemoteAbs(remotePath)
+	if !isabs {
+		return fmt.Errorf("%s", "Path should be valid and absolute")
+	}
+	remotePath = zboxutil.GetFullRemotePath(remotePath, remotePath)
+
+	_, fileName := filepath.Split(remotePath)
+
+	fileMeta := sdk.FileMeta{
+		Path:       remotePath,
+		ActualSize: size,
+		MimeType:   mimeType,
+		RemoteName: fileName,
+		RemotePath: remotePath,
+		Attributes: attrs,
+	}
+
+	streamUpload := sdk.CreateStreamUpload(allocationObj, fileMeta, newS3Reader(fileReader),
+		sdk.WithChunkSize(sdk.DefaultChunkSize),
+		sdk.WithEncrypt(encrypt),
+		sdk.WithStatusCallback(statusBar))
+
+	return streamUpload.Start()
+}
+
+func newS3Reader(source io.Reader) *S3StreamReader {
+	return &S3StreamReader{source}
+}
+
+type S3StreamReader struct {
+	io.Reader
+}
+
+func (r *S3StreamReader) Read(p []byte) (int, error) {
+	bLen, err := io.ReadAtLeast(r.Reader, p, len(p))
+	if err != nil {
+		if errors.Is(err, io.ErrUnexpectedEOF) {
+			return bLen, io.EOF
+		}
+		return bLen, err
+	}
+	return bLen, nil
+}
+
+func removeUploadProgress(a *sdk.Allocation, filePath string) error {
+	_, file := filepath.Split(filePath)
+	configDir := getConfigDir()
+	//log.Println("dir",dir)
+	log.Println("file", file)
+
+	localFilePath := filepath.Join(configDir, "upload", a.ID+"_"+encryption.Hash(filePath+"_"+filePath)+"_"+file)
+
+	log.Println("Local progressbar file uri:", localFilePath)
+
+	return os.Remove(localFilePath)
+}
+
+func getConfigDir() string {
+	if cDir != "" {
+		return cDir
+	}
+	var configDir string
+	// Find home directory.
+	home, err := homedir.Dir()
+	if err != nil {
+		log.Println(err)
+		os.Exit(1)
+	}
+	configDir = home + string(os.PathSeparator) + ".zcn"
+	return configDir
 }

@@ -77,7 +77,7 @@ func init() {
 		"adjust storage expiration time, duration")
 	updateAllocationCmd.Flags().Bool("set_immutable", false, "set the allocation's data to be immutable")
 	updateAllocationCmd.Flags().String("free_storage", "",
-			"json file containing marker for free storage")
+		"json file containing marker for free storage")
 
 	updateAllocationCmd.MarkFlagRequired("allocation")
 

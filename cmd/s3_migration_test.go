@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"github.com/0chain/gosdk/zboxcore/sdk"
-	"github.com/0chain/zboxcli/model"
 	"log"
 	"strings"
 	"testing"
@@ -13,8 +12,8 @@ type TestConfig struct {
 
 func TestSingleUploadUsingReaderToDStorage(t *testing.T) {
 	initConfig()
-	migrationConfig := model.MigrationConfig{
-		AppConfig: model.AppConfig{
+	migrationConfig := MigrationConfig{
+		AppConfig: AppConfig{
 			AllocationID: "1077eca7599ba5550d267dd7f7c7dec9b4f2e11dc57921c98576b61b94acd732",
 			Commit:       false,
 			Encrypt:      false,
@@ -29,7 +28,7 @@ func TestSingleUploadUsingReaderToDStorage(t *testing.T) {
 
 	filePath := "/test/file_1.txt"
 	fileContent := "content of file_1.txt"
-	fileConfig := model.SourceFileConfig{
+	fileConfig := SourceFileConfig{
 		SourceFileReader: strings.NewReader(fileContent),
 		SourceFileType:   "plain/text",
 		SourceFileSize:   int64(len([]byte(fileContent))),
