@@ -74,6 +74,7 @@ func printBlobbers(nodes []*sdk.Blobber) {
 		fmt.Println("  url:                  ", val.BaseURL)
 		fmt.Println("  used / total capacity:", val.Used.String(), "/",
 			val.Capacity.String())
+		fmt.Println("  last_health_check:	 ", val.LastHealthCheck)
 		fmt.Println("  terms:")
 		fmt.Println("    read_price:         ", val.Terms.ReadPrice.String(), "tok / GB")
 		fmt.Println("    write_price:        ", val.Terms.WritePrice.String(), "tok / GB / time_unit")
@@ -81,6 +82,15 @@ func printBlobbers(nodes []*sdk.Blobber) {
 		fmt.Println("    cct:                ", val.Terms.ChallengeCompletionTime.String())
 		fmt.Println("    max_offer_duration: ", val.Terms.MaxOfferDuration.String())
 	}
+}
+
+func filterActiveBlobbers(blobbers []*sdk.Blobber) (activeBlobbers []*sdk.Blobber) {
+	for i := range blobbers {
+		if blobbers[i].LastHealthCheck.Within(60 * 60) {
+			activeBlobbers = append(activeBlobbers, blobbers[i])
+		}
+	}
+	return
 }
 
 // lsBlobers shows active blobbers
@@ -91,15 +101,25 @@ var lsBlobers = &cobra.Command{
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		doJSON, _ := cmd.Flags().GetBool("json")
+		doAll, _ := cmd.Flags().GetBool("all")
+
 		var list, err = sdk.GetBlobbers()
+		var defaultList = filterActiveBlobbers(list)
+
 		if err != nil {
 			log.Fatalf("Failed to get storage SC configurations: %v", err)
 		}
-		if doJSON {
-			util.PrintJSON(list)
-			return
+
+		if doAll {
+			defaultList = list
 		}
-		printBlobbers(list)
+
+		if doJSON {
+			util.PrintJSON(defaultList)
+		} else {
+			printBlobbers(defaultList)
+		}
+
 	},
 }
 
@@ -288,6 +308,7 @@ func init() {
 
 	scConfig.Flags().Bool("json", false, "pass this option to print response as json data")
 	lsBlobers.Flags().Bool("json", false, "pass this option to print response as json data")
+	lsBlobers.Flags().Bool("all", false, "shows active and non active list of blobbers on ls-blobbers")
 
 	blobberInfoCmd.Flags().String("blobber_id", "", "blobber ID, required")
 	blobberInfoCmd.Flags().Bool("json", false,
