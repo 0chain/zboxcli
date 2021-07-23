@@ -733,6 +733,13 @@ File successfully deleted (Can be verified using [list](https://github.com/0chai
 
 ### Share
 
+Use share command to generate an authtoken that provides authorization to the holder to the specified file on the remotepath.
+--allocation string Allocation ID
+--clientid string ClientID of the user to share with. Leave blank for public share
+--encryptionpublickey string Encryption public key of the client you want to share with (from [getwallet](#Get-wallet) command )
+--remotepath string Remote path to share
+--expiration-seconds number The seconds after which the ticket will expire(defaults to number of seconds in 90 days if option not provided)
+
 Use `share` command to generate an authtoken that provides authorization to the holder to the specified file on the remotepath.
 
 #### Usage
@@ -793,6 +800,21 @@ Auth token :eyJjbGllbnRfaWQiOiJiNmRlNTYyYjU3YTBiNTkzZDA0ODA2MjRmNzlhNTVlZDQ2ZGJh
 
 
 Response contains an auth token- an encrypted string that can be shared.
+
+#### share-encrypted revoke
+
+This will cancel the share for particular buyer that was performed by the seller using zbox share.
+
+Use clientid of the user that was share the remotepath.
+Required parameters are allocation, remotepath and clientid.
+
+Command
+
+    ./zbox share --revoke --allocation 3c0d32560ea18d9d0d76808216a9c634f661979d29ba59cc8dafccb3e5b95341 --remotepath /myfiles/hello.txt --clientid d52d82133177ec18505145e784bc87a0fb811d7ac82aa84ae6b013f96b93cfaa
+
+Response
+
+Returns status message showing whether the operation was successful or not.
 
 ### List
 

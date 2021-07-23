@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"github.com/0chain/gosdk/zboxcore/fileref"
 	"os"
+	"strings"
 	"sync"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
@@ -47,7 +49,56 @@ var downloadCmd = &cobra.Command{
 		wg.Add(1)
 		var errE, err error
 		var allocationObj *sdk.Allocation
-		if len(remotepath) > 0 {
+		if len(authticket) > 0 {
+			at, err := sdk.InitAuthTicket(authticket).Unmarshall()
+
+			if err != nil {
+				PrintError(err)
+				os.Exit(1)
+			}
+
+			allocationObj, err = sdk.GetAllocationFromAuthTicket(authticket)
+			if err != nil {
+				PrintError("Error fetching the allocation", err)
+				os.Exit(1)
+			}
+
+			var filename string
+
+			if at.RefType == fileref.FILE {
+				filename = at.FileName
+				lookuphash = at.FilePathHash
+			} else if len(lookuphash) > 0 {
+				fileMeta, err := allocationObj.GetFileMetaFromAuthTicket(authticket, lookuphash)
+				if err != nil {
+					PrintError("Either remotepath or lookuphash is required when using authticket of directory type")
+					os.Exit(1)
+				}
+				filename = fileMeta.Name
+			} else if len(remotepath) > 0 {
+				lookuphash = fileref.GetReferenceLookup(allocationObj.Tx, remotepath)
+
+				pathnames := strings.Split(remotepath, "/")
+				filename = pathnames[len(pathnames) - 1]
+			} else {
+				PrintError("Either remotepath or lookuphash is required when using authticket of directory type")
+				os.Exit(1)
+			}
+
+			if thumbnail {
+				errE = allocationObj.DownloadThumbnailFromAuthTicket(localpath,
+					authticket, lookuphash, filename, rxPay, statusBar)
+			} else {
+				if startBlock != 0 || endBlock != 0 {
+					errE = allocationObj.DownloadFromAuthTicketByBlocks(
+						localpath, authticket, startBlock, endBlock, numBlocks,
+						lookuphash, filename, rxPay, statusBar)
+				} else {
+					errE = allocationObj.DownloadFromAuthTicket(localpath,
+						authticket, lookuphash, filename, rxPay, statusBar)
+				}
+			}
+		} else if len(remotepath) > 0 {
 			if fflags.Changed("allocation") == false { // check if the flag "path" is set
 				PrintError("Error: allocation flag is missing") // If not, we'll let the user know
 				os.Exit(1)                                      // and return
@@ -66,39 +117,6 @@ var downloadCmd = &cobra.Command{
 					errE = allocationObj.DownloadFileByBlock(localpath, remotepath, startBlock, endBlock, numBlocks, statusBar)
 				} else {
 					errE = allocationObj.DownloadFile(localpath, remotepath, statusBar)
-				}
-			}
-		} else if len(authticket) > 0 {
-			allocationObj, err = sdk.GetAllocationFromAuthTicket(authticket)
-			if err != nil {
-				PrintError("Error fetching the allocation", err)
-				os.Exit(1)
-			}
-			at := sdk.InitAuthTicket(authticket)
-			filename, err := at.GetFileName()
-			if err != nil {
-				PrintError("Error getting the filename from authticket", err)
-				os.Exit(1)
-			}
-			if len(lookuphash) == 0 {
-				lookuphash, err = at.GetLookupHash()
-				if err != nil {
-					PrintError("Error getting the lookuphash from authticket", err)
-					os.Exit(1)
-				}
-			}
-
-			if thumbnail {
-				errE = allocationObj.DownloadThumbnailFromAuthTicket(localpath,
-					authticket, lookuphash, filename, rxPay, statusBar)
-			} else {
-				if startBlock != 0 || endBlock != 0 {
-					errE = allocationObj.DownloadFromAuthTicketByBlocks(
-						localpath, authticket, startBlock, endBlock, numBlocks,
-						lookuphash, filename, rxPay, statusBar)
-				} else {
-					errE = allocationObj.DownloadFromAuthTicket(localpath,
-						authticket, lookuphash, filename, rxPay, statusBar)
 				}
 			}
 		}
