@@ -298,6 +298,9 @@ the presence of the `free_storage` field.
   predefined by `0chain`. See [newallocation](#free-storage-allocation) for further details.
 * `otherwise` Update an allocation applying the settings indicated by the
   remaining parameters.  
+
+If not a `free_storage` update, then tokens will come from those locked. If there are
+
   
 | Parameter     | Required | Description                                            | Valid Values |
 |---------------|----------|--------------------------------------------------------|--------------|
