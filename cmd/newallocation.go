@@ -11,6 +11,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/0chain/gosdk/zboxcore/blockchain"
+
 	"github.com/spf13/pflag"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
@@ -178,8 +180,9 @@ var newallocationCmd = &cobra.Command{
 					log.Fatal("must provide owner public key, when creating an allocation for another")
 				}
 			}
+
 			allocationID, err = sdk.CreateAllocationForOwner(owner, ownerPublicKey, *datashards, *parityshards,
-				*size, expireAt, readPrice, writePrice, mcct, lock, nil)
+				*size, expireAt, readPrice, writePrice, mcct, lock, blockchain.GetPreferredBlobbers())
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
