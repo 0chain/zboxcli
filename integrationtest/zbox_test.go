@@ -306,3 +306,16 @@ func Test_DownloadFileFromBlobbersFailEmptyToken(t *testing.T) {
 	DeleteLocalFile("integrationtest/2.txt")
 	require.Contains(t, string(out), "Status completed callback. Type = application/octet-stream. Name = 2.txt")
 }
+
+func TestRegister(t *testing.T) {
+	cmd := exec.Command("./zbox", "register")         // or whatever the program is
+	cmd.Dir = "/Users/dev/Desktop/0chain/zboxcli" // or whatever directory it's in
+	out, err := cmd.Output()
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		fmt.Printf("%s", out)
+	}
+	require.Equal(t, "Wallet registered\n", string(out))
+}
+
