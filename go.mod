@@ -3,17 +3,7 @@ module github.com/0chain/zboxcli
 go 1.13
 
 require (
-	github.com/0chain/gosdk v1.2.77
-	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751 // indirect
-	github.com/alecthomas/units v0.0.0-20190924025748-f65c72e2690d // indirect
-	github.com/armon/consul-api v0.0.0-20180202201655-eb2c6b5be1b6 // indirect
-	github.com/coreos/go-etcd v2.0.0+incompatible // indirect
-	github.com/cpuguy83/go-md2man v1.0.10 // indirect
-	github.com/fatih/color v1.7.0 // indirect
-	github.com/gedex/inflector v0.0.0-20170307190818-16278e9db813 // indirect
-	github.com/idubinskiy/schematyper v0.0.0-20190118213059-f71b40dac30d // indirect
-	github.com/klauspost/cpuid v1.2.1 // indirect
-	github.com/magiconair/properties v1.8.1 // indirect
+	github.com/0chain/gosdk v1.2.78-0.20210723090521-6976fd6255da
 	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/mattn/go-runewidth v0.0.10 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
