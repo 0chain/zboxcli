@@ -123,6 +123,36 @@ var lsBlobers = &cobra.Command{
 	},
 }
 
+// lsBlobers shows active blobbers
+var lsBlobersStakeTotals = &cobra.Command{
+	Use:   "ls-stake-totals",
+	Short: "Show blobbers total stakes.",
+	Long:  `Show list of all blobbers total stakes in storage SC.`,
+	Args:  cobra.MinimumNArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		doJSON, _ := cmd.Flags().GetBool("json")
+
+		list, err := sdk.GetBlobberStakeTotals()
+		if err != nil {
+			log.Fatalf("Failed to get storage SC configurations: %v", err)
+		}
+
+		if doJSON {
+			util.PrintJSON(list)
+		} else {
+			if len(list) == 0 {
+				fmt.Println("No blobbers")
+				return
+			}
+			fmt.Println("blobber | blobber's total states")
+			for id, stakeTotal := range list {
+				fmt.Printf("\t%s\t%v", id, stakeTotal)
+			}
+		}
+
+	},
+}
+
 var blobberInfoCmd = &cobra.Command{
 	Use:   "bl-info",
 	Short: "Get blobber info",
@@ -305,10 +335,12 @@ func init() {
 	rootCmd.AddCommand(lsBlobers)
 	rootCmd.AddCommand(blobberInfoCmd)
 	rootCmd.AddCommand(blobberUpdateCmd)
+	rootCmd.AddCommand(lsBlobersStakeTotals)
 
 	scConfig.Flags().Bool("json", false, "pass this option to print response as json data")
 	lsBlobers.Flags().Bool("json", false, "pass this option to print response as json data")
 	lsBlobers.Flags().Bool("all", false, "shows active and non active list of blobbers on ls-blobbers")
+	lsBlobersStakeTotals.Flags().Bool("json", false, "pass this option to print response as json data")
 
 	blobberInfoCmd.Flags().String("blobber_id", "", "blobber ID, required")
 	blobberInfoCmd.Flags().Bool("json", false,
