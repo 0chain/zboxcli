@@ -146,7 +146,7 @@ var lsBlobersStakeTotals = &cobra.Command{
 			}
 			fmt.Println("blobber | blobber's total states")
 			for id, stakeTotal := range list {
-				fmt.Printf("\t%s\t%v", id, stakeTotal)
+				fmt.Printf("\t%s\t%v\n", id, stakeTotal)
 			}
 		}
 
