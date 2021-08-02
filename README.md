@@ -730,7 +730,7 @@ Note: You can download by using only 1 on the below combination:
 - `--remotepath`, `--allocation`
 - `--authticket`
 
-Downloaded file will be in the localpath specified.
+Downloaded file will be in the location specified by the `localpath` argument.
 
 ## Update
 
@@ -767,7 +767,7 @@ of the application can delete a file.
 | commit     | no       | save meta data to blockchain  | false   | boolean      |
 
 <details>
-  <summary>=delete</summary>
+  <summary>delete</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124353872-0f050f80-dc01-11eb-9e45-ddf2c888223b.png)
 
@@ -790,11 +790,11 @@ File successfully deleted (Can be verified using [list](https://github.com/0chai
 ## Share
 
 Use share command to generate an authtoken that provides authorization to the holder to the specified file on the remotepath.
---allocation string Allocation ID
---clientid string ClientID of the user to share with. Leave blank for public share
---encryptionpublickey string Encryption public key of the client you want to share with (from [getwallet](#Get-wallet) command )
---remotepath string Remote path to share
---expiration-seconds number The seconds after which the ticket will expire(defaults to number of seconds in 90 days 
+* --allocation string Allocation ID
+* --clientid string ClientID of the user to share with. Leave blank for public share
+* --encryptionpublickey string Encryption public key of the client you want to share with (from [getwallet](#Get-wallet) command )
+* --remotepath string Remote path to share
+* --expiration-seconds number The seconds after which the ticket will expire(defaults to number of seconds in 90 days 
 if option not provided)
 
 `auth ticket` can be used with  [download](#download), [commit](#commit) and [list](#list), 
@@ -806,12 +806,14 @@ the pre-defined remote path.
 | allocation          | yes      | allocation id                                                     | string       |
 | clientid            | no       | id of user to share file with, leave blank for public share       | string       |
 | encryptionpublickey | no       | public key of the client to share file with, required if clientId | string       |
+| expiration-seconds | no       | seconds before `auth ticket` expires | int       |
 | remotepath          | yes      | remote path of file to share                                      | string       |
+| revoke          | no      | revoke share for remote path                                     | flag       |
 
 <details>
   <summary>share</summary>
 
-![image](https://user-images.githubusercontent.com/6240686/124355532-876fce80-dc09-11eb-8166-bc7018480404.png)
+![image](https://user-images.githubusercontent.com/6240686/127869637-323e5eae-7306-40a2-a552-86726f19a4a4.png)
 
 </details>
 

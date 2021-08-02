@@ -234,10 +234,13 @@ end note
 ```puml
 title Share
 boundary zbox 
+collections blobbers
 control 0chain
 zbox -> 0chain : request allocation info
 0chain -> zbox : allocation info
 zbox -> zbox : validate
+zbox -> blobbers : request file information
+blobbers -> zbox : file hash
 zbox -> zbox : generate auto ticket
 note left
     * allocation id
