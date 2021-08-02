@@ -576,7 +576,7 @@ settings:
 | json         | no     | print output in json format |         | boolean       |
 
 <details>
-  <summary>bl-listallocations</summary>
+  <summary>listallocations</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/127861831-ba36f343-0210-442e-8d12-d580e46415a3.png)
 
