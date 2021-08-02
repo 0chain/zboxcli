@@ -522,7 +522,7 @@ end note
        storagesc->storagesc: set:\n* in paramters\n* selected blobbers\n* now
        storagesc->storagesc: new write pool; mint tokens
        storagesc->storagesc: new read pool; mint tokens
-       storagesc-> blockchain : wrie pool
+       storagesc-> blockchain : write pool
        storagesc-> blockchain : read pool
        storagesc->storagesc: new challenge pool    
        storagesc-> blockchain : challenge pool    
@@ -556,7 +556,7 @@ end note
         group new write pool
             storagesc -> storagesc : transfer owner tokens to write pool
         end 
-        storagesc -> blockchain : wrie pool
+        storagesc -> blockchain : write pool
         storagesc -> storagesc : new challenge pool    
         storagesc -> blockchain : challenge pool    
     end

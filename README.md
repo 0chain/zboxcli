@@ -184,8 +184,8 @@ documentation at docs.0chain.net.
 ## Register wallet
 
 `register` is used when needed to register a given wallet to the blockchain. 
-This could be that the blockchain network is reset and you wished to register
-the same wallet at `~/.zcn/wallet.json`.
+This could be because the blockchain network has been reset and you wished to register
+the wallet at `~/.zcn/wallet.json`.
 
 Sample command
 
@@ -248,7 +248,7 @@ and `free_storage` parameters.
 <details>
   <summary>Free storage newallocation </summary>
 
-![image](https://user-images.githubusercontent.com/6240686/127854020-c830d2dc-325a-4897-a400-0c65967dc016.png)
+![image](https://user-images.githubusercontent.com/6240686/127857969-1aa1a56c-4a65-4ba5-b724-943cf12594b4.png)
 
 </details>
 
@@ -291,7 +291,7 @@ information is stored under `$HOME/.zcn/allocation.txt`.
 ```shell
 ./zbox newallocation --lock 0.5
 ```
-
+To use a free storage marker, you only need to provide the path to the marker file.
 ```shell
 ./zbox newallocation --lock 0.5 --free_storage markers/my_marker.json
 ```
@@ -358,7 +358,7 @@ You can see more txn details using above txID in block explorer [here](https://o
 
 `alloc-cancel` immediately return all remaining tokens from challenge pool back to the 
 allocation's owner and cancels the allocation. If blobbers already got some tokens, 
-the tokens will not be returned. Remaining min lock payment to tbe blobber will be
+the tokens will not be returned. Remaining min lock payment to the blobber will be
 funded from the allocation's write pools.
 
 Cancelling an allocation can only occur if the amount of failed challenges exceed a preset threshold.
@@ -382,9 +382,15 @@ Example
 
 ## Finalise allocation
  
-`alloc-fini` finalises an expired allocation. When an allocation expires, 
-after its challenge completion time (after the expiration), 
-it can be finalised by the owner or one of the allocation blobbers.
+`alloc-fini` finalises an expired allocation. An allocation becomes expired when
+the expiry time has passed followed by a period equal to the challenge completion
+period.
+
+Any remaining min lock payment to the blobber will be funded from the 
+allocation's write pools. Any available money in the challenge pool returns to
+the allocation's owner.
+
+An allocation can be finalised by the owner or one of the allocation blobbers.
 
 | Parameter  | Required | Description   | Valid Values |
 |------------|----------|---------------|--------------|
@@ -422,7 +428,7 @@ maintains a list of these curators.
 </details>
 
 ```shell
-./zbox addcurator --allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d --curator  e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429
+./zbox addcurator  --allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d --curator  e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429
 ```
 
 ```shell
@@ -433,7 +439,8 @@ e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429 added as a cura
 
 `transferallocation` changes the owner of an allocation. Only a curator, 
 previously added by an [addcurator](#add-curator) command can change an 
-allocation's ownership.
+allocation's ownership. If the current owner wants to transfer ownership
+they have to first add themselves as a curator using [addcurator](#add-curator).
 
 `transferallocation` does not move any funds, only changes the owner, 
 and the owner's public key.
@@ -471,6 +478,13 @@ Use `ls-blobbers` command to show active blobbers.
 |-----------|----------|--------------------------------------|--------------|
 | all       | no       | shows active and non active blobbers | flag         |
 | json      | no       | display result in .json format       | flag         |
+
+<details>
+  <summary>ls-blobbers</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/127860789-94d8118c-93d4-4afe-ae09-05d1e4f053d7.png)
+
+</details>
 
 Example
 
@@ -560,6 +574,15 @@ settings:
 | Parameter          | Required | Description                               | default | Valid values |
 |--------------------|----------|-------------------------------------------|---------|--------------|
 | json         | no     | print output in json format |         | boolean       |
+
+<details>
+  <summary>bl-listallocations</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/127861831-ba36f343-0210-442e-8d12-d580e46415a3.png)
+
+</details>
+
+
 
 ```shell
 ./zbox listallocations

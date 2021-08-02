@@ -13,6 +13,21 @@ end note
 storagesc -> zbox : 
 ```
 
+```puml
+title Get information on allocations cliet ownes
+boundary zbox 
+control 0chain
+zbox -> 0chain : REST API //allocations//
+0chain -> zbox : allocations' info
+```
+
+```puml
+title Get blobbers information
+boundary zbox 
+control 0chain
+zbox -> 0chain : REST API //getBlobbers//
+0chain -> zbox : blobber info
+```
 
 ```puml
 title Get blobber information
