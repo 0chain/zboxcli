@@ -106,14 +106,13 @@ When you run the `zbox` command in terminal with no arguments, it will list all 
 
 **Command**|**Description**
 :-----:|:-----:
-add|Adds free storage assigner
 [add-collab](#add-collaborator)|add collaborator for a file
 [addcurator](#add-curator)|Adds a curator to an allocation
 [alloc-cancel](#cancel-allocation)|Cancel an allocation
 [alloc-fini](#finalise-allocation)|Finalize an expired allocation
 [bl-info](#detailed-blobber-information)|Get blobber info
 [bl-update](#update-blobber-settings)|Update blobber settings by its delegate\_wallet owner
-commit|commit a file changes to chain
+[commit](#commit)| commit file changes to chain
 [copy](#copy)|copy an object(file/folder) to another folder on blobbers
 [cp-info](#challenge-pool-information)|Challenge pool information.
 [delete](#delete)|delete file from blobbers
@@ -151,7 +150,6 @@ help|Help about any command
 [sync](#sync)|Sync files to/from blobbers
 [transferallocation](#transfer-allocation-ownership)|Transfer an allocation between owners
 [update](#update)|update file to blobbers
-update-attributes|depreciated
 [updateallocation](#update-allocation)|Updates allocation's expiry and size
 [upload](#upload)|upload file to blobbers
 version|Prints version information
@@ -177,12 +175,17 @@ version|Prints version information
  
 # Commands
 
-Note in this document, we will only show the commands for particular functionalities, the response will vary depending on your usage and may not be provided in all places. To get a more descriptive view of all the zbox functionalities check zbox cli documentation at docs.0chain.net.
+Note in this document, we will only show the commands for particular functionalities, 
+the response will vary depending on your usage and may not be provided in all places.
+To get a more descriptive view of all the zbox functionalities check zbox cli 
+documentation at docs.0chain.net.
 
 
 ## Register wallet
 
-`register` is used when needed to register a given wallet to the blockchain. This could be that the blockchain network is reset and you wished to register the same wallet at `~/.zcn/wallet.json`.
+`register` is used when needed to register a given wallet to the blockchain. 
+This could be that the blockchain network is reset and you wished to register
+the same wallet at `~/.zcn/wallet.json`.
 
 Sample command
 
@@ -199,15 +202,20 @@ Wallet registered
 ## Create new allocation
 
 Command `newallocation` reserves hard disk space on the blobbers. Later `upload`
-can be used to save files to the blobber. `newallocation` has three modes triggered by the presence or absence of the `cost` 
+can be used to save files to the blobber. `newallocation` has three modes triggered 
+by the presence or absence of the `cost` 
 and `free_storage` parameters.
 * `cost` Converts `newallocation` into a query that returns the cost of the allocation
   determined by the remaining parameters.
-* `free_storage` Creates an allocation using a free storage marker. All other
+* [`free_storage`](#free-storage-allocation) Creates an allocation using a free storage marker. All other
   parameters except `cost` will be ignored. The allocation settings will be set
-  automatically by `0chain`, from preconfigured values.  
+  automatically by `0chain`, from preconfigured values. 
 * `otherwise` Creates an allocation applying the settings indicated by the
   remaining parameters.  
+* Use `owner` if you want to create and fund an allocation for someone else. If 
+  using this option then you need to provide the new owner's public key. Otherwise,
+  the owner defaults to the client.
+
 
 
 | Parameter          | Description                                               | Default        | Valid Values |
@@ -217,6 +225,8 @@ and `free_storage` parameters.
 | data               | number of data shards, effects upload and download speeds | 2              | int          |
 | expire             | duration to allocation expiration                         | 720h           | duration     |
 | free_storage       | free storage marker file.                                 |                | file path    |
+| owner              | owner's id, use for funding an allocation for another     | | string        |
+| owner_public_key   | public key, use for funding an allocation for another     |              | string     |
 | lock               | lock write pool with given number of tokens               |                | float        |
 | mcct               | max challenge completion time                             | 1h             | duration     |
 | parity             | number of parity shards, effects availability             | 2              | int          |
@@ -238,13 +248,13 @@ and `free_storage` parameters.
 <details>
   <summary>Free storage newallocation </summary>
 
-![image](https://user-images.githubusercontent.com/6240686/125315943-876d7e00-e32f-11eb-95b8-908d5bf456bc.png)
+![image](https://user-images.githubusercontent.com/6240686/127854020-c830d2dc-325a-4897-a400-0c65967dc016.png)
 
 </details>
 
 #### Free storage allocation
 
-Entities give free `0chain` storage in the form of markers. A marker takes the 
+Entities can give free `0chain` storage in the form of markers. A marker takes the 
 form of a json file
 ```json
 {
@@ -255,11 +265,13 @@ form of a json file
   "signature": "9edb86c8710d5e3ee4fde247c638fd6b81af67e7bb3f9d60700aec8e310c1f06"
 }
 ```
-* `assigner` A label for the entity giving the free storage.
-* `recipient` The marker; has to be run by the recipient to be valid.
-* `free_tokens` The number of free tokens; equivalent to the `size` filed.
+* `assigner` A label for the entity providing the free storage.
+* `recipient` The marker has to be run by the recipient to be valid.
+* `free_tokens` The amount of free tokens. When creating a new allocation the 
+   free tokens will be split between the allocation's write pool, 
+   and a new read pool; the ratio of this split configured on the blockchain.
 * `timestamp` A unique timestamp. Used to prevent multiple applications of the same marker.
-* `signature` Signed by the assigner, validated using public key on the blockchain.
+* `signature` Signed by the assigner, validated using the stored public key on the blockchain.
 All allocation settings, other than `lock`, will be set automatically by 0chain. 
   Once created, an allocation funded by a free storage marker becomes identical to
   any other allocation; Its history forgotten.
@@ -315,8 +327,8 @@ If not a `free_storage` update, then tokens will come from those locked. If ther
 <details>
   <summary>updateallocation </summary>
 
-
 ![image](https://user-images.githubusercontent.com/6240686/125335948-0b7e3080-e345-11eb-82af-20fd1e4501df.png)
+
 </details>
 
 <details>
@@ -329,7 +341,6 @@ If not a `free_storage` update, then tokens will come from those locked. If ther
 ```
 ./zbox updateallocation --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac --expiry 48h --size 4096
 ```
-
 
 ```shell
 ./zbox updateallocation --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac --free_storage "markers/my_marker.json"
@@ -345,10 +356,12 @@ You can see more txn details using above txID in block explorer [here](https://o
 
 ### Cancel allocation
 
-`alloc-cancel` immediately return all tokens from challenge pool back to the 
+`alloc-cancel` immediately return all remaining tokens from challenge pool back to the 
 allocation's owner and cancels the allocation. If blobbers already got some tokens, 
-the tokens will not be returned. Cancelling an allocation can only occur
-if the amount of failed challenges exceed a preset threshold.
+the tokens will not be returned. Remaining min lock payment to tbe blobber will be
+funded from the allocation's write pools.
+
+Cancelling an allocation can only occur if the amount of failed challenges exceed a preset threshold.
 
 | Parameter  | Required | Description   | Valid Values |
 |------------|----------|---------------|--------------|
@@ -357,8 +370,7 @@ if the amount of failed challenges exceed a preset threshold.
 <details>
   <summary>alloc-cancel</summary>
 
-![image](https://user-images.githubusercontent.com/6240686/125453211-a65caad7-3d46-4ea9-84ab-1ed8cd5f5820.png)
-
+![image](https://user-images.githubusercontent.com/6240686/127854863-eff675aa-17ec-4251-a084-ffa400e8daa1.png)
 
 </details>
 
@@ -381,8 +393,7 @@ it can be finalised by the owner or one of the allocation blobbers.
 <details>
   <summary>alloc-fini</summary>
 
-![image](https://user-images.githubusercontent.com/6240686/125453928-5d881535-0426-4c93-96fd-aed3bf70ee17.png)
-
+![image](https://user-images.githubusercontent.com/6240686/127855881-e7578512-d972-49c3-8920-843a04d740f1.png)
 
 </details>
 
@@ -1638,6 +1649,7 @@ each blobber's Terms.ReadPrice.
 ![image](https://user-images.githubusercontent.com/6240686/123979735-e5f23e00-d9b8-11eb-8232-339a4a3374d0.png)
 
 </details>
+
 ```
 ./zbox wp-lock --allocation <allocation_id> --duration 40m --tokens 1
 ```
@@ -1711,6 +1723,20 @@ the allocation expires.
 ```
 ./zbox get-upload-cost --allocation <allocation_id> --localpath ./path/file.ext
 ```
+
+## Commit
+
+Commit file changes to chain
+
+| Parameter  | Required | Description                                       | Valid values |
+|------------|----------|---------------------------------------------------|--------------|
+| allocation | yes      | allocation id                                     | string       |
+| authticket | no       | auth ticket for file to commit                    | string       |
+| filemeta   | no       | meta for commit if applicable                     | string       |
+| lookuphash | no       | remote lookuphash to commit, use with authticket  | string       |
+| newvalue   | no       | new value for the folder operation if applicatble | string       |
+| operation  | yes      | operation name for commit change                  | string       |
+| remotepath | no       | remote path of object to commit                   | string       |
 
 ## Sign data|
 

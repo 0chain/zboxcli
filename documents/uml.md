@@ -449,15 +449,15 @@ end note
     blockchain ->storagesc:blobbers
     storagesc->storagesc: blobber challenge pass rates
     blockchain ->storagesc: challenge pool
-    blockchain ->storagesc: write pool   
+    blockchain ->storagesc: allocation's write pools   
     group challenge pool
-       storagesc->storagesc: min lock demand\ncp -> blobbers + stake holders
+       storagesc->storagesc: cover min lock demand\ncp -> blobbers + stake holders
        storagesc->storagesc: passed challenges\ncp -> blobbers + stake holders
        storagesc->storagesc: mint interest\nstoragesc -> blobbers' stake holders 
        storagesc-> blockchain : minted interest payments
-       storagesc->storagesc: reaming funds\ncp -> write pool
+       storagesc->storagesc: reaming funds\ncp -> owner's write pool
     end
-   storagesc-> blockchain : save write pool
+   storagesc-> blockchain : save write pools
    storagesc-> blockchain : save challenge pool
     blockchain ->storagesc: all allocations
    storagesc->storagesc: remove allocation id 
@@ -484,19 +484,18 @@ end note
     end
     blockchain ->storagesc:blobbers
     storagesc->storagesc: blobber challenge pass rates
-    blockchain ->storagesc: write pool   
+    blockchain ->storagesc: allocation's write pools   
     group challenge pool
-       storagesc->storagesc: min lock demand\ncp -> blobbers + stake holders
+       storagesc->storagesc: cover min lock demand\ncp -> blobbers + stake holders
        storagesc->storagesc: passed challenges\ncp -> blobbers + stake holders
        storagesc->storagesc: mint interest\nstoragesc -> blobbers' stake holders 
        storagesc-> blockchain : minted interest payments
-       storagesc->storagesc: return any reaming funds\ncp -> write pool
+       storagesc->storagesc: return any reaming funds\ncp -> owner's write pool
     end
-   storagesc-> blockchain : save write pool
-   storagesc-> blockchain : save challenge pool
-    blockchain ->storagesc: save all allocations
+   storagesc-> blockchain : save write pools
+   blockchain ->storagesc: list of all allocations
    storagesc->storagesc: remove allocation id 
-   storagesc-> blockchain : all allocatinos    
+   storagesc-> blockchain : save all allocatinos    
 storagesc -> zbox : allocation id 
 ```
 
@@ -516,19 +515,18 @@ note left
 end note       
    storagesc<- blockchain : corporations details
    storagesc->storagesc: validate free storage marker
-    blockchain ->storagesc: blobbers
+   blockchain ->storagesc: blobbers
    storagesc->storagesc: select allocation blobbers
    storagesc->storagesc: new allocation
-    group new allocation
+   group new allocation
        storagesc->storagesc: set:\n* in paramters\n* selected blobbers\n* now
-       storagesc->storagesc: new write pool
-        group new write pool
-           storagesc->storagesc: mint tokens for write pool
-        end 
+       storagesc->storagesc: new write pool; mint tokens
+       storagesc->storagesc: new read pool; mint tokens
        storagesc-> blockchain : wrie pool
+       storagesc-> blockchain : read pool
        storagesc->storagesc: new challenge pool    
        storagesc-> blockchain : challenge pool    
-    end
+   end
    storagesc-> blockchain : new allocation
 storagesc -> zbox : allocation id 
 ```
@@ -591,9 +589,9 @@ end note
     end
     group allocation
        storagesc->storagesc: update alllocation as required\nsize expireation and immutable
-        blockchain ->storagesc: owner wrtie pool
+       blockchain ->storagesc: owner wrtie pool
        storagesc->storagesc: ammend write pool lock duration
-        blockchain ->storagesc: challenge pool
+       blockchain ->storagesc: challenge pool
        storagesc->storagesc: mint new tokens for challenge pool
        storagesc-> blockchain : challenge pool
        storagesc-> blockchain : write pool
