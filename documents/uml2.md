@@ -200,8 +200,11 @@ loop all files in path
    zbox -> zbox : list file differences\nbetween local and remote 
 end
 loop all differences between local and remote
-    zbox -> blobbers : sync remote files\ndownload, upload, update or delete
-    zbox -> zbox : sync local files
+    alt update remote
+        zbox -> blobbers : sync remote files\ndownload, upload, update or delete
+    else update local
+        zbox -> zbox : sync local files
+    end
 end
 ```
 

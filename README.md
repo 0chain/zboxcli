@@ -983,7 +983,7 @@ Only the allocation's owner can successfully run `sync`.
 <details>
   <summary>sync</summary>
 
-![image](https://user-images.githubusercontent.com/6240686/127884035-9dcb9ef1-9270-4da8-9393-099b37ce635c.png)
+![image](https://user-images.githubusercontent.com/6240686/127884376-a95c4f27-4b2a-4d9b-91b6-c7e7919f88bc.png)
 
 </details>
 
