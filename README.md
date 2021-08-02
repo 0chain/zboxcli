@@ -126,7 +126,7 @@ When you run the `zbox` command in terminal with no arguments, it will list all 
 help|Help about any command
 [list](#list)|list files from blobbers
 [list-all](#list-all-allocations)|list all files from blobbers
-[listallocations](#list-allocations)|List allocations for the client
+[listallocations](#list-owners-allocations)|List allocations for the client
 [ls-blobbers](#list-blobbers)|Show active blobbers in storage SC.
 [meta](#get-metadata)|get meta data of files from blobbers
 [move](#move)|move an object(file/folder) to another folder on blobbers
@@ -567,7 +567,7 @@ settings:
 ./zbox list-all --allocation 4ebeb69feeaeb3cd308570321981d61beea55db65cbeba4ba3b75c173c0f141b
 ```
 
-## List all allocations
+## List owner's allocations
 
 `listallocations` provides a list of all allocations owned by the user.
 
@@ -869,8 +869,8 @@ Returns status message showing whether the operation was successful or not.
 ## List
 
 Use `list` command to list files in given remote path of the dStorage. An auth ticket should be provided when
-not sent by the allocation owner. Using an auth ticket requires a `lookuphash` to indicate the object on which to list
-information. 
+not sent by the allocation's owner. Using an auth ticket requires a `lookuphash` to indicate the path for which to list
+contents. 
 
 | Parameter  | Required | Description                                                              | default | Valid values |
 |------------|----------|--------------------------------------------------------------------------|---------|--------------|
@@ -903,7 +903,8 @@ Response will be a list with information for each file/folder in the given path.
 
 ## Copy
 
-Use `copy` command to copy file to another folder path in dStorage. Only the owner of the allocation can copy an object.
+Use `copy` command to copy file to another folder path in dStorage. 
+Only the owner of the allocation can copy an object.
 
 | Parameter  | Required | Description                                       | default | Valid values |
 |------------|----------|---------------------------------------------------|---------|--------------|
@@ -934,7 +935,8 @@ Response:
 
 ## Move
 
-Use `move` command to move file to another remote folder path on dStorage.
+Use `move` command to move file to another remote folder path on dStorage. 
+Only the owner of the allocation can copy an object.
 
 | Parameter  | Required | Description                                       | default | Valid values |
 |------------|----------|---------------------------------------------------|---------|--------------|
@@ -963,38 +965,10 @@ Response:
 /file.txt moved
 ```
 
-### List allocations
-
-Use `listallocations` command to list all allocations for the client.
-
-| Parameter  | Required | Description                                                              | default | Valid values |
-|------------|----------|--------------------------------------------------------------------------|---------|--------------|
-|| json       | no       | output the response in json format                                       | false   | boolean      |
-
-<details>
-  <summary>listallocations</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/124474346-51ad2000-dd98-11eb-96f1-348ac926be3c.png)
-
-</details>
-
-Example
-
-```
-./zbox listallocations
-```
-
-Response:
-
-```
-                                 ID                                |    SIZE    |          EXPIRATION           | DATASHARDS | PARITYSHARDS | FINALIZED | CANCELED |   R  PRICE   |   W  PRICE    
-+------------------------------------------------------------------+------------+-------------------------------+------------+--------------+-----------+----------+--------------+--------------+
-  8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc | 6442450944 | 2021-05-24 00:27:23 +0700 +07 |          4 |            2 | false     | false    | 0.0599999994 | 0.0599999994  
-```
-
 ## Sync
 
-sync command helps in syncing all files from the local folder recursively to the remote.
+`sync` command syncs all files from the local folder recursively to the remote.
+Only the allocation's owner can successfully run `sync`.
 
 | Parameter   | Required | Description                                                                                   | default | Valid values |
 |-------------|----------|-----------------------------------------------------------------------------------------------|---------|--------------|
@@ -1005,8 +979,6 @@ sync command helps in syncing all files from the local folder recursively to the
 | localchache | no       | local chache of remote snapshot. Used for comparsion with remote. After sync will be updated. |         | string       |
 | localpath   | yes      | local directory to which to sync                                                              |         | file path    |
 | uploadonly  | no       | only upload and update files                                                                  | false   | boolean      |
-
-
 
 Example
 
@@ -1181,7 +1153,8 @@ Response will be metadata for the given filepath/lookuphash (if using authTicket
 
 ## Rename
 
-`rename` command helps in renaming a file existing already on dStorage.
+`rename` command renames a file existing already on dStorage. Only the 
+allocation's owner can rename a file.
 
 | Parameter  | Required | Description                                       | default | Valid values |
 |------------|----------|---------------------------------------------------|---------|--------------|
@@ -1211,7 +1184,7 @@ Response:
 
 ## Stats
 
-`stats` command helps in getting upload, download and challenge information for a file.
+`stats` command gets upload, download and challenge statistics for a file.
 Only the owner can get a files stats.
 
 | Parameter  | Required | Description                 | default | Valid values |
@@ -1374,7 +1347,7 @@ Use `rp-create` to create a read pool, `rp-create` has no parameters.
 <details>
   <summary>rp-create</summary>
 
-![image](https://user-images.githubusercontent.com/6240686/123973204-77f74800-d9b3-11eb-8165-96741cc0b291.png)
+![image](https://user-images.githubusercontent.com/6240686/127875827-f0301162-5c62-4964-989a-d56d4b2292af.png)
 
 </details>
 
@@ -1410,14 +1383,14 @@ Lock some tokens in read pool associated with an allocation.
   creates one.
 
 Anyone can lock tokens with a read pool attached an allocation. These tokens can
-be used to pay read access to files stored with the allocation. To use these tokens 
-the user must be the allocation owner, collaborator or have an auth ticket. 
+be used to pay read access to files stored with the allocation. To use 
+these tokens the user must be the allocation owner, collaborator or have an auth ticket. 
 
 | Parameter  | Required | Description            | default | Valid values |
 |------------|----------|------------------------|---------|--------------|
 | allocation | yes      | allocation id          |         | string       |
 | blobber    | no       | blobber id to lock for |         | string       |
-| duration   | yes      | lock duration          |         | duratation   |
+| duration   | yes      | lock duration          |         | duration   |
 | fee        |          | transaction fee        | 0       | int          |
 | tokens     | yes      | tokens to lock         |         | int          |
 
@@ -1513,8 +1486,8 @@ Use `sp-info` to get your stake pool information and settings.
 ## Lock tokens into stake pool
 
 Lock creates delegate pool for current client and given blobber. 
-The tokens locked for the blobber stake can be unlocked any time, excluding 
-where the tokens held by opened offers. The tokens collect interests.
+The tokens locked for the blobber stake can be unlocked any time, excluding times 
+when the tokens held by opened offers. The tokens collect interest.
 `sp-lock` returns the id of the new stake pool, this will be needed to reference
 to stake pool later.
 
@@ -1576,15 +1549,17 @@ Get information about all stake pools of current user.
 ![image](https://user-images.githubusercontent.com/6240686/124600324-7ff53300-de5e-11eb-9b78-5a4f9c59a536.png)
 
 </details>
+
 ```
 ./zbox sp-user-info
 ```
 
 ## Pay interests
 
-Changes in stake pool pays all pending rewards, But if there are no changes interests will not be paid.
-`sp-pay-interests`  command can be used to 
-pay interest for all delegates. Use `sp-info` to check interests can be paid or not.
+Changes in stake pool pays all pending rewards, But if there are no 
+changes interests will not be paid.
+`sp-pay-interests`  command can be used to force payment of interest for 
+all delegates. Use `sp-info` to check if interest can be paid or not.
 
 | Parameter  | Required | Description          | default        | Valid values |
 |------------|----------|----------------------|----------------|--------------|
@@ -1640,8 +1615,10 @@ All tokens will be divided between allocation blobbers depending on their write 
 * If the user does not have a pre-existing read pool, then the smart-contract
   creates one.
   
- Anyone can lock tokens with a write pool attached an allocation. These tokens can 
- be used to pay for the allocation updates and min lock demand as needed.
+Anyone can lock tokens with a write pool attached an allocation. These tokens can 
+be used to pay for the allocation updates and min lock demand as needed. Any tokens
+moved into the challenge pool to underwrite blobbers' min lock demands return to the
+allocation's owner on closing the allocation.
 
 | Parameter     | Required | Description                       | default | Valid values |
 |---------------|----------|-----------------------------------|---------|--------------|
@@ -1765,7 +1742,7 @@ Commit file changes to chain
 
 ## Sign data|
 
-`sign-data` uses the information from your wallet to sign the input string option
+`sign-data` uses the information from your wallet to sign the input data string
 
 | Parameter   | Required | Description                                   | default | Valid values |
 |-------------|----------|-----------------------------------------------|---------|--------------|

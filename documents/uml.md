@@ -51,7 +51,6 @@ end note
     blobbers -> 0chain : request allocaton
         blockchain -> 0chain : allocation
     0chain -> blobbers : allocation
-    store -> blobbers : collaborators
     alt check sender is owner
         blobbers ->x zbox : unauthorised user
     end
@@ -638,7 +637,7 @@ storagesc -> zbox : transaction id
     
 ```puml
 title Create read pool
-zbox ->storagesc: rp-create
+zbox ->storagesc: //new_read_pool//
 storagesc ->storagesc: new read pool
 storagesc -> blockchain : read pool
 storagesc -> zbox
