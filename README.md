@@ -1766,10 +1766,10 @@ Commit file changes to chain
 
 
 ```shell
-
-```
 ./zbox sign-data "data to sign"
 Signature : 9432ab2ee602062afaf48c4016b373a65db48a8546a81c09dead40e54966399e
+```
+
 ------
 
 ## Streaming
