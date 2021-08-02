@@ -980,6 +980,13 @@ Only the allocation's owner can successfully run `sync`.
 | localpath   | yes      | local directory to which to sync                                                              |         | file path    |
 | uploadonly  | no       | only upload and update files                                                                  | false   | boolean      |
 
+<details>
+  <summary>sync</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/127884035-9dcb9ef1-9270-4da8-9393-099b37ce635c.png)
+
+</details>
+
 Example
 
 ```
@@ -1230,6 +1237,15 @@ Use `start-repair` command to repair a file on dStorage.
 | allocation | yes      | allocation id             |         | string       |
 | repairpath | yes      | remote path to repair     |         | string       |
 | rootpath   | yes      | file path for local files |         | string       |
+
+<details>
+  <summary>start-repair</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/127882066-83d7e641-56a7-4ae1-bbf1-547ca389481c.png)
+
+</details>
+
+
 
 Example
 

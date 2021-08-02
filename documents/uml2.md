@@ -173,3 +173,79 @@ control 0chain
 zbox -> 0chain : getChallengePoolStat
 0chain -> zbox : challenge pool stats
 ```
+
+```puml
+title Repair directory
+boundary zbox 
+collections blobbers
+database store
+control 0chain
+zbox -> blobbers : get files
+loop all files in path
+   blobbers -> zbox : file 
+   zbox -> zbox : recalculate file hash
+   alt hashe does not match
+    zbox -> blobbers : update file
+   end
+end
+```
+
+```puml
+title Sync directory
+boundary zbox 
+collections blobbers
+zbox -> blobbers : request files
+blobbers -> zbox : files
+loop all files in path
+   zbox -> zbox : list file differences\nbetween local and remote 
+end
+loop all differences between local and remote
+    zbox -> blobbers : sync remote files\ndownload, upload, update or delete
+    zbox -> zbox : sync local files
+end
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
