@@ -12,9 +12,9 @@ import (
 )
 
 var getMptKeyCommand = &cobra.Command{
-	Use:   "copy",
-	Short: "copy an object(file/folder) to another folder on blobbers",
-	Long:  `copy an object to another folder on blobbers`,
+	Use:   "get-mpt",
+	Short: "directly view blockchain data",
+	Long:  `directly view blockchain data from MPT key`,
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		if cmd.Flags().Changed("allocation") == false { // check if the flag "path" is set
