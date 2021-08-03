@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
@@ -25,13 +26,14 @@ var getMptKeyCommand = &cobra.Command{
 			log.Fatalf("Failed to get Mpt key: %v\n", err)
 		}
 
-		var prettyJSON bytes.Buffer
-		err = json.Indent(&prettyJSON, jsonBytes, "", "\t")
+		var indented bytes.Buffer
+		err = json.Indent(&indented, jsonBytes, "", "\t")
 		if err != nil {
 			log.Fatalf("Result %s baddly formated: %v\n", string(jsonBytes), err)
 		}
 
-		fmt.Println(key, ": ", prettyJSON.String())
+		noBackSlash := strings.Replace(indented.String(), "\\", "", -1)
+		fmt.Println(key, ": ", noBackSlash)
 		return
 	},
 }
