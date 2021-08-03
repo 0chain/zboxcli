@@ -17,7 +17,7 @@ var getMptKeyCommand = &cobra.Command{
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		if cmd.Flags().Changed("key") == false {
-			log.Fatal("Required Mpt key missing: %v\n")
+			log.Fatal("Required Mpt key missing\n")
 		}
 		key := cmd.Flag("key").Value.String()
 		jsonBytes, err := sdk.GetMptData(key)
