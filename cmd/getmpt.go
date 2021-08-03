@@ -22,7 +22,7 @@ var getMptKeyCommand = &cobra.Command{
 			os.Exit(1)                                      // and os.Exit(1)
 		}
 		key := cmd.Flag("allocation").Value.String()
-		jsonBytes, err := sdk.GetMptKey(key)
+		jsonBytes, err := sdk.GetMptData(key)
 		if err != nil {
 			log.Fatalf("Failed to get Mpt key: %v\n", err)
 		}
