@@ -19,7 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
@@ -31,9 +32,6 @@ jobs:
 
     - name: Test
       run: go test -v ./...
-
-    - name: Checkout code
-      uses: actions/checkout@v2
       
     - name: Install
       run: make install
