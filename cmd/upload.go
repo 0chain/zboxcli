@@ -1,13 +1,11 @@
 package cmd
 
 import (
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
 	"sync"
 
-	"github.com/0chain/gosdk/core/common"
 	thrown "github.com/0chain/gosdk/core/common/errors"
 	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
@@ -16,6 +14,45 @@ import (
 
 	"github.com/spf13/cobra"
 )
+
+var createDirCmd = &cobra.Command{
+	Use:   "createdir",
+	Short: "Create directory",
+	Long:  `Create directory`,
+	Args:  cobra.MinimumNArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		fflags := cmd.Flags()              // fflags is a *flag.FlagSet
+		if !fflags.Changed("allocation") { // check if the flag "path" is set
+			PrintError("Error: allocation flag is missing") // If not, we'll let the user know
+			os.Exit(1)                                      // and return
+		}
+		if !fflags.Changed("dirname") {
+			PrintError("Error: dirname flag is missing")
+			os.Exit(1)
+		}
+
+		allocationID := cmd.Flag("allocation").Value.String()
+		allocationObj, err := sdk.GetAllocation(allocationID)
+		if err != nil {
+			PrintError("Error fetching the allocation.", err)
+			os.Exit(1)
+		}
+		dirname := cmd.Flag("dirname").Value.String()
+
+		if err != nil {
+			PrintError("CreateDir failed.", err)
+			os.Exit(1)
+		}
+		err = allocationObj.CreateDir(dirname)
+
+		if err != nil {
+			PrintError("CreateDir failed.", err)
+			os.Exit(1)
+		}
+
+		return
+	},
+}
 
 // uploadCmd represents upload command
 var uploadCmd = &cobra.Command{
@@ -58,20 +95,8 @@ var uploadCmd = &cobra.Command{
 		if strings.HasPrefix(remotepath, "/Encrypted") {
 			encrypt = true
 		}
-		var attrs fileref.Attributes
-		if fflags.Changed("attr-who-pays-for-reads") {
-			var (
-				wp  common.WhoPays
-				wps string
-			)
-			if wps, err = fflags.GetString("attr-who-pays-for-reads"); err != nil {
-				log.Fatalf("getting 'attr-who-pays-for-reads' flag: %v", err)
-			}
-			if err = wp.Parse(wps); err != nil {
-				log.Fatal(err)
-			}
-			attrs.WhoPaysForReads = wp // set given value
-		}
+
+		var attrs fileref.Attributes // depreciated
 
 		live, _ := cmd.Flags().GetBool("live")
 		sync, _ := cmd.Flags().GetBool("sync")
@@ -276,11 +301,11 @@ func startSyncUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPat
 
 func init() {
 	rootCmd.AddCommand(uploadCmd)
+	rootCmd.AddCommand(createDirCmd)
 	uploadCmd.PersistentFlags().String("allocation", "", "Allocation ID")
 	uploadCmd.PersistentFlags().String("remotepath", "", "Remote path to upload")
 	uploadCmd.PersistentFlags().String("localpath", "", "Local path of file to upload")
 	uploadCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
-	uploadCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
 	uploadCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
 	uploadCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
 
@@ -295,8 +320,13 @@ func init() {
 	uploadCmd.Flags().String("feed", "", "remote live stream feed (eg youtube live feed url). only works with --sync")
 	uploadCmd.Flags().String("downloader-args", "-q", "give args to youtube-dl to download video. default is -q. only works with --sync")
 	uploadCmd.Flags().String("ffmpeg-args", "", "give args to ffmpeg to build output. only works with --sync")
-
 	uploadCmd.MarkFlagRequired("allocation")
 	uploadCmd.MarkFlagRequired("remotepath")
 	uploadCmd.MarkFlagRequired("localpath")
+
+	createDirCmd.PersistentFlags().String("allocation", "", "Allocation ID")
+	createDirCmd.PersistentFlags().String("dirname", "", "New directory name")
+	createDirCmd.MarkFlagRequired("allocation")
+	createDirCmd.MarkFlagRequired("dirname")
+
 }

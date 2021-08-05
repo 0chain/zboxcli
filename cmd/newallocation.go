@@ -3,7 +3,6 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/spf13/pflag"
 	"io/ioutil"
 	"log"
 	"math"
@@ -11,6 +10,10 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/0chain/gosdk/zboxcore/blockchain"
+
+	"github.com/spf13/pflag"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
@@ -151,16 +154,43 @@ var newallocationCmd = &cobra.Command{
 				log.Fatal("Error fetching cost: ", err)
 			}
 			log.Print("Cost for the given allocation: ", zcncore.ConvertToToken(minCost))
-		} else {
-			allocationID, err := sdk.CreateAllocation(*datashards, *parityshards,
+
+			return
+		}
+
+		var owner string
+		if flags.Changed("owner") {
+			if owner, err = flags.GetString("owner"); err != nil {
+				log.Fatal("invalid owner value: ", err)
+			}
+		}
+		var allocationID string
+		if len(owner) == 0 {
+			allocationID, err = sdk.CreateAllocation(*datashards, *parityshards,
 				*size, expireAt, readPrice, writePrice, mcct, lock)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
-			log.Print("Allocation created: ", allocationID)
-			storeAllocation(allocationID)
+		} else {
+			var ownerPublicKey string
+			if flags.Changed("owner") {
+				if ownerPublicKey, err = flags.GetString("owner_public_key"); err != nil {
+					log.Fatal("invalid owner public key: ", err)
+				}
+				if len(ownerPublicKey) == 0 {
+					log.Fatal("must provide owner public key, when creating an allocation for another")
+				}
+			}
+
+			allocationID, err = sdk.CreateAllocationForOwner(owner, ownerPublicKey, *datashards, *parityshards,
+				*size, expireAt, readPrice, writePrice, mcct, lock, blockchain.GetPreferredBlobbers())
+			if err != nil {
+				log.Fatal("Error creating allocation: ", err)
+			}
 		}
-		return
+		log.Print("Allocation created: ", allocationID)
+		storeAllocation(allocationID)
+
 	},
 }
 
@@ -222,6 +252,10 @@ func init() {
 	newallocationCmd.Flags().
 		String("free_storage", "",
 			"json file containing marker for free storage")
+	newallocationCmd.Flags().String("owner", "",
+		"create an allocation with someone else as owner")
+	newallocationCmd.Flags().String("owner_public_key", "",
+		"public key of owner, user when creating an allocation for somone else")
 
 }
 

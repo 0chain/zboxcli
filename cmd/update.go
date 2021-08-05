@@ -56,12 +56,12 @@ var updateCmd = &cobra.Command{
 			PrintError("Error: can not update Encrypted Folder")
 			os.Exit(1)
 		}
-		// get original file attributes
-		var attrs = getRemoteFileAttributes(allocationObj, remotepath)
 
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
+
+		var attrs fileref.Attributes // depreciated
 		if len(thumbnailpath) > 0 {
 			if encrypt {
 				err = allocationObj.EncryptAndUpdateFileWithThumbnail(localpath,

@@ -26,3 +26,4 @@ sample/zboxcli
 __debug_bin__
 sp_lock.sh
 rp_lock.sh
+.idea/

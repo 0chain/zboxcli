@@ -3,8 +3,7 @@ module github.com/0chain/zboxcli
 go 1.13
 
 require (
-	github.com/0chain/gosdk v1.2.7-0.20210630153828-e2162c36dbfe
-	github.com/jtguibas/cinema v0.0.0-20200208054232-ca271f28a020
+	github.com/0chain/gosdk v1.2.81
 	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/mattn/go-runewidth v0.0.10 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
