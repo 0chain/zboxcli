@@ -1,0 +1,138 @@
+name: build-cli
+on:
+  push:
+    branches:
+      - master
+      - dev
+    tags:
+      - 'v*'
+
+  pull_request:
+    branches:
+      - master
+      - production
+jobs:
+  build-linux:
+    name: Build-linux
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+    
+    - name: Set GITHUB_ENV
+      run: |
+        echo "BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+
+        if [[ "${{github.base_ref}}" == "master" || "${{github.ref}}" == "refs/heads/master" ]]; then
+          echo "TAG=v0.0.0-master" >> $GITHUB_ENV
+        elif  [[ "${{github.base_ref}}" == "dev" || "${{github.ref}}" == "refs/heads/dev" ]]; then
+          echo "TAG=v0.0.0-dev" >> $GITHUB_ENV
+        else
+          echo "TAG=$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//-/g' )" >> $GITHUB_ENV
+        fi
+
+    - name: Install
+      run: make install
+
+    - name: zip release
+      run: tar -czvf zbox-linux.tar.gz ./zbox
+
+    - name: Upload binaries to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: zbox-linux.tar.gz
+        tag: ${{ env.TAG }}
+        overwrite: true
+        file_glob: true
+
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v2
+      with:
+        name: zbox-linux
+        path: zbox
+        retention-days: 5
+  build-windows:
+    name: Build-windows
+    runs-on: windows-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+    
+    - name: Set GITHUB_ENV
+      run: |
+        echo "BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+
+        if [[ "${{github.base_ref}}" == "master" || "${{github.ref}}" == "refs/heads/master" ]]; then
+          echo "TAG=v0.0.0-master" >> $GITHUB_ENV
+        elif  [[ "${{github.base_ref}}" == "dev" || "${{github.ref}}" == "refs/heads/dev" ]]; then
+          echo "TAG=v0.0.0-dev" >> $GITHUB_ENV
+        else
+          echo "TAG=$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//-/g' )" >> $GITHUB_ENV
+        fi
+    
+    - name: Install
+      run: make install
+    
+    - name: zip release
+      run: |
+        copy zbox zbox.exe
+        7z a zbox-windows.zip zbox.exe
+
+    - name: Upload binaries to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: zbox-windows.zip
+        tag: ${{ env.TAG }}
+        overwrite: true
+        file_glob: true
+
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v2
+      with:
+        name: zbox-windows
+        path: zbox
+        retention-days: 5
+  build-macos:
+    name: Build-macos
+    runs-on: macos-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+    
+    - name: Set GITHUB_ENV
+      run: |
+        echo "BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+
+        if [[ "${{github.base_ref}}" == "master" || "${{github.ref}}" == "refs/heads/master" ]]; then
+          echo "TAG=v0.0.0-master" >> $GITHUB_ENV
+        elif  [[ "${{github.base_ref}}" == "dev" || "${{github.ref}}" == "refs/heads/dev" ]]; then
+          echo "TAG=v0.0.0-dev" >> $GITHUB_ENV
+        else
+          echo "TAG=$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//-/g' )" >> $GITHUB_ENV
+        fi
+
+    - name: Install
+      run: make install
+    - name: zip release
+      run: tar -czvf zbox-macos.tar.gz ./zbox
+
+    - name: Upload binaries to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: zbox-macos.tar.gz
+        tag: ${{ env.TAG }}
+        overwrite: true
+        file_glob: true
+
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v2
+      with:
+        name: zbox-macos
+        path: zbox
+        retention-days: 5
