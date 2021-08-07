@@ -65,9 +65,9 @@ jobs:
       run: |
         echo "BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
 
-        IF ( "${{github.base_ref}}" == "master" || "${{github.ref}}" == "refs/heads/master" ){
+        IF ( "${{github.base_ref}}" -eq "master" || "${{github.ref}}" -eq "refs/heads/master" ){
           echo "TAG=v0.0.0-master" >> $GITHUB_ENV
-        } ElseIf ( "${{github.base_ref}}" == "dev" || "${{github.ref}}" == "refs/heads/dev" ){
+        } ElseIf ( "${{github.base_ref}}" -eq "dev" || "${{github.ref}}" -eq "refs/heads/dev" ){
           echo "TAG=v0.0.0-dev" >> $GITHUB_ENV
         } else {
           echo "TAG=$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//-/g' )" >> $GITHUB_ENV
