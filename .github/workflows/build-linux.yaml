@@ -11,14 +11,15 @@ jobs:
     
     - name: Install
       run: make install
-    - name: rename zbox
-      run: mv zbox zbox-linux
+
+    - name: zip release
+      run: tar -czvf zbox-linux.tar.gz ./zbox
 
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: zbox-linux
+        file: zbox-linux.tar.gz
         tag: 'v0.0.0-beta'
         overwrite: true
         file_glob: true
@@ -41,13 +42,15 @@ jobs:
       run: make install
     
     - name: rename zbox
-      run: copy zbox zbox.exe
+      run: |
+        copy zbox zbox.exe
+        7z a zbox-windows.zip zbox.exe
 
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: zbox.exe
+        file: zbox-windows.zip
         tag: 'v0.0.0-beta'
         overwrite: true
         file_glob: true
@@ -58,8 +61,8 @@ jobs:
         name: zbox-cli-windows
         path: zbox
         retention-days: 5
-  build-mac:
-    name: Build-mac
+  build-macos:
+    name: Build-macos
     runs-on: macos-latest
     steps:
 
@@ -68,14 +71,14 @@ jobs:
     
     - name: Install
       run: make install
-    - name: rename zbox
-      run: copy zbox zbox-mac
+    - name: zip release
+      run: tar -czvf zbox-macos.tar.gz ./zbox
 
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: zbox-mac
+        file: zbox-macos.tar.gz
         tag: 'v0.0.0-beta'
         overwrite: true
         file_glob: true
