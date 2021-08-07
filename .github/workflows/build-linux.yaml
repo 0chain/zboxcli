@@ -1,5 +1,10 @@
 name: build-cli
-on: [push, pull_request]
+on: 
+  push:
+    branches:
+      - '*'
+
+
 jobs:
   build-linux:
     name: Build-linux
@@ -28,6 +33,17 @@ jobs:
     
     - name: Install
       run: make install
+    
+
+    - name: Upload binaries to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: zbox
+        asset_name: zbox.exe
+        tag: 'v0.0.0-beta'
+        overwrite: true
+        file_glob: true
 
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v2
