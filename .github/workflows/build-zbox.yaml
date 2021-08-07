@@ -68,7 +68,7 @@ jobs:
         } ElseIf ( "${{github.base_ref}}" -eq "dev" -OR "${{github.ref}}" -eq "refs/heads/dev" ){
           echo "TAG=v0.0.0-dev" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
         } ELSE {
-          echo 'TAG=$(echo "${GITHUB_REF#refs/heads/}".Replace("refs/tags/","")' | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+          echo "TAG=$(echo ${git describe --tags --abbrev=0})" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
         }
     
     - name: Install
