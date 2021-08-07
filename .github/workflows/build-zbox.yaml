@@ -64,11 +64,11 @@ jobs:
     - name: Set GITHUB_ENV
       run: |
         IF ( "${{github.base_ref}}" -eq "master" -OR "${{github.ref}}" -eq "refs/heads/master" ){
-          echo ::set-env name=TAG::v0.0.0-master
+          echo "TAG=v0.0.0-master" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
         } ElseIf ( "${{github.base_ref}}" -eq "dev" -OR "${{github.ref}}" -eq "refs/heads/dev" ){
-          echo ::set-env name=TAG::v0.0.0-dev
+          echo "TAG=v0.0.0-dev" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
         } ELSE {
-          echo ::set-env name=TAG::$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//-/g' )
+          echo "TAG=$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//-/g' )" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
         }
     
     - name: Install
