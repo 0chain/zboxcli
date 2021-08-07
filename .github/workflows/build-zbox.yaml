@@ -1,4 +1,4 @@
-name: build-cli
+name: build-zbox
 on:
   push:
     branches:
@@ -63,14 +63,12 @@ jobs:
     
     - name: Set GITHUB_ENV
       run: |
-        echo "BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
-
         IF ( "${{github.base_ref}}" -eq "master" || "${{github.ref}}" -eq "refs/heads/master" ){
-          echo "TAG=v0.0.0-master" >> $GITHUB_ENV
+          echo ::set-output name=TAG::v0.0.0-master
         } ElseIf ( "${{github.base_ref}}" -eq "dev" || "${{github.ref}}" -eq "refs/heads/dev" ){
-          echo "TAG=v0.0.0-dev" >> $GITHUB_ENV
-        } else {
-          echo "TAG=$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//-/g' )" >> $GITHUB_ENV
+          echo ::set-output name=TAG::v0.0.0-dev
+        } ELSE {
+          echo ::set-output name=$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//-/g' )
         }
     
     - name: Install
@@ -86,7 +84,7 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: zbox-windows.zip
-        tag: ${{ env.TAG }}
+        tag: ${{ steps.vars.outputs.tag }}
         overwrite: true
         file_glob: true
 
