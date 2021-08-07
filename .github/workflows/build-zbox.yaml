@@ -63,12 +63,12 @@ jobs:
     
     - name: Set GITHUB_ENV
       run: |
-        IF ( "${{github.base_ref}}" -eq "master" || "${{github.ref}}" -eq "refs/heads/master" ){
+        IF ( "${{github.base_ref}}" -eq "master" -OR "${{github.ref}}" -eq "refs/heads/master" ){
           echo ::set-output name=TAG::v0.0.0-master
-        } ElseIf ( "${{github.base_ref}}" -eq "dev" || "${{github.ref}}" -eq "refs/heads/dev" ){
+        } ElseIf ( "${{github.base_ref}}" -eq "dev" -OR "${{github.ref}}" -eq "refs/heads/dev" ){
           echo ::set-output name=TAG::v0.0.0-dev
         } ELSE {
-          echo ::set-output name=$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//-/g' )
+          echo ::set-output name=TAG::$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//-/g' )
         }
     
     - name: Install
@@ -84,7 +84,7 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: zbox-windows.zip
-        tag: ${{ steps.vars.outputs.tag }}
+        tag: ${{ steps.vars.outputs.TAG }}
         overwrite: true
         file_glob: true
 
