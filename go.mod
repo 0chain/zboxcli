@@ -4,7 +4,6 @@ go 1.13
 
 require (
 	github.com/0chain/gosdk v1.2.82-0.20210806092509-faf62ccf8f8f
-	github.com/lithammer/shortuuid v3.0.0+incompatible // indirect
 	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/mattn/go-runewidth v0.0.10 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
@@ -19,4 +18,4 @@ require (
 )
 
 // temporary, for development
-// replace github.com/0chain/gosdk => ../gosdk
+replace github.com/0chain/gosdk => ../gosdk
