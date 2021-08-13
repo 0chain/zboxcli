@@ -1,0 +1,61 @@
+@startuml
+title Share Flow
+
+actor UserA #red
+participant zboxSDK
+participant Blobber
+database BlobberDB
+actor UserB #green
+=== Share flow ==
+
+UserA -> zboxSDK: Upload file with --encrypted tag
+zboxSDK -> Blobber: encrypting file with Ed25519 and upload to storage
+Blobber -> BlobberDB: mark file as encrypted
+Blobber -> zboxSDK: Finish uploading and respond with confirmation
+UserA -> zboxSDK: getWallet information to fetch encryptionPublicKey
+UserA -> zboxSDK: Share file with UserA clientID and encryptionPublicKey
+zboxSDK -> Blobber: Saving information about share in shareInfo DB
+Blobber -> BlobberDB: reencryption key saved in same item with shareInfo
+Blobber -> zboxSDK: Confirm share operation with generated auth_ticket
+note over zboxSDK: Auth ticket will include expiration, re_encryption_key (empty), encrypted
+alt if userA adding expiration option
+zboxSDK -> Blobber: send expiry timestamp to blobber
+Blobber -> BlobberDB: saving expiry to shareInfo
+end
+
+alt if userA want to make it public for any client
+zboxSDK -> Blobber: Sending empty clientID to blobber
+Blobber -> BlobberDB: Clearing client ID in shareInfo table
+end
+
+alt if userA want to revoke share
+zboxSDK -> Blobber: Sending revoke==true to blobber
+Blobber -> BlobberDB: Updating shareInfo table with revoke field = t
+end
+
+=== Download shared flow ==
+
+UserB -> zboxSDK: Trying to download file with auth_ticket
+zboxSDK -> Blobber: Checking if file exists for this clientID
+Blobber -> BlobberDB: find file by clientID
+alt file exists for clientID
+Blobber -> zboxSDK: Respond back with file chunks
+zboxSDK -> UserB: downloading file
+else reponse back with error
+Blobber -> zboxSDK: error during request
+zboxSDK -> UserB: finish downloading
+end
+
+alt file expired
+Blobber -> BlobberDB: checking in shareInfo if file expired (expiry field in table)
+BlobberDB -> Blobber: File expired, rejecting call
+Blobber -> zboxSDK: Return back error with expiration status
+end
+
+alt file revoked
+Blobber -> BlobberDB: checking in shareInfo if file revoked (revoke field in table)
+BlobberDB -> Blobber: File revoked, rejecting call
+Blobber -> zboxSDK: Return back error with error
+end
+
+@enduml
