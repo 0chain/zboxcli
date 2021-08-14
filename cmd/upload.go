@@ -6,7 +6,7 @@ import (
 	"strings"
 	"sync"
 
-	thrown "github.com/0chain/gosdk/core/common/errors"
+	thrown "github.com/0chain/errors"
 	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zboxcore/zboxutil"

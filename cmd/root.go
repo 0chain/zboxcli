@@ -3,14 +3,16 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/0chain/gosdk/core/logger"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sync"
 
+	"github.com/0chain/gosdk/core/conf"
+	"github.com/0chain/gosdk/core/logger"
+	"github.com/0chain/gosdk/core/transaction"
+
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 
 	"github.com/0chain/gosdk/zboxcore/blockchain"
 	"github.com/0chain/zboxcli/util"
@@ -30,11 +32,7 @@ var cDir string
 var bSilent bool
 var allocUnderRepair bool
 
-var preferredBlobbers []string
 var clientConfig string
-var minSubmit int
-var minCfm int
-var CfmChainLength int
 
 var rootCmd = &cobra.Command{
 	Use:   "zbox",
@@ -65,46 +63,29 @@ func Execute() {
 }
 
 func initConfig() {
-	nodeConfig := viper.New()
-	networkConfig := viper.New()
+
 	var configDir string
 	if cDir != "" {
 		configDir = cDir
 	} else {
 		configDir = util.GetConfigDir()
 	}
-	// Search config in home directory with name ".cobra" (without extension).
-	nodeConfig.AddConfigPath(configDir)
-	if &cfgFile != nil && len(cfgFile) > 0 {
-		nodeConfig.SetConfigFile(configDir + "/" + cfgFile)
-	} else {
-		nodeConfig.SetConfigFile(configDir + "/" + "config.yaml")
-	}
 
-	networkConfig.AddConfigPath(configDir)
-	if &networkFile != nil && len(networkFile) > 0 {
-		networkConfig.SetConfigFile(configDir + "/" + networkFile)
-	} else {
-		networkConfig.SetConfigFile(configDir + "/" + "network.yaml")
+	if cfgFile == "" {
+		cfgFile = "config.yaml"
 	}
-
-	if err := nodeConfig.ReadInConfig(); err != nil {
+	cfg, err := conf.LoadConfigFile(filepath.Join(configDir, cfgFile))
+	if err != nil {
 		fmt.Println("Can't read config:", err)
 		os.Exit(1)
 	}
 
-	blockWorker := nodeConfig.GetString("block_worker")
-	preferredBlobbers = nodeConfig.GetStringSlice("preferred_blobbers")
-	signScheme := nodeConfig.GetString("signature_scheme")
-	chainID := nodeConfig.GetString("chain_id")
-	minSubmit = nodeConfig.GetInt("min_submit")
-	minCfm = nodeConfig.GetInt("min_confirmation")
-	CfmChainLength = nodeConfig.GetInt("confirmation_chain_length")
-	// additional settings depending network latency
-	maxTxnQuery := nodeConfig.GetInt("max_txn_query")
-	querySleepTime := nodeConfig.GetInt("query_sleep_time")
+	transaction.SetConfig(&cfg)
 
-	//TODO: move the private key storage to the keychain or secure storage
+	if networkFile == "" {
+		networkFile = "network.yaml"
+	}
+	network, _ := conf.LoadNetworkFile(filepath.Join(configDir, networkFile))
 
 	// syncing loggers
 	logger.SyncLoggers([]*logger.Logger{zcncore.GetLogger(), sdk.GetLogger()})
@@ -113,22 +94,18 @@ func initConfig() {
 	zcncore.SetLogFile("cmdlog.log", !bSilent)
 	sdk.SetLogFile("cmdlog.log", !bSilent)
 
-	err := zcncore.InitZCNSDK(blockWorker, signScheme,
-		zcncore.WithChainID(chainID),
-		zcncore.WithMinSubmit(minSubmit),
-		zcncore.WithMinConfirmation(minCfm),
-		zcncore.WithConfirmationChainLength(CfmChainLength))
+	err = zcncore.InitZCNSDK(cfg.BlockWorker, cfg.SignatureScheme,
+		zcncore.WithChainID(cfg.ChainID),
+		zcncore.WithMinSubmit(cfg.MinSubmit),
+		zcncore.WithMinConfirmation(cfg.MinConfirmation),
+		zcncore.WithConfirmationChainLength(cfg.ConfirmationChainLength))
 	if err != nil {
 		fmt.Println("Error initializing core SDK.", err)
 		os.Exit(1)
 	}
 
-	if err := networkConfig.ReadInConfig(); err == nil {
-		miners := networkConfig.GetStringSlice("miners")
-		sharders := networkConfig.GetStringSlice("sharders")
-		if len(miners) > 0 && len(sharders) > 0 {
-			zcncore.SetNetwork(miners, sharders)
-		}
+	if network.IsValid() {
+		zcncore.SetNetwork(network.Miners, network.Sharders)
 	}
 
 	// is freshly created wallet?
@@ -210,26 +187,18 @@ func initConfig() {
 	}
 
 	//init the storage sdk with the known miners, sharders and client wallet info
-	err = sdk.InitStorageSDK(clientConfig, blockWorker, chainID, signScheme, preferredBlobbers)
+	err = sdk.InitStorageSDK(clientConfig, cfg.BlockWorker, cfg.ChainID, cfg.SignatureScheme, cfg.PreferredBlobbers)
 	if err != nil {
 		fmt.Println("Error in sdk init", err)
 		os.Exit(1)
 	}
 
 	// additional settings depending network latency
-	if maxTxnQuery > 0 {
-		blockchain.SetMaxTxnQuery(maxTxnQuery)
-	}
-	if querySleepTime > 0 {
-		blockchain.SetQuerySleepTime(querySleepTime)
-	}
+	blockchain.SetMaxTxnQuery(cfg.MaxTxnQuery)
+	blockchain.SetQuerySleepTime(cfg.QuerySleepTime)
 
-	if err := networkConfig.ReadInConfig(); err == nil {
-		miners := networkConfig.GetStringSlice("miners")
-		sharders := networkConfig.GetStringSlice("sharders")
-		if len(miners) > 0 && len(sharders) > 0 {
-			sdk.SetNetwork(miners, sharders)
-		}
+	if network.IsValid() {
+		sdk.SetNetwork(network.Miners, network.Sharders)
 	}
 
 	sdk.SetNumBlockDownloads(10)

@@ -3,6 +3,7 @@ module github.com/0chain/zboxcli
 go 1.13
 
 require (
+	github.com/0chain/errors v1.0.1
 	github.com/0chain/gosdk v1.2.81
 	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/mattn/go-runewidth v0.0.10 // indirect
@@ -13,7 +14,6 @@ require (
 	github.com/spf13/cobra v1.1.1
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5
-	github.com/spf13/viper v1.7.0
 	gopkg.in/cheggaaa/pb.v1 v1.0.28
 )
 
