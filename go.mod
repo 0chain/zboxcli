@@ -13,9 +13,8 @@ require (
 	github.com/spf13/cobra v1.1.1
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5
-	github.com/spf13/viper v1.7.0
 	gopkg.in/cheggaaa/pb.v1 v1.0.28
 )
 
 // temporary, for development
-// replace github.com/0chain/gosdk => ../gosdk
+//replace github.com/0chain/gosdk => ../gosdk
