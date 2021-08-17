@@ -843,7 +843,7 @@ Auth token decoded
 
 Upload file with *--encrypted* tag.
 
-Get encryptionpublickey first, by calling:
+Get encryptionpublickey first, by calling from user you sharing with:
 
 ```
 ./zbox getwallet
@@ -859,7 +859,7 @@ PUBLIC KEY | CLIENTID | ENCRYPTION PUBLIC KEY
 
 You have to pickup *ENCRYPTION PUBLIC KEY*
 
-Use *clientid* of the user to share with. *encryptionpublickey* - is your key from command above.
+Use *clientid* of the user to share with. *encryptionpublickey* -  key from command above.
 
 ![Private File Sharing](https://user-images.githubusercontent.com/65766301/120052575-962ff800-c043-11eb-9cf7-433383d532a3.png)
 
