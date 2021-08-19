@@ -12,58 +12,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func printStorageSCConfig(conf *sdk.StorageSCConfig) {
-	fmt.Println("min_alloc_size:               ", conf.MinAllocSize)
-	fmt.Println("min_alloc_duration:           ", conf.MinAllocDuration)
-	fmt.Println("max_challenge_completion_time:", conf.MaxChallengeCompletionTime)
-	fmt.Println("min_offer_duration:           ", conf.MinOfferDuration)
-	fmt.Println("min_blobber_capacity:         ", conf.MinBlobberCapacity)
-	fmt.Println("max_delegates:                ", conf.MaxDelegates)
-	fmt.Println("max_charge:                   ", conf.MaxCharge*100, "%")
-	fmt.Println("readpool:")
-	fmt.Println("  min_lock:", conf.ReadPool.MinLock, "tok")
-	fmt.Println("  min_lock_period:", conf.ReadPool.MinLockPeriod)
-	fmt.Println("  max_lock_period:", conf.ReadPool.MaxLockPeriod)
-	fmt.Println("writepool:")
-	fmt.Println("  min_lock:", conf.WritePool.MinLock, "tok")
-	fmt.Println("  min_lock_period:", conf.WritePool.MinLockPeriod)
-	fmt.Println("  max_lock_period:", conf.WritePool.MaxLockPeriod)
-	fmt.Println("stakepool:")
-	fmt.Println("  min_lock:", conf.StakePool.MinLock, "tok")
-	fmt.Println("  interest_rate:", conf.StakePool.InterestRate)
-	fmt.Println("  interest_interval:", conf.StakePool.InterestInterval)
-	fmt.Println("validator_reward:                    ", conf.ValidatorReward)
-	fmt.Println("blobber_slash:                       ", conf.BlobberSlash)
-	fmt.Println("max_read_price:                      ", conf.MaxReadPrice, "tok / GB")
-	fmt.Println("max_write_price:                     ", conf.MaxWritePrice, "tok / GB / time_unit")
-	fmt.Println("time_unit:                           ", conf.TimeUnit)
-	fmt.Println("failed_challenges_to_cancel:         ", conf.FailedChallengesToCancel)
-	fmt.Println("failed_challenges_to_revoke_min_lock:", conf.FailedChallengesToRevokeMinLock)
-	fmt.Println("challenge_enabled:                   ", conf.ChallengeEnabled)
-	fmt.Println("max_challenges_per_generation:       ", conf.MaxChallengesPerGeneration)
-	fmt.Println("challenge_rate_per_mb_min:           ", conf.ChallengeGenerationRate)
-}
-
-// scConfig shows SC configurations
-var scConfig = &cobra.Command{
-	Use:   "sc-config",
-	Short: "Show storage SC configuration.",
-	Long:  `Show storage SC configuration.`,
-	Args:  cobra.MinimumNArgs(0),
-	Run: func(cmd *cobra.Command, args []string) {
-		doJSON, _ := cmd.Flags().GetBool("json")
-		var conf, err = sdk.GetStorageSCConfig()
-		if err != nil {
-			log.Fatalf("Failed to get storage SC configurations: %v", err)
-		}
-		if doJSON {
-			util.PrintJSON(conf)
-			return
-		}
-		printStorageSCConfig(conf)
-	},
-}
-
 func printBlobbers(nodes []*sdk.Blobber) {
 	if len(nodes) == 0 {
 		fmt.Println("no blobbers registered yet")
@@ -301,12 +249,10 @@ var blobberUpdateCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(scConfig)
 	rootCmd.AddCommand(lsBlobers)
 	rootCmd.AddCommand(blobberInfoCmd)
 	rootCmd.AddCommand(blobberUpdateCmd)
 
-	scConfig.Flags().Bool("json", false, "pass this option to print response as json data")
 	lsBlobers.Flags().Bool("json", false, "pass this option to print response as json data")
 	lsBlobers.Flags().Bool("all", false, "shows active and non active list of blobbers on ls-blobbers")
 
@@ -328,7 +274,4 @@ func init() {
 	buf.Int("num_delegates", 0, "update num_delegates, optional")
 	buf.Float64("service_charge", 0.0, "update service_charge, optional")
 	blobberUpdateCmd.MarkFlagRequired("blobber_id")
-
-	scConfig.PersistentFlags().String("allocation", "",
-		"allocation identifier, required")
 }
