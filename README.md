@@ -80,7 +80,7 @@ As mentioned in build guides, a ./zcn folder is created to store configuration f
 
 ```
   ---
-  block_worker: http://localhost:9091
+  block_worker: https://beta.0chain.net
   signature_scheme: bls0chain
   min_submit: 50 # in percentage
   min_confirmation: 50 # in percentage
