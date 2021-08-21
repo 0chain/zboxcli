@@ -10,7 +10,6 @@ import (
 
 	"github.com/0chain/gosdk/core/conf"
 	"github.com/0chain/gosdk/core/logger"
-	"github.com/0chain/gosdk/core/transaction"
 
 	"github.com/spf13/cobra"
 
@@ -32,7 +31,7 @@ var cDir string
 var bSilent bool
 var allocUnderRepair bool
 
-var clientConfig string
+var walletJSON string
 
 var rootCmd = &cobra.Command{
 	Use:   "zbox",
@@ -95,8 +94,6 @@ func initConfig() {
 		os.Exit(1)
 	}
 
-	transaction.SetConfig(&cfg)
-
 	if networkFile == "" {
 		networkFile = "network.yaml"
 	}
@@ -133,7 +130,7 @@ func initConfig() {
 		var clientBytes []byte
 
 		clientBytes, err = json.Marshal(wallet)
-		clientConfig = string(clientBytes)
+		walletJSON = string(clientBytes)
 		if err != nil {
 			fmt.Println("Invalid wallet data passed:" + walletClientID + " " + walletClientKey)
 			os.Exit(1)
@@ -168,14 +165,14 @@ func initConfig() {
 				os.Exit(1)
 			}
 			fmt.Println("ZCN wallet created")
-			clientConfig = string(statusBar.walletString)
+			walletJSON = string(statusBar.walletString)
 			file, err := os.Create(walletFilePath)
 			if err != nil {
 				fmt.Println(err.Error())
 				os.Exit(1)
 			}
 			defer file.Close()
-			fmt.Fprintf(file, clientConfig)
+			fmt.Fprintf(file, walletJSON)
 
 			fresh = true
 		} else {
@@ -189,11 +186,11 @@ func initConfig() {
 				fmt.Println("Error reading the wallet", err)
 				os.Exit(1)
 			}
-			clientConfig = string(clientBytes)
+			walletJSON = string(clientBytes)
 		}
 		//minerjson, _ := json.Marshal(miners)
 		//sharderjson, _ := json.Marshal(sharders)
-		err = json.Unmarshal([]byte(clientConfig), wallet)
+		err = json.Unmarshal([]byte(walletJSON), wallet)
 		clientWallet = wallet
 		if err != nil {
 			fmt.Println("Invalid wallet at path:" + walletFilePath)
@@ -202,7 +199,7 @@ func initConfig() {
 	}
 
 	//init the storage sdk with the known miners, sharders and client wallet info
-	err = sdk.InitStorageSDK(clientConfig, cfg.BlockWorker, cfg.ChainID, cfg.SignatureScheme, cfg.PreferredBlobbers)
+	err = sdk.InitStorageSDK(walletJSON, cfg)
 	if err != nil {
 		fmt.Println("Error in sdk init", err)
 		os.Exit(1)
