@@ -93,6 +93,7 @@ func initConfig() {
 		fmt.Println("Can't read config:", err)
 		os.Exit(1)
 	}
+	conf.InitClientConfig(&cfg)
 
 	if networkFile == "" {
 		networkFile = "network.yaml"
@@ -106,6 +107,11 @@ func initConfig() {
 	zcncore.SetLogFile("cmdlog.log", !bSilent)
 	sdk.SetLogFile("cmdlog.log", !bSilent)
 
+	if network.IsValid() {
+		zcncore.SetNetwork(network.Miners, network.Sharders)
+		conf.InitChainNetwork(&network)
+	}
+
 	err = zcncore.InitZCNSDK(cfg.BlockWorker, cfg.SignatureScheme,
 		zcncore.WithChainID(cfg.ChainID),
 		zcncore.WithMinSubmit(cfg.MinSubmit),
@@ -114,10 +120,6 @@ func initConfig() {
 	if err != nil {
 		fmt.Println("Error initializing core SDK.", err)
 		os.Exit(1)
-	}
-
-	if network.IsValid() {
-		zcncore.SetNetwork(network.Miners, network.Sharders)
 	}
 
 	// is freshly created wallet?
@@ -199,7 +201,7 @@ func initConfig() {
 	}
 
 	//init the storage sdk with the known miners, sharders and client wallet info
-	err = sdk.InitStorageSDK(walletJSON, cfg)
+	err = sdk.InitStorageSDK(walletJSON, cfg.BlockWorker, cfg.ChainID, cfg.SignatureScheme, cfg.PreferredBlobbers)
 	if err != nil {
 		fmt.Println("Error in sdk init", err)
 		os.Exit(1)
