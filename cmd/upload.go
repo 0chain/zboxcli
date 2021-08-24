@@ -110,7 +110,7 @@ var uploadCmd = &cobra.Command{
 			err = startSyncUpload(cmd, allocationObj, localpath, remotepath, encrypt, chunkSize, attrs)
 		} else if stream {
 
-			err = startStreamUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar)
+			err = startChunkedUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar)
 
 		} else {
 
@@ -150,7 +150,7 @@ var uploadCmd = &cobra.Command{
 	},
 }
 
-func startStreamUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath, thumbnailPath, remotePath string, encrypt bool, chunkSize int, attrs fileref.Attributes, statusBar sdk.StatusCallback) error {
+func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath, thumbnailPath, remotePath string, encrypt bool, chunkSize int, attrs fileref.Attributes, statusBar sdk.StatusCallback) error {
 
 	fileReader, err := os.Open(localPath)
 	if err != nil {
@@ -187,13 +187,13 @@ func startStreamUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localP
 		Attributes: attrs,
 	}
 
-	streamUpload := sdk.CreateStreamUpload(allocationObj, fileMeta, fileReader,
+	ChunkedUpload := sdk.CreateChunkedUpload(allocationObj, fileMeta, fileReader,
 		sdk.WithThumbnailFile(thumbnailPath),
 		sdk.WithChunkSize(chunkSize),
 		sdk.WithEncrypt(encrypt),
 		sdk.WithStatusCallback(statusBar))
 
-	return streamUpload.Start()
+	return ChunkedUpload.Start()
 }
 
 func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath string, remotePath string, encrypt bool, chunkSize int, attrs fileref.Attributes) error {
