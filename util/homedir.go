@@ -10,16 +10,24 @@ import (
 // GetConfigDir get config directory , default is ~/.zcn/
 func GetConfigDir() string {
 
-	var configDir string
+	configDir := GetHomeDir() + string(os.PathSeparator) + ".zcn"
+
+	if err := os.MkdirAll(configDir, 0744); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	return configDir
+}
+
+// GetHomeDir Find home directory.
+func GetHomeDir() string {
 	// Find home directory.
-	home, err := homedir.Dir()
+	idr, err := homedir.Dir()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	configDir = home + string(os.PathSeparator) + ".zcn"
 
-	os.MkdirAll(configDir, 0744)
-
-	return configDir
+	return idr
 }

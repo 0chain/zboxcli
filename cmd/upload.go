@@ -87,7 +87,6 @@ var uploadCmd = &cobra.Command{
 		thumbnailpath := cmd.Flag("thumbnailpath").Value.String()
 		encrypt, _ := cmd.Flags().GetBool("encrypt")
 		commit, _ := cmd.Flags().GetBool("commit")
-		stream, _ := cmd.Flags().GetBool("stream")
 
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
@@ -108,26 +107,8 @@ var uploadCmd = &cobra.Command{
 		} else if sync {
 			// download video from remote live feed(eg youtube), and sync it to zcn
 			err = startSyncUpload(cmd, allocationObj, localpath, remotepath, encrypt, chunkSize, attrs)
-		} else if stream {
-
-			err = startChunkedUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar)
-
 		} else {
-
-			if len(thumbnailpath) > 0 {
-				if encrypt {
-					err = allocationObj.EncryptAndUploadFileWithThumbnail(localpath, remotepath, thumbnailpath, attrs, statusBar)
-				} else {
-					err = allocationObj.UploadFileWithThumbnail(localpath, remotepath, thumbnailpath, attrs, statusBar)
-				}
-			} else {
-				if encrypt {
-					err = allocationObj.EncryptAndUploadFile(localpath, remotepath, attrs, statusBar)
-				} else {
-					err = allocationObj.UploadFile(localpath, remotepath, attrs, statusBar)
-				}
-			}
-
+			err = startChunkedUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar)
 		}
 
 		if err != nil {
@@ -187,7 +168,7 @@ func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, local
 		Attributes: attrs,
 	}
 
-	ChunkedUpload := sdk.CreateChunkedUpload(allocationObj, fileMeta, fileReader,
+	ChunkedUpload := sdk.CreateChunkedUpload(util.GetHomeDir(), allocationObj, fileMeta, fileReader,
 		sdk.WithThumbnailFile(thumbnailPath),
 		sdk.WithChunkSize(chunkSize),
 		sdk.WithEncrypt(encrypt),
@@ -229,7 +210,7 @@ func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPat
 		Attributes: attrs,
 	}
 
-	liveUpload := sdk.CreateLiveUpload(allocationObj, liveMeta, reader,
+	liveUpload := sdk.CreateLiveUpload(util.GetHomeDir(), allocationObj, liveMeta, reader,
 		sdk.WithLiveChunkSize(chunkSize),
 		sdk.WithLiveEncrypt(encrypt),
 		sdk.WithLiveStatusCallback(func() sdk.StatusCallback {
@@ -284,7 +265,7 @@ func startSyncUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPat
 		Attributes: attrs,
 	}
 
-	syncUpload := sdk.CreateLiveUpload(allocationObj, liveMeta, reader,
+	syncUpload := sdk.CreateLiveUpload(util.GetHomeDir(), allocationObj, liveMeta, reader,
 		sdk.WithLiveChunkSize(chunkSize),
 		sdk.WithLiveEncrypt(encrypt),
 		sdk.WithLiveStatusCallback(func() sdk.StatusCallback {
@@ -308,8 +289,6 @@ func init() {
 	uploadCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
 	uploadCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
 	uploadCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
-
-	uploadCmd.Flags().Bool("stream", false, "pass this option to enable stream upload for large file")
 
 	uploadCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "how much bytes in a chunk for upload")
 
