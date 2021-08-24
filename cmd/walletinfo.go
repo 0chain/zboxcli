@@ -6,11 +6,31 @@ import (
 
 	"github.com/0chain/gosdk/core/encryption"
 	"github.com/0chain/gosdk/zboxcore/client"
+	"github.com/0chain/gosdk/zcncore"
 	"github.com/0chain/zboxcli/util"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
 )
+
+var walletDecryptCmd = &cobra.Command{
+	Use:   "decrypt",
+	Short: "Decrypt text with passphase",
+	Long:  `Decrypt text with passphase`,
+	Args:  cobra.MinimumNArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		passphase, _ := cmd.Flags().GetString("passphase")
+		text, _ := cmd.Flags().GetString("text")
+
+		decrypted, err := zcncore.Decrypt(passphase, text)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		fmt.Println(decrypted)
+		return
+	},
+}
 
 // walletinfo used for getting the wallet info
 var walletinfoCmd = &cobra.Command{
@@ -70,4 +90,8 @@ func init() {
 
 	rootCmd.AddCommand(signCmd)
 	signCmd.Flags().String("data", "", "give data for signing, Default will be clientID")
+
+	rootCmd.AddCommand(walletDecryptCmd)
+	walletDecryptCmd.Flags().String("passphase", "", "Passphase to decrypt text")
+	walletDecryptCmd.Flags().String("text", "", "Encrypted text")
 }
