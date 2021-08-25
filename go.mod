@@ -19,7 +19,4 @@ require (
 )
 
 // temporary, for development
-replace (
-	github.com/0chain/gosdk => ../gosdk
-	google.golang.org/grpc => google.golang.org/grpc v1.29.1
-)
+replace github.com/0chain/gosdk => ../gosdk

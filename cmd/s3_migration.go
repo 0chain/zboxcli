@@ -9,6 +9,7 @@ import (
 	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zboxcore/zboxutil"
+	"github.com/0chain/zboxcli/util"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
@@ -492,12 +493,14 @@ func uploadStreamToDStorageV2(u *UploadConfig) error {
 	if err != nil {
 		return fmt.Errorf("upload failed. %s", err.Error())
 	}
+
 	wg.Wait()
 	if !statusBar.success {
 		return fmt.Errorf("upload failed. statusbar. success : %v", statusBar.success)
 	}
 
 	if u.Commit {
+		u.RemoteFilePath = zboxutil.GetFullRemotePath(u.RemoteFilePath, u.RemoteFilePath)
 		statusBar.wg.Add(1)
 		commitMetaTxn(u.RemoteFilePath, "Upload", "", "", u.Allocation, nil, statusBar)
 		statusBar.wg.Wait()
@@ -525,12 +528,15 @@ func startS3Upload(allocationObj *sdk.Allocation, fileReader io.Reader, size int
 		Attributes: attrs,
 	}
 
-	streamUpload := sdk.CreateStreamUpload(allocationObj, fileMeta, newS3Reader(fileReader),
+	ChunkedUpload, err := sdk.CreateChunkedUpload(util.GetHomeDir(), allocationObj, fileMeta, fileReader, false,
 		sdk.WithChunkSize(sdk.DefaultChunkSize),
 		sdk.WithEncrypt(encrypt),
 		sdk.WithStatusCallback(statusBar))
+	if err != nil {
+		return err
+	}
 
-	return streamUpload.Start()
+	return ChunkedUpload.Start()
 }
 
 func newS3Reader(source io.Reader) *S3StreamReader {
