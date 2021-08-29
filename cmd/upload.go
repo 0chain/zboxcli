@@ -293,15 +293,19 @@ func init() {
 	uploadCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
 	uploadCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
 
-	uploadCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "how much bytes in a chunk for upload")
+	uploadCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "chunk size")
 
-	uploadCmd.Flags().Bool("live", false, "pass this option to enable upload for live streaming")
-	uploadCmd.Flags().Int("delay", 5, "how much seconds has a clips. default is 5 sencods. only works with --live")
+	uploadCmd.Flags().Int("delay", 5, "set segment duration to seconds. only works with --live and --sync. default duration is 5s.")
 
-	uploadCmd.Flags().Bool("sync", false, "sync live stream from remote live feed(eg. youtube), and upload to zcn")
-	uploadCmd.Flags().String("feed", "", "remote live stream feed (eg youtube live feed url). only works with --sync")
-	uploadCmd.Flags().String("downloader-args", "-q", "give args to youtube-dl to download video. default is -q. only works with --sync")
-	uploadCmd.Flags().String("ffmpeg-args", "", "give args to ffmpeg to build output. only works with --sync")
+	// SyncUpload
+	uploadCmd.Flags().Bool("sync", false, "enable SyncUpload from remote live feed. disabled by default.")
+	uploadCmd.Flags().String("feed", "", "set remote live feed to url. only works with --sync.")
+	uploadCmd.Flags().String("downloader-args", "-q", "pass args to youtube-dl to download video. default is \"-q\". only works with --sync.")
+	uploadCmd.Flags().String("ffmpeg-args", "", "pass args to ffmpeg to build segments. only works with --sync.")
+
+	// LiveUpload
+	uploadCmd.Flags().Bool("live", false, "enable LiveUpload from local devices. disabled by default.")
+
 	uploadCmd.MarkFlagRequired("allocation")
 	uploadCmd.MarkFlagRequired("remotepath")
 	uploadCmd.MarkFlagRequired("localpath")
