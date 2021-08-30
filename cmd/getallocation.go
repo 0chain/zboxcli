@@ -184,7 +184,7 @@ func sizeInGB(size int64) float64 {
 	return float64(size) / GB
 }
 
-func downloadCost(alloc *sdk.Allocation, meta *sdk.ConsolidatedFileMeta) {
+func downloadCost(alloc *sdk.Allocation, meta *fileref.ConsolidatedFileMeta) {
 
 	if meta.Type != fileref.FILE {
 		log.Fatal("not a file")
@@ -266,7 +266,7 @@ var getDownloadCostCmd = &cobra.Command{
 
 		var (
 			alloc *sdk.Allocation
-			meta  *sdk.ConsolidatedFileMeta
+			meta  *fileref.ConsolidatedFileMeta
 		)
 
 		if remotePath != "" {

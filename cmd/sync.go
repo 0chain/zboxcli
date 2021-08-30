@@ -44,7 +44,7 @@ func filterOperations(lDiff []sdk.FileDiff) (filterDiff []sdk.FileDiff, exclPath
 	return
 }
 
-func commitDiff(lDiff []sdk.FileDiff, allocationObj *sdk.Allocation, fileMetas map[string]*sdk.ConsolidatedFileMeta) {
+func commitDiff(lDiff []sdk.FileDiff, allocationObj *sdk.Allocation, fileMetas map[string]*fileref.ConsolidatedFileMeta) {
 	wg := &sync.WaitGroup{}
 	statusBar := &StatusBar{wg: wg}
 	for _, f := range lDiff {
@@ -114,7 +114,7 @@ var syncCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		fileMetas := make(map[string]*sdk.ConsolidatedFileMeta)
+		fileMetas := make(map[string]*fileref.ConsolidatedFileMeta)
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		// Create filter

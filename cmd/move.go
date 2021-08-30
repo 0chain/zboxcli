@@ -5,6 +5,7 @@ import (
 	"os"
 	"sync"
 
+	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
 )
@@ -53,7 +54,7 @@ var moveCmd = &cobra.Command{
 			}
 		}
 
-		var fileMeta *sdk.ConsolidatedFileMeta
+		var fileMeta *fileref.ConsolidatedFileMeta
 		if isFile && commit {
 			fileMeta, err = allocationObj.GetFileMeta(remotepath)
 			if err != nil {

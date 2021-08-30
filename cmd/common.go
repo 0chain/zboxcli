@@ -6,6 +6,7 @@ import (
 	"os"
 	"sync"
 
+	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"gopkg.in/cheggaaa/pb.v1"
 )
@@ -103,7 +104,7 @@ func PrintInfo(v ...interface{}) {
 	fmt.Fprintln(os.Stdin, v...)
 }
 
-func commitMetaTxn(path, crudOp, authTicket, lookupHash string, a *sdk.Allocation, fileMeta *sdk.ConsolidatedFileMeta, status *StatusBar) {
+func commitMetaTxn(path, crudOp, authTicket, lookupHash string, a *sdk.Allocation, fileMeta *fileref.ConsolidatedFileMeta, status *StatusBar) {
 	err := a.CommitMetaTransaction(path, crudOp, authTicket, lookupHash, fileMeta, status)
 	if err != nil {
 		PrintError("Commit failed.", err)

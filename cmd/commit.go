@@ -6,6 +6,7 @@ import (
 	"os"
 	"sync"
 
+	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
 )
@@ -60,7 +61,7 @@ var commitCmd = &cobra.Command{
 			}
 		}
 
-		var fileMetaData *sdk.ConsolidatedFileMeta
+		var fileMetaData *fileref.ConsolidatedFileMeta
 		if len(filemeta) > 0 {
 			err := json.Unmarshal([]byte(filemeta), fileMetaData)
 			if err != nil {
