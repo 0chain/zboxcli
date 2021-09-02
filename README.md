@@ -4,61 +4,70 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
 
 ![Storage](https://user-images.githubusercontent.com/65766301/120052450-0ab66700-c043-11eb-91ab-1f7aa69e133a.png)
 
-- [Getting Started](#getting-started)
-- [Running zbox](https://github.com/0chain/zboxcli#Command-with-no-arguments) 
-- [Global Flags](#global-flags)
+- [zbox - a CLI for 0Chain dStorage](#zbox---a-cli-for-0chain-dstorage)
+  - [Getting Started](#getting-started)
+  - [Installation Guides](#installation-guides)
+    - [How to install on Linux](#how-to-install-on-linux)
+    - [How to install on Windows](#how-to-install-on-windows)
+    - [Other Platform Builds](#other-platform-builds)
+    - [Use custom miner/sharder](#use-custom-minersharder)
+  - [Running zbox](#running-zbox)
+    - [Global Flags](#global-flags)
 - [Commands](#commands)
-  - Creating and Managing Allocations
-    - [Register a Wallet](https://github.com/0chain/zboxcli#Register)
-    - [Get detailed Allocation](https://github.com/0chain/zboxcli#Get)
-    - [List allocations](https://github.com/0chain/zboxcli#List-allocations)     
-    - [Create new allocation](#Create-new-allocation)
-    - [Update allocation](#update-allocation)
+  - [Register wallet](#register-wallet)
+  - [Create new allocation](#create-new-allocation)
+      - [Free storage allocation](#free-storage-allocation)
+  - [Update allocation](#update-allocation)
     - [Cancel allocation](#cancel-allocation)
-    - [Finalise allocation](#finalise-allocation)
-    - [Add curator](#add-curator)
-    - [Transfer allocation ownership](#transfer-allocation-ownership)
-  - Uploading and Managing Files
-    - [Upload a file to dStorage](#upload)
-    - [Download the uploaded file from dStorage](#download)
-    - [Update the uploaded file on dStorage](https://github.com/0chain/zboxcli#Update)
-    - [Delete the uploaded file on dStorage](https://github.com/0chain/zboxcli#Delete)
-    - [List the uploaded files and folders](https://github.com/0chain/zboxcli#List)
-    - [Copy uploaded files to another folder path on dStorage](https://github.com/0chain/zboxcli#Copy)
-    - [Move uploaded files to another folder path on dStorage](https://github.com/0chain/zboxcli#Move)
-    - [Rename a file on dStorage](https://github.com/0chain/zboxcli#Rename)
-    - [Get meta data of files](https://github.com/0chain/zboxcli#Get-metadata)
-    - [Get file stats](https://github.com/0chain/zboxcli#Stats)
-    - [Update file attributes](https://github.com/0chain/zboxcli#Update-file-attributes)
-    - [Get download cost](https://github.com/0chain/zboxcli#Download-cost)
-    - [Get upload cost](https://github.com/0chain/zboxcli#Upload-cost)
-  - Advanced Features
-    - [Repair a file on dStorage](https://github.com/0chain/zboxcli#Repair)
-    - [Sync your local folder to remote](https://github.com/0chain/zboxcli#Sync)
-    - [Share the uploaded file on dStorage](https://github.com/0chain/zboxcli#Share)
-    - [Add Collaborator for a file](https://github.com/0chain/zboxcli#Add-collaborator)
-    - [Remove Collaborator for a file](https://github.com/0chain/zboxcli#Delete-collaborator)
-    - [Video Streaming](https://github.com/0chain/zboxcli#Streaming)
-  - Locking and unlocking tokens    
-    - [Get wallet information](https://github.com/0chain/zboxcli#Get-wallet)
-    - [Challenge pool information](https://github.com/0chain/zboxcli#Challenge-pool-information)
-    - [Create read pool if not exists](https://github.com/0chain/zboxcli#Create-read-pool)
-    - [Detailed read pool information](https://github.com/0chain/zboxcli#Read-pool-info)
-    - [Lock tokens into read pool](https://github.com/0chain/zboxcli#Lock-tokens-into-read-pool)
-    - [Unlock tokens from expired read pool](https://github.com/0chain/zboxcli#Unlock-tokens-from-read-pool)
-    - [Detailed write pool information](https://github.com/0chain/zboxcli#Write-pool-info)
-    - [Lock tokens into write pool](https://github.com/0chain/zboxcli#Lock-tokens-into-write-pool)
-    - [Unlock tokens from expired write pool](https://github.com/0chain/zboxcli#Unlock-tokens-from-write-pool)
-    - [Detailed stake pool information](#stake-pool-info)
-    - [Lock tokens into stake pool](https://github.com/0chain/zboxcli#Lock-tokens-into-stake-pool)
-    - [Unlock tokens from expired stake pool](https://github.com/0chain/zboxcli#Unlock-tokens-from-stake-pool)
-    - [Stake pools info of current user](#stake-pools-info-of-user)
-    - [Pay interests](https://github.com/0chain/zboxcli#Pay-interests)
-  - zbox Configuration info
-    - [Storage SC configurations](https://github.com/0chain/zboxcli#Storage-SC-configurations)
-    - [List blobbers](https://github.com/0chain/zboxcli#List-blobbers)
-    - [Detail blobber information](https://github.com/0chain/zboxcli#Detailed-blobber-information)
-    - [Update blobber settings](https://github.com/0chain/zboxcli#Update-blobber-settings)
+  - [Finalise allocation](#finalise-allocation)
+  - [Add curator](#add-curator)
+  - [Transfer allocation ownership](#transfer-allocation-ownership)
+  - [List blobbers](#list-blobbers)
+  - [Detailed blobber information](#detailed-blobber-information)
+  - [Lost all files](#lost-all-files)
+  - [List owner's allocations](#list-owners-allocations)
+  - [Update blobber settings](#update-blobber-settings)
+  - [Upload](#upload)
+  - [Download](#download)
+  - [Update](#update)
+  - [Delete](#delete)
+  - [Share](#share)
+      - [share-encrypted revoke](#share-encrypted-revoke)
+  - [List](#list)
+  - [Copy](#copy)
+  - [Move](#move)
+  - [Sync](#sync)
+  - [Get differences](#get-differences)
+  - [Get wallet](#get-wallet)
+  - [Get](#get)
+  - [Get metadata](#get-metadata)
+  - [Rename](#rename)
+  - [Stats](#stats)
+  - [Repair](#repair)
+  - [Add collaborator](#add-collaborator)
+  - [Delete collaborator](#delete-collaborator)
+    - [Challenge pool information](#challenge-pool-information)
+  - [Create read pool](#create-read-pool)
+  - [Read pool info](#read-pool-info)
+  - [Lock tokens into read pool](#lock-tokens-into-read-pool)
+  - [Unlock tokens from read pool](#unlock-tokens-from-read-pool)
+  - [Storage SC configurations](#storage-sc-configurations)
+  - [Stake pool info](#stake-pool-info)
+  - [Lock tokens into stake pool](#lock-tokens-into-stake-pool)
+    - [Unlock tokens from stake pool](#unlock-tokens-from-stake-pool)
+  - [Stake pools info of user](#stake-pools-info-of-user)
+  - [Pay interests](#pay-interests)
+  - [Write pool info](#write-pool-info)
+  - [Lock tokens into write pool](#lock-tokens-into-write-pool)
+  - [Unlock tokens from write pool](#unlock-tokens-from-write-pool)
+  - [Download cost](#download-cost)
+  - [Upload cost](#upload-cost)
+  - [Commit](#commit)
+  - [Sign data|](#sign-data)
+  - [Streaming](#streaming)
+      - [How it works:](#how-it-works)
+      - [Usage](#usage)
+  - [Troubleshooting](#troubleshooting)
     
 
    - [Troubleshooting](#troubleshooting)
@@ -628,18 +637,28 @@ Update blobber read price
 
 ## Upload
 
-Use `upload` command to upload a file. The user must be the owner of the allocation.
-You can request the file be encrypted before upload, and can send thumbnails 
-with the file. 
+Use `upload` command to upload file(s).
+- upload a local file
+- download segment files from remote live feed, and upload them 
+- start live streaming from local devices, encode it into segment files with `ffmpeg`, and upload them. 
 
-| Parameter               | Required | Description                            | Default | Valid values                            |
-|-------------------------|----------|----------------------------------------|---------|-----------------------------------------|
-| allocation              | yes      | allocation id, sender must be allocation owner                   |         | string                                  |
-| commit                  | no       | save metadata to blockchain                                      | false   | boolean                                 |
-| encrypt                 | no       | encrypt file before upload                                       | false   | boolean                                 |
-| localpath               | yes      | local path of the file to upload                                 |         | file path                               |
-| remotepath              | yes      | remote path to upload file to, use to access file later          |         | string                              |
-| thumbnailpath           | no       | local path of thumbnaSil                                         |         | file path                               |
+The user must be the owner of the allocation.You can request the file be encrypted before upload, and can send thumbnails with the file. 
+
+| Parameter               | Required | Description                                          | Default | Valid values                            |
+|-------------------------|----------|------------------------------------------------------|---------|-----------------------------------------|
+| allocation              | yes      | allocation id, sender must be allocation owner                     |         | string                 |
+| commit                  | no       | save metadata to blockchain                                        | false   | boolean                |
+| encrypt                 | no       | encrypt file before upload                                         | false   | boolean                |
+| localpath               | yes      | local path of the file to upload                                   |         | file path              |
+| remotepath              | yes      | remote path to upload file to, use to access file later            |         | string                 |
+| thumbnailpath           | no       | local path of thumbnaSil                                           |         | file path              |
+| chunksize               | no       | chunk size                                                         | 65536   | int                    |
+| delay                   | no       | set segment duration to seconds. only works with --live and --sync.| 5       | int                    |
+| sync                    | no       | enable SyncUpload from remote live feed. disabled it by default.   | false   | boolean                |
+| feed                    | no       | set remote live feed to url. only works with --sync.                | false   | url                    |
+| downloader-args         | no       | pass args to youtube-dl to download video. default is \"-q\". only works with --sync.|  | [youtube-dl](https://github.com/ytdl-org/youtube-dl/blob/master/README.md#options)|
+| ffmpeg-args             | no       | pass args to ffmpeg to build segments. only works with --sync.      | false   | [ffmpeg](https://www.ffmpeg.org/ffmpeg.html)              |
+| live                    | no       | enable LiveUpload from local devices. disabled by default.         | false   | boolean                |
 
 
 <details>

@@ -108,7 +108,7 @@ var uploadCmd = &cobra.Command{
 			// download video from remote live feed(eg youtube), and sync it to zcn
 			err = startSyncUpload(cmd, allocationObj, localpath, remotepath, encrypt, chunkSize, attrs)
 		} else {
-			err = startChunkedUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar)
+			err = startChunkedUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar, false)
 		}
 
 		if err != nil {
@@ -131,7 +131,7 @@ var uploadCmd = &cobra.Command{
 	},
 }
 
-func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath, thumbnailPath, remotePath string, encrypt bool, chunkSize int, attrs fileref.Attributes, statusBar sdk.StatusCallback) error {
+func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath, thumbnailPath, remotePath string, encrypt bool, chunkSize int, attrs fileref.Attributes, statusBar sdk.StatusCallback, isUpdate bool) error {
 
 	fileReader, err := os.Open(localPath)
 	if err != nil {
@@ -168,7 +168,7 @@ func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, local
 		Attributes: attrs,
 	}
 
-	ChunkedUpload, err := sdk.CreateChunkedUpload(util.GetHomeDir(), allocationObj, fileMeta, fileReader,
+	ChunkedUpload, err := sdk.CreateChunkedUpload(util.GetHomeDir(), allocationObj, fileMeta, fileReader, isUpdate,
 		sdk.WithThumbnailFile(thumbnailPath),
 		sdk.WithChunkSize(chunkSize),
 		sdk.WithEncrypt(encrypt),
