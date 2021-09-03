@@ -151,7 +151,7 @@ var syncCmd = &cobra.Command{
 				wg.Add(1)
 				err = allocationObj.DownloadFile(lPath, f.Path, statusBar)
 			case sdk.Upload:
-				wg.Add(1)
+				//wg.Add(1)
 				var attrs fileref.Attributes
 
 				encrypt := len(encryptpath) != 0 && strings.Contains(lPath, encryptpath)
@@ -164,7 +164,7 @@ var syncCmd = &cobra.Command{
 				// 	err = allocationObj.UploadFile(lPath, f.Path, attrs, statusBar)
 				// }
 			case sdk.Update:
-				wg.Add(1)
+				//wg.Add(1)
 
 				encrypt := len(encryptpath) != 0 && strings.Contains(lPath, encryptpath)
 
@@ -202,7 +202,7 @@ var syncCmd = &cobra.Command{
 				continue
 			}
 			if err == nil {
-				wg.Wait()
+				//wg.Wait()
 			} else {
 				PrintError(err.Error())
 			}
