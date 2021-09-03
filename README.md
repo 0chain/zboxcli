@@ -80,7 +80,7 @@ As mentioned in build guides, a ./zcn folder is created to store configuration f
 
 ```
   ---
-  block_worker: http://localhost:9091
+  block_worker: https://beta.0chain.net
   signature_scheme: bls0chain
   min_submit: 50 # in percentage
   min_confirmation: 50 # in percentage
@@ -788,6 +788,7 @@ Response:
 File successfully deleted (Can be verified using [list](https://github.com/0chain/zboxcli#List))
 
 ## Share
+![Alt text](documents/share_cli.png?raw=true "Share")
 
 Use share command to generate an authtoken that provides authorization to the holder to the specified file on the remotepath.
 * --allocation string Allocation ID
@@ -840,7 +841,25 @@ Auth token decoded
 
 **Encrypted share**
 
-Use clientid and encryptionpublickey of the user to share with.
+Upload file with *--encrypted* tag.
+
+Get encryptionpublickey first, by calling from user you sharing with:
+
+```
+./zbox getwallet
+```
+
+Response:
+
+```
+PUBLIC KEY | CLIENTID | ENCRYPTION PUBLIC KEY
+-----------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------+-----------------------------------------------
+  19cd2396df9b8b77358a1110492ff65cbb5b55cae06b8bd204e0969b2454851ca620ae74aebe9ed641166be3bca056a1855610f6154f4f4435a29565a2111282 | b734ef935e2a02892b2fa31e3488b360ef300d3b0b32c03834cea3a83e2453f0 | 1JuT4AbQnmIaOMTuWn07t98xQRsSqXAxZYfwCI1yQLM=
+```
+
+You have to pickup *ENCRYPTION PUBLIC KEY*
+
+Use *clientid* of the user to share with. *encryptionpublickey* -  key from command above.
 
 ![Private File Sharing](https://user-images.githubusercontent.com/65766301/120052575-962ff800-c043-11eb-9cf7-433383d532a3.png)
 
@@ -862,9 +881,43 @@ Auth token decoded
 
 Response contains an auth ticket- an encrypted string that can be shared.
 
+**Directory share**
+
+Follow up steps above to get *encryptionpublickey*
+
+Upload multiple files to directory with *zbox upload /folder1/file1.z ...*
+
+```
+./zbox share --allocation 3c0d32560ea18d9d0d76808216a9c634f661979d29ba59cc8dafccb3e5b95341 --remotepath /folder1 --clientid b6de562b57a0b593d0480624f79a55ed46dba544404595bee0273144e01034ae --encryptionpublickey 1JuT4AbQnmIaOMTuWn07t98xQRsSqXAxZYfwCI1yQLM=
+```
+
+Response:
+
+Encoded
+
+```
+eyJjbGllbnRfaWQiOiJiNzM0ZWY5MzVlMmEwMjg5MmIyZmEzMWUzNDg4YjM2MGVmMzAwZDNiMGIzMmMwMzgzNGNlYTNhODNlMjQ1M2YwIiwib3duZXJfaWQiOiI2MzlmMjcxZmU1MTFjZDE4ODBjMmE0ZDhlYTRhNGYyNDBmYWYzMzY1YzYxYjY1YjQyNWZhYjVlMDIzMTcxM2MzIiwiYWxsb2NhdGlvbl9pZCI6IjkzN2FkNjlmYjIwZGMxMTFiY2ZkMDFkZTQyYzc5MmEwYzJiNDQxZGUzZDNjZjRjZGIzZjI1YzIxYzFhYjRiN2IiLCJmaWxlX3BhdGhfaGFzaCI6ImFkMThmMzg1Y2I2MWM4MTNjMzE0NDU2OTM0NWYxYzQ2ODE1ODljNzM0N2JkNzI4NjkyZTg1ZjFiNzM4NmI2OWQiLCJhY3R1YWxfZmlsZV9oYXNoIjoiIiwiZmlsZV9uYW1lIjoiZm9sZGVyMSIsInJlZmVyZW5jZV90eXBlIjoiZCIsImV4cGlyYXRpb24iOjE2MzYyODgwNDMsInRpbWVzdGFtcCI6MTYyODUxMjA0MywicmVfZW5jcnlwdGlvbl9rZXkiOiIiLCJlbmNyeXB0ZWQiOnRydWUsInNpZ25hdHVyZSI6ImNiYTZlMjA2OTBjOGZjZTk5YmFjZTMzYjFjMGY3ODQ5ZDE4YmJlMTdhODkyNjczODg1MjI2MDc3MGQzNzgzMGQifQ==
+```
+
+Decoded
+
+```
+{"client_id":"b734ef935e2a02892b2fa31e3488b360ef300d3b0b32c03834cea3a83e2453f0","owner_id":"639f271fe511cd1880c2a4d8ea4a4f240faf3365c61b65b425fab5e0231713c3","allocation_id":"937ad69fb20dc111bcfd01de42c792a0c2b441de3d3cf4cdb3f25c21c1ab4b7b","file_path_hash":"ad18f385cb61c813c3144569345f1c4681589c7347bd728692e85f1b7386b69d","actual_file_hash":"","file_name":"folder1","reference_type":"d","expiration":1636288043,"timestamp":1628512043,"re_encryption_key":"","encrypted":true,"signature":"cba6e20690c8fce99bace33b1c0f7849d18bbe17a8926738852260770d37830d"}
+```
+
+Make sure *"reference_type":"d"* is "d" (directory)
+
+Now you able to download files inside this directory with same auth_ticket. To download it just point to excact file location in *--remotepath* param:
+
+```
+zbox download --allocation 76ad9fa86f9b6685880553588a250586806ba5d7d20fc229d6905998be55d64a --localpath ~/file1.z --authticket $auth --remotepath /folder1/file1.z
+```
+
+This method works for both: encrypted and non-encrypted files.
+
 #### share-encrypted revoke
 
-This will cancel the share for particular buyer that was performed by the seller using zbox share.
+This will cancel the share for particular buyer that was performed by the seller using zbox share. *Works only for files with --encrypted tag.*
 
 Use clientid of the user that was share the remotepath.
 Required parameters are allocation, remotepath and clientid.
