@@ -1,10 +1,11 @@
 package cmd
 
 import (
-	"github.com/0chain/gosdk/zboxcore/fileref"
 	"os"
 	"strings"
 	"sync"
+
+	"github.com/0chain/gosdk/zboxcore/fileref"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
@@ -178,8 +179,9 @@ func init() {
 	downloadCmd.Flags().Int64P("startblock", "s", 0, "pass this option to download from specific block number")
 	downloadCmd.Flags().Int64P("endblock", "e", 0, "pass this option to download till specific block number")
 	downloadCmd.Flags().IntP("blockspermarker", "b", 10, "pass this option to download multiple blocks per marker")
-	downloadCmd.Flags().Bool("live", false, "enable m3u8 downloader,and build playlist on --localpath")
-	downloadCmd.Flags().Int("delay", 5, "how many seconds has a clips. default is 5 sencods. only works with --live")
+
+	downloadCmd.Flags().Bool("live", false, "start m3u8 downloader,and automatically generate media playlist(m3u8) on --localpath")
+	downloadCmd.Flags().Int("delay", 5, "pass segment duration to generate media playlist(m3u8). only works with --live. default duration is 5s.")
 
 	downloadCmd.MarkFlagRequired("allocation")
 	downloadCmd.MarkFlagRequired("localpath")

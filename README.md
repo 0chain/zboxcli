@@ -700,6 +700,52 @@ Response:
 Status completed callback. Type = application/octet-stream. Name = sensitivedata.txt
 ```
 
+**Download segment files from remote live feed, re-encode and upload**
+
+Use `upload --sync` command to automatically download segment files from remove live feed with `--downloader-args "-f 22"`, encode them into new segment files with `--delay` and `--ffmpeg-args`, and upload. please use `youtube-dl -F https://www.youtube.com/watch?v=pC5mGB5enkw` to list formats of video (see below). 
+
+```
+[youtube] pC5mGB5enkw: Downloading webpage
+[info] Available formats for pC5mGB5enkw:
+format code  extension  resolution note
+249          webm       audio only tiny   44k , webm_dash container, opus @ 44k (48000Hz), 95.21MiB
+250          webm       audio only tiny   59k , webm_dash container, opus @ 59k (48000Hz), 127.05MiB
+251          webm       audio only tiny  123k , webm_dash container, opus @123k (48000Hz), 264.98MiB
+140          m4a        audio only tiny  129k , m4a_dash container, mp4a.40.2@129k (44100Hz), 277.82MiB
+278          webm       256x136    144p   87k , webm_dash container, vp9@  87k, 30fps, video only, 188.78MiB
+160          mp4        256x136    144p  118k , mp4_dash container, avc1.4d400c@ 118k, 30fps, video only, 253.62MiB
+242          webm       426x224    240p  190k , webm_dash container, vp9@ 190k, 30fps, video only, 409.20MiB
+133          mp4        426x224    240p  252k , mp4_dash container, avc1.4d400d@ 252k, 30fps, video only, 541.15MiB
+243          webm       640x338    360p  326k , webm_dash container, vp9@ 326k, 30fps, video only, 701.53MiB
+134          mp4        640x338    360p  576k , mp4_dash container, avc1.4d401e@ 576k, 30fps, video only, 1.21GiB
+244          webm       854x450    480p  649k , webm_dash container, vp9@ 649k, 30fps, video only, 1.36GiB
+135          mp4        854x450    480p 1028k , mp4_dash container, avc1.4d401f@1028k, 30fps, video only, 2.16GiB
+247          webm       1280x676   720p 1320k , webm_dash container, vp9@1320k, 30fps, video only, 2.77GiB
+136          mp4        1280x676   720p 1988k , mp4_dash container, avc1.64001f@1988k, 30fps, video only, 4.17GiB
+248          webm       1920x1012  1080p 2527k , webm_dash container, vp9@2527k, 30fps, video only, 5.30GiB
+137          mp4        1920x1012  1080p 4125k , mp4_dash container, avc1.640028@4125k, 30fps, video only, 8.64GiB
+271          webm       2560x1350  1440p 7083k , webm_dash container, vp9@7083k, 30fps, video only, 14.84GiB
+313          webm       3840x2026  2160p 13670k , webm_dash container, vp9@13670k, 30fps, video only, 28.65GiB
+18           mp4        640x338    360p  738k , avc1.42001E, 30fps, mp4a.40.2 (44100Hz), 1.55GiB
+22           mp4        1280x676   720p 2117k , avc1.64001F, 30fps, mp4a.40.2 (44100Hz) (best)
+```
+
+`--downloader-args "-f 22"` dowloads video with `22           mp4        1280x676   720p 2117k , avc1.64001F, 30fps, mp4a.40.2 (44100Hz) (best)`
+
+```
+./zbox upload --sync --localpath <absolute path to file>/tvshow.m3u8 --remotepath /videos/tvsho --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac  --delay 10 --chunksize 655360 --downloader-args "-f 22" --feed https://www.youtube.com/watch?v=pC5mGB5enkw
+
+```
+
+**Capture streaming from local devices, encode with ffmpeg, and upload**
+
+Use `upload --live` to capture video and audio streaming form local devices, and upload
+
+```
+./zbox upload --live --localpath <absolute path to file>/streaming.m3u8 --remotepath /videos/streaming --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac  --delay 10 --chunksize 655360 
+```
+
+
 ## Download
 
 Use `download` command to download your own or a shared file. 
@@ -720,9 +766,11 @@ Use `startblock` and `endblock` to only download part of the file.
 | endblock        | no       | download until specified block number                                    |         | int          |
 | localpath       | yes      | local path to which to download the file to                              |         | file path    |
 | remotepath      | yes      | remote path to which the file was uploaded                               |         | string       |
-| rx_pay          | no       | `authticket` must be valid, true = sender pays, false = allocation owner pays                                      | false   | boolean      |
+| rx_pay          | no       | `authticket` must be valid, true = sender pays, false = allocation owner pays      | false   | boolean      |
 | startblock      | no       | start download from specified block                                      |         | int          |
 | thumbail        | no       | only download the thumbnail                                              | false   | boolean      |
+| live            | no       | start m3u8 downloader,and automatically generate media playlist(m3u8) on --localpath | false   | boolean |
+| delay           | no       | pass segment duration to generate media playlist(m3u8). only works with --live. default duration is 5s. | 5  | int  |
 
 <details>
   <summary>download</summary>
@@ -766,6 +814,7 @@ can update a file.  To add collaborators to an allocation, use
 | remotepath    | yes      | remote file to upload         |         | string       |
 | thumbnailpath | no       | local fumbnail file to upload |         | file path    |
 | commit        | no       | save meta data to blockchain  | false   | boolean      |
+| chunksize     | no       | chunk size                    | 65536   | int          |
 
 <details>
   <summary>update</summary>
@@ -1062,6 +1111,7 @@ Only the allocation's owner can successfully run `sync`.
 | localchache | no       | local chache of remote snapshot. Used for comparsion with remote. After sync will be updated. |         | string       |
 | localpath   | yes      | local directory to which to sync                                                              |         | file path    |
 | uploadonly  | no       | only upload and update files                                                                  | false   | boolean      |
+| chunksize   | no       | chunk size                                                                                    | 65536   | int          |
 
 <details>
   <summary>sync</summary>
