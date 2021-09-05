@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"path"
+	"path/filepath"
 	"sort"
 	"sync"
 	"time"
@@ -43,7 +43,7 @@ func createM3u8Downloader(localPath, remotePath, authTicket, allocationID, looku
 		return nil, errors.New("Error: localpath is missing")
 	}
 
-	dir := path.Dir(localPath)
+	dir := filepath.Dir(localPath)
 
 	file, err := os.Create(localPath)
 
@@ -59,7 +59,7 @@ func createM3u8Downloader(localPath, remotePath, authTicket, allocationID, looku
 		allocationID:   allocationID,
 		rxPay:          rxPay,
 		waitToDownload: make(chan MediaItem, 100),
-		playlist:       sdk.NewMediaPlaylist(delay, file),
+		playlist:       sdk.NewMediaPlaylist(delay, dir, file),
 		done:           make(chan error, 1),
 	}
 
@@ -95,7 +95,7 @@ func createM3u8Downloader(localPath, remotePath, authTicket, allocationID, looku
 			downloader.lookupHash = lookupHash
 		}
 		if !isDir {
-			return nil, fmt.Errorf("Invalid operation. Auth ticket is not for a directory: %s", err)
+			return nil, fmt.Errorf("invalid operation. Auth ticket is not for a directory: %s", err)
 		}
 
 	}
@@ -173,7 +173,7 @@ func (d *M3u8Downloader) download(item MediaItem) (string, error) {
 	statusBar := &StatusBar{wg: wg}
 	wg.Add(1)
 
-	localPath := d.localDir + string(os.PathSeparator) + item.Name
+	localPath := filepath.Join(d.localDir, item.Name)
 	remotePath := item.Path
 
 	if len(d.remotePath) > 0 {
@@ -212,7 +212,7 @@ func (d *M3u8Downloader) download(item MediaItem) (string, error) {
 
 	//}
 
-	return localPath, nil
+	return item.Name, nil
 }
 
 func (d *M3u8Downloader) getList() ([]*sdk.ListResult, error) {
