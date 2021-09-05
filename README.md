@@ -655,9 +655,9 @@ The user must be the owner of the allocation.You can request the file be encrypt
 | chunksize               | no       | chunk size                                                         | 65536   | int                    |
 | delay                   | no       | set segment duration to seconds. only works with --live and --sync.| 5       | int                    |
 | sync                    | no       | enable SyncUpload from remote live feed. disabled it by default.   | false   | boolean                |
-| feed                    | no       | set remote live feed to url. only works with --sync.                | false   | url                    |
-| downloader-args         | no       | pass args to youtube-dl to download video. default is \"-q\". only works with --sync.|  | [youtube-dl](https://github.com/ytdl-org/youtube-dl/blob/master/README.md#options)|
-| ffmpeg-args             | no       | pass args to ffmpeg to build segments. only works with --sync.      | false   | [ffmpeg](https://www.ffmpeg.org/ffmpeg.html)              |
+| feed                    | no       | set remote live feed to url. only works with --sync.               | false   | url                    |
+| downloader-args         | no       | pass args to youtube-dl to download video. default is \"-q -f best\". only works with --sync.| -q -f best | [youtube-dl](https://github.com/ytdl-org/youtube-dl/blob/master/README.md#options)|
+| ffmpeg-args             | no       | pass args to ffmpeg to build segments. only works with --sync.     | false   | [ffmpeg](https://www.ffmpeg.org/ffmpeg.html)              |
 | live                    | no       | enable LiveUpload from local devices. disabled by default.         | false   | boolean                |
 
 
