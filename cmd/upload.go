@@ -301,7 +301,7 @@ func init() {
 	uploadCmd.Flags().Bool("sync", false, "enable SyncUpload from remote live feed. disabled by default.")
 	uploadCmd.Flags().String("feed", "", "set remote live feed to url. only works with --sync.")
 	uploadCmd.Flags().String("downloader-args", "-q -f best", "pass args to youtube-dl to download video. default is \"-q\". only works with --sync.")
-	uploadCmd.Flags().String("ffmpeg-args", "", "pass args to ffmpeg to build segments. only works with --sync.")
+	uploadCmd.Flags().String("ffmpeg-args", "-loglevel warning", "pass args to ffmpeg to build segments. default is \"-loglevel warning\". only works with --sync.")
 
 	// LiveUpload
 	uploadCmd.Flags().Bool("live", false, "enable LiveUpload from local devices. disabled by default.")
