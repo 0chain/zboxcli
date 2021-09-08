@@ -190,7 +190,7 @@ the wallet at `~/.zcn/wallet.json`.
 Sample command
 
 ```sh
-./zwallet register
+./zbox register
 ```
 
 Sample output
@@ -352,7 +352,7 @@ Output:
 Allocation updated with txId : fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
 ```
 
-You can see more txn details using above txID in block explorer [here](https://one.devnet-0chain.net/).
+You can see more txn details using above txID in block explorer [here](https://beta.0chain.net/).
 
 ### Cancel allocation
 
@@ -428,7 +428,7 @@ maintains a list of these curators.
 </details>
 
 ```shell
-./zbox addcurator  --allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d --curator  e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429
+./zbox addcurator --allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d --curator  e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429
 ```
 
 ```shell
@@ -554,7 +554,7 @@ settings:
   service_charge:  30 %
 ```
 
-## Lost all files
+## List all files
 
 `list-all` lists al the files stored with an allocation
 
@@ -594,7 +594,7 @@ ZED | CANCELED | R  PRICE |   W  PRICE
 
 ## Update blobber settings
 
-Use `./zbox bl-update to update a blobber's configuration settings. This updates the settings
+Use `./zbox bl-update ` to update a blobber's configuration settings. This updates the settings
 on the blockchain not the blobber.
 
 | Parameter          | Required | Description                               | default | Valid values |
@@ -629,7 +629,7 @@ Update blobber read price
 ## Upload
 
 Use `upload` command to upload a file. The user must be the owner of the allocation.
-You can request the file be encrypted before upload, and can send thumbnails 
+You can also encrypt the file before upload, and can send thumbnails 
 with the file. 
 
 | Parameter               | Required | Description                            | Default | Valid values                            |
@@ -1760,8 +1760,8 @@ An expired write pool, associated with an allocation, can be locked until alloca
 
 ## Download cost
 
-`get-download-cost` determines the cost for downloading the remote file from dStorage. The clinet
-must either be the owner, a collaborator or be using an auth ticket.
+`get-download-cost` determines the cost for downloading the remote file from dStorage. The client must be an 
+  owner, collaborator, or using an auth ticket to determine the download cost of the file.
 
 | Parameter  | Required | Description                               | default | Valid values |
 |------------|----------|-------------------------------------------|---------|--------------|
