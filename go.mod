@@ -3,8 +3,7 @@ module github.com/0chain/zboxcli
 go 1.13
 
 require (
-	github.com/0chain/gosdk v1.2.83
-	github.com/mattn/go-colorable v0.1.4 // indirect
+	github.com/0chain/gosdk v1.2.87
 	github.com/mattn/go-runewidth v0.0.10 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
