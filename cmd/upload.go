@@ -170,7 +170,7 @@ func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, local
 
 	ChunkedUpload, err := sdk.CreateChunkedUpload(util.GetHomeDir(), allocationObj, fileMeta, fileReader, isUpdate,
 		sdk.WithThumbnailFile(thumbnailPath),
-		sdk.WithChunkSize(chunkSize),
+		sdk.WithChunkSize(int64(chunkSize)),
 		sdk.WithEncrypt(encrypt),
 		sdk.WithStatusCallback(statusBar))
 	if err != nil {
