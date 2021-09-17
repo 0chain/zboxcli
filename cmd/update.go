@@ -52,6 +52,8 @@ var updateCmd = &cobra.Command{
 			PrintError("Error: can not update Encrypted Folder")
 			os.Exit(1)
 		}
+		// get original file attributes
+		var attrs = getRemoteFileAttributes(allocationObj, remotepath)
 
 		localpath := cmd.Flag("localpath").Value.String()
 		thumbnailpath := cmd.Flag("thumbnailpath").Value.String()
@@ -62,8 +64,6 @@ var updateCmd = &cobra.Command{
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
-
-		var attrs fileref.Attributes // depreciated
 
 		err = startChunkedUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar, true)
 

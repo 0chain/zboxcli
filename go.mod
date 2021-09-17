@@ -4,9 +4,8 @@ go 1.13
 
 require (
 	github.com/0chain/errors v1.0.2
-	github.com/0chain/gosdk v1.2.83
+	github.com/0chain/gosdk v1.2.87
 	github.com/aws/aws-sdk-go v1.27.0
-	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/mattn/go-runewidth v0.0.10 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
