@@ -93,7 +93,6 @@ func initConfig() {
 		fmt.Println("Can't read config:", err)
 		os.Exit(1)
 	}
-	conf.InitClientConfig(&cfg)
 
 	if networkFile == "" {
 		networkFile = "network.yaml"
@@ -210,6 +209,8 @@ func initConfig() {
 	// additional settings depending network latency
 	blockchain.SetMaxTxnQuery(cfg.MaxTxnQuery)
 	blockchain.SetQuerySleepTime(cfg.QuerySleepTime)
+
+	conf.InitClientConfig(&cfg)
 
 	if network.IsValid() {
 		sdk.SetNetwork(network.Miners, network.Sharders)
