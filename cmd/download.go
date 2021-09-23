@@ -1,10 +1,11 @@
 package cmd
 
 import (
-	"github.com/0chain/gosdk/zboxcore/fileref"
 	"os"
 	"strings"
 	"sync"
+
+	"github.com/0chain/gosdk/zboxcore/fileref"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
@@ -35,6 +36,31 @@ var downloadCmd = &cobra.Command{
 		}
 
 		localpath := cmd.Flag("localpath").Value.String()
+		allocationID := cmd.Flag("allocation").Value.String()
+
+		live, _ := cmd.Flags().GetBool("live")
+
+		if live {
+			delay, _ := cmd.Flags().GetInt("delay")
+
+			m3u8, err := createM3u8Downloader(localpath, remotepath, authticket, allocationID, lookuphash, rxPay, delay)
+
+			if err != nil {
+				PrintError("Error: download files and build playlist: ", err)
+				os.Exit(1)
+			}
+
+			err = m3u8.Start()
+
+			if err != nil {
+				PrintError("Error: download files and build playlist: ", err)
+				os.Exit(1)
+			}
+
+			return
+
+		}
+
 		numBlocks, _ := cmd.Flags().GetInt("blockspermarker")
 		if numBlocks == 0 {
 			numBlocks = 10
@@ -49,6 +75,7 @@ var downloadCmd = &cobra.Command{
 		wg.Add(1)
 		var errE, err error
 		var allocationObj *sdk.Allocation
+
 		if len(authticket) > 0 {
 			at, err := sdk.InitAuthTicket(authticket).Unmarshall()
 
@@ -79,7 +106,7 @@ var downloadCmd = &cobra.Command{
 				lookuphash = fileref.GetReferenceLookup(allocationObj.Tx, remotepath)
 
 				pathnames := strings.Split(remotepath, "/")
-				filename = pathnames[len(pathnames) - 1]
+				filename = pathnames[len(pathnames)-1]
 			} else {
 				PrintError("Either remotepath or lookuphash is required when using authticket of directory type")
 				os.Exit(1)
@@ -152,6 +179,10 @@ func init() {
 	downloadCmd.Flags().Int64P("startblock", "s", 0, "pass this option to download from specific block number")
 	downloadCmd.Flags().Int64P("endblock", "e", 0, "pass this option to download till specific block number")
 	downloadCmd.Flags().IntP("blockspermarker", "b", 10, "pass this option to download multiple blocks per marker")
+
+	downloadCmd.Flags().Bool("live", false, "start m3u8 downloader,and automatically generate media playlist(m3u8) on --localpath")
+	downloadCmd.Flags().Int("delay", 5, "pass segment duration to generate media playlist(m3u8). only works with --live. default duration is 5s.")
+
 	downloadCmd.MarkFlagRequired("allocation")
 	downloadCmd.MarkFlagRequired("localpath")
 }
