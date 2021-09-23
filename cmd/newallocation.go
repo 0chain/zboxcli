@@ -17,6 +17,7 @@ import (
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
+	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )
 
@@ -260,7 +261,7 @@ func init() {
 
 func storeAllocation(allocationID string) {
 
-	allocFilePath := getConfigDir() + "/" + *allocationFileName
+	allocFilePath := util.GetConfigDir() + string(os.PathSeparator) + *allocationFileName
 
 	file, err := os.Create(allocFilePath)
 	if err != nil {

@@ -122,6 +122,8 @@ var syncCmd = &cobra.Command{
 
 		uploadOnly, _ := cmd.Flags().GetBool("uploadonly")
 		commit, _ := cmd.Flags().GetBool("commit")
+		chunkSize, _ := cmd.Flags().GetInt("chunksize")
+
 		lDiff, err := allocationObj.GetAllocationDiff(localcache, localpath, filter, exclPath)
 		if err != nil {
 			PrintError("Error getting diff.", err)
@@ -149,24 +151,34 @@ var syncCmd = &cobra.Command{
 				wg.Add(1)
 				err = allocationObj.DownloadFile(lPath, f.Path, statusBar)
 			case sdk.Upload:
-				wg.Add(1)
+				//wg.Add(1)
 				var attrs fileref.Attributes
-				if len(encryptpath) != 0 && strings.Contains(lPath, encryptpath) {
-					err = allocationObj.EncryptAndUploadFile(lPath, f.Path, attrs, statusBar)
-				} else {
-					err = allocationObj.UploadFile(lPath, f.Path, attrs, statusBar)
-				}
+
+				encrypt := len(encryptpath) != 0 && strings.Contains(lPath, encryptpath)
+
+				err = startChunkedUpload(cmd, allocationObj, lPath, "", f.Path, encrypt, chunkSize, attrs, statusBar, false)
+
+				// if len(encryptpath) != 0 && strings.Contains(lPath, encryptpath) {
+				// 	err = allocationObj.EncryptAndUploadFile(lPath, f.Path, attrs, statusBar)
+				// } else {
+				// 	err = allocationObj.UploadFile(lPath, f.Path, attrs, statusBar)
+				// }
 			case sdk.Update:
-				wg.Add(1)
-				if len(encryptpath) != 0 && strings.Contains(lPath, encryptpath) {
-					err = allocationObj.EncryptAndUpdateFile(lPath, f.Path,
-						getRemoteFileAttributes(allocationObj, f.Path),
-						statusBar)
-				} else {
-					err = allocationObj.UpdateFile(lPath, f.Path,
-						getRemoteFileAttributes(allocationObj, f.Path),
-						statusBar)
-				}
+				//wg.Add(1)
+
+				encrypt := len(encryptpath) != 0 && strings.Contains(lPath, encryptpath)
+
+				err = startChunkedUpload(cmd, allocationObj, lPath, "", f.Path, encrypt, chunkSize, f.Attributes, statusBar, true)
+
+				// if len(encryptpath) != 0 && strings.Contains(lPath, encryptpath) {
+				// 	err = allocationObj.EncryptAndUpdateFile(lPath, f.Path,
+				// 		getRemoteFileAttributes(allocationObj, f.Path),
+				// 		statusBar)
+				// } else {
+				// 	err = allocationObj.UpdateFile(lPath, f.Path,
+				// 		getRemoteFileAttributes(allocationObj, f.Path),
+				// 		statusBar)
+				// }
 			case sdk.Delete:
 				fileMeta, err := allocationObj.GetFileMeta(f.Path)
 				if err != nil {
@@ -190,7 +202,7 @@ var syncCmd = &cobra.Command{
 				continue
 			}
 			if err == nil {
-				wg.Wait()
+				//wg.Wait()
 			} else {
 				PrintError(err.Error())
 			}
@@ -274,6 +286,9 @@ After sync complete, remote snapshot will be updated to the same file for next u
 	syncCmd.MarkFlagRequired("localpath")
 	syncCmd.Flags().Bool("uploadonly", false, "pass this option to only upload/update the files")
 	syncCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction - only works with uploadonly")
+
+	syncCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "chunk size")
+
 	getDiffCmd.PersistentFlags().String("allocation", "", "Allocation ID")
 	getDiffCmd.PersistentFlags().String("localpath", "", "Local dir path to sync")
 	getDiffCmd.PersistentFlags().String("localcache", "", `Local cache of remote snapshot.

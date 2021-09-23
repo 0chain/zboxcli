@@ -120,8 +120,8 @@ var getallocationCmd = &cobra.Command{
 			fmt.Println("      challenge_reward:", common.Balance(d.ChallengeReward), "(on challenge passed)")
 			fmt.Println("      final_reward:    ", common.Balance(d.FinalReward), "(if finalized)")
 			fmt.Println("      terms: (allocation related terms)")
-			fmt.Println("        read_price:               ", d.Terms.ReadPrice, "tok / GB (by 64KB chunks)")
-			fmt.Println("        write_price:              ", d.Terms.WritePrice, "tok / GB")
+			fmt.Println("        read_price:               ", d.Terms.ReadPrice, "/ GB (by 64KB chunks)")
+			fmt.Println("        write_price:              ", d.Terms.WritePrice, "/ GB")
 			fmt.Println("        min_lock_demand:          ", d.Terms.MinLockDemand*100, "%")
 			fmt.Println("        max_offer_duration:       ", d.Terms.MaxOfferDuration)
 			fmt.Println("        challenge_completion_time:", d.Terms.ChallengeCompletionTime)
@@ -160,9 +160,9 @@ var getallocationCmd = &cobra.Command{
 
 		fmt.Println("  price:")
 		fmt.Println("    time_unit:  ", alloc.TimeUnit)
-		fmt.Println("    read_price: ", downloadCostFor1GB(alloc), "tok / GB (by 64KB)")
+		fmt.Println("    read_price: ", downloadCostFor1GB(alloc), "/ GB (by 64KB)")
 		fmt.Println("    write_price:", uploadCostFor1GB(alloc),
-			fmt.Sprintf("tok / GB / %s", alloc.TimeUnit))
+			fmt.Sprintf("/ GB / %s", alloc.TimeUnit))
 		return
 	},
 }
