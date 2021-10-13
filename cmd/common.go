@@ -100,7 +100,11 @@ func PrintError(v ...interface{}) {
 }
 
 func PrintInfo(v ...interface{}) {
-	fmt.Fprintln(os.Stdin, v...)
+	fmt.Fprintln(os.Stdout, v...)
+}
+
+func PrintInfof(format string, v ...interface{}) {
+	fmt.Fprintln(os.Stdout, fmt.Sprintf(format, v...))
 }
 
 func commitMetaTxn(path, crudOp, authTicket, lookupHash string, a *sdk.Allocation, fileMeta *sdk.ConsolidatedFileMeta, status *StatusBar) {
