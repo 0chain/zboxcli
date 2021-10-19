@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	mkdirAllocationID string
-	mkdirDirName      string
+	dirNewAllocationID string
+	dirNewName         string
 )
 
 func init() {
@@ -21,14 +21,13 @@ func init() {
 	createDirCmd.MarkFlagRequired("dirname")
 
 	rootCmd.AddCommand(dirNewCmd)
-
-	dirNewCmd.Flags().StringVarP(&mkdirAllocationID, "alloc", "a", "", "allocation id")
-	dirNewCmd.Flags().StringVarP(&mkdirDirName, "dir", "d", "", "directory name")
+	dirNewCmd.Flags().StringVarP(&dirNewAllocationID, "alloc", "a", "", "allocation id")
+	dirNewCmd.Flags().StringVarP(&dirNewName, "name", "n", "", "directory name")
 	dirNewCmd.MarkFlagRequired("alloc") //nolint
-	dirNewCmd.MarkFlagRequired("dir")   //nolint
+	dirNewCmd.MarkFlagRequired("name")  //nolint
 }
 
-// use dir-new instead
+// use dir-create instead
 var createDirCmd = &cobra.Command{
 	Use:        "createdir",
 	Deprecated: "please use mkdir",
@@ -47,25 +46,16 @@ var createDirCmd = &cobra.Command{
 		}
 
 		allocationID := cmd.Flag("allocation").Value.String()
-		allocationObj, err := sdk.GetAllocation(allocationID)
-		if err != nil {
-			PrintError("Error fetching the allocation.", err)
-			os.Exit(1)
-		}
 		dirname := cmd.Flag("dirname").Value.String()
 
-		if err != nil {
-			PrintError("CreateDir failed.", err)
-			os.Exit(1)
-		}
-		err = allocationObj.CreateDir(dirname)
+		err := sdk.CreateDir(context.TODO(), allocationID, dirname)
 
 		if err != nil {
-			PrintError("CreateDir failed.", err)
-			os.Exit(1)
+			PrintError("ERR: ", err.Error())
+			return
 		}
 
-		return
+		PrintInfof("OK: created directory '%s'", dirNewName)
 	},
 }
 
@@ -74,14 +64,13 @@ var dirNewCmd = &cobra.Command{
 	Short: "Create directories named on blobbers",
 	Long:  `Create directories named on blobbers`,
 	Run: func(cmd *cobra.Command, args []string) {
+		err := sdk.CreateDir(context.TODO(), dirNewAllocationID, dirNewName)
 
-		err := sdk.CreateDirectory(context.TODO(), mkdirAllocationID, mkdirDirName)
 		if err != nil {
-			PrintError(err.Error())
+			PrintError("ERR: ", err.Error())
 			return
 		}
 
-		PrintInfof("OK: created directory '%s'", mkdirDirName)
-		return
+		PrintInfof("OK: created directory '%s'", dirNewName)
 	},
 }
