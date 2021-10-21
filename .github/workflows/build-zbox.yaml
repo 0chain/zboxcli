@@ -1,18 +1,8 @@
 name: build-zbox
 on:
   push:
-    branches:
-      - master
-      - dev
-      - staging
     tags:
       - 'v*.*.*'
-
-  pull_request:
-    branches:
-      - master
-      - production
-      - staging
 jobs:
   build-linux:
     name: Build-linux
