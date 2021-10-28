@@ -56,8 +56,14 @@ var updateAllocationCmd = &cobra.Command{
 
 		setImmutable, _ := cmd.Flags().GetBool("set_immutable")
 
+		var setClosure, closure bool
+		if flags.Changed("no_closure") {
+			setClosure = true
+			closure, _ = cmd.Flags().GetBool("no_closure")
+		}
+
 		txnHash, err := sdk.UpdateAllocation(size,
-			int64(expiry/time.Second), allocID, lock, setImmutable)
+			int64(expiry/time.Second), allocID, lock, setImmutable, setClosure, closure)
 		if err != nil {
 			log.Fatal("Error updating allocation:", err)
 		}
@@ -75,9 +81,12 @@ func init() {
 		"adjust allocation size, bytes")
 	updateAllocationCmd.PersistentFlags().Duration("expiry", 0,
 		"adjust storage expiration time, duration")
-	updateAllocationCmd.Flags().Bool("set_immutable", false, "set the allocation's data to be immutable")
+	updateAllocationCmd.Flags().Bool("set_immutable", false,
+		"set the allocation's data to be immutable")
 	updateAllocationCmd.Flags().String("free_storage", "",
-			"json file containing marker for free storage")
+		"json file containing marker for free storage")
+	updateAllocationCmd.Flags().Bool("no_closure", false,
+		"allocation cannot be closed or finalized")
 
 	updateAllocationCmd.MarkFlagRequired("allocation")
 
