@@ -224,8 +224,7 @@ and `free_storage` parameters.
 * Use `owner` if you want to create and fund an allocation for someone else. If 
   using this option then you need to provide the new owner's public key. Otherwise,
   the owner defaults to the client.
-
-
+* Use closure for NFT allocations that need to be permanent
 
 | Parameter          | Description                                               | Default        | Valid Values |
 |--------------------|-----------------------------------------------------------|----------------|--------------|
@@ -241,6 +240,7 @@ and `free_storage` parameters.
 | parity             | number of parity shards, effects availability             | 2              | int          |
 | read_price         | filter blobbers by read price range                       | 0-inf          | range        |
 | size               | size of space reserved on blobbers                        | 2147483648     | bytes          |
+| closure            | allocation cannot be closed or finalized                  | false          | bool          |
 | usd                | give token value in USD                                   |                | flag         |
 | write_price        | filter blobbers by write price range                      | 0-inf          | range        |
 
