@@ -1688,7 +1688,6 @@ Get information about all stake pools of current user.
 
 | Parameter  | Required | Description                 | default        | Valid values |
 |------------|----------|-----------------------------|----------------|--------------|
-| client_id |          | id of client               | current client | string       |
 | json       | no       | print result in json format | false          | boolean      |
 
 
