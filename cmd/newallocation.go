@@ -148,9 +148,9 @@ var newallocationCmd = &cobra.Command{
 
 		var expireAt = time.Now().Add(expire).Unix()
 
-		var closure = false
-		if flags.Changed("no_closure") {
-			closure, _ = cmd.Flags().GetBool("no_closure")
+		var permanent = false
+		if flags.Changed("permanent") {
+			permanent, _ = cmd.Flags().GetBool("permanent")
 		}
 
 		if costOnly {
@@ -172,7 +172,7 @@ var newallocationCmd = &cobra.Command{
 		var allocationID string
 		if len(owner) == 0 {
 			allocationID, err = sdk.CreateAllocation(*datashards, *parityshards,
-				*size, expireAt, readPrice, writePrice, mcct, lock, closure)
+				*size, expireAt, readPrice, writePrice, mcct, lock, permanent)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
@@ -188,7 +188,7 @@ var newallocationCmd = &cobra.Command{
 			}
 
 			allocationID, err = sdk.CreateAllocationForOwner(owner, ownerPublicKey, *datashards, *parityshards,
-				*size, expireAt, readPrice, writePrice, mcct, lock, closure, blockchain.GetPreferredBlobbers())
+				*size, expireAt, readPrice, writePrice, mcct, lock, permanent, blockchain.GetPreferredBlobbers())
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
@@ -261,7 +261,7 @@ func init() {
 		"create an allocation with someone else as owner")
 	newallocationCmd.Flags().String("owner_public_key", "",
 		"public key of owner, user when creating an allocation for somone else")
-	updateAllocationCmd.Flags().Bool("no_closure", false,
+	updateAllocationCmd.Flags().Bool("permanent", false,
 		"allocation cannot be closed or finalized")
 
 }

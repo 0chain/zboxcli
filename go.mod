@@ -4,7 +4,7 @@ go 1.13
 
 require (
 	github.com/0chain/errors v1.0.2
-	github.com/0chain/gosdk v1.3.0-beta.2.0.20211028100456-d57d0101c542
+	github.com/0chain/gosdk v1.3.0-beta.2.0.20211029152801-aeb332fcc10c
 	github.com/mattn/go-runewidth v0.0.10 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
