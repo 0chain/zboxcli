@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"log"
 	"os"
 	"path/filepath"
@@ -253,7 +254,7 @@ func startSyncUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPat
 		return thrown.New("invalid_path", "feed should be valid")
 	}
 
-	reader, err := sdk.CreateYoutubeDL(localPath, feed, util.SplitArgs(downloadArgs), util.SplitArgs(ffmpegArgs), delay)
+	reader, err := sdk.CreateYoutubeDL(sdk.NewSignalContext(context.TODO()), localPath, feed, util.SplitArgs(downloadArgs), util.SplitArgs(ffmpegArgs), delay, os.Stderr, os.Stdout)
 	if err != nil {
 		return err
 	}
