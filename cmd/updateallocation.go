@@ -37,6 +37,14 @@ var updateAllocationCmd = &cobra.Command{
 			return
 		}
 
+		var updateTerms = false
+		if flags.Changed("update_terms") {
+			updateTerms, err = flags.GetBool("update_terms")
+			if err != nil {
+				log.Fatal("invalid update terms entry: ", err)
+			}
+		}
+
 		var lockf float64
 		var lock int64
 		if lockf, err = flags.GetFloat64("lock"); err != nil {
@@ -57,7 +65,7 @@ var updateAllocationCmd = &cobra.Command{
 		setImmutable, _ := cmd.Flags().GetBool("set_immutable")
 
 		txnHash, err := sdk.UpdateAllocation(size,
-			int64(expiry/time.Second), allocID, lock, setImmutable)
+			int64(expiry/time.Second), allocID, lock, setImmutable, updateTerms)
 		if err != nil {
 			log.Fatal("Error updating allocation:", err)
 		}
@@ -77,7 +85,9 @@ func init() {
 		"adjust storage expiration time, duration")
 	updateAllocationCmd.Flags().Bool("set_immutable", false, "set the allocation's data to be immutable")
 	updateAllocationCmd.Flags().String("free_storage", "",
-			"json file containing marker for free storage")
+		"json file containing marker for free storage")
+	updateAllocationCmd.Flags().String("update_terms", "",
+		"update blobber terms")
 
 	updateAllocationCmd.MarkFlagRequired("allocation")
 
