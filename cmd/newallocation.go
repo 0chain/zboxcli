@@ -141,6 +141,13 @@ var newallocationCmd = &cobra.Command{
 			}
 		}
 
+		var isNft = false
+		if flags.Changed("is_nft") {
+			if isNft, err = flags.GetBool("is_nft"); err != nil {
+				log.Fatal("invalid is_nft value: ", err)
+			}
+		}
+
 		var expire time.Duration
 		if expire, err = flags.GetDuration("expire"); err != nil {
 			log.Fatal("invalid 'expire' flag: ", err)
@@ -167,7 +174,7 @@ var newallocationCmd = &cobra.Command{
 		var allocationID string
 		if len(owner) == 0 {
 			allocationID, err = sdk.CreateAllocation(*datashards, *parityshards,
-				*size, expireAt, readPrice, writePrice, mcct, lock)
+				*size, expireAt, readPrice, writePrice, mcct, lock, isNft)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
@@ -183,7 +190,7 @@ var newallocationCmd = &cobra.Command{
 			}
 
 			allocationID, err = sdk.CreateAllocationForOwner(owner, ownerPublicKey, *datashards, *parityshards,
-				*size, expireAt, readPrice, writePrice, mcct, lock, blockchain.GetPreferredBlobbers())
+				*size, expireAt, readPrice, writePrice, mcct, lock, isNft, blockchain.GetPreferredBlobbers())
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
