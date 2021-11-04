@@ -46,7 +46,7 @@ func filterOperations(lDiff []sdk.FileDiff) (filterDiff []sdk.FileDiff, exclPath
 
 func commitDiff(lDiff []sdk.FileDiff, allocationObj *sdk.Allocation, fileMetas map[string]*sdk.ConsolidatedFileMeta) {
 	wg := &sync.WaitGroup{}
-	statusBar := &StatusBar{wg: wg}
+	statusBar := &common.StatusBar{Wait: wg}
 	for _, f := range lDiff {
 		switch f.Op {
 		case sdk.Upload:
@@ -116,7 +116,7 @@ var syncCmd = &cobra.Command{
 
 		fileMetas := make(map[string]*sdk.ConsolidatedFileMeta)
 		wg := &sync.WaitGroup{}
-		statusBar := &StatusBar{wg: wg}
+		statusBar := &common.StatusBar{Wait: wg}
 		// Create filter
 		filter := []string{".DS_Store", ".git"}
 

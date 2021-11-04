@@ -98,7 +98,7 @@ var updateAttributesCmd = &cobra.Command{
 		log.Print("committing changes...")
 		var (
 			wg        sync.WaitGroup
-			statusBar = &StatusBar{wg: &wg}
+			statusBar = &common.StatusBar{Wait: wg}
 		)
 		wg.Add(1)
 		commitMetaTxn(remotePath, "Update attributes", "", "", alloc, meta,

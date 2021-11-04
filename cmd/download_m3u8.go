@@ -170,7 +170,7 @@ func (d *M3u8Downloader) autoRefreshList() {
 func (d *M3u8Downloader) download(item MediaItem) (string, error) {
 
 	wg := &sync.WaitGroup{}
-	statusBar := &StatusBar{wg: wg}
+	statusBar := &common.StatusBar{Wait: wg}
 	wg.Add(1)
 
 	localPath := filepath.Join(d.localDir, item.Name)

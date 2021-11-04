@@ -62,7 +62,7 @@ var updateCmd = &cobra.Command{
 		chunkSize, _ := cmd.Flags().GetInt("chunksize")
 
 		wg := &sync.WaitGroup{}
-		statusBar := &StatusBar{wg: wg}
+		statusBar := &common.StatusBar{Wait: wg}
 		wg.Add(1)
 
 		err = startChunkedUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar, true)

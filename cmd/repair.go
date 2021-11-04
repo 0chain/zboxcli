@@ -38,7 +38,7 @@ var startRepair = &cobra.Command{
 		repairPath := cmd.Flag("repairpath").Value.String()
 
 		wg := &sync.WaitGroup{}
-		statusBar := &StatusBar{wg: wg}
+		statusBar := &common.StatusBar{Wait: wg}
 		wg.Add(1)
 		allocUnderRepair = true
 		err = allocationObj.StartRepair(localRootPath, repairPath, statusBar)

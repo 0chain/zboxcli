@@ -92,7 +92,7 @@ var uploadCmd = &cobra.Command{
 		commit, _ := cmd.Flags().GetBool("commit")
 
 		wg := &sync.WaitGroup{}
-		statusBar := &StatusBar{wg: wg}
+		statusBar := &common.StatusBar{Wait: wg}
 		wg.Add(1)
 		if strings.HasPrefix(remotepath, "/Encrypted") {
 			encrypt = true
@@ -233,7 +233,7 @@ func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPat
 		sdk.WithLiveEncrypt(encrypt),
 		sdk.WithLiveStatusCallback(func() sdk.StatusCallback {
 			wg := &sync.WaitGroup{}
-			statusBar := &StatusBar{wg: wg}
+			statusBar := &common.StatusBar{Wait: wg}
 			wg.Add(1)
 
 			return statusBar
@@ -288,7 +288,7 @@ func startSyncUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPat
 		sdk.WithLiveEncrypt(encrypt),
 		sdk.WithLiveStatusCallback(func() sdk.StatusCallback {
 			wg := &sync.WaitGroup{}
-			statusBar := &StatusBar{wg: wg}
+			statusBar := &common.StatusBar{Wait: wg}
 			wg.Add(1)
 
 			return statusBar
