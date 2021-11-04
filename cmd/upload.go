@@ -92,7 +92,7 @@ var uploadCmd = &cobra.Command{
 		commit, _ := cmd.Flags().GetBool("commit")
 
 		wg := &sync.WaitGroup{}
-		statusBar := &common.StatusBar{Wait: wg}
+		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
 		if strings.HasPrefix(remotepath, "/Encrypted") {
 			encrypt = true
@@ -233,7 +233,7 @@ func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPat
 		sdk.WithLiveEncrypt(encrypt),
 		sdk.WithLiveStatusCallback(func() sdk.StatusCallback {
 			wg := &sync.WaitGroup{}
-			statusBar := &common.StatusBar{Wait: wg}
+			statusBar := &StatusBar{wg: wg}
 			wg.Add(1)
 
 			return statusBar
@@ -254,7 +254,7 @@ func startSyncUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPat
 		return thrown.New("invalid_path", "feed should be valid")
 	}
 
-	reader, err := sdk.CreateYoutubeDL(sdk.NewSignalContext(context.TODO()), localPath, feed, util.SplitArgs(downloadArgs), util.SplitArgs(ffmpegArgs), delay, os.Stderr, os.Stdout)
+	reader, err := sdk.CreateYoutubeDL(sdk.NewSignalContext(context.TODO()), localPath, feed, util.SplitArgs(downloadArgs), util.SplitArgs(ffmpegArgs), delay)
 	if err != nil {
 		return err
 	}
@@ -288,7 +288,7 @@ func startSyncUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPat
 		sdk.WithLiveEncrypt(encrypt),
 		sdk.WithLiveStatusCallback(func() sdk.StatusCallback {
 			wg := &sync.WaitGroup{}
-			statusBar := &common.StatusBar{Wait: wg}
+			statusBar := &StatusBar{wg: wg}
 			wg.Add(1)
 
 			return statusBar

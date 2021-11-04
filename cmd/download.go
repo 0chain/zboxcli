@@ -71,7 +71,7 @@ var downloadCmd = &cobra.Command{
 
 		sdk.SetNumBlockDownloads(numBlocks)
 		wg := &sync.WaitGroup{}
-		statusBar := &common.StatusBar{Wait: wg}
+		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
 		var errE, err error
 		var allocationObj *sdk.Allocation

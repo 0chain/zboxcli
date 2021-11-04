@@ -69,7 +69,7 @@ var deleteCmd = &cobra.Command{
 			fmt.Println("Commiting changes to blockchain ...")
 			if isFile {
 				wg := &sync.WaitGroup{}
-				statusBar := &common.StatusBar{Wait: wg}
+				statusBar := &StatusBar{wg: wg}
 				wg.Add(1)
 				commitMetaTxn(remotepath, "Delete", "", "", allocationObj, fileMeta, statusBar)
 				wg.Wait()
