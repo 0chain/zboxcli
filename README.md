@@ -331,6 +331,7 @@ If not a `free_storage` update, then tokens will come from those locked. If ther
 | free_storage  |          | free storage marker file                               | string       |
 | lock          | yes*     | lock additional tokens in write pool                    | int          |
 | set_immutable |          | sets allocation so that data can no longer be modified | boolean      |
+| update_terms |          | will update the allocation with the latest blobber terms | boolean      |
 | size          |          | adjust allocation size                                 | bytes        |
 `*` only required if free_storage not set.
 
