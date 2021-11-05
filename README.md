@@ -241,6 +241,7 @@ and `free_storage` parameters.
 | parity             | number of parity shards, effects availability             | 2              | int          |
 | read_price         | filter blobbers by read price range                       | 0-inf          | range        |
 | size               | size of space reserved on blobbers                        | 2147483648     | bytes          |
+| nft         | create an NFT allocation, an NFT allocation can be extended by anyone     | false          | boolean        |
 | usd                | give token value in USD                                   |                | flag         |
 | write_price        | filter blobbers by write price range                      | 0-inf          | range        |
 

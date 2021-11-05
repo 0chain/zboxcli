@@ -263,6 +263,8 @@ func init() {
 		"create an allocation with someone else as owner")
 	newallocationCmd.Flags().String("owner_public_key", "",
 		"public key of owner, user when creating an allocation for somone else")
+	newallocationCmd.Flags().Bool("nft", false,
+		"create an NFT allocation, an NFT allocation can be extended by anyone")
 
 }
 
