@@ -1151,15 +1151,31 @@ Local cache saved.
 It will sync your localpath with the remote and do all the required CRUD operations.
 
 ## Get differences 
-`get-diff` returns the differences between local files, and the files stored
-with the allocation.
+ `./zbox get-diff` command returns the differences between the local files specified by `localpath` and the files stored
+on the root remotepath of the allocation.`localcache` flag can also be specified to use the local cache of remote snapshot created during [Sync](#sync) for file comparison.
+
 
 | Parameter   | Required | Description                                   | default | Valid values |
 |-------------|----------|-----------------------------------------------|---------|--------------|
 | allocation  | yes      | allocation id                                 |         | string       |
 | excludepath | no       | remote folder paths to exclude during syncing |         | string array |
-| localcache  | no       | local chache of remote snapshot               |         | string       |
-| localpath   | yes      | local director to sync                        |         | string       |
+| localcache  | no       | local cache of remote snapshot               |         | string       |
+| localpath   | yes      | local directory to sync                        |         | string       |
+
+Example
+
+```
+./zbox get-diff --allocation $ALLOC --localpath $local  
+```
+Response:
+
+```
+[{"operation":"Upload","path":"/file1.txt","type":"f","attributes":{}},
+{"operation":"Upload","path":"/file2.txt","type":"f","attributes":{}},
+{"operation":"Upload","path":"/file3.txt","type":"f","attributes":{}},
+{"operation":"Download","path":"/myfiles/file1.txt","type":"f","attributes":{}},
+{"operation":"Download","path":"/myfiles/file2.txt","type":"f","attributes":{}}]
+```
 
 ## Get wallet
 
