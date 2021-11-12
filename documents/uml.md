@@ -433,6 +433,22 @@ end note
    storagesc-> blockchain : save allocation
 storagesc -> zbox     
 ``` 
+```puml
+title Remove curator
+boundary zbox 
+control storagesc
+entity blockchain
+zbox ->storagesc: remove_curator
+note left
+    * allocation id
+    * curator id
+end note
+    blockchain ->storagesc: allocation
+    group allocation
+       storagesc->storagesc: remove curator
+    end 
+   storagesc-> blockchain : save allocation
+storagesc -> zbox 
 
 
 ```puml
