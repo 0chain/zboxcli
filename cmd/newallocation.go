@@ -142,8 +142,8 @@ var newallocationCmd = &cobra.Command{
 		}
 
 		var isNft = false
-		if flags.Changed("is_nft") {
-			if isNft, err = flags.GetBool("is_nft"); err != nil {
+		if flags.Changed("nft") {
+			if isNft, err = flags.GetBool("nft"); err != nil {
 				log.Fatal("invalid is_nft value: ", err)
 			}
 		}
