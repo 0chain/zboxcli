@@ -441,7 +441,7 @@ e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429 added as a cura
 ```
 
 ## Remove curator
-A curator can be removed for an allocation by using the `removecurator` command , 
+A curator can be removed from an allocation by using the `removecurator` command , 
 
 | Parameter  | Required | Description                           | Valid Values |
 |------------|----------|---------------------------------------|--------------|
