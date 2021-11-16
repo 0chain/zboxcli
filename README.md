@@ -5,76 +5,71 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
 ![Storage](https://user-images.githubusercontent.com/65766301/120052450-0ab66700-c043-11eb-91ab-1f7aa69e133a.png)
 
 - [zbox - a CLI for 0Chain dStorage](#zbox---a-cli-for-0chain-dstorage)
-  - [Getting Started](#getting-started)
   - [Installation Guides](#installation-guides)
     - [How to install on Linux](#how-to-install-on-linux)
     - [How to install on Windows](#how-to-install-on-windows)
     - [Other Platform Builds](#other-platform-builds)
     - [Use custom miner/sharder](#use-custom-minersharder)
   - [Running zbox](#running-zbox)
-    - [Global Flags](#global-flags)
-- [Commands](#commands)
-  - [Register wallet](#register-wallet)
-  - [Create new allocation](#create-new-allocation)
-      - [Free storage allocation](#free-storage-allocation)
-  - [Update allocation](#update-allocation)
-    - [Cancel allocation](#cancel-allocation)
-  - [Finalise allocation](#finalise-allocation)
-  - [Add curator](#add-curator)
-  - [Transfer allocation ownership](#transfer-allocation-ownership)
-  - [List blobbers](#list-blobbers)
-  - [Detailed blobber information](#detailed-blobber-information)
-  - [List all files](#list-all-files)
-  - [List owner's allocations](#list-owners-allocations)
-  - [Update blobber settings](#update-blobber-settings)
-  - [Upload](#upload)
-  - [Download](#download)
-  - [Update](#update)
-  - [Delete](#delete)
-  - [Share](#share)
-      - [share-encrypted revoke](#share-encrypted-revoke)
-  - [List](#list)
-  - [Copy](#copy)
-  - [Move](#move)
-  - [Sync](#sync)
-  - [Get differences](#get-differences)
-  - [Get wallet](#get-wallet)
-  - [Get](#get)
-  - [Get metadata](#get-metadata)
-  - [Rename](#rename)
-  - [Stats](#stats)
-  - [Repair](#repair)
-  - [Add collaborator](#add-collaborator)
-  - [Delete collaborator](#delete-collaborator)
-    - [Challenge pool information](#challenge-pool-information)
-  - [Create read pool](#create-read-pool)
-  - [Read pool info](#read-pool-info)
-  - [Lock tokens into read pool](#lock-tokens-into-read-pool)
-  - [Unlock tokens from read pool](#unlock-tokens-from-read-pool)
-  - [Storage SC configurations](#storage-sc-configurations)
-  - [Stake pool info](#stake-pool-info)
-  - [Lock tokens into stake pool](#lock-tokens-into-stake-pool)
-    - [Unlock tokens from stake pool](#unlock-tokens-from-stake-pool)
-  - [Stake pools info of user](#stake-pools-info-of-user)
-  - [Pay interests](#pay-interests)
-  - [Write pool info](#write-pool-info)
-  - [Lock tokens into write pool](#lock-tokens-into-write-pool)
-  - [Unlock tokens from write pool](#unlock-tokens-from-write-pool)
-  - [Download cost](#download-cost)
-  - [Upload cost](#upload-cost)
-  - [Commit](#commit)
-  - [Sign data|](#sign-data)
-  - [Streaming](#streaming)
-      - [How it works:](#how-it-works)
-      - [Usage](#usage)
+  - [Global Flags](#global-flags)
+  - [Commands](#commands)
+      - [Creating and Managing Allocations](#creating-and-managing-allocations)
+         - [Register wallet](#register-wallet)
+         - [Create new allocation](#create-new-allocation)
+         - [Free storage allocation](#free-storage-allocation)
+         - [Update allocation](#update-allocation)
+         - [Cancel allocation](#cancel-allocation)
+         - [Finalise allocation](#finalise-allocation)
+         - [Add curator](#add-curator)
+         - [Remove curator](#remove-curator)
+         - [Transfer allocation ownership](#transfer-allocation-ownership)
+         - [List blobbers](#list-blobbers)
+         - [Detailed blobber information](#detailed-blobber-information)
+         - [List all files](#list-all-files)
+         - [List owner's allocations](#list-owners-allocations)
+         - [Update blobber settings](#update-blobber-settings)
+       - [Uploading and Managing Files](#uploading-and-managing-files)
+         - [Upload](#upload)
+         - [Download](#download)
+         - [Update](#update)
+         - [Delete](#delete)
+         - [Share](#share)
+            - [share-encrypted revoke](#share-encrypted-revoke)
+         - [List](#list)
+         - [Copy](#copy)
+         - [Move](#move)
+         - [Sync](#sync)
+         - [Get differences](#get-differences)
+         - [Get wallet](#get-wallet)
+         - [Get](#get)
+         - [Get metadata](#get-metadata)
+         - [Download cost](#download-cost)
+         - [Upload cost](#upload-cost)
+         - [Rename](#rename)
+         - [Stats](#stats)
+         - [Repair](#repair)
+         - [Add collaborator](#add-collaborator)
+         - [Delete collaborator](#delete-collaborator)
+         - [Commit](#commit)
+         - [Sign data|](#sign-data)
+         - [Streaming](#streaming)
+      - [Lock and Unlock Tokens](#lock-and-unlock-tokens)
+        - [Challenge pool information](#challenge-pool-information)
+        - [Create read pool](#create-read-pool)
+        - [Read pool info](#read-pool-info)
+        - [Lock tokens into read pool](#lock-tokens-into-read-pool)
+        - [Unlock tokens from read pool](#unlock-tokens-from-read-pool)
+        - [Storage SC configurations](#storage-sc-configurations)
+        - [Stake pool info](#stake-pool-info)
+        - [Lock tokens into stake pool](#lock-tokens-into-stake-pool)
+        - [Unlock tokens from stake pool](#unlock-tokens-from-stake-pool)
+        - [Stake pools info of user](#stake-pools-info-of-user)
+        - [Pay interests](#pay-interests)
+        - [Write pool info](#write-pool-info)
+        - [Lock tokens into write pool](#lock-tokens-into-write-pool)
+        - [Unlock tokens from write pool](#unlock-tokens-from-write-pool)
   - [Troubleshooting](#troubleshooting)
     
-
-   - [Troubleshooting](#troubleshooting)
-
-
-## Getting Started
-
 ## Installation Guides
 
 ### [How to install on Linux](https://github.com/0chain/zboxcli/wiki/Build-Linux)
@@ -189,7 +184,7 @@ the response will vary depending on your usage and may not be provided in all pl
 To get a more descriptive view of all the zbox functionalities check zbox cli 
 documentation at docs.0chain.net.
 
-
+## Creating and Managing Allocations
 ## Register wallet
 
 `register` is used when needed to register a given wallet to the blockchain. 
@@ -445,6 +440,31 @@ maintains a list of these curators.
 e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429 added as a curator to allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
 ```
 
+## Remove curator
+A curator can be removed from an allocation by using the `removecurator` command , 
+
+| Parameter  | Required | Description                           | Valid Values |
+|------------|----------|---------------------------------------|--------------|
+| allocation | yes      | allocation id                         | string       |
+| curator    | yes      | id of new curator to remove for allocation | string       |
+
+
+<details>
+  <summary>removecurator</summary>
+
+![remove curator](https://user-images.githubusercontent.com/65766301/141539075-7c4ff968-a331-4374-9969-63ffabe4866d.png)
+
+</details>
+
+
+Command:
+```
+./zbox removecurator --curator e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429 --allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d 
+```
+Response:
+```
+e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429 removed as a curator to allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
+```
 ## Transfer allocation ownership
 
 `transferallocation` changes the owner of an allocation. Only a curator, 
@@ -635,7 +655,7 @@ Update blobber read price
 ```
 ./zbox bl-update --blobber_id 0ece681f6b00221c5567865b56040eaab23795a843ed629ce71fb340a5566ba3 --read_price 0.1
 ```
-
+## Uploading and Managing files
 ## Upload
 
 Use `upload` command to upload file(s).
@@ -1471,6 +1491,7 @@ Response will be a confirmation that collaborator is removed on all blobbers for
 ```
 Collaborator d477d12134c2d7ba5ab71ac8ad37f244224695ef3215be990c3215d531c5a329 removed successfully for the file /1.txt
 ```
+## Lock and Unlock Tokens
 
 ### Challenge pool information
 
@@ -1861,9 +1882,13 @@ An expired write pool, associated with an allocation, can be locked until alloca
 ![image](https://user-images.githubusercontent.com/6240686/124497750-41ef0500-ddb3-11eb-99ea-115a4e234eda.png)
 
 </details>
-
+Command:
 ```
 ./zbox get-download-cost --allocation <allocation_id> --remotepath /path/file.ext
+```
+Response:
+```
+0.0000107434 tokens for 10 64KB blocks (24 B) of <remote_path_of_file> .
 ```
 
 ## Upload cost
@@ -1886,11 +1911,14 @@ the allocation expires.
 
 </details>
 
-
+Command:
 ```
 ./zbox get-upload-cost --allocation <allocation_id> --localpath ./path/file.ext
 ```
-
+Response:
+```
+ 0.0000000028 tokens / 720h0m0s for 24 B of <remote_path_of_file>
+```  
 ## Commit
 
 Commit file changes to chain
