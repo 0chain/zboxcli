@@ -1,6 +1,9 @@
 module github.com/0chain/zboxcli
 
-go 1.13
+go 1.16
+
+// temporary, for development
+// replace github.com/0chain/gosdk => ../gosdk
 
 require (
 	github.com/0chain/errors v1.0.3
@@ -11,6 +14,3 @@ require (
 	github.com/spf13/pflag v1.0.5
 	gopkg.in/cheggaaa/pb.v1 v1.0.28
 )
-
-// temporary, for development
-//replace github.com/0chain/gosdk => ../gosdk
