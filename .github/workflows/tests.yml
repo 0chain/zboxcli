@@ -1,0 +1,43 @@
+name: Tests
+
+on:
+  push: 
+    branches:
+      - master
+      - staging
+    tags:
+      - "*"
+  pull_request:
+
+jobs:
+  unit_tests:
+    name: "Unit Tests"
+    runs-on: [self-hosted, load-test]
+    steps:
+      - name: Setup go 1.17
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.17' # The Go version to download (if necessary) and use.
+
+      - name: Clone zboxcli
+        uses: actions/checkout@v2
+
+      - name: Run tests
+        run: |
+          make zboxcli-test
+
+  golangci:
+    name: lint
+    runs-on: [self-hosted, tests-suite]
+    steps:
+      - name: Setup go 1.17
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.17' # The Go version to download (if necessary) and use.
+      - uses: actions/checkout@v2
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: latest
+          args: --timeout=2m0s
