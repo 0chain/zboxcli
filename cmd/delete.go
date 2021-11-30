@@ -33,6 +33,10 @@ var deleteCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		remotepath := cmd.Flag("remotepath").Value.String()
+		blobberUrl := cmd.Flag("blobber_url").Value.String()
+		if len(blobberUrl) > 0 {
+			println("DEVELOPER ONLY. Make sure you understand meaning of blobber_url")
+		}
 
 		statsMap, err := allocationObj.GetFileStats(remotepath)
 		if err != nil {
@@ -57,7 +61,11 @@ var deleteCmd = &cobra.Command{
 			}
 		}
 
-		err = allocationObj.DeleteFile(remotepath)
+		if len(blobberUrl) > 0 {
+			err = allocationObj.DeleteFileFromBlobber(remotepath, blobberUrl)
+		}else {
+			err = allocationObj.DeleteFile(remotepath)
+		}
 		if err != nil {
 			PrintError("Delete failed.", err.Error())
 			os.Exit(1)
@@ -86,6 +94,7 @@ func init() {
 	deleteCmd.PersistentFlags().String("allocation", "", "Allocation ID")
 	deleteCmd.PersistentFlags().String("remotepath", "", "Remote path of the object to delete")
 	deleteCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
+	deleteCmd.Flags().String("blobber_url", "", "DEVELOPER ONLY, set it if you want delete file from specific blobber")
 	deleteCmd.MarkFlagRequired("allocation")
 	deleteCmd.MarkFlagRequired("remotepath")
 }
