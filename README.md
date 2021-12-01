@@ -1128,7 +1128,7 @@ Only the allocation's owner can successfully run `sync`.
 | allocation  | yes      | allocation id                                                                                 |         | string       |
 | commit      | no       | commet metadata to blockchain                                                                 | false   | boolean      |
 | encryptpath | no       | local directory path to be uploaded as encrypted                                              | false   | boolean      |
-| exludepath  | no       | paths to exclude from sync                                                                    |         | string array |
+| excludepath  | no       | paths to exclude from sync                                                                    |         | string array |
 | localchache | no       | local chache of remote snapshot. Used for comparsion with remote. After sync will be updated. |         | string       |
 | localpath   | yes      | local directory to which to sync                                                              |         | file path    |
 | uploadonly  | no       | only upload and update files                                                                  | false   | boolean      |
