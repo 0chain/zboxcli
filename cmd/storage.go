@@ -12,37 +12,40 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func printStorageSCConfig(conf *sdk.StorageSCConfig) {
-	fmt.Println("min_alloc_size:               ", conf.MinAllocSize)
-	fmt.Println("min_alloc_duration:           ", conf.MinAllocDuration)
-	fmt.Println("max_challenge_completion_time:", conf.MaxChallengeCompletionTime)
-	fmt.Println("min_offer_duration:           ", conf.MinOfferDuration)
-	fmt.Println("min_blobber_capacity:         ", conf.MinBlobberCapacity)
-	fmt.Println("max_delegates:                ", conf.MaxDelegates)
-	fmt.Println("max_charge:                   ", conf.MaxCharge*100, "%")
-	fmt.Println("readpool:")
-	fmt.Println("  min_lock:", conf.ReadPool.MinLock, "tok")
-	fmt.Println("  min_lock_period:", conf.ReadPool.MinLockPeriod)
-	fmt.Println("  max_lock_period:", conf.ReadPool.MaxLockPeriod)
-	fmt.Println("writepool:")
-	fmt.Println("  min_lock:", conf.WritePool.MinLock, "tok")
-	fmt.Println("  min_lock_period:", conf.WritePool.MinLockPeriod)
-	fmt.Println("  max_lock_period:", conf.WritePool.MaxLockPeriod)
-	fmt.Println("stakepool:")
-	fmt.Println("  min_lock:", conf.StakePool.MinLock, "tok")
-	fmt.Println("  interest_rate:", conf.StakePool.InterestRate)
-	fmt.Println("  interest_interval:", conf.StakePool.InterestInterval)
-	fmt.Println("validator_reward:                    ", conf.ValidatorReward)
-	fmt.Println("blobber_slash:                       ", conf.BlobberSlash)
-	fmt.Println("max_read_price:                      ", conf.MaxReadPrice, "tok / GB")
-	fmt.Println("max_write_price:                     ", conf.MaxWritePrice, "tok / GB / time_unit")
-	fmt.Println("time_unit:                           ", conf.TimeUnit)
-	fmt.Println("failed_challenges_to_cancel:         ", conf.FailedChallengesToCancel)
-	fmt.Println("failed_challenges_to_revoke_min_lock:", conf.FailedChallengesToRevokeMinLock)
-	fmt.Println("challenge_enabled:                   ", conf.ChallengeEnabled)
-	fmt.Println("max_challenges_per_generation:       ", conf.MaxChallengesPerGeneration)
-	fmt.Println("challenge_rate_per_mb_min:           ", conf.ChallengeGenerationRate)
-}
+// TODO: @Piers: update print logic sc-config; using datastructure might make sense instead of
+// InputMap because some fields have specific type (like Balance) which includes formatting logic
+
+// func printStorageSCConfig(conf *sdk.StorageSCConfig) {
+// 	fmt.Println("min_alloc_size:               ", conf.MinAllocSize)
+// 	fmt.Println("min_alloc_duration:           ", conf.MinAllocDuration)
+// 	fmt.Println("max_challenge_completion_time:", conf.MaxChallengeCompletionTime)
+// 	fmt.Println("min_offer_duration:           ", conf.MinOfferDuration)
+// 	fmt.Println("min_blobber_capacity:         ", conf.MinBlobberCapacity)
+// 	fmt.Println("max_delegates:                ", conf.MaxDelegates)
+// 	fmt.Println("max_charge:                   ", conf.MaxCharge*100, "%")
+// 	fmt.Println("readpool:")
+// 	fmt.Println("  min_lock:", conf.ReadPool.MinLock)
+// 	fmt.Println("  min_lock_period:", conf.ReadPool.MinLockPeriod)
+// 	fmt.Println("  max_lock_period:", conf.ReadPool.MaxLockPeriod)
+// 	fmt.Println("writepool:")
+// 	fmt.Println("  min_lock:", conf.WritePool.MinLock)
+// 	fmt.Println("  min_lock_period:", conf.WritePool.MinLockPeriod)
+// 	fmt.Println("  max_lock_period:", conf.WritePool.MaxLockPeriod)
+// 	fmt.Println("stakepool:")
+// 	fmt.Println("  min_lock:", conf.StakePool.MinLock)
+// 	fmt.Println("  interest_rate:", conf.StakePool.InterestRate)
+// 	fmt.Println("  interest_interval:", conf.StakePool.InterestInterval)
+// 	fmt.Println("validator_reward:                    ", conf.ValidatorReward)
+// 	fmt.Println("blobber_slash:                       ", conf.BlobberSlash)
+// 	fmt.Println("max_read_price:                      ", conf.MaxReadPrice, "/ GB")
+// 	fmt.Println("max_write_price:                     ", conf.MaxWritePrice, "/ GB / time_unit")
+// 	fmt.Println("time_unit:                           ", conf.TimeUnit)
+// 	fmt.Println("failed_challenges_to_cancel:         ", conf.FailedChallengesToCancel)
+// 	fmt.Println("failed_challenges_to_revoke_min_lock:", conf.FailedChallengesToRevokeMinLock)
+// 	fmt.Println("challenge_enabled:                   ", conf.ChallengeEnabled)
+// 	fmt.Println("max_challenges_per_generation:       ", conf.MaxChallengesPerGeneration)
+// 	fmt.Println("challenge_rate_per_mb_min:           ", conf.ChallengeGenerationRate)
+// }
 
 // scConfig shows SC configurations
 var scConfig = &cobra.Command{
@@ -60,7 +63,8 @@ var scConfig = &cobra.Command{
 			util.PrintJSON(conf)
 			return
 		}
-		printStorageSCConfig(conf)
+		util.PrintJSON(conf.Fields)
+		// printStorageSCConfig(conf)
 	},
 }
 
@@ -76,8 +80,8 @@ func printBlobbers(nodes []*sdk.Blobber) {
 			val.Capacity.String())
 		fmt.Println("  last_health_check:	 ", val.LastHealthCheck)
 		fmt.Println("  terms:")
-		fmt.Println("    read_price:         ", val.Terms.ReadPrice.String(), "tok / GB")
-		fmt.Println("    write_price:        ", val.Terms.WritePrice.String(), "tok / GB / time_unit")
+		fmt.Println("    read_price:         ", val.Terms.ReadPrice.String(), "/ GB")
+		fmt.Println("    write_price:        ", val.Terms.WritePrice.String(), "/ GB / time_unit")
 		fmt.Println("    min_lock_demand:    ", val.Terms.MinLockDemand)
 		fmt.Println("    cct:                ", val.Terms.ChallengeCompletionTime.String())
 		fmt.Println("    max_offer_duration: ", val.Terms.MaxOfferDuration.String())
@@ -168,15 +172,15 @@ var blobberInfoCmd = &cobra.Command{
 		fmt.Println("last_health_check:", blob.LastHealthCheck.ToTime())
 		fmt.Println("capacity_used:    ", blob.Used)
 		fmt.Println("terms:")
-		fmt.Println("  read_price:        ", blob.Terms.ReadPrice, "tok / GB")
-		fmt.Println("  write_price:       ", blob.Terms.WritePrice, "tok / GB")
+		fmt.Println("  read_price:        ", blob.Terms.ReadPrice, "/ GB")
+		fmt.Println("  write_price:       ", blob.Terms.WritePrice, "/ GB")
 		fmt.Println("  min_lock_demand:   ", blob.Terms.MinLockDemand*100.0, "%")
 		fmt.Println("  max_offer_duration:", blob.Terms.MaxOfferDuration)
 		fmt.Println("  cct:               ", blob.Terms.ChallengeCompletionTime)
 		fmt.Println("settings:")
 		fmt.Println("  delegate_wallet:", blob.StakePoolSettings.DelegateWallet)
-		fmt.Println("  min_stake:      ", blob.StakePoolSettings.MinStake, "tok")
-		fmt.Println("  max_stake:      ", blob.StakePoolSettings.MaxStake, "tok")
+		fmt.Println("  min_stake:      ", blob.StakePoolSettings.MinStake)
+		fmt.Println("  max_stake:      ", blob.StakePoolSettings.MaxStake)
 		fmt.Println("  num_delegates:  ", blob.StakePoolSettings.NumDelegates)
 		fmt.Println("  service_charge: ", blob.StakePoolSettings.ServiceCharge*100, "%")
 	},

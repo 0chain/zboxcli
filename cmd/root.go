@@ -14,9 +14,9 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/0chain/gosdk/zboxcore/blockchain"
+	"github.com/0chain/zboxcli/util"
 
 	"github.com/0chain/gosdk/core/zcncrypto"
-	"github.com/mitchellh/go-homedir"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
@@ -51,29 +51,14 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&walletClientKey, "wallet_client_key", "", "wallet client_key")
 	rootCmd.PersistentFlags().StringVar(&cDir, "configDir", "", "configuration directory (default is $HOME/.zcn)")
 	rootCmd.PersistentFlags().BoolVar(&bSilent, "silent", false, "Do not show interactive sdk logs (shown by default)")
-
 }
 
 func Execute() {
+
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-}
-
-func getConfigDir() string {
-	if cDir != "" {
-		return cDir
-	}
-	var configDir string
-	// Find home directory.
-	home, err := homedir.Dir()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	configDir = home + string(os.PathSeparator) + ".zcn"
-	return configDir
 }
 
 func initConfig() {
@@ -82,7 +67,7 @@ func initConfig() {
 	if cDir != "" {
 		configDir = cDir
 	} else {
-		configDir = getConfigDir()
+		configDir = util.GetConfigDir()
 	}
 
 	if cfgFile == "" {
@@ -106,6 +91,14 @@ func initConfig() {
 	zcncore.SetLogFile("cmdlog.log", !bSilent)
 	sdk.SetLogFile("cmdlog.log", !bSilent)
 
+	if network.IsValid() {
+		zcncore.SetNetwork(network.Miners, network.Sharders)
+		conf.InitChainNetwork(&conf.Network{
+			Miners:   network.Miners,
+			Sharders: network.Sharders,
+		})
+	}
+
 	err = zcncore.InitZCNSDK(cfg.BlockWorker, cfg.SignatureScheme,
 		zcncore.WithChainID(cfg.ChainID),
 		zcncore.WithMinSubmit(cfg.MinSubmit),
@@ -114,10 +107,6 @@ func initConfig() {
 	if err != nil {
 		fmt.Println("Error initializing core SDK.", err)
 		os.Exit(1)
-	}
-
-	if network.IsValid() {
-		zcncore.SetNetwork(network.Miners, network.Sharders)
 	}
 
 	// is freshly created wallet?
@@ -199,7 +188,7 @@ func initConfig() {
 	}
 
 	//init the storage sdk with the known miners, sharders and client wallet info
-	err = sdk.InitStorageSDK(walletJSON, cfg)
+	err = sdk.InitStorageSDK(walletJSON, cfg.BlockWorker, cfg.ChainID, cfg.SignatureScheme, cfg.PreferredBlobbers)
 	if err != nil {
 		fmt.Println("Error in sdk init", err)
 		os.Exit(1)
@@ -208,6 +197,8 @@ func initConfig() {
 	// additional settings depending network latency
 	blockchain.SetMaxTxnQuery(cfg.MaxTxnQuery)
 	blockchain.SetQuerySleepTime(cfg.QuerySleepTime)
+
+	conf.InitClientConfig(&cfg)
 
 	if network.IsValid() {
 		sdk.SetNetwork(network.Miners, network.Sharders)

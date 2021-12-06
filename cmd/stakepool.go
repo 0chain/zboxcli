@@ -312,6 +312,7 @@ func init() {
 	spLock.PersistentFlags().Float64("fee", 0.0,
 		"transaction fee, default 0")
 	spLock.MarkFlagRequired("tokens")
+	spLock.MarkFlagRequired("blobber_id")
 
 	spUnlock.PersistentFlags().String("blobber_id", "",
 		"for given blobber, default is current client")

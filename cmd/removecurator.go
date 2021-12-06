@@ -7,10 +7,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var addCuratorCmd = &cobra.Command{
-	Use:   "addcurator",
-	Short: "Adds a curator to an allocation",
-	Long:  "Adds a curator to an allocation",
+var removeCuratorCmd = &cobra.Command{
+	Use:   "removecurator",
+	Short: "Removes a curator from an allocation",
+	Long:  "Removes a curator from an allocation",
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		var err error
@@ -32,23 +32,23 @@ var addCuratorCmd = &cobra.Command{
 			log.Fatal("invalid 'curator_id' flag: ", err)
 		}
 
-		_, err = sdk.AddCurator(curatorID, allocationID)
+		_, err = sdk.RemoveCurator(curatorID, allocationID)
 		if err != nil {
 			log.Fatal("Error adding curator:", err)
 		}
-		log.Print(curatorID + " added " + curatorID + " as a curator to allocation " + allocationID)
+		log.Print(curatorID + " removed " + curatorID + " as a curator to allocation " + allocationID)
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(addCuratorCmd)
-	addCuratorCmd.PersistentFlags().
+	rootCmd.AddCommand(removeCuratorCmd)
+	removeCuratorCmd.PersistentFlags().
 		String("curator", "",
-			"new curator to add to allocation")
-	addCuratorCmd.PersistentFlags().
+			"the curator to remove from allocation")
+	removeCuratorCmd.PersistentFlags().
 		String("allocation", "",
-			"allocation that the curator is to be added")
+			"allocation from which the curator is to be removed")
 
-	addCuratorCmd.MarkFlagRequired("curator")
-	addCuratorCmd.MarkFlagRequired("allocation")
+	removeCuratorCmd.MarkFlagRequired("curator")
+	removeCuratorCmd.MarkFlagRequired("allocation")
 }

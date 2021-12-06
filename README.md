@@ -4,68 +4,72 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
 
 ![Storage](https://user-images.githubusercontent.com/65766301/120052450-0ab66700-c043-11eb-91ab-1f7aa69e133a.png)
 
-- [Getting Started](#getting-started)
-- [Running zbox](https://github.com/0chain/zboxcli#Command-with-no-arguments) 
-- [Global Flags](#global-flags)
-- [Commands](#commands)
-  - Creating and Managing Allocations
-    - [Register a Wallet](https://github.com/0chain/zboxcli#Register)
-    - [Get detailed Allocation](https://github.com/0chain/zboxcli#Get)
-    - [List allocations](https://github.com/0chain/zboxcli#List-allocations)     
-    - [Create new allocation](#Create-new-allocation)
-    - [Update allocation](#update-allocation)
-    - [Cancel allocation](#cancel-allocation)
-    - [Finalise allocation](#finalise-allocation)
-    - [Add curator](#add-curator)
-    - [Transfer allocation ownership](#transfer-allocation-ownership)
-  - Uploading and Managing Files
-    - [Upload a file to dStorage](#upload)
-    - [Download the uploaded file from dStorage](#download)
-    - [Update the uploaded file on dStorage](https://github.com/0chain/zboxcli#Update)
-    - [Delete the uploaded file on dStorage](https://github.com/0chain/zboxcli#Delete)
-    - [List the uploaded files and folders](https://github.com/0chain/zboxcli#List)
-    - [Copy uploaded files to another folder path on dStorage](https://github.com/0chain/zboxcli#Copy)
-    - [Move uploaded files to another folder path on dStorage](https://github.com/0chain/zboxcli#Move)
-    - [Rename a file on dStorage](https://github.com/0chain/zboxcli#Rename)
-    - [Get meta data of files](https://github.com/0chain/zboxcli#Get-metadata)
-    - [Get file stats](https://github.com/0chain/zboxcli#Stats)
-    - [Update file attributes](https://github.com/0chain/zboxcli#Update-file-attributes)
-    - [Get download cost](https://github.com/0chain/zboxcli#Download-cost)
-    - [Get upload cost](https://github.com/0chain/zboxcli#Upload-cost)
-  - Advanced Features
-    - [Repair a file on dStorage](https://github.com/0chain/zboxcli#Repair)
-    - [Sync your local folder to remote](https://github.com/0chain/zboxcli#Sync)
-    - [Share the uploaded file on dStorage](https://github.com/0chain/zboxcli#Share)
-    - [Add Collaborator for a file](https://github.com/0chain/zboxcli#Add-collaborator)
-    - [Remove Collaborator for a file](https://github.com/0chain/zboxcli#Delete-collaborator)
-    - [Video Streaming](https://github.com/0chain/zboxcli#Streaming)
-  - Locking and unlocking tokens    
-    - [Get wallet information](https://github.com/0chain/zboxcli#Get-wallet)
-    - [Challenge pool information](https://github.com/0chain/zboxcli#Challenge-pool-information)
-    - [Create read pool if not exists](https://github.com/0chain/zboxcli#Create-read-pool)
-    - [Detailed read pool information](https://github.com/0chain/zboxcli#Read-pool-info)
-    - [Lock tokens into read pool](https://github.com/0chain/zboxcli#Lock-tokens-into-read-pool)
-    - [Unlock tokens from expired read pool](https://github.com/0chain/zboxcli#Unlock-tokens-from-read-pool)
-    - [Detailed write pool information](https://github.com/0chain/zboxcli#Write-pool-info)
-    - [Lock tokens into write pool](https://github.com/0chain/zboxcli#Lock-tokens-into-write-pool)
-    - [Unlock tokens from expired write pool](https://github.com/0chain/zboxcli#Unlock-tokens-from-write-pool)
-    - [Detailed stake pool information](#stake-pool-info)
-    - [Lock tokens into stake pool](https://github.com/0chain/zboxcli#Lock-tokens-into-stake-pool)
-    - [Unlock tokens from expired stake pool](https://github.com/0chain/zboxcli#Unlock-tokens-from-stake-pool)
-    - [Stake pools info of current user](#stake-pools-info-of-user)
-    - [Pay interests](https://github.com/0chain/zboxcli#Pay-interests)
-  - zbox Configuration info
-    - [Storage SC configurations](https://github.com/0chain/zboxcli#Storage-SC-configurations)
-    - [List blobbers](https://github.com/0chain/zboxcli#List-blobbers)
-    - [Detail blobber information](https://github.com/0chain/zboxcli#Detailed-blobber-information)
-    - [Update blobber settings](https://github.com/0chain/zboxcli#Update-blobber-settings)
+- [zbox - a CLI for 0Chain dStorage](#zbox---a-cli-for-0chain-dstorage)
+  - [Installation Guides](#installation-guides)
+    - [How to install on Linux](#how-to-install-on-linux)
+    - [How to install on Windows](#how-to-install-on-windows)
+    - [Other Platform Builds](#other-platform-builds)
+    - [Use custom miner/sharder](#use-custom-minersharder)
+  - [Running zbox](#running-zbox)
+  - [Global Flags](#global-flags)
+  - [Commands](#commands)
+      - [Creating and Managing Allocations](#creating-and-managing-allocations)
+         - [Register wallet](#register-wallet)
+         - [Create new allocation](#create-new-allocation)
+         - [Free storage allocation](#free-storage-allocation)
+         - [Update allocation](#update-allocation)
+         - [Cancel allocation](#cancel-allocation)
+         - [Finalise allocation](#finalise-allocation)
+         - [Add curator](#add-curator)
+         - [Remove curator](#remove-curator)
+         - [Transfer allocation ownership](#transfer-allocation-ownership)
+         - [List blobbers](#list-blobbers)
+         - [Detailed blobber information](#detailed-blobber-information)
+         - [List all files](#list-all-files)
+         - [List owner's allocations](#list-owners-allocations)
+         - [Update blobber settings](#update-blobber-settings)
+       - [Uploading and Managing Files](#uploading-and-managing-files)
+         - [Upload](#upload)
+         - [Download](#download)
+         - [Update](#update)
+         - [Delete](#delete)
+         - [Share](#share)
+            - [share-encrypted revoke](#share-encrypted-revoke)
+         - [List](#list)
+         - [Copy](#copy)
+         - [Move](#move)
+         - [Sync](#sync)
+         - [Get differences](#get-differences)
+         - [Get wallet](#get-wallet)
+         - [Get](#get)
+         - [Get metadata](#get-metadata)
+         - [Download cost](#download-cost)
+         - [Upload cost](#upload-cost)
+         - [Rename](#rename)
+         - [Stats](#stats)
+         - [Repair](#repair)
+         - [Add collaborator](#add-collaborator)
+         - [Delete collaborator](#delete-collaborator)
+         - [Commit](#commit)
+         - [Sign data|](#sign-data)
+         - [Streaming](#streaming)
+      - [Lock and Unlock Tokens](#lock-and-unlock-tokens)
+        - [Challenge pool information](#challenge-pool-information)
+        - [Create read pool](#create-read-pool)
+        - [Read pool info](#read-pool-info)
+        - [Lock tokens into read pool](#lock-tokens-into-read-pool)
+        - [Unlock tokens from read pool](#unlock-tokens-from-read-pool)
+        - [Storage SC configurations](#storage-sc-configurations)
+        - [Stake pool info](#stake-pool-info)
+        - [Lock tokens into stake pool](#lock-tokens-into-stake-pool)
+        - [Unlock tokens from stake pool](#unlock-tokens-from-stake-pool)
+        - [Stake pools info of user](#stake-pools-info-of-user)
+        - [Pay interests](#pay-interests)
+        - [Write pool info](#write-pool-info)
+        - [Lock tokens into write pool](#lock-tokens-into-write-pool)
+        - [Unlock tokens from write pool](#unlock-tokens-from-write-pool)
+  - [Troubleshooting](#troubleshooting)
     
-
-   - [Troubleshooting](#troubleshooting)
-
-
-## Getting Started
-
 ## Installation Guides
 
 ### [How to install on Linux](https://github.com/0chain/zboxcli/wiki/Build-Linux)
@@ -180,7 +184,7 @@ the response will vary depending on your usage and may not be provided in all pl
 To get a more descriptive view of all the zbox functionalities check zbox cli 
 documentation at docs.0chain.net.
 
-
+## Creating and Managing Allocations
 ## Register wallet
 
 `register` is used when needed to register a given wallet to the blockchain. 
@@ -190,7 +194,7 @@ the wallet at `~/.zcn/wallet.json`.
 Sample command
 
 ```sh
-./zwallet register
+./zbox register
 ```
 
 Sample output
@@ -321,6 +325,7 @@ If not a `free_storage` update, then tokens will come from those locked. If ther
 | free_storage  |          | free storage marker file                               | string       |
 | lock          | yes*     | lock additional tokens in write pool                    | int          |
 | set_immutable |          | sets allocation so that data can no longer be modified | boolean      |
+| update_terms |          | will update the allocation with the latest blobber terms | boolean      |
 | size          |          | adjust allocation size                                 | bytes        |
 `*` only required if free_storage not set.
 
@@ -352,7 +357,7 @@ Output:
 Allocation updated with txId : fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
 ```
 
-You can see more txn details using above txID in block explorer [here](https://one.devnet-0chain.net/).
+You can see more txn details using above txID in block explorer [here](https://beta.0chain.net/).
 
 ### Cancel allocation
 
@@ -428,13 +433,38 @@ maintains a list of these curators.
 </details>
 
 ```shell
-./zbox addcurator  --allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d --curator  e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429
+./zbox addcurator --allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d --curator  e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429
 ```
 
 ```shell
 e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429 added as a curator to allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
 ```
 
+## Remove curator
+A curator can be removed from an allocation by using the `removecurator` command , 
+
+| Parameter  | Required | Description                           | Valid Values |
+|------------|----------|---------------------------------------|--------------|
+| allocation | yes      | allocation id                         | string       |
+| curator    | yes      | id of new curator to remove for allocation | string       |
+
+
+<details>
+  <summary>removecurator</summary>
+
+![remove curator](https://user-images.githubusercontent.com/65766301/141539075-7c4ff968-a331-4374-9969-63ffabe4866d.png)
+
+</details>
+
+
+Command:
+```
+./zbox removecurator --curator e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429 --allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d 
+```
+Response:
+```
+e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429 removed as a curator to allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
+```
 ## Transfer allocation ownership
 
 `transferallocation` changes the owner of an allocation. Only a curator, 
@@ -554,7 +584,7 @@ settings:
   service_charge:  30 %
 ```
 
-## Lost all files
+## List all files
 
 `list-all` lists al the files stored with an allocation
 
@@ -594,7 +624,7 @@ ZED | CANCELED | R  PRICE |   W  PRICE
 
 ## Update blobber settings
 
-Use `./zbox bl-update to update a blobber's configuration settings. This updates the settings
+Use `./zbox bl-update ` to update a blobber's configuration settings. This updates the settings
 on the blockchain not the blobber.
 
 | Parameter          | Required | Description                               | default | Valid values |
@@ -625,21 +655,31 @@ Update blobber read price
 ```
 ./zbox bl-update --blobber_id 0ece681f6b00221c5567865b56040eaab23795a843ed629ce71fb340a5566ba3 --read_price 0.1
 ```
-
+## Uploading and Managing files
 ## Upload
 
-Use `upload` command to upload a file. The user must be the owner of the allocation.
-You can request the file be encrypted before upload, and can send thumbnails 
-with the file. 
+Use `upload` command to upload file(s).
+- upload a local file
+- download segment files from remote live feed, and upload them 
+- start live streaming from local devices, encode it into segment files with `ffmpeg`, and upload them. 
 
-| Parameter               | Required | Description                            | Default | Valid values                            |
-|-------------------------|----------|----------------------------------------|---------|-----------------------------------------|
-| allocation              | yes      | allocation id, sender must be allocation owner                   |         | string                                  |
-| commit                  | no       | save metadata to blockchain                                      | false   | boolean                                 |
-| encrypt                 | no       | encrypt file before upload                                       | false   | boolean                                 |
-| localpath               | yes      | local path of the file to upload                                 |         | file path                               |
-| remotepath              | yes      | remote path to upload file to, use to access file later          |         | string                              |
-| thumbnailpath           | no       | local path of thumbnaSil                                         |         | file path                               |
+The user must be the owner of the allocation.You can request the file be encrypted before upload, and can send thumbnails with the file. 
+
+| Parameter               | Required | Description                                          | Default | Valid values                            |
+|-------------------------|----------|------------------------------------------------------|---------|-----------------------------------------|
+| allocation              | yes      | allocation id, sender must be allocation owner                     |         | string                 |
+| commit                  | no       | save metadata to blockchain                                        | false   | boolean                |
+| encrypt                 | no       | encrypt file before upload                                         | false   | boolean                |
+| localpath               | yes      | local path of the file to upload                                   |         | file path              |
+| remotepath              | yes      | remote path to upload file to, use to access file later            |         | string                 |
+| thumbnailpath           | no       | local path of thumbnaSil                                           |         | file path              |
+| chunksize               | no       | chunk size                                                         | 65536   | int                    |
+| delay                   | no       | set segment duration to seconds. only works with --live and --sync.| 5       | int                    |
+| sync                    | no       | enable SyncUpload from remote live feed. disabled it by default.   | false   | boolean                |
+| feed                    | no       | set remote live feed to url. only works with --sync.               | false   | url                    |
+| downloader-args         | no       | pass args to youtube-dl to download video. default is \"-q -f best\". only works with --sync.| -q -f best | [youtube-dl](https://github.com/ytdl-org/youtube-dl/blob/master/README.md#options)|
+| ffmpeg-args             | no       | pass args to ffmpeg to build segments. only works with --sync.     | -loglevel warning   | [ffmpeg](https://www.ffmpeg.org/ffmpeg.html)              |
+| live                    | no       | enable LiveUpload from local devices. disabled by default.         | false   | boolean                |
 
 
 <details>
@@ -681,6 +721,52 @@ Response:
 Status completed callback. Type = application/octet-stream. Name = sensitivedata.txt
 ```
 
+**Download segment files from remote live feed, re-encode and upload**
+
+Use `upload --sync` command to automatically download segment files from remove live feed with `--downloader-args "-f 22"`, encode them into new segment files with `--delay` and `--ffmpeg-args`, and upload. please use `youtube-dl -F https://www.youtube.com/watch?v=pC5mGB5enkw` to list formats of video (see below). 
+
+```
+[youtube] pC5mGB5enkw: Downloading webpage
+[info] Available formats for pC5mGB5enkw:
+format code  extension  resolution note
+249          webm       audio only tiny   44k , webm_dash container, opus @ 44k (48000Hz), 95.21MiB
+250          webm       audio only tiny   59k , webm_dash container, opus @ 59k (48000Hz), 127.05MiB
+251          webm       audio only tiny  123k , webm_dash container, opus @123k (48000Hz), 264.98MiB
+140          m4a        audio only tiny  129k , m4a_dash container, mp4a.40.2@129k (44100Hz), 277.82MiB
+278          webm       256x136    144p   87k , webm_dash container, vp9@  87k, 30fps, video only, 188.78MiB
+160          mp4        256x136    144p  118k , mp4_dash container, avc1.4d400c@ 118k, 30fps, video only, 253.62MiB
+242          webm       426x224    240p  190k , webm_dash container, vp9@ 190k, 30fps, video only, 409.20MiB
+133          mp4        426x224    240p  252k , mp4_dash container, avc1.4d400d@ 252k, 30fps, video only, 541.15MiB
+243          webm       640x338    360p  326k , webm_dash container, vp9@ 326k, 30fps, video only, 701.53MiB
+134          mp4        640x338    360p  576k , mp4_dash container, avc1.4d401e@ 576k, 30fps, video only, 1.21GiB
+244          webm       854x450    480p  649k , webm_dash container, vp9@ 649k, 30fps, video only, 1.36GiB
+135          mp4        854x450    480p 1028k , mp4_dash container, avc1.4d401f@1028k, 30fps, video only, 2.16GiB
+247          webm       1280x676   720p 1320k , webm_dash container, vp9@1320k, 30fps, video only, 2.77GiB
+136          mp4        1280x676   720p 1988k , mp4_dash container, avc1.64001f@1988k, 30fps, video only, 4.17GiB
+248          webm       1920x1012  1080p 2527k , webm_dash container, vp9@2527k, 30fps, video only, 5.30GiB
+137          mp4        1920x1012  1080p 4125k , mp4_dash container, avc1.640028@4125k, 30fps, video only, 8.64GiB
+271          webm       2560x1350  1440p 7083k , webm_dash container, vp9@7083k, 30fps, video only, 14.84GiB
+313          webm       3840x2026  2160p 13670k , webm_dash container, vp9@13670k, 30fps, video only, 28.65GiB
+18           mp4        640x338    360p  738k , avc1.42001E, 30fps, mp4a.40.2 (44100Hz), 1.55GiB
+22           mp4        1280x676   720p 2117k , avc1.64001F, 30fps, mp4a.40.2 (44100Hz) (best)
+```
+
+`--downloader-args "-f 22"` dowloads video with `22           mp4        1280x676   720p 2117k , avc1.64001F, 30fps, mp4a.40.2 (44100Hz) (best)`
+
+```
+./zbox upload --sync --localpath <absolute path to file>/tvshow.m3u8 --remotepath /videos/tvsho --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac  --delay 10 --chunksize 655360 --downloader-args "-f 22" --feed https://www.youtube.com/watch?v=pC5mGB5enkw
+
+```
+
+**Capture streaming from local devices, encode with ffmpeg, and upload**
+
+Use `upload --live` to capture video and audio streaming form local devices, and upload
+
+```
+./zbox upload --live --localpath <absolute path to file>/streaming.m3u8 --remotepath /videos/streaming --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac  --delay 10 --chunksize 655360 
+```
+
+
 ## Download
 
 Use `download` command to download your own or a shared file. 
@@ -701,9 +787,11 @@ Use `startblock` and `endblock` to only download part of the file.
 | endblock        | no       | download until specified block number                                    |         | int          |
 | localpath       | yes      | local path to which to download the file to                              |         | file path    |
 | remotepath      | yes      | remote path to which the file was uploaded                               |         | string       |
-| rx_pay          | no       | `authticket` must be valid, true = sender pays, false = allocation owner pays                                      | false   | boolean      |
+| rx_pay          | no       | `authticket` must be valid, true = sender pays, false = allocation owner pays      | false   | boolean      |
 | startblock      | no       | start download from specified block                                      |         | int          |
 | thumbail        | no       | only download the thumbnail                                              | false   | boolean      |
+| live            | no       | start m3u8 downloader,and automatically generate media playlist(m3u8) on --localpath | false   | boolean |
+| delay           | no       | pass segment duration to generate media playlist(m3u8). only works with --live. default duration is 5s. | 5  | int  |
 
 <details>
   <summary>download</summary>
@@ -747,6 +835,7 @@ can update a file.  To add collaborators to an allocation, use
 | remotepath    | yes      | remote file to upload         |         | string       |
 | thumbnailpath | no       | local fumbnail file to upload |         | file path    |
 | commit        | no       | save meta data to blockchain  | false   | boolean      |
+| chunksize     | no       | chunk size                    | 65536   | int          |
 
 <details>
   <summary>update</summary>
@@ -1039,10 +1128,11 @@ Only the allocation's owner can successfully run `sync`.
 | allocation  | yes      | allocation id                                                                                 |         | string       |
 | commit      | no       | commet metadata to blockchain                                                                 | false   | boolean      |
 | encryptpath | no       | local directory path to be uploaded as encrypted                                              | false   | boolean      |
-| exludepath  | no       | paths to exclude from sync                                                                    |         | string array |
+| excludepath  | no       | paths to exclude from sync                                                                    |         | string array |
 | localchache | no       | local chache of remote snapshot. Used for comparsion with remote. After sync will be updated. |         | string       |
 | localpath   | yes      | local directory to which to sync                                                              |         | file path    |
 | uploadonly  | no       | only upload and update files                                                                  | false   | boolean      |
+| chunksize   | no       | chunk size                                                                                    | 65536   | int          |
 
 <details>
   <summary>sync</summary>
@@ -1080,15 +1170,31 @@ Local cache saved.
 It will sync your localpath with the remote and do all the required CRUD operations.
 
 ## Get differences 
-`get-diff` returns the differences between local files, and the files stored
-with the allocation.
+ `./zbox get-diff` command returns the differences between the local files specified by `localpath` and the files stored
+on the root remotepath of the allocation.`localcache` flag can also be specified to use the local cache of remote snapshot created during [Sync](#sync) for file comparison.
+
 
 | Parameter   | Required | Description                                   | default | Valid values |
 |-------------|----------|-----------------------------------------------|---------|--------------|
 | allocation  | yes      | allocation id                                 |         | string       |
 | excludepath | no       | remote folder paths to exclude during syncing |         | string array |
-| localcache  | no       | local chache of remote snapshot               |         | string       |
-| localpath   | yes      | local director to sync                        |         | string       |
+| localcache  | no       | local cache of remote snapshot               |         | string       |
+| localpath   | yes      | local directory to sync                        |         | string       |
+
+Example
+
+```
+./zbox get-diff --allocation $ALLOC --localpath $local  
+```
+Response:
+
+```
+[{"operation":"Upload","path":"/file1.txt","type":"f","attributes":{}},
+{"operation":"Upload","path":"/file2.txt","type":"f","attributes":{}},
+{"operation":"Upload","path":"/file3.txt","type":"f","attributes":{}},
+{"operation":"Download","path":"/myfiles/file1.txt","type":"f","attributes":{}},
+{"operation":"Download","path":"/myfiles/file2.txt","type":"f","attributes":{}}]
+```
 
 ## Get wallet
 
@@ -1385,6 +1491,7 @@ Response will be a confirmation that collaborator is removed on all blobbers for
 ```
 Collaborator d477d12134c2d7ba5ab71ac8ad37f244224695ef3215be990c3215d531c5a329 removed successfully for the file /1.txt
 ```
+## Lock and Unlock Tokens
 
 ### Challenge pool information
 
@@ -1619,7 +1726,6 @@ Get information about all stake pools of current user.
 
 | Parameter  | Required | Description                 | default        | Valid values |
 |------------|----------|-----------------------------|----------------|--------------|
-| client_id |          | id of client               | current client | string       |
 | json       | no       | print result in json format | false          | boolean      |
 
 
@@ -1760,8 +1866,8 @@ An expired write pool, associated with an allocation, can be locked until alloca
 
 ## Download cost
 
-`get-download-cost` determines the cost for downloading the remote file from dStorage. The clinet
-must either be the owner, a collaborator or be using an auth ticket.
+`get-download-cost` determines the cost for downloading the remote file from dStorage. The client must be an 
+  owner, collaborator, or using an auth ticket to determine the download cost of the file.
 
 | Parameter  | Required | Description                               | default | Valid values |
 |------------|----------|-------------------------------------------|---------|--------------|
@@ -1776,9 +1882,13 @@ must either be the owner, a collaborator or be using an auth ticket.
 ![image](https://user-images.githubusercontent.com/6240686/124497750-41ef0500-ddb3-11eb-99ea-115a4e234eda.png)
 
 </details>
-
+Command:
 ```
 ./zbox get-download-cost --allocation <allocation_id> --remotepath /path/file.ext
+```
+Response:
+```
+0.0000107434 tokens for 10 64KB blocks (24 B) of <remote_path_of_file> .
 ```
 
 ## Upload cost
@@ -1801,11 +1911,14 @@ the allocation expires.
 
 </details>
 
-
+Command:
 ```
 ./zbox get-upload-cost --allocation <allocation_id> --localpath ./path/file.ext
 ```
-
+Response:
+```
+ 0.0000000028 tokens / 720h0m0s for 24 B of <remote_path_of_file>
+```  
 ## Commit
 
 Commit file changes to chain

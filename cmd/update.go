@@ -36,7 +36,7 @@ var updateCmd = &cobra.Command{
 			PrintError("Error: remotepath flag is missing")
 			os.Exit(1)
 		}
-		if fflags.Changed("localpath") == false {
+		if !fflags.Changed("localpath") {
 			PrintError("Error: localpath flag is missing")
 			os.Exit(1)
 		}
@@ -47,39 +47,26 @@ var updateCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		remotepath := cmd.Flag("remotepath").Value.String()
-		localpath := cmd.Flag("localpath").Value.String()
-		thumbnailpath := cmd.Flag("thumbnailpath").Value.String()
-		encrypt, _ := cmd.Flags().GetBool("encrypt")
-		commit, _ := cmd.Flags().GetBool("commit")
 
 		if remotepath == "/Encrypted" {
 			PrintError("Error: can not update Encrypted Folder")
 			os.Exit(1)
 		}
+		// get original file attributes
+		var attrs = getRemoteFileAttributes(allocationObj, remotepath)
+
+		localpath := cmd.Flag("localpath").Value.String()
+		thumbnailpath := cmd.Flag("thumbnailpath").Value.String()
+		encrypt, _ := cmd.Flags().GetBool("encrypt")
+		commit, _ := cmd.Flags().GetBool("commit")
+		chunkSize, _ := cmd.Flags().GetInt("chunksize")
 
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
 
-		var attrs fileref.Attributes // depreciated
-		if len(thumbnailpath) > 0 {
-			if encrypt {
-				err = allocationObj.EncryptAndUpdateFileWithThumbnail(localpath,
-					remotepath, thumbnailpath, attrs, statusBar)
-			} else {
-				err = allocationObj.UpdateFileWithThumbnail(localpath,
-					remotepath, thumbnailpath, attrs, statusBar)
-			}
+		err = startChunkedUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar, true)
 
-		} else {
-			if encrypt {
-				err = allocationObj.EncryptAndUpdateFile(localpath, remotepath,
-					attrs, statusBar)
-			} else {
-				err = allocationObj.UpdateFile(localpath, remotepath,
-					attrs, statusBar)
-			}
-		}
 		if err != nil {
 			PrintError("Update failed.", err)
 			os.Exit(1)
@@ -107,6 +94,9 @@ func init() {
 	updateCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
 	updateCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
 	updateCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
+
+	updateCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "chunk size")
+
 	updateCmd.MarkFlagRequired("allocation")
 	updateCmd.MarkFlagRequired("localpath")
 	updateCmd.MarkFlagRequired("remotepath")
