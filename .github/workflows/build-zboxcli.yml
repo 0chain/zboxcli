@@ -4,19 +4,21 @@ on:
   workflow_dispatch:
     inputs:
       fixed_tag:
-        description: 'Type yes For Building With Tag v0.0.0 from master & v1.1.1 from staging'
+        description: 'Type yes For Building With Tag v0.0.0 & Trigger with master Tag for all Dependent Repos.'
         default: 'no'
         required: true
       version_tag:
-        description: 'Input Tag Example - v1.2.2'
+        description: 'Input major or miner for release type. Default is patch'
+        default: 'patch'
         required: true
+
 env:
   GITHUB_TOKEN: ${{ secrets.GOSDK }}
 
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
+  build-linux:
+    name: Build-linux
+    runs-on: [self-hosted, build]
     
     steps:
     - name: Checkout code
@@ -27,21 +29,26 @@ jobs:
       with:
         go-version: ^1.14
 
-    - name: Build
-      run: go build -v ./...
-
-    - name: Test
-      run: go test -v ./...
-      
     - name: Install
       run: make install
+
+    - name: Zip release
+      run: tar -czvf zbox-linux.tar.gz ./zbox
 
     - name: Get Branch
       id: get_version
       run: |
         VERSION=$(echo ${GITHUB_REF#refs/heads/}) 
         echo ::set-output name=TAG::${VERSION}
-        
+
+    - name: Delete Old Release & Tag v1.1.1
+      if: github.event.inputs.fixed_tag == 'yes' && steps.get_version.outputs.TAG == 'staging'
+      uses: dev-drprasad/delete-tag-and-release@v0.2.0
+      with:
+        delete_release: true # default: false
+        tag_name: v1.1.1 # tag name to delete
+        repo: 0chain/zboxcli # target repo (optional). defaults to repo running this action
+
     - name: Create Release for Fixed v1.1.1
       id: create_release_v1_1_1
       if: github.event.inputs.fixed_tag == 'yes' && steps.get_version.outputs.TAG == 'staging'
@@ -51,6 +58,14 @@ jobs:
         release_name: v1.1.1
         draft: false
         prerelease: false
+
+    - name: Delete Old Release & Tag v0.0.0
+      if: github.event.inputs.fixed_tag == 'yes' && steps.get_version.outputs.TAG == 'master'
+      uses: dev-drprasad/delete-tag-and-release@v0.2.0
+      with:
+        delete_release: true # default: false
+        tag_name: v0.0.0 # tag name to delete
+        repo: 0chain/zboxcli # target repo (optional). defaults to repo running this action
 
     - name: Create Release for Fixed v0.0.0
       id: create_release_v0_0_0
@@ -62,11 +77,71 @@ jobs:
         draft: false
         prerelease: false
 
-    - name: Create Release for Input Tag
-      id: create_release_fix
+    - name: Create Release for Next Version
+      id: create_release_next_version
       uses: zendesk/action-create-release@v1 
       with:
-        tag_name: ${{ github.event.inputs.version_tag }}
-        release_name: ${{ github.event.inputs.version_tag }}
         draft: false
         prerelease: false
+        auto_increment_type: ${{ github.event.inputs.version_tag }}
+        tag_schema: semantic
+
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v2
+      with:
+        name: zbox-linux
+        path: zbox
+        retention-days: 5
+
+  build-windows:
+    name: Build-windows
+    runs-on: windows-latest
+    steps:
+      - name: Setup go 1.16
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.16' # The Go version to download (if necessary) and use.
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install
+        run: make install
+      
+      - name: Zip release
+        run: |
+          copy zbox zbox.exe
+          7z a zbox-windows.zip zbox.exe
+
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: zbox-windows
+          path: zbox
+          retention-days: 5
+
+  build-macos:
+    name: Build-macos
+    runs-on: macos-latest
+    steps:
+
+      - name: Setup go 1.16
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.16' # The Go version to download (if necessary) and use.
+
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Install
+        run: make install
+      
+      - name: Zip release
+        run: tar -czvf zbox-macos.tar.gz ./zbox
+
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: zbox-macos
+          path: zbox
+          retention-days: 5
