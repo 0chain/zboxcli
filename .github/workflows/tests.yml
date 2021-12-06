@@ -1,0 +1,40 @@
+name: Tests
+
+on:
+  push: 
+    branches:
+      - master
+      - staging
+  pull_request:
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  unit-test:
+    runs-on: [self-hosted, load-test]
+    steps:
+      - name: Setup go 1.17
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.17'
+
+      - name: Clone 0Box
+        uses: actions/checkout@v2
+  
+      - name: Run Tests
+        run: make zboxcli-test
+
+  build-linux:
+    runs-on: [self-hosted, load-test]
+    needs: unit-test
+    steps:
+      - name: Setup go 1.17
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.17'
+
+      - name: Clone 0Box
+        uses: actions/checkout@v2
+  
+      - name: Build 0Box
+        run: make install
