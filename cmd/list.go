@@ -77,6 +77,7 @@ var listCmd = &cobra.Command{
 					strconv.FormatInt(child.NumBlocks, 10),
 					child.LookupHash,
 					isEncrypted,
+					child.Attributes.WhoPaysForReads.String(),
 				}
 			}
 			util.WriteTable(os.Stdout, header, []string{}, data)
@@ -129,6 +130,7 @@ var listCmd = &cobra.Command{
 					strconv.FormatInt(child.NumBlocks, 10),
 					child.LookupHash,
 					isEncrypted,
+					child.Attributes.WhoPaysForReads.String(),
 				}
 			}
 			util.WriteTable(os.Stdout, header, []string{}, data)
