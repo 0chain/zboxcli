@@ -1,2 +1,2 @@
 Tasks to complete before merging PR:
-- [ ] [Run system tests](https://github.com/0chain/zboxcli/actions/workflows/system_tests.yml) :clipboard:
+- [ ] [Run system tests](https://github.com/0chain/zwalletcli/actions/workflows/system_tests.yml) :clipboard: - do any new system tests need added to test this change? do any existing system tests need updated? If so create a branch at [0chain/system_test](https://github.com/0chain/system_test)
