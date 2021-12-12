@@ -3,7 +3,7 @@ name: Tests
 concurrency:
   group: "${{ github.ref }}"
   cancel-in-progress: true
-  
+
 on:
   push: 
     branches:
@@ -60,7 +60,6 @@ jobs:
         run: |
           echo "NETWORK_URL=$(echo dev-${RUNNER_NAME:(-1)}.devnet-0chain.net)" >> $GITHUB_ENV
           echo "RUNNER_NUMBER=${RUNNER_NAME:(-1)}" >> $GITHUB_ENV
-          echo "ZBOX_ClI_BRANCH=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
       - name: "Set PR Status Pending"
         uses: niteoweb/pull_request_status_action@v1.0.0
@@ -97,7 +96,7 @@ jobs:
         with:
           system_tests_branch: master
           network: ${{ env.NETWORK_URL }}
-          zbox_cli_branch: ${{ env.ZBOX_ClI_BRANCH }}
+          zbox_cli_branch: ${{ github.head_ref }}
           zwallet_cli_branch: staging
           smart_contract_owner_wallet_json: ${{ secrets.SMART_CONTRACT_OWNER_WALLET_JSON }}
           svc_account_secret: ${{ github.token }}
