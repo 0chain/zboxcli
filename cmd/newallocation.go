@@ -146,6 +146,13 @@ var newallocationCmd = &cobra.Command{
 			log.Fatal("invalid 'expire' flag: ", err)
 		}
 
+		var name string
+		if flags.Changed("name") {
+			if name, err = flags.GetString("name"); err != nil {
+				log.Fatal("invalid 'name' flag: ", err)
+			}
+		}
+
 		var expireAt = time.Now().Add(expire).Unix()
 
 		if costOnly {
@@ -166,7 +173,7 @@ var newallocationCmd = &cobra.Command{
 		}
 		var allocationID string
 		if len(owner) == 0 {
-			allocationID, err = sdk.CreateAllocation(*datashards, *parityshards,
+			allocationID, err = sdk.CreateAllocation(name, *datashards, *parityshards,
 				*size, expireAt, readPrice, writePrice, mcct, lock)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
@@ -182,7 +189,7 @@ var newallocationCmd = &cobra.Command{
 				}
 			}
 
-			allocationID, err = sdk.CreateAllocationForOwner(owner, ownerPublicKey, *datashards, *parityshards,
+			allocationID, err = sdk.CreateAllocationForOwner("name", owner, ownerPublicKey, *datashards, *parityshards,
 				*size, expireAt, readPrice, writePrice, mcct, lock, blockchain.GetPreferredBlobbers())
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
@@ -240,6 +247,8 @@ func init() {
 			"select blobbers by provided write price range, use form 1.5-2.5, default is [0; inf)")
 	newallocationCmd.PersistentFlags().
 		Duration("expire", 720*time.Hour, "duration to allocation expiration")
+	newallocationCmd.Flags().
+		String("name", "", "name for allocation")
 	newallocationCmd.PersistentFlags().
 		Duration("mcct", 1*time.Hour,
 			"max challenge completion time, optional, default 1h")
