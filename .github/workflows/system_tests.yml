@@ -70,7 +70,7 @@ jobs:
       if: steps.findPr.outputs.number
       with:
         pr_number: ${{ steps.findPr.outputs.pr }}
-        description: "System tests running"
+        description: "Manual System tests running"
         state: "pending"
         repository: ${{ github.repository }}
         context: ${{ github.workflow }}
@@ -116,7 +116,7 @@ jobs:
       uses: niteoweb/pull_request_status_action@v1.0.0
       with:
         pr_number: ${{ steps.findPr.outputs.pr }}
-        description: "System tests success"
+        description: "Manual System tests success"
         state: ${{ job.status }}
         repository: ${{ github.repository }}
         context: ${{ github.workflow }}
@@ -129,7 +129,7 @@ jobs:
       uses: niteoweb/pull_request_status_action@v1.0.0
       with:
         pr_number: ${{ steps.findPr.outputs.pr }}
-        description: "System tests failure"
+        description: "Manual System tests failure"
         state: ${{ job.status }}
         repository: ${{ github.repository }}
         context: ${{ github.workflow }}
