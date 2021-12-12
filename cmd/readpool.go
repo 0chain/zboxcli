@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
-	"github.com/0chain/zboxcli/util"
 	"github.com/0chain/gosdk/zcncore"
+	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )
 
@@ -62,7 +62,6 @@ var rpInfo = &cobra.Command{
 			}
 		}
 		doJSON, _ := cmd.Flags().GetBool("json")
-
 
 		var info *sdk.AllocationPoolStats
 		if info, err = sdk.GetReadPoolInfo(""); err != nil {

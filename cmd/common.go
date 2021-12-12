@@ -2,12 +2,12 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/0chain/gosdk/core/transaction"
+	"github.com/0chain/gosdk/zboxcore/sdk"
+	"gopkg.in/cheggaaa/pb.v1"
 	"log"
 	"os"
 	"sync"
-
-	"github.com/0chain/gosdk/zboxcore/sdk"
-	"gopkg.in/cheggaaa/pb.v1"
 )
 
 const (
@@ -51,7 +51,7 @@ func (s *StatusBar) Error(allocationID string, filePath string, op int, err erro
 	PrintError("Error in file operation:", errDetail)
 }
 
-func (s *StatusBar) CommitMetaCompleted(request, response string, err error) {
+func (s *StatusBar) CommitMetaCompleted(request, response string, txn *transaction.Transaction, err error) {
 	defer s.wg.Done()
 	if err != nil {
 		s.success = false
