@@ -123,7 +123,7 @@ var uploadCmd = &cobra.Command{
 			// download video from remote live feed(eg youtube), and sync it to zcn
 			err = startSyncUpload(cmd, allocationObj, localpath, remotepath, encrypt, chunkSize, attrs)
 		} else {
-			err = startChunkedUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar, false)
+			err = startChunkedUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar, false, false)
 		}
 
 		if err != nil {
@@ -146,7 +146,7 @@ var uploadCmd = &cobra.Command{
 	},
 }
 
-func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath, thumbnailPath, remotePath string, encrypt bool, chunkSize int, attrs fileref.Attributes, statusBar sdk.StatusCallback, isUpdate bool) error {
+func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath, thumbnailPath, remotePath string, encrypt bool, chunkSize int, attrs fileref.Attributes, statusBar sdk.StatusCallback, isUpdate, isRepair bool) error {
 
 	fileReader, err := os.Open(localPath)
 	if err != nil {

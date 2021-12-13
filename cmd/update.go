@@ -65,7 +65,7 @@ var updateCmd = &cobra.Command{
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
 
-		err = startChunkedUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar, true)
+		err = startChunkedUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar, true, false)
 
 		if err != nil {
 			PrintError("Update failed.", err)
