@@ -65,7 +65,6 @@ var shareCmd = &cobra.Command{
 			fmt.Println("Share revoked for client " + refereeClientID)
 		} else {
 			expiration, _ := cmd.Flags().GetInt64("expiration-seconds")
-			available, _ = cmd.Flags().GetInt64("available-after")
 
 			if len(refereeClientID) == 0 && available > 0 {
 				PrintError("Cannot set available-after if the clientid is empty")
@@ -73,7 +72,7 @@ var shareCmd = &cobra.Command{
 			}
 
 			encryptionpublickey := cmd.Flag("encryptionpublickey").Value.String()
-			ref, err := allocationObj.GetAuthTicket(remotepath, fileName, refType, refereeClientID, encryptionpublickey, expiration, available)
+			ref, err := allocationObj.GetAuthTicket(remotepath, fileName, refType, refereeClientID, encryptionpublickey, expiration)
 			if err != nil {
 				PrintError(err.Error())
 				os.Exit(1)
