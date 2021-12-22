@@ -183,7 +183,7 @@ func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, local
 		Attributes: attrs,
 	}
 
-	ChunkedUpload, err := sdk.CreateChunkedUpload(util.GetHomeDir(), allocationObj, fileMeta, fileReader, isUpdate,
+	ChunkedUpload, err := sdk.CreateChunkedUpload(util.GetHomeDir(), allocationObj, fileMeta, fileReader, isUpdate, false,
 		sdk.WithThumbnailFile(thumbnailPath),
 		sdk.WithChunkSize(int64(chunkSize)),
 		sdk.WithEncrypt(encrypt),
