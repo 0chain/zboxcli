@@ -39,7 +39,9 @@ var copyCmd = &cobra.Command{
 		}
 		remotepath := cmd.Flag("remotepath").Value.String()
 		destpath := cmd.Flag("destpath").Value.String()
-		destpath = strings.TrimSuffix(destpath, "/")
+		if destpath != "/" {
+			destpath = strings.TrimSuffix(destpath, "/")
+		}
 		commit, _ := cmd.Flags().GetBool("commit")
 
 		statsMap, err := allocationObj.GetFileStats(remotepath)
