@@ -9,7 +9,7 @@ on:
     inputs:
        system_tests_branch:
         description: 'system_tests branch. Containing the tests you wish to run'
-        default: 'bug/blobber_401_copy_file_to_non_existing_dir'
+        default: 'master'
         required: true
        zwallet_cli_branch:
         description: '0Wallet CLI (branch or commit SHA) which the tests will use'
@@ -25,7 +25,7 @@ on:
         required: true
        blobber_image:
         description: 'blobber DOCKER IMAGE to deploy'
-        default: 'bug/issue-401-copy-file-when-no-dir'
+        default: 'staging'
         required: true
        validator_image:
         description: 'validator DOCKER IMAGE to deploy'
