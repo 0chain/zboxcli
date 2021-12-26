@@ -45,7 +45,7 @@ jobs:
 
   system-tests:
     if: github.event_name != 'workflow_dispatch'
-    needs: build-linux
+#    needs: build-linux
     runs-on: [ tests-suite ]
     timeout-minutes: 90
     steps:
