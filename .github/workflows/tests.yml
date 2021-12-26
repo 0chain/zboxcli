@@ -27,7 +27,7 @@ jobs:
 #
 #      - name: Run Tests
 #        run: make zboxcli-test
-
+#
 #  build-linux:
 #    runs-on: [self-hosted, load-test]
 #    needs: unit-test
@@ -58,7 +58,10 @@ jobs:
 
       - name: "Setup Test Run"
         run: |
-          echo "zbox branch ${{ github.head_ref }}"
+          echo "github.head_ref: ${{ github.head_ref }}"
+          echo "github.ref: ${{ github.ref }}"
+          echo "github.ref_name	: ${{ github.ref_name }}"
+          env
 
 #      - name: "Set PR Status Pending"
 #        uses: niteoweb/pull_request_status_action@v1.0.0

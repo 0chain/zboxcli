@@ -50,7 +50,7 @@ on:
 jobs:
   system-tests:  
     runs-on: [ tests-suite ]
-    timeout-minutes: 60
+    timeout-minutes: 90
     steps:
       
     - name: "Get current PR"
