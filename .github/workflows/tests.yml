@@ -24,7 +24,7 @@ jobs:
 
       - name: Clone Zbox
         uses: actions/checkout@v2
-  
+
       - name: Run Tests
         run: make zboxcli-test
 
@@ -39,7 +39,7 @@ jobs:
 
       - name: Clone 0Box
         uses: actions/checkout@v2
-  
+
       - name: Build 0Box
         run: make install
 
@@ -60,6 +60,7 @@ jobs:
         run: |
           echo "NETWORK_URL=$(echo dev-${RUNNER_NAME:(-1)}.devnet-0chain.net)" >> $GITHUB_ENV
           echo "RUNNER_NUMBER=${RUNNER_NAME:(-1)}" >> $GITHUB_ENV
+          echo "CURRENT_BRANCH=$(echo $(([ -z '${{ github.head_ref }}' ] && echo  ${GITHUB_REF#refs/*/}) || echo '${{ github.head_ref }}'))" >> $GITHUB_ENV
 
       - name: "Set PR Status Pending"
         uses: niteoweb/pull_request_status_action@v1.0.0
@@ -96,7 +97,7 @@ jobs:
         with:
           system_tests_branch: master
           network: ${{ env.NETWORK_URL }}
-          zbox_cli_branch: ${{ github.head_ref }}
+          zbox_cli_branch: ${{ env.CURRENT_BRANCH }}
           zwallet_cli_branch: staging
           smart_contract_owner_wallet_json: ${{ secrets.SMART_CONTRACT_OWNER_WALLET_JSON }}
           svc_account_secret: ${{ github.token }}
