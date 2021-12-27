@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"strings"
 	"sync"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
@@ -39,9 +38,6 @@ var copyCmd = &cobra.Command{
 		}
 		remotepath := cmd.Flag("remotepath").Value.String()
 		destpath := cmd.Flag("destpath").Value.String()
-		if destpath != "/" {
-			destpath = strings.TrimSuffix(destpath, "/")
-		}
 		commit, _ := cmd.Flags().GetBool("commit")
 
 		statsMap, err := allocationObj.GetFileStats(remotepath)
