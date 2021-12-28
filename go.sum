@@ -53,6 +53,8 @@ github.com/0chain/gosdk v1.3.7-0.20211227030154-d26b9a5c16ea h1:ZAkbCedqNSlRzg9e
 github.com/0chain/gosdk v1.3.7-0.20211227030154-d26b9a5c16ea/go.mod h1:2SyFWa4WQxpomgJxBJrMR4ydWLaLMcqkITY4Pduihi8=
 github.com/0chain/gosdk v1.4.1-0.20211227213552-eee420115921 h1:c2Ey1GgVJg0JNRe3nLyqHRxFQKaw06cU8+3QF3leg8M=
 github.com/0chain/gosdk v1.4.1-0.20211227213552-eee420115921/go.mod h1:2SyFWa4WQxpomgJxBJrMR4ydWLaLMcqkITY4Pduihi8=
+github.com/0chain/gosdk v1.4.1-0.20211228063632-b75b2c103e0e h1:wjmnOjerjdPJHsocCXCTBanGH7TQGkYuobhRfCT988Q=
+github.com/0chain/gosdk v1.4.1-0.20211228063632-b75b2c103e0e/go.mod h1:2SyFWa4WQxpomgJxBJrMR4ydWLaLMcqkITY4Pduihi8=
 github.com/Azure/azure-pipeline-go v0.2.1/go.mod h1:UGSo8XybXnIGZ3epmeBw7Jdz+HiUVpqIlpz/HKHylF4=
 github.com/Azure/azure-pipeline-go v0.2.2/go.mod h1:4rQ/NZncSvGqNkkOsNpOU1tgoNuIlp9AfUH5G1tvCHc=
 github.com/Azure/azure-storage-blob-go v0.7.0/go.mod h1:f9YQKtsG1nMisotuTPpO0tjNuEjKRYAcJU8/ydDI++4=
