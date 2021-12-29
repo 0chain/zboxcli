@@ -1,7 +1,7 @@
 name: Tests
 
 concurrency:
-  group: "${{ github.ref }}"
+  group: "tests-${{ github.ref }}"
   cancel-in-progress: true
 
 on:
