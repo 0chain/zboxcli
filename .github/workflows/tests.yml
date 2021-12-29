@@ -15,7 +15,7 @@ on:
 
 jobs:
   unit-test:
-    runs-on: [self-hosted, load-test]
+    runs-on: [self-hosted, build]
     steps:
       - name: Setup go 1.17
         uses: actions/setup-go@v2
@@ -29,7 +29,7 @@ jobs:
         run: make zboxcli-test
 
   build-linux:
-    runs-on: [self-hosted, load-test]
+    runs-on: [self-hosted, build]
     needs: unit-test
     steps:
       - name: Setup go 1.17
