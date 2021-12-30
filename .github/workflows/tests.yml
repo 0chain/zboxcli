@@ -1,7 +1,7 @@
 name: Tests
 
 concurrency:
-  group: "${{ github.ref }}"
+  group: "tests-${{ github.ref }}"
   cancel-in-progress: true
 
 on:
@@ -15,7 +15,7 @@ on:
 
 jobs:
   unit-test:
-    runs-on: [self-hosted, load-test]
+    runs-on: [self-hosted, build]
     steps:
       - name: Setup go 1.17
         uses: actions/setup-go@v2
@@ -29,7 +29,7 @@ jobs:
         run: make zboxcli-test
 
   build-linux:
-    runs-on: [self-hosted, load-test]
+    runs-on: [self-hosted, build]
     needs: unit-test
     steps:
       - name: Setup go 1.17
@@ -62,7 +62,7 @@ jobs:
           echo "RUNNER_NUMBER=${RUNNER_NAME:(-1)}" >> $GITHUB_ENV
           echo "CURRENT_BRANCH=$(echo $(([ -z '${{ github.head_ref }}' ] && echo  ${GITHUB_REF#refs/*/}) || echo '${{ github.head_ref }}'))" >> $GITHUB_ENV
 
-      - name: "Set PR Status Pending"
+      - name: "Set PR status as pending"
         uses: niteoweb/pull_request_status_action@v1.0.0
         if: steps.findPr.outputs.number
         with:
@@ -106,25 +106,12 @@ jobs:
           run_flaky_tests: false
           retry_failures: true
 
-      - name: "Set PR Status Success"
-        if: ${{ success() && steps.findPr.outputs.number }}
+      - name: "Set PR status as ${{ job.status }}"
+        if: ${{ (success() || failure()) && steps.findPr.outputs.number }}
         uses: niteoweb/pull_request_status_action@v1.0.0
         with:
           pr_number: ${{ steps.findPr.outputs.pr }}
-          description: "System tests with default config completed successfully"
-          state: ${{ job.status }}
-          repository: ${{ github.repository }}
-          context: "0Chain System Tests"
-          target_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-
-      - name: "Set PR Status Failed"
-        if: ${{ failure() && steps.findPr.outputs.number }}
-        uses: niteoweb/pull_request_status_action@v1.0.0
-        with:
-          pr_number: ${{ steps.findPr.outputs.pr }}
-          description: "System tests with default config failed. Try running manually with more specific config"
+          description: "System tests with default config ${{ job.status }}"
           state: ${{ job.status }}
           repository: ${{ github.repository }}
           context: "0Chain System Tests"
