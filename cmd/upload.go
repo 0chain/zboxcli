@@ -54,7 +54,7 @@ var createDirCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		fmt.Println(dirname + "directory created.")
+		fmt.Println(dirname + " directory created.")
 	},
 }
 
