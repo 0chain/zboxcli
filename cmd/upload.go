@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -53,7 +54,7 @@ var createDirCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		return
+		fmt.Println(dirname + "directory created.")
 	},
 }
 
