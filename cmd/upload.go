@@ -38,23 +38,23 @@ var createDirCmd = &cobra.Command{
 		allocationID := cmd.Flag("allocation").Value.String()
 		allocationObj, err := sdk.GetAllocation(allocationID)
 		if err != nil {
-			PrintError("Error fetching the allocation.", err)
+			PrintError("Error fetching the allocation", err)
 			os.Exit(1)
 		}
 		dirname := cmd.Flag("dirname").Value.String()
 
 		if err != nil {
-			PrintError("CreateDir failed.", err)
+			PrintError("CreateDir failed: ", err)
 			os.Exit(1)
 		}
 		err = allocationObj.CreateDir(dirname)
 
 		if err != nil {
-			PrintError("CreateDir failed.", err)
+			PrintError("CreateDir failed: ", err)
 			os.Exit(1)
 		}
 
-		fmt.Println(dirname + " directory created.")
+		fmt.Println(dirname + " directory created")
 	},
 }
 
