@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -37,23 +38,23 @@ var createDirCmd = &cobra.Command{
 		allocationID := cmd.Flag("allocation").Value.String()
 		allocationObj, err := sdk.GetAllocation(allocationID)
 		if err != nil {
-			PrintError("Error fetching the allocation.", err)
+			PrintError("Error fetching the allocation", err)
 			os.Exit(1)
 		}
 		dirname := cmd.Flag("dirname").Value.String()
 
 		if err != nil {
-			PrintError("CreateDir failed.", err)
+			PrintError("CreateDir failed: ", err)
 			os.Exit(1)
 		}
 		err = allocationObj.CreateDir(dirname)
 
 		if err != nil {
-			PrintError("CreateDir failed.", err)
+			PrintError("CreateDir failed: ", err)
 			os.Exit(1)
 		}
 
-		return
+		fmt.Println(dirname + " directory created")
 	},
 }
 
@@ -64,17 +65,17 @@ var uploadCmd = &cobra.Command{
 	Long:  `upload file to blobbers`,
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		fflags := cmd.Flags()                      // fflags is a *flag.FlagSet
-		if fflags.Changed("allocation") == false { // check if the flag "path" is set
+		fflags := cmd.Flags()              // fflags is a *flag.FlagSet
+		if !fflags.Changed("allocation") { // check if the flag "path" is set
 			PrintError("Error: allocation flag is missing") // If not, we'll let the user know
 			os.Exit(1)                                      // and return
 		}
-		if fflags.Changed("remotepath") == false {
+		if !fflags.Changed("remotepath") {
 			PrintError("Error: remotepath flag is missing")
 			os.Exit(1)
 		}
 
-		if fflags.Changed("localpath") == false {
+		if !fflags.Changed("localpath") {
 			PrintError("Error: localpath flag is missing")
 			os.Exit(1)
 		}
@@ -141,8 +142,6 @@ var uploadCmd = &cobra.Command{
 			commitMetaTxn(remotepath, "Upload", "", "", allocationObj, nil, statusBar)
 			statusBar.wg.Wait()
 		}
-
-		return
 	},
 }
 
