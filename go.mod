@@ -4,7 +4,7 @@ go 1.13
 
 require (
 	github.com/0chain/errors v1.0.3
-	github.com/0chain/gosdk v1.4.1-0.20211230150557-0a53b79512fa
+	github.com/0chain/gosdk v1.4.1-0.20220105082322-b4a87033d3e3
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.1.1
