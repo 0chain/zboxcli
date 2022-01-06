@@ -3,8 +3,6 @@ package util
 import (
 	"fmt"
 	"os"
-
-	"github.com/mitchellh/go-homedir"
 )
 
 // GetConfigDir get config directory , default is ~/.zcn/
@@ -23,7 +21,7 @@ func GetConfigDir() string {
 // GetHomeDir Find home directory.
 func GetHomeDir() string {
 	// Find home directory.
-	idr, err := homedir.Dir()
+	idr, err := os.UserHomeDir()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
