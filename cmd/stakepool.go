@@ -22,18 +22,8 @@ func printStakePoolInfo(info *sdk.StakePoolInfo) {
 	fmt.Println("  capacity:   ", info.Capacity, "(blobber bid)")
 	fmt.Println("  write_price:", info.WritePrice, "(blobber write price)")
 
-	if len(info.Offers) == 0 {
-		fmt.Println("offers: no opened offers")
-	} else {
-		fmt.Println("offers:")
-		for _, off := range info.Offers {
-			fmt.Println("- lock:      ", off.Lock)
-			fmt.Println("  expire:    ", off.Expire.ToTime())
-			fmt.Println("  allocation:", off.AllocationID)
-			fmt.Println("  expired:   ", off.IsExpired)
-		}
-		fmt.Println("offers_total:", info.OffersTotal, "(held by opened offers)")
-	}
+	fmt.Println("  offers_total:", info.OffersTotal, "(total stake committed to offers)")
+	fmt.Println("  unstake_total:", info.UnstakeTotal, "(total amount marked to unstake)")
 
 	if len(info.Delegate) == 0 {
 		fmt.Println("delegate_pools: no delegate pools")
@@ -48,8 +38,8 @@ func printStakePoolInfo(info *sdk.StakePoolInfo) {
 			fmt.Println("  interests:        ", dp.Interests, "(payed)")
 			fmt.Println("  pending_interests:", dp.PendingInterests, "(not payed yet, can be given by 'sp-pay-interests' command)")
 			var gtu string
-			if dp.Unstake > 0 {
-				gtu = dp.Unstake.ToTime().String()
+			if dp.Unstake {
+				gtu = "<unstaking>"
 			} else {
 				gtu = "<not going>"
 			}
