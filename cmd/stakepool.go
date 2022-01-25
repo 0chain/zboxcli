@@ -15,15 +15,13 @@ import (
 func printStakePoolInfo(info *sdk.StakePoolInfo) {
 	fmt.Println("blobber_id:            ", info.ID)
 	fmt.Println("total stake:           ", info.Balance)
-	fmt.Println("going to unlock, total:", info.Unstake)
+	fmt.Println("going to unlock, total:", info.UnstakeTotal)
 
 	fmt.Println("capacity:")
 	fmt.Println("  free:       ", info.Free, "(for current write price)")
 	fmt.Println("  capacity:   ", info.Capacity, "(blobber bid)")
 	fmt.Println("  write_price:", info.WritePrice, "(blobber write price)")
-
 	fmt.Println("  offers_total:", info.OffersTotal, "(total stake committed to offers)")
-	fmt.Println("  unstake_total:", info.UnstakeTotal, "(total amount marked to unstake)")
 
 	if len(info.Delegate) == 0 {
 		fmt.Println("delegate_pools: no delegate pools")
@@ -238,7 +236,8 @@ var spUnlock = &cobra.Command{
 		// can't unlock for now
 		if unstake > 0 {
 			fmt.Println("tokens can't be unlocked due to opened offers")
-			fmt.Printf("the pool marked as releasing, wait %s and retry to succeed", unstake.ToTime())
+			fmt.Printf("the pool marked as releasing, wait %s and retry to succeed")
+			fmt.Printf("to reduce blobber commitments cancel or finalize allocations")
 			fmt.Println()
 			return
 		}
@@ -248,41 +247,11 @@ var spUnlock = &cobra.Command{
 	},
 }
 
-// spPayInterests pays interests not payed yet. A stake pool changes
-// pays all interests can be payed. But if stake pool is not changed,
-// then user can manually pay the interests.
-var spPayInterests = &cobra.Command{
-	Use:   "sp-pay-interests",
-	Short: "Pay interests not payed yet.",
-	Long:  `Pay interests not payed.`,
-	Args:  cobra.MinimumNArgs(0),
-	Run: func(cmd *cobra.Command, args []string) {
-
-		var (
-			flags     = cmd.Flags()
-			blobberID string
-			err       error
-		)
-
-		if flags.Changed("blobber_id") {
-			if blobberID, err = flags.GetString("blobber_id"); err != nil {
-				log.Fatalf("invalid 'blobber_id' flag: %v", err)
-			}
-		}
-
-		if err = sdk.StakePoolPayInterests(blobberID); err != nil {
-			log.Fatalf("Failed to pay interests: %v", err)
-		}
-		fmt.Println("interests has payed")
-	},
-}
-
 func init() {
 	rootCmd.AddCommand(spInfo)
 	rootCmd.AddCommand(spUserInfo)
 	rootCmd.AddCommand(spLock)
 	rootCmd.AddCommand(spUnlock)
-	rootCmd.AddCommand(spPayInterests)
 
 	spInfo.PersistentFlags().String("blobber_id", "",
 		"for given blobber, default is current client")
@@ -307,8 +276,4 @@ func init() {
 		"transaction fee, default 0")
 	spUnlock.MarkFlagRequired("tokens")
 	spUnlock.MarkFlagRequired("pool_id")
-
-	spPayInterests.PersistentFlags().String("blobber_id", "",
-		"for given blobber, default is current client")
-
 }
