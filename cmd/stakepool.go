@@ -236,7 +236,7 @@ var spUnlock = &cobra.Command{
 		// can't unlock for now
 		if unstake > 0 {
 			fmt.Println("tokens can't be unlocked due to opened offers")
-			fmt.Printf("the pool marked as releasing, wait %s and retry to succeed")
+			fmt.Printf("the pool marked as releasing, wait and retry to succeed")
 			fmt.Printf("to reduce blobber commitments cancel or finalize allocations")
 			fmt.Println()
 			return
