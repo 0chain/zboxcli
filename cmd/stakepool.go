@@ -35,8 +35,6 @@ func printStakePoolInfo(info *sdk.StakePoolInfo) {
 			fmt.Println("  delegate_id:      ", dp.DelegateID)
 			fmt.Println("  rewards:          ", dp.Rewards)
 			fmt.Println("  penalty:          ", dp.Penalty)
-			fmt.Println("  interests:        ", dp.Interests, "(payed)")
-			fmt.Println("  pending_interests:", dp.PendingInterests, "(not payed yet, can be given by 'sp-pay-interests' command)")
 			var gtu string
 			if dp.Unstake {
 				gtu = "<unstaking>"
@@ -75,9 +73,6 @@ func printStakePoolUserInfo(info *sdk.StakePoolUserInfo) {
 			fmt.Println("    delegate_id:      ", dp.DelegateID)
 			fmt.Println("    rewards:          ", dp.Rewards)
 			fmt.Println("    penalty:          ", dp.Penalty)
-			fmt.Println("    interests:        ", dp.Interests, "(payed)")
-			fmt.Println("    pending_interests:", dp.PendingInterests,
-				"(not payed yet, can be given by 'sp-pay-interests' command)")
 		}
 	}
 }
