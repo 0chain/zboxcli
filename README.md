@@ -64,7 +64,6 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
         - [Lock tokens into stake pool](#lock-tokens-into-stake-pool)
         - [Unlock tokens from stake pool](#unlock-tokens-from-stake-pool)
         - [Stake pools info of user](#stake-pools-info-of-user)
-        - [Pay interests](#pay-interests)
         - [Write pool info](#write-pool-info)
         - [Lock tokens into write pool](#lock-tokens-into-write-pool)
         - [Unlock tokens from write pool](#unlock-tokens-from-write-pool)
@@ -1674,7 +1673,7 @@ Use `sp-info` to get your stake pool information and settings.
 
 Lock creates delegate pool for current client and given blobber. 
 The tokens locked for the blobber stake can be unlocked any time, excluding times 
-when the tokens held by opened offers. The tokens collect interest.
+when the tokens held by opened offers. The tokens earn block rewards.
 `sp-lock` returns the id of the new stake pool, this will be needed to reference
 to stake pool later.
 
@@ -1740,28 +1739,6 @@ Get information about all stake pools of current user.
 ./zbox sp-user-info
 ```
 
-## Pay interests
-
-Changes in stake pool pays all pending rewards, But if there are no 
-changes interests will not be paid.
-`sp-pay-interests`  command can be used to force payment of interest for 
-all delegates. Use `sp-info` to check if interest can be paid or not.
-
-| Parameter  | Required | Description          | default        | Valid values |
-|------------|----------|----------------------|----------------|--------------|
-| blobber_id |          | id of blobber        | current client | string       |
-
-<details>
-  <summary>sp-pay-interests</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/124602256-93a19900-de60-11eb-9ddd-74f6e0570e47.png)
-
-</details>
-
-```
-./zbox sp-pay-interests --blobber_id <blobber_id>
-```
-
 ## Write pool info
 
 Write pool information. Use allocation id to filter results to a singe allocation.
@@ -1772,7 +1749,7 @@ Write pool information. Use allocation id to filter results to a singe allocatio
 | json          | no       | print result in json format | false   | boolean      |
 
 <details>
-  <summary>sp-pay-interests</summary>
+  <summary>wp-info</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124603444-d9ab2c80-de61-11eb-82f2-900d540ba63f.png)
 
