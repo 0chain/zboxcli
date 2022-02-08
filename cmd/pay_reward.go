@@ -4,8 +4,17 @@ import (
 	"log"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
-	"github.com/0chain/gosdk/zcncore"
 	"github.com/spf13/cobra"
+)
+
+type Provider int
+
+const (
+	ProviderMiner Provider = iota
+	ProviderSharder
+	ProviderBlobber
+	ProviderValidator
+	ProviderAuthorizer
 )
 
 var payRewards = &cobra.Command{
@@ -35,9 +44,9 @@ var payRewards = &cobra.Command{
 
 		switch providerName {
 		case "blobber":
-			_, err = sdk.PayRewards(poolId, zcncore.ProviderBlobber)
-		case "sharder":
-			_, err = sdk.PayRewards(poolId, zcncore.ProviderSharder)
+			_, err = sdk.PayRewards(poolId, int(ProviderBlobber))
+		case "validator":
+			_, err = sdk.PayRewards(poolId, int(ProviderValidator))
 		default:
 			log.Fatal("provider type must be blobber or validator")
 		}
