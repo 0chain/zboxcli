@@ -116,7 +116,7 @@ When you run the `zbox` command in terminal with no arguments, it will list all 
 [bl-info](#detailed-blobber-information)|Get blobber info
 [bl-update](#update-blobber-settings)|Update blobber settings by its delegate\_wallet owner
 [commit](#commit)| commit file changes to chain
-[collect-reward](#collect-rewards)
+[collect-reward](#collect-rewards)|ansfer reward tokens from a stake pool in which you have invested to your wallet.
 [copy](#copy)|copy an object(file/folder) to another folder on blobbers
 [cp-info](#challenge-pool-information)|Challenge pool information.
 [delete](#delete)|delete file from blobbers
