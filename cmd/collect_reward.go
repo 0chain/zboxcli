@@ -17,10 +17,10 @@ const (
 	ProviderAuthorizer
 )
 
-var payRewards = &cobra.Command{
-	Use:   "pay_reward",
-	Short: "Pay accrued rewards for a stake pool.",
-	Long:  "Pay accrued rewards for a stake pool.",
+var collectRewards = &cobra.Command{
+	Use:   "Collect_reward",
+	Short: "Collect accrued rewards for a stake pool.",
+	Long:  "Collect accrued rewards for a stake pool.",
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		flags := cmd.Flags()
@@ -44,9 +44,9 @@ var payRewards = &cobra.Command{
 
 		switch providerName {
 		case "blobber":
-			_, err = sdk.PayRewards(poolId, int(ProviderBlobber))
+			_, err = sdk.CollectRewards(poolId, int(ProviderBlobber))
 		case "validator":
-			_, err = sdk.PayRewards(poolId, int(ProviderValidator))
+			_, err = sdk.CollectRewards(poolId, int(ProviderValidator))
 		default:
 			log.Fatal("provider type must be blobber or validator")
 		}
@@ -58,15 +58,15 @@ var payRewards = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(payRewards)
-	payRewards.PersistentFlags().
+	rootCmd.AddCommand(collectRewards)
+	collectRewards.PersistentFlags().
 		String("pool_id", "",
 			"stake pool id")
-	payRewards.PersistentFlags().
+	collectRewards.PersistentFlags().
 		String("provider_type", "blobber",
 			"provider type")
 
-	payRewards.MarkFlagRequired("pool_id")
-	payRewards.MarkFlagRequired("provider_type")
+	collectRewards.MarkFlagRequired("pool_id")
+	collectRewards.MarkFlagRequired("provider_type")
 
 }
