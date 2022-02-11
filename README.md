@@ -116,6 +116,7 @@ When you run the `zbox` command in terminal with no arguments, it will list all 
 [bl-info](#detailed-blobber-information)|Get blobber info
 [bl-update](#update-blobber-settings)|Update blobber settings by its delegate\_wallet owner
 [commit](#commit)| commit file changes to chain
+[collect-reward](#collect-rewards)
 [copy](#copy)|copy an object(file/folder) to another folder on blobbers
 [cp-info](#challenge-pool-information)|Challenge pool information.
 [delete](#delete)|delete file from blobbers
@@ -145,8 +146,7 @@ help|Help about any command
 [sign-data](#sign-data)|Sign given data
 [sp-info](#stake-pool-info)|Stake pool information.
 [sp-lock](#lock-tokens-into-stake-pool)|Lock tokens lacking in stake pool.
-[sp-pay-interests](#pay-interests)|Pay interests not payed yet.
-[sp-unlock](#unlock-tokens-from-stake-pool)|Unlock tokens in stake pool.
+[sp-unlock](#unlock-tokens-from-stake-pool)|Unlock tokens in st*ake pool.
 [sp-user-info](#stake-pools-info-of-user)|Stake pool information for a user.
 [start-repair](#repair)|start repair file to blobbers
 [stats](#stats)|stats for file from blobbers
@@ -1541,6 +1541,35 @@ Use `rp-create` to create a read pool, `rp-create` has no parameters.
 ./zbox rp-create
 ```
 
+## Collect rewards
+
+Use `collect-rewards` to transfer reward tokens from a stake pool in which you have 
+invested to your wallet.
+
+You earn rewards for:
+Blobbers
+- File space used by allocation owners and associates.
+- A min lock demand for each allocation.
+- Block rewards. Each block a reward gets paid out to blobber stakeholders in the form of a random lottery.
+Validators
+- Payment for validating blobber challenge responses.
+
+The stake pool keeps an account for all stakeholders to maintain accrued rewards.
+These rewards can be accessed using this `collect-rewards` command.
+
+
+| Parameter     | Required | Description          | default | Valid values |
+|---------------|----------|----------------------|---------|--------------|
+| pool_id       | yes      | stake pool id        |         | string       |
+| provider_type | no       | blobber or validator | blobber | string       |
+
+The pool_id gets returned when you created the stake pool, and can be identified
+later by using [sp-info](#stake-pool-info) or [sp-user-info](#stake-pools-info-of-user).
+
+```bash
+./zbox colect-reward --pool_id 1e701ac4e1a003ff75c5bfab62b06ec7418b9b81740ff7c6e4928bf6c0fe5792 --provider_type blobber
+```
+
 ## Read pool info
 
 Use `rp-info` to get read pool information.
@@ -1673,7 +1702,8 @@ Use `sp-info` to get your stake pool information and settings.
 
 Lock creates delegate pool for current client and given blobber. 
 The tokens locked for the blobber stake can be unlocked any time, excluding times 
-when the tokens held by opened offers. The tokens earn block rewards.
+when the tokens held by opened offers. These tokens will earn rewards depending on the actions
+of the linked blobber. 
 `sp-lock` returns the id of the new stake pool, this will be needed to reference
 to stake pool later.
 

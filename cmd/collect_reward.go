@@ -18,7 +18,7 @@ const (
 )
 
 var collectRewards = &cobra.Command{
-	Use:   "collect_reward",
+	Use:   "collect-reward",
 	Short: "Collect accrued rewards for a stake pool.",
 	Long:  "Collect accrued rewards for a stake pool.",
 	Args:  cobra.MinimumNArgs(0),
