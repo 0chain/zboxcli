@@ -30,6 +30,8 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
          - [Update blobber settings](#update-blobber-settings)
        - [Uploading and Managing Files](#uploading-and-managing-files)
          - [Upload](#upload)
+          - [Live](#live)
+          - [Feed](#feed)
          - [Download](#download)
          - [Update](#update)
          - [Delete](#delete)
@@ -792,9 +794,9 @@ The user must be the owner of the allocation.You can request the file be encrypt
 
 ## Feed
 
-Use `feed` command to automatically download segment files from remove live feed with `--downloader-args "-f 22"`, encode them into new segment files with `--delay` and `--ffmpeg-args`, and upload. please use `youtube-dl -F https://www.youtube.com/watch?v=pC5mGB5enkw` to list formats of video (see below).
-
-
+Use `feed` command to automatically download segment files from remove live feed with `--downloader-args "-f 22"`
+ - encode them into new segment files with `--delay` and `--ffmpeg-args`, and upload. 
+ - please use `youtube-dl -F https://www.youtube.com/watch?v=pC5mGB5enkw` to list formats of video (see below).
 
 The user must be the owner of the allocation.You can request the file be encrypted before upload, and can send thumbnails with the file. 
 
