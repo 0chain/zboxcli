@@ -148,7 +148,7 @@ var uploadCmd = &cobra.Command{
 // feedCmd represents upload command with --sync flag
 var feedCmd = &cobra.Command{
 	Use:   "feed",
-	Short: "live upload from remote device",
+	Short: "download segment files from remote live feed, and upload",
 	Long:  `live upload from remote device`,
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
