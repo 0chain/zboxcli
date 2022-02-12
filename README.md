@@ -736,7 +736,7 @@ The user must be the owner of the allocation.You can request the file be encrypt
 <details>
   <summary>stream</summary>
 
-![image](https://github.com/0chain/blobber/wiki/uml/usecase/live_upload_live.png)
+![image](https://github.com/0chain/blobber/wiki/uml/usecase/live_upload_sync.png)
 
 </details>
 
