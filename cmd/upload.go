@@ -225,7 +225,7 @@ var feedCmd = &cobra.Command{
 // liveCmd represents upload command with --live flag
 var liveCmd = &cobra.Command{
 	Use:   "live",
-	Short: "live upload from local device",
+	Short: "capture video and audio streaming form local devices, and upload",
 	Long:  `live upload from local device`,
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
