@@ -212,9 +212,9 @@ var feedCmd = &cobra.Command{
 	},
 }
 
-// liveCmd represents upload command with --live flag
-var liveCmd = &cobra.Command{
-	Use:   "live",
+// streamCmd represents upload command with --live flag
+var streamCmd = &cobra.Command{
+	Use:   "stream",
 	Short: "capture video and audio streaming form local devices, and upload",
 	Long:  "capture video and audio streaming form local devices, and upload",
 	Args:  cobra.MinimumNArgs(0),
@@ -475,33 +475,33 @@ func init() {
 
 	feedCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "chunk size")
 
-	feedCmd.Flags().Int("delay", 5, "set segment duration to seconds. only works with --live and --sync. default duration is 5s.")
+	feedCmd.Flags().Int("delay", 5, "set segment duration to seconds.")
 
 	// SyncUpload
-	feedCmd.Flags().String("feed", "", "set remote live feed to url. only works with --sync.")
-	feedCmd.Flags().String("downloader-args", "-q -f best", "pass args to youtube-dl to download video. default is \"-q\". only works with --sync.")
-	feedCmd.Flags().String("ffmpeg-args", "-loglevel warning", "pass args to ffmpeg to build segments. default is \"-loglevel warning\". only works with --sync.")
+	feedCmd.Flags().String("feed", "", "set remote live feed to url.")
+	feedCmd.Flags().String("downloader-args", "-q -f best", "pass args to youtube-dl to download video. default is \"-q\".")
+	feedCmd.Flags().String("ffmpeg-args", "-loglevel warning", "pass args to ffmpeg to build segments. default is \"-loglevel warning\".")
 
 	feedCmd.MarkFlagRequired("allocation")
 	feedCmd.MarkFlagRequired("remotepath")
 	feedCmd.MarkFlagRequired("localpath")
 
-	// Live Command
-	rootCmd.AddCommand(liveCmd)
-	liveCmd.PersistentFlags().String("allocation", "", "Allocation ID")
-	liveCmd.PersistentFlags().String("remotepath", "", "Remote path to upload")
-	liveCmd.PersistentFlags().String("localpath", "", "Local path of file to upload")
-	liveCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
-	liveCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
-	liveCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
-	liveCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
+	// stream Command
+	rootCmd.AddCommand(streamCmd)
+	streamCmd.PersistentFlags().String("allocation", "", "Allocation ID")
+	streamCmd.PersistentFlags().String("remotepath", "", "Remote path to upload")
+	streamCmd.PersistentFlags().String("localpath", "", "Local path of file to upload")
+	streamCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
+	streamCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
+	streamCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
+	streamCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
 
-	liveCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "chunk size")
+	streamCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "chunk size")
 
-	liveCmd.Flags().Int("delay", 5, "set segment duration to seconds. only works with --live and --sync. default duration is 5s.")
+	streamCmd.Flags().Int("delay", 5, "set segment duration to seconds.")
 
-	liveCmd.MarkFlagRequired("allocation")
-	liveCmd.MarkFlagRequired("remotepath")
-	liveCmd.MarkFlagRequired("localpath")
+	streamCmd.MarkFlagRequired("allocation")
+	streamCmd.MarkFlagRequired("remotepath")
+	streamCmd.MarkFlagRequired("localpath")
 
 }
