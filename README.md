@@ -794,7 +794,7 @@ The user must be the owner of the allocation.You can request the file be encrypt
 
 ## Feed
 
-Use `feed` command to automatically download segment files from remove live feed with `--downloader-args "-f 22"`
+Use `feed` command to automatically download segment files from remote live feed with `--downloader-args "-q -f best"`
  - encode them into new segment files with `--delay` and `--ffmpeg-args`, and upload. 
  - please use `youtube-dl -F https://www.youtube.com/watch?v=pC5mGB5enkw` to list formats of video (see below).
 
