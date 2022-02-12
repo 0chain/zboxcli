@@ -805,7 +805,7 @@ The user must be the owner of the allocation.You can request the file be encrypt
 | allocation              | yes      | allocation id, sender must be allocation owner                     |         | string                 |
 | commit                  | no       | save metadata to blockchain                                        | false   | boolean                |
 | encrypt                 | no       | encrypt file before upload                                         | false   | boolean                |
-| localpath               | yes      | local path of the file to upload                                   |         | file path              |
+| localpath               | yes      | local path of segment files to download, generate and upload                                   |         | file path              |
 | remotepath              | yes      | remote path to upload file to, use to access file later            |         | string                 |
 | thumbnailpath           | no       | local path of thumbnaSil                                           |         | file path              |
 | chunksize               | no       | chunk size                                                         | 65536   | int                    |
