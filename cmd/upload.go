@@ -226,7 +226,7 @@ var feedCmd = &cobra.Command{
 var liveCmd = &cobra.Command{
 	Use:   "live",
 	Short: "capture video and audio streaming form local devices, and upload",
-	Long:  `live upload from local device`,
+	Long: "capture video and audio streaming form local devices, and upload",
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags()              // fflags is a *flag.FlagSet
