@@ -149,7 +149,7 @@ var uploadCmd = &cobra.Command{
 var feedCmd = &cobra.Command{
 	Use:   "feed",
 	Short: "download segment files from remote live feed, and upload",
-	Long:  `live upload from remote device`,
+	Long: "download segment files from remote live feed, and upload",
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags()              // fflags is a *flag.FlagSet
