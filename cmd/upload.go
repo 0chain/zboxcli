@@ -113,19 +113,9 @@ var uploadCmd = &cobra.Command{
 			attrs.WhoPaysForReads = wp // set given value
 		}
 
-		live, _ := cmd.Flags().GetBool("live")
-		sync, _ := cmd.Flags().GetBool("sync")
 		chunkSize, _ := cmd.Flags().GetInt("chunksize")
 
-		if live {
-			// capture video and audio from local default camera and micrlphone, and upload it to zcn
-			err = startLiveUpload(cmd, allocationObj, localpath, remotepath, encrypt, chunkSize, attrs)
-		} else if sync {
-			// download video from remote live feed(eg youtube), and sync it to zcn
-			err = startSyncUpload(cmd, allocationObj, localpath, remotepath, encrypt, chunkSize, attrs)
-		} else {
-			err = startChunkedUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar, false)
-		}
+		err = startChunkedUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar, false)
 
 		if err != nil {
 			PrintError("Upload failed.", err)
@@ -149,7 +139,7 @@ var uploadCmd = &cobra.Command{
 var feedCmd = &cobra.Command{
 	Use:   "feed",
 	Short: "download segment files from remote live feed, and upload",
-	Long: "download segment files from remote live feed, and upload",
+	Long:  "download segment files from remote live feed, and upload",
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags()              // fflags is a *flag.FlagSet
@@ -226,7 +216,7 @@ var feedCmd = &cobra.Command{
 var liveCmd = &cobra.Command{
 	Use:   "live",
 	Short: "capture video and audio streaming form local devices, and upload",
-	Long: "capture video and audio streaming form local devices, and upload",
+	Long:  "capture video and audio streaming form local devices, and upload",
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags()              // fflags is a *flag.FlagSet
@@ -463,17 +453,6 @@ func init() {
 	uploadCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
 
 	uploadCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "chunk size")
-
-	uploadCmd.Flags().Int("delay", 5, "set segment duration to seconds. only works with --live and --sync. default duration is 5s.")
-
-	// SyncUpload
-	uploadCmd.Flags().Bool("sync", false, "enable SyncUpload from remote live feed. disabled by default.")
-	uploadCmd.Flags().String("feed", "", "set remote live feed to url. only works with --sync.")
-	uploadCmd.Flags().String("downloader-args", "-q -f best", "pass args to youtube-dl to download video. default is \"-q\". only works with --sync.")
-	uploadCmd.Flags().String("ffmpeg-args", "-loglevel warning", "pass args to ffmpeg to build segments. default is \"-loglevel warning\". only works with --sync.")
-
-	// LiveUpload
-	uploadCmd.Flags().Bool("live", false, "enable LiveUpload from local devices. disabled by default.")
 
 	uploadCmd.MarkFlagRequired("allocation")
 	uploadCmd.MarkFlagRequired("remotepath")

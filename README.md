@@ -30,7 +30,7 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
          - [Update blobber settings](#update-blobber-settings)
        - [Uploading and Managing Files](#uploading-and-managing-files)
          - [Upload](#upload)
-          - [Live](#live)
+          - [Stream](#stream)
           - [Feed](#feed)
          - [Download](#download)
          - [Update](#update)
@@ -675,12 +675,6 @@ The user must be the owner of the allocation.You can request the file be encrypt
 | remotepath              | yes      | remote path to upload file to, use to access file later            |         | string                 |
 | thumbnailpath           | no       | local path of thumbnaSil                                           |         | file path              |
 | chunksize               | no       | chunk size                                                         | 65536   | int                    |
-| delay                   | no       | set segment duration to seconds. only works with --live and --sync.| 5       | int                    |
-| sync                    | no       | enable SyncUpload from remote live feed. disabled it by default.   | false   | boolean                |
-| feed                    | no       | set remote live feed to url. only works with --sync.               | false   | url                    |
-| downloader-args         | no       | pass args to youtube-dl to download video. default is \"-q -f best\". only works with --sync.| -q -f best | [youtube-dl](https://github.com/ytdl-org/youtube-dl/blob/master/README.md#options)|
-| ffmpeg-args             | no       | pass args to ffmpeg to build segments. only works with --sync.     | -loglevel warning   | [ffmpeg](https://www.ffmpeg.org/ffmpeg.html)              |
-| live                    | no       | enable LiveUpload from local devices. disabled by default.         | false   | boolean                |
 
 
 <details>
@@ -722,55 +716,9 @@ Response:
 Status completed callback. Type = application/octet-stream. Name = sensitivedata.txt
 ```
 
-**Download segment files from remote live feed, re-encode and upload**
+## Stream
 
-Use `upload --sync` command to automatically download segment files from remove live feed with `--downloader-args "-f 22"`, encode them into new segment files with `--delay` and `--ffmpeg-args`, and upload. please use `youtube-dl -F https://www.youtube.com/watch?v=pC5mGB5enkw` to list formats of video (see below). 
-
-```
-[youtube] pC5mGB5enkw: Downloading webpage
-[info] Available formats for pC5mGB5enkw:
-format code  extension  resolution note
-249          webm       audio only tiny   44k , webm_dash container, opus @ 44k (48000Hz), 95.21MiB
-250          webm       audio only tiny   59k , webm_dash container, opus @ 59k (48000Hz), 127.05MiB
-251          webm       audio only tiny  123k , webm_dash container, opus @123k (48000Hz), 264.98MiB
-140          m4a        audio only tiny  129k , m4a_dash container, mp4a.40.2@129k (44100Hz), 277.82MiB
-278          webm       256x136    144p   87k , webm_dash container, vp9@  87k, 30fps, video only, 188.78MiB
-160          mp4        256x136    144p  118k , mp4_dash container, avc1.4d400c@ 118k, 30fps, video only, 253.62MiB
-242          webm       426x224    240p  190k , webm_dash container, vp9@ 190k, 30fps, video only, 409.20MiB
-133          mp4        426x224    240p  252k , mp4_dash container, avc1.4d400d@ 252k, 30fps, video only, 541.15MiB
-243          webm       640x338    360p  326k , webm_dash container, vp9@ 326k, 30fps, video only, 701.53MiB
-134          mp4        640x338    360p  576k , mp4_dash container, avc1.4d401e@ 576k, 30fps, video only, 1.21GiB
-244          webm       854x450    480p  649k , webm_dash container, vp9@ 649k, 30fps, video only, 1.36GiB
-135          mp4        854x450    480p 1028k , mp4_dash container, avc1.4d401f@1028k, 30fps, video only, 2.16GiB
-247          webm       1280x676   720p 1320k , webm_dash container, vp9@1320k, 30fps, video only, 2.77GiB
-136          mp4        1280x676   720p 1988k , mp4_dash container, avc1.64001f@1988k, 30fps, video only, 4.17GiB
-248          webm       1920x1012  1080p 2527k , webm_dash container, vp9@2527k, 30fps, video only, 5.30GiB
-137          mp4        1920x1012  1080p 4125k , mp4_dash container, avc1.640028@4125k, 30fps, video only, 8.64GiB
-271          webm       2560x1350  1440p 7083k , webm_dash container, vp9@7083k, 30fps, video only, 14.84GiB
-313          webm       3840x2026  2160p 13670k , webm_dash container, vp9@13670k, 30fps, video only, 28.65GiB
-18           mp4        640x338    360p  738k , avc1.42001E, 30fps, mp4a.40.2 (44100Hz), 1.55GiB
-22           mp4        1280x676   720p 2117k , avc1.64001F, 30fps, mp4a.40.2 (44100Hz) (best)
-```
-
-`--downloader-args "-f 22"` dowloads video with `22           mp4        1280x676   720p 2117k , avc1.64001F, 30fps, mp4a.40.2 (44100Hz) (best)`
-
-```
-./zbox upload --sync --localpath <absolute path to file>/tvshow.m3u8 --remotepath /videos/tvsho --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac  --delay 10 --chunksize 655360 --downloader-args "-f 22" --feed https://www.youtube.com/watch?v=pC5mGB5enkw
-
-```
-
-**Capture streaming from local devices, encode with ffmpeg, and upload**
-
-Use `upload --live` to capture video and audio streaming form local devices, and upload
-
-```
-./zbox upload --live --localpath <absolute path to file>/streaming.m3u8 --remotepath /videos/streaming --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac  --delay 10 --chunksize 655360 
-```
-
-
-## Live
-
-Use `live` to capture video and audio streaming form local devices, and upload
+Use `stream` to capture video and audio streaming form local devices, and upload
 
 The user must be the owner of the allocation.You can request the file be encrypted before upload, and can send thumbnails with the file. 
 
@@ -786,7 +734,7 @@ The user must be the owner of the allocation.You can request the file be encrypt
 | delay                   | no       | set segment duration to seconds.                                   | 5       | int                    |
 
 <details>
-  <summary>live</summary>
+  <summary>stream</summary>
 
 ![image](https://github.com/0chain/blobber/wiki/uml/usecase/live_upload_live.png)
 
