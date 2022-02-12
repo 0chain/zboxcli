@@ -1,9 +1,9 @@
 ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-
 SAMPLE_DIR:=$(ROOT_DIR)/sample
-
 ZBOX=zbox
 ZBOXCLI=zboxcli
+CC=go
+SKD_COMMIT=f25689739bad70955675c19b9ef31ee236ab011f
 
 .PHONY:
 
@@ -21,17 +21,21 @@ default: help show
 
 #GO BUILD SDK
 gomod-download:
-	go mod download
+	$(CC) mod download
+	$(CC) get -u github.com/0chain/gosdk@$(SKD_COMMIT)
 
 gomod-clean:
-	go clean -i -r -x -modcache  ./...
+	$(CC) clean -i -r -x -modcache  ./...
+
+gomod-update:
+	$(CC) get -u github.com/LNOpenMetrics/lnmetrics.utils
 
 $(ZBOX): gomod-download
 	$(eval VERSION=$(shell git describe --tags --dirty --always))
-	go build -x -v -tags bn256 -ldflags "-X main.VersionStr=$(VERSION)" -o $(ZBOX) main.go
+	$(CC) build -x -v -tags bn256 -ldflags "-X main.VersionStr=$(VERSION)" -o $(ZBOX) main.go
 
 zboxcli-test:
-	go test -tags bn256 ./...
+	$(CC) test -tags bn256 ./...
 
 install: $(ZBOX) zboxcli-test
 
