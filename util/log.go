@@ -1,7 +1,6 @@
 package util
 
 import (
-	"errors"
 	"fmt"
 	"log"
 )
@@ -9,7 +8,7 @@ import (
 // LogFatalErr - Print a log message and return er the error
 func LogFatalErr(message string) error {
 	log.Fatal(message)
-	return errors.New(message)
+	return fmt.Errorf("%s", message)
 }
 
 // LogFatalErrf - Print a log message and return an error wit this value

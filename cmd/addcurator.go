@@ -1,9 +1,8 @@
 package cmd
 
 import (
-	"log"
-
 	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )
 
@@ -12,31 +11,32 @@ var addCuratorCmd = &cobra.Command{
 	Short: "Adds a curator to an allocation",
 	Long:  "Adds a curator to an allocation",
 	Args:  cobra.MinimumNArgs(0),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		var err error
 		var flags = cmd.Flags()
 
 		if flags.Changed("allocation") == false {
-			log.Fatal("Error: allocation flag is missing")
+			return util.LogFatalErr("Error: allocation flag is missing")
 		}
 		allocationID, err := flags.GetString("allocation")
 		if err != nil {
-			log.Fatal("invalid 'allocation_id' flag: ", err)
+			return util.LogFatalErrf("invalid 'allocation_id' flag: %s", err)
 		}
 
 		if flags.Changed("curator") == false {
-			log.Fatal("Error: curator flag is missing")
+			return util.LogFatalErr("Error: curator flag is missing")
 		}
 		curatorID, err := flags.GetString("curator")
 		if err != nil {
-			log.Fatal("invalid 'curator_id' flag: ", err)
+			return util.LogFatalErrf("invalid 'curator_id' flag: %s", err)
 		}
 
 		_, err = sdk.AddCurator(curatorID, allocationID)
 		if err != nil {
-			log.Fatal("Error adding curator:", err)
+			return util.LogFatalErrf("Error adding curator: %s", err)
 		}
-		log.Print(curatorID + " added " + curatorID + " as a curator to allocation " + allocationID)
+		util.LogPrintf("%s added %s as curator to allocation %s", curatorID, curatorID, allocationID)
+		return nil
 	},
 }
 
