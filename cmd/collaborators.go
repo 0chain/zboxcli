@@ -2,9 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"os"
-
 	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )
 
@@ -13,38 +12,32 @@ var addCollabCmd = &cobra.Command{
 	Short: "add collaborator for a file",
 	Long:  `add collaborator for a file`,
 	Args:  cobra.MinimumNArgs(0),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		allocationID := cmd.Flag("allocation").Value.String()
 		if len(allocationID) == 0 {
-			PrintError("Error: allocation flag is missing")
-			os.Exit(1)
+			return util.LogFatalErr("Error: allocation flag is missing")
 		}
 
 		remotepath := cmd.Flag("remotepath").Value.String()
 		if len(remotepath) == 0 {
-			PrintError("Error: remotepath flag is missing")
-			os.Exit(1)
+			return util.LogFatalErr("Error: remotepath flag is missing")
 		}
 
 		collabID := cmd.Flag("collabid").Value.String()
 		if len(collabID) == 0 {
-			PrintError("Error: collabid flag is missing")
-			os.Exit(1)
+			return util.LogFatalErr("Error: collabid flag is missing")
 		}
 
 		allocationObj, err := sdk.GetAllocation(allocationID)
 		if err != nil {
-			PrintError("Error fetching the allocation", err)
-			os.Exit(1)
+			return util.LogFatalErrf("Error fetching the allocation: %s", err)
 		}
 
-		err = allocationObj.AddCollaborator(remotepath, collabID)
-		if err != nil {
-			PrintError(err.Error())
-			os.Exit(1)
+		if err := allocationObj.AddCollaborator(remotepath, collabID); err != nil {
+			return util.LogFatalErrf("%s", err.Error())
 		}
 		fmt.Printf("Collaborator %s added successfully for the file %s \n", collabID, remotepath)
-		return
+		return nil
 	},
 }
 
@@ -53,38 +46,33 @@ var deleteCollabCmd = &cobra.Command{
 	Short: "delete collaborator for a file",
 	Long:  `delete collaborator for a file`,
 	Args:  cobra.MinimumNArgs(0),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		allocationID := cmd.Flag("allocation").Value.String()
 		if len(allocationID) == 0 {
-			PrintError("Error: allocation flag is missing")
-			os.Exit(1)
+			return util.LogFatalErr("Error: allocation flag is missing")
 		}
 
 		remotepath := cmd.Flag("remotepath").Value.String()
 		if len(remotepath) == 0 {
-			PrintError("Error: remotepath flag is missing")
-			os.Exit(1)
+			return util.LogFatalErr("Error: remotepath flag is missing")
 		}
 
 		collabID := cmd.Flag("collabid").Value.String()
 		if len(collabID) == 0 {
-			PrintError("Error: collabid flag is missing")
-			os.Exit(1)
+			return util.LogFatalErr("Error: collabid flag is missing")
 		}
 
 		allocationObj, err := sdk.GetAllocation(allocationID)
 		if err != nil {
-			PrintError("Error fetching the allocation", err)
-			os.Exit(1)
+			return util.LogFatalErrf("Error fetching the allocation: %s", err)
 		}
 
 		err = allocationObj.RemoveCollaborator(remotepath, collabID)
 		if err != nil {
-			PrintError(err.Error())
-			os.Exit(1)
+			return util.LogFatalErr(err.Error())
 		}
 		fmt.Printf("Collaborator %s removed successfully for the file %s \n", collabID, remotepath)
-		return
+		return nil
 	},
 }
 
