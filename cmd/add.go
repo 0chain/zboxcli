@@ -20,26 +20,27 @@ var addCmd = &cobra.Command{
 
 		name, err := flags.GetString("name")
 		if err != nil {
-			return util.LogFatalErrf("invalid 'name' flag: ", err)
+			return util.LogFatalErrf("invalid 'name' flag: %s", err)
 		}
 		key, err := flags.GetString("key")
 		if err != nil {
-			return util.LogFatalErrf("invalid 'name' flag: ", err)
+			return util.LogFatalErrf("invalid 'name' flag: %s", err)
 		}
 		limit, err := flags.GetFloat64("limit")
 		if err != nil {
-			return util.LogFatalErrf("invalid 'limit' flag: ", err)
+			return util.LogFatalErrf("invalid 'limit' flag: %s", err)
 		}
 		max, err := flags.GetFloat64("max")
 		if err != nil {
-			return util.LogFatalErrf("invalid 'max' flag: ", err)
+			return util.LogFatalErrf("invalid 'max' flag: %s", err)
 		}
 
 		err = sdk.AddFreeStorageAssigner(name, key, limit, max)
 		if err != nil {
-			return util.LogFatalErrf("Error adding free storage assigner:", err)
+			return util.LogFatalErrf("Error adding free storage assigner: %s", err)
 		}
 		log.Print(name + " added as free storage assigner")
+		return nil
 	},
 }
 

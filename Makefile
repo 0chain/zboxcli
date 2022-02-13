@@ -38,6 +38,8 @@ install: $(ZBOX) zboxcli-test
 clean: gomod-clean
 	@rm -rf $(ROOT_DIR)/$(ZBOX)
 
+check: zboxcli-test
+
 help:
 	@echo "Environment: "
 	@echo "\tGOPATH=$(GOPATH)"
