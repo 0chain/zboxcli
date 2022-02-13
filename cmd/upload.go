@@ -3,7 +3,6 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -64,27 +63,23 @@ var uploadCmd = &cobra.Command{
 	Short: "upload file to blobbers",
 	Long:  `upload file to blobbers`,
 	Args:  cobra.MinimumNArgs(0),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		fflags := cmd.Flags()              // fflags is a *flag.FlagSet
 		if !fflags.Changed("allocation") { // check if the flag "path" is set
-			PrintError("Error: allocation flag is missing") // If not, we'll let the user know
-			os.Exit(1)                                      // and return
+			return util.LogFatalErr("Error: allocation flag is missing") // and return
 		}
 		if !fflags.Changed("remotepath") {
-			PrintError("Error: remotepath flag is missing")
-			os.Exit(1)
+			return util.LogFatalErr("Error: remotepath flag is missing")
 		}
 
 		if !fflags.Changed("localpath") {
-			PrintError("Error: localpath flag is missing")
-			os.Exit(1)
+			return util.LogFatalErr("Error: localpath flag is missing")
 		}
 
 		allocationID := cmd.Flag("allocation").Value.String()
 		allocationObj, err := sdk.GetAllocation(allocationID)
 		if err != nil {
-			PrintError("Error fetching the allocation.", err)
-			os.Exit(1)
+			return util.LogFatalErrf("Error fetching the allocation: %s", err)
 		}
 		remotepath := cmd.Flag("remotepath").Value.String()
 		localpath := cmd.Flag("localpath").Value.String()
@@ -105,10 +100,10 @@ var uploadCmd = &cobra.Command{
 				wps string
 			)
 			if wps, err = fflags.GetString("attr-who-pays-for-reads"); err != nil {
-				log.Fatalf("getting 'attr-who-pays-for-reads' flag: %v", err)
+				return util.LogFatalErrf("getting 'attr-who-pays-for-reads' flag: %v", err)
 			}
 			if err = wp.Parse(wps); err != nil {
-				log.Fatal(err)
+				return util.LogFatalErrf("%s", err)
 			}
 			attrs.WhoPaysForReads = wp // set given value
 		}
@@ -128,12 +123,12 @@ var uploadCmd = &cobra.Command{
 		}
 
 		if err != nil {
-			PrintError("Upload failed.", err)
-			os.Exit(1)
+			return util.LogFatalErrf("Upload failed: %s", err)
 		}
 		wg.Wait()
 		if !statusBar.success {
 			os.Exit(1)
+			return util.LogFatalErr("General failure")
 		}
 
 		if commit {
@@ -142,6 +137,7 @@ var uploadCmd = &cobra.Command{
 			commitMetaTxn(remotepath, "Upload", "", "", allocationObj, nil, statusBar)
 			statusBar.wg.Wait()
 		}
+		return nil
 	},
 }
 
