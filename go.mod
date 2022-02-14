@@ -4,7 +4,7 @@ go 1.13
 
 require (
 	github.com/0chain/errors v1.0.3
-	github.com/0chain/gosdk v1.5.3-0.20220214083026-37f368f0a431
+	github.com/0chain/gosdk v1.5.3-0.20220214085526-92ac73724937
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.1.1
 	github.com/spf13/pflag v1.0.5
