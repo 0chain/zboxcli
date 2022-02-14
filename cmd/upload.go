@@ -187,7 +187,10 @@ var feedCmd = &cobra.Command{
 			attrs.WhoPaysForReads = wp // set given value
 		}
 
-		chunkSize, _ := cmd.Flags().GetInt("chunksize")
+		chunkSize, err := cmd.Flags().GetInt("chunksize")
+		if err != nil {
+		  log.Debug(err)
+		}
 
 		// download video from remote live feed(eg youtube), and sync it to zcn
 		err = startSyncUpload(cmd, allocationObj, localpath, remotepath, encrypt, chunkSize, attrs)
