@@ -254,10 +254,8 @@ var streamCmd = &cobra.Command{
 		}
 		var attrs fileref.Attributes
 		if fflags.Changed("attr-who-pays-for-reads") {
-			var (
-				wp  common.WhoPays
-				wps string
-			)
+	var wp common.WhoPays
+	var wps string
 			if wps, err = fflags.GetString("attr-who-pays-for-reads"); err != nil {
 				log.Fatalf("getting 'attr-who-pays-for-reads' flag: %v", err)
 			}
