@@ -7,16 +7,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type Provider int
-
-const (
-	ProviderMiner Provider = iota
-	ProviderSharder
-	ProviderBlobber
-	ProviderValidator
-	ProviderAuthorizer
-)
-
 var collectRewards = &cobra.Command{
 	Use:   "collect-reward",
 	Short: "Collect accrued rewards for a stake pool.",
@@ -44,9 +34,9 @@ var collectRewards = &cobra.Command{
 
 		switch providerName {
 		case "blobber":
-			_, err = sdk.CollectRewards(poolId, int(ProviderBlobber))
+			_, err = sdk.CollectRewards(poolId, sdk.ProviderBlobber)
 		case "validator":
-			_, err = sdk.CollectRewards(poolId, int(ProviderValidator))
+			_, err = sdk.CollectRewards(poolId, sdk.ProviderValidator)
 		default:
 			log.Fatal("provider type must be blobber or validator")
 		}
