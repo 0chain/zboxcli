@@ -92,6 +92,9 @@ var newallocationCmd = &cobra.Command{
 		if lockf, err = flags.GetFloat64("lock"); err != nil {
 			log.Fatal("error: invalid 'lock' value:", err)
 		}
+		if lock <= 0 {
+			log.Fatal("Only positive values are allowed for --lock")
+		}
 
 		if convertFromUSD {
 			lockf, err = zcncore.ConvertUSDToToken(lockf)
