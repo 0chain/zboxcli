@@ -187,10 +187,7 @@ var feedCmd = &cobra.Command{
 			attrs.WhoPaysForReads = wp // set given value
 		}
 
-		chunkSize, err := cmd.Flags().GetInt("chunksize")
-		if err != nil {
-		  log.Debug(err)
-		}
+		chunkSize, _ := cmd.Flags().GetInt("chunksize")
 
 		// download video from remote live feed(eg youtube), and sync it to zcn
 		err = startSyncUpload(cmd, allocationObj, localpath, remotepath, encrypt, chunkSize, attrs)
@@ -254,8 +251,8 @@ var streamCmd = &cobra.Command{
 		}
 		var attrs fileref.Attributes
 		if fflags.Changed("attr-who-pays-for-reads") {
-	var wp common.WhoPays
-	var wps string
+			var wp common.WhoPays
+			var wps string
 			if wps, err = fflags.GetString("attr-who-pays-for-reads"); err != nil {
 				log.Fatalf("getting 'attr-who-pays-for-reads' flag: %v", err)
 			}
