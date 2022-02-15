@@ -113,19 +113,159 @@ var uploadCmd = &cobra.Command{
 			attrs.WhoPaysForReads = wp // set given value
 		}
 
-		live, _ := cmd.Flags().GetBool("live")
-		sync, _ := cmd.Flags().GetBool("sync")
 		chunkSize, _ := cmd.Flags().GetInt("chunksize")
 
-		if live {
-			// capture video and audio from local default camera and micrlphone, and upload it to zcn
-			err = startLiveUpload(cmd, allocationObj, localpath, remotepath, encrypt, chunkSize, attrs)
-		} else if sync {
-			// download video from remote live feed(eg youtube), and sync it to zcn
-			err = startSyncUpload(cmd, allocationObj, localpath, remotepath, encrypt, chunkSize, attrs)
-		} else {
-			err = startChunkedUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar, false)
+		if err := startChunkedUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar, false); err != nil {
+			PrintError("Upload failed.", err)
+			os.Exit(1)
 		}
+		wg.Wait()
+		if !statusBar.success {
+			os.Exit(1)
+		}
+
+		if commit {
+			remotepath = zboxutil.GetFullRemotePath(localpath, remotepath)
+			statusBar.wg.Add(1)
+			commitMetaTxn(remotepath, "Upload", "", "", allocationObj, nil, statusBar)
+			statusBar.wg.Wait()
+		}
+	},
+}
+
+// feedCmd represents upload command with --sync flag
+var feedCmd = &cobra.Command{
+	Use:   "feed",
+	Short: "download segment files from remote live feed, and upload",
+	Long:  "download segment files from remote live feed, and upload",
+	Args:  cobra.MinimumNArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		fflags := cmd.Flags()              // fflags is a *flag.FlagSet
+		if !fflags.Changed("allocation") { // check if the flag "path" is set
+			PrintError("Error: allocation flag is missing") // If not, we'll let the user know
+			os.Exit(1)                                      // and return
+		}
+		if !fflags.Changed("remotepath") {
+			PrintError("Error: remotepath flag is missing")
+			os.Exit(1)
+		}
+
+		if !fflags.Changed("localpath") {
+			PrintError("Error: localpath flag is missing")
+			os.Exit(1)
+		}
+
+		allocationID := cmd.Flag("allocation").Value.String()
+		allocationObj, err := sdk.GetAllocation(allocationID)
+		if err != nil {
+			PrintError("Error fetching the allocation.", err)
+			os.Exit(1)
+		}
+		remotepath := cmd.Flag("remotepath").Value.String()
+		localpath := cmd.Flag("localpath").Value.String()
+		encrypt, _ := cmd.Flags().GetBool("encrypt")
+		commit, _ := cmd.Flags().GetBool("commit")
+
+		wg := &sync.WaitGroup{}
+		statusBar := &StatusBar{wg: wg}
+		wg.Add(1)
+		if strings.HasPrefix(remotepath, "/Encrypted") {
+			encrypt = true
+		}
+		var attrs fileref.Attributes
+		if fflags.Changed("attr-who-pays-for-reads") {
+			var (
+				wp  common.WhoPays
+				wps string
+			)
+			if wps, err = fflags.GetString("attr-who-pays-for-reads"); err != nil {
+				log.Fatalf("getting 'attr-who-pays-for-reads' flag: %v", err)
+			}
+			if err = wp.Parse(wps); err != nil {
+				log.Fatal(err)
+			}
+			attrs.WhoPaysForReads = wp // set given value
+		}
+
+		chunkSize, _ := cmd.Flags().GetInt("chunksize")
+
+		// download video from remote live feed(eg youtube), and sync it to zcn
+		err = startSyncUpload(cmd, allocationObj, localpath, remotepath, encrypt, chunkSize, attrs)
+
+		if err != nil {
+			PrintError("Upload failed.", err)
+			os.Exit(1)
+		}
+		wg.Wait()
+		if !statusBar.success {
+			os.Exit(1)
+		}
+
+		if commit {
+			remotepath = zboxutil.GetFullRemotePath(localpath, remotepath)
+			statusBar.wg.Add(1)
+			commitMetaTxn(remotepath, "Upload", "", "", allocationObj, nil, statusBar)
+			statusBar.wg.Wait()
+		}
+	},
+}
+
+// streamCmd represents upload command with --live flag
+var streamCmd = &cobra.Command{
+	Use:   "stream",
+	Short: "capture video and audio streaming form local devices, and upload",
+	Long:  "capture video and audio streaming form local devices, and upload",
+	Args:  cobra.MinimumNArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		fflags := cmd.Flags()              // fflags is a *flag.FlagSet
+		if !fflags.Changed("allocation") { // check if the flag "path" is set
+			PrintError("Error: allocation flag is missing") // If not, we'll let the user know
+			os.Exit(1)                                      // and return
+		}
+		if !fflags.Changed("remotepath") {
+			PrintError("Error: remotepath flag is missing")
+			os.Exit(1)
+		}
+
+		if !fflags.Changed("localpath") {
+			PrintError("Error: localpath flag is missing")
+			os.Exit(1)
+		}
+
+		allocationID := cmd.Flag("allocation").Value.String()
+		allocationObj, err := sdk.GetAllocation(allocationID)
+		if err != nil {
+			PrintError("Error fetching the allocation.", err)
+			os.Exit(1)
+		}
+		remotepath := cmd.Flag("remotepath").Value.String()
+		localpath := cmd.Flag("localpath").Value.String()
+		encrypt, _ := cmd.Flags().GetBool("encrypt")
+		commit, _ := cmd.Flags().GetBool("commit")
+
+		wg := &sync.WaitGroup{}
+		statusBar := &StatusBar{wg: wg}
+		wg.Add(1)
+		if strings.HasPrefix(remotepath, "/Encrypted") {
+			encrypt = true
+		}
+		var attrs fileref.Attributes
+		if fflags.Changed("attr-who-pays-for-reads") {
+			var wp common.WhoPays
+			var wps string
+			if wps, err = fflags.GetString("attr-who-pays-for-reads"); err != nil {
+				log.Fatalf("getting 'attr-who-pays-for-reads' flag: %v", err)
+			}
+			if err = wp.Parse(wps); err != nil {
+				log.Fatal(err)
+			}
+			attrs.WhoPaysForReads = wp // set given value
+		}
+
+		chunkSize, _ := cmd.Flags().GetInt("chunksize")
+
+		// capture video and audio from local default camera and micrlphone, and upload it to zcn
+		err = startLiveUpload(cmd, allocationObj, localpath, remotepath, encrypt, chunkSize, attrs)
 
 		if err != nil {
 			PrintError("Upload failed.", err)
@@ -310,17 +450,6 @@ func init() {
 
 	uploadCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "chunk size")
 
-	uploadCmd.Flags().Int("delay", 5, "set segment duration to seconds. only works with --live and --sync. default duration is 5s.")
-
-	// SyncUpload
-	uploadCmd.Flags().Bool("sync", false, "enable SyncUpload from remote live feed. disabled by default.")
-	uploadCmd.Flags().String("feed", "", "set remote live feed to url. only works with --sync.")
-	uploadCmd.Flags().String("downloader-args", "-q -f best", "pass args to youtube-dl to download video. default is \"-q\". only works with --sync.")
-	uploadCmd.Flags().String("ffmpeg-args", "-loglevel warning", "pass args to ffmpeg to build segments. default is \"-loglevel warning\". only works with --sync.")
-
-	// LiveUpload
-	uploadCmd.Flags().Bool("live", false, "enable LiveUpload from local devices. disabled by default.")
-
 	uploadCmd.MarkFlagRequired("allocation")
 	uploadCmd.MarkFlagRequired("remotepath")
 	uploadCmd.MarkFlagRequired("localpath")
@@ -329,5 +458,46 @@ func init() {
 	createDirCmd.PersistentFlags().String("dirname", "", "New directory name")
 	createDirCmd.MarkFlagRequired("allocation")
 	createDirCmd.MarkFlagRequired("dirname")
+
+	// feed command
+	rootCmd.AddCommand(feedCmd)
+	feedCmd.PersistentFlags().String("allocation", "", "Allocation ID")
+	feedCmd.PersistentFlags().String("remotepath", "", "Remote path to upload")
+	feedCmd.PersistentFlags().String("localpath", "", "Local path of file to upload")
+	feedCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
+	feedCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
+	feedCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
+	feedCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
+
+	feedCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "chunk size")
+
+	feedCmd.Flags().Int("delay", 5, "set segment duration to seconds.")
+
+	// SyncUpload
+	feedCmd.Flags().String("feed", "", "set remote live feed to url.")
+	feedCmd.Flags().String("downloader-args", "-q -f best", "pass args to youtube-dl to download video. default is \"-q\".")
+	feedCmd.Flags().String("ffmpeg-args", "-loglevel warning", "pass args to ffmpeg to build segments. default is \"-loglevel warning\".")
+
+	feedCmd.MarkFlagRequired("allocation")
+	feedCmd.MarkFlagRequired("remotepath")
+	feedCmd.MarkFlagRequired("localpath")
+
+	// stream Command
+	rootCmd.AddCommand(streamCmd)
+	streamCmd.PersistentFlags().String("allocation", "", "Allocation ID")
+	streamCmd.PersistentFlags().String("remotepath", "", "Remote path to upload")
+	streamCmd.PersistentFlags().String("localpath", "", "Local path of file to upload")
+	streamCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
+	streamCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
+	streamCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
+	streamCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
+
+	streamCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "chunk size")
+
+	streamCmd.Flags().Int("delay", 5, "set segment duration to seconds.")
+
+	streamCmd.MarkFlagRequired("allocation")
+	streamCmd.MarkFlagRequired("remotepath")
+	streamCmd.MarkFlagRequired("localpath")
 
 }
