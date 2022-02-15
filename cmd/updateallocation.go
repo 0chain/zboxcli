@@ -28,6 +28,9 @@ var updateAllocationCmd = &cobra.Command{
 
 		if flags.Changed("free_storage") {
 			lock, freeStorageMarker := processFreeStorageFlags(flags)
+			if lock <= 0 {
+				log.Fatal("Only positive values are allowed for --lock")
+			}
 
 			txnHash, err := sdk.CreateFreeUpdateAllocation(freeStorageMarker, allocID, lock)
 			if err != nil {

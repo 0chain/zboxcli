@@ -61,6 +61,9 @@ var newallocationCmd = &cobra.Command{
 				return
 			}
 			lock, freeStorageMarker := processFreeStorageFlags(flags)
+			if lock <= 0 {
+				log.Fatal("Only positive values are allowed for --lock")
+			}
 
 			allocationID, err := sdk.CreateFreeAllocation(freeStorageMarker, lock)
 			if err != nil {
