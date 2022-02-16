@@ -30,6 +30,8 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
          - [Update blobber settings](#update-blobber-settings)
        - [Uploading and Managing Files](#uploading-and-managing-files)
          - [Upload](#upload)
+            - [Stream](#stream)
+            - [Feed](#feed)
          - [Download](#download)
          - [Update](#update)
          - [Delete](#delete)
@@ -64,7 +66,6 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
         - [Lock tokens into stake pool](#lock-tokens-into-stake-pool)
         - [Unlock tokens from stake pool](#unlock-tokens-from-stake-pool)
         - [Stake pools info of user](#stake-pools-info-of-user)
-        - [Pay interests](#pay-interests)
         - [Write pool info](#write-pool-info)
         - [Lock tokens into write pool](#lock-tokens-into-write-pool)
         - [Unlock tokens from write pool](#unlock-tokens-from-write-pool)
@@ -674,12 +675,6 @@ The user must be the owner of the allocation.You can request the file be encrypt
 | remotepath              | yes      | remote path to upload file to, use to access file later            |         | string                 |
 | thumbnailpath           | no       | local path of thumbnaSil                                           |         | file path              |
 | chunksize               | no       | chunk size                                                         | 65536   | int                    |
-| delay                   | no       | set segment duration to seconds. only works with --live and --sync.| 5       | int                    |
-| sync                    | no       | enable SyncUpload from remote live feed. disabled it by default.   | false   | boolean                |
-| feed                    | no       | set remote live feed to url. only works with --sync.               | false   | url                    |
-| downloader-args         | no       | pass args to youtube-dl to download video. default is \"-q -f best\". only works with --sync.| -q -f best | [youtube-dl](https://github.com/ytdl-org/youtube-dl/blob/master/README.md#options)|
-| ffmpeg-args             | no       | pass args to ffmpeg to build segments. only works with --sync.     | -loglevel warning   | [ffmpeg](https://www.ffmpeg.org/ffmpeg.html)              |
-| live                    | no       | enable LiveUpload from local devices. disabled by default.         | false   | boolean                |
 
 
 <details>
@@ -721,9 +716,60 @@ Response:
 Status completed callback. Type = application/octet-stream. Name = sensitivedata.txt
 ```
 
-**Download segment files from remote live feed, re-encode and upload**
+## Stream
 
-Use `upload --sync` command to automatically download segment files from remove live feed with `--downloader-args "-f 22"`, encode them into new segment files with `--delay` and `--ffmpeg-args`, and upload. please use `youtube-dl -F https://www.youtube.com/watch?v=pC5mGB5enkw` to list formats of video (see below). 
+Use `stream` to capture video and audio streaming form local devices, and upload
+
+The user must be the owner of the allocation.You can request the file be encrypted before upload, and can send thumbnails with the file. 
+
+| Parameter               | Required | Description                                          | Default | Valid values                            |
+|-------------------------|----------|------------------------------------------------------|---------|-----------------------------------------|
+| allocation              | yes      | allocation id, sender must be allocation owner                     |         | string                 |
+| commit                  | no       | save metadata to blockchain                                        | false   | boolean                |
+| encrypt                 | no       | encrypt file before upload                                         | false   | boolean                |
+| localpath               | yes      | local path of segment files to download, generate and upload                                   |         | file path              |
+| remotepath              | yes      | remote path to upload file to, use to access file later            |         | string                 |
+| thumbnailpath           | no       | local path of thumbnaSil                                           |         | file path              |
+| chunksize               | no       | chunk size                                                         | 65536   | int                    |
+| delay                   | no       | set segment duration to seconds.                                   | 5       | int                    |
+
+<details>
+  <summary>stream</summary>
+
+![image](https://github.com/0chain/blobber/wiki/uml/usecase/live_upload_live.png)
+
+</details>
+
+## Feed
+
+Use `feed` command to automatically download segment files from remote live feed with `--downloader-args "-q -f best"`
+ - encode them into new segment files with `--delay` and `--ffmpeg-args`, and upload. 
+ - please use `youtube-dl -F https://www.youtube.com/watch?v=pC5mGB5enkw` to list formats of video (see below).
+
+The user must be the owner of the allocation.You can request the file be encrypted before upload, and can send thumbnails with the file. 
+
+| Parameter               | Required | Description                                          | Default | Valid values                            |
+|-------------------------|----------|------------------------------------------------------|---------|-----------------------------------------|
+| allocation              | yes      | allocation id, sender must be allocation owner                     |         | string                 |
+| commit                  | no       | save metadata to blockchain                                        | false   | boolean                |
+| encrypt                 | no       | encrypt file before upload                                         | false   | boolean                |
+| localpath               | yes      | local path of segment files to download, generate and upload                                   |         | file path              |
+| remotepath              | yes      | remote path to upload file to, use to access file later            |         | string                 |
+| thumbnailpath           | no       | local path of thumbnaSil                                           |         | file path              |
+| chunksize               | no       | chunk size                                                         | 65536   | int                    |
+| delay                   | no       | set segment duration to seconds.                                   | 5       | int                    |
+| feed                    | no       | set remote live feed to url.                                       | false   | url                    |
+| downloader-args         | no       | pass args to youtube-dl to download video. default is \"-q -f best\". | -q -f best | [youtube-dl](https://github.com/ytdl-org/youtube-dl/blob/master/README.md#options)|
+| ffmpeg-args             | no       | pass args to ffmpeg to build segments.                             | -loglevel warning   | [ffmpeg](https://www.ffmpeg.org/ffmpeg.html)              |
+
+
+<details>
+  <summary>feed</summary>
+
+![image](https://github.com/0chain/blobber/wiki/uml/usecase/live_upload_sync.png)
+
+</details>
+
 
 ```
 [youtube] pC5mGB5enkw: Downloading webpage
@@ -754,18 +800,9 @@ format code  extension  resolution note
 `--downloader-args "-f 22"` dowloads video with `22           mp4        1280x676   720p 2117k , avc1.64001F, 30fps, mp4a.40.2 (44100Hz) (best)`
 
 ```
-./zbox upload --sync --localpath <absolute path to file>/tvshow.m3u8 --remotepath /videos/tvsho --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac  --delay 10 --chunksize 655360 --downloader-args "-f 22" --feed https://www.youtube.com/watch?v=pC5mGB5enkw
+./zbox feed --localpath <absolute path to file>/tvshow.m3u8 --remotepath /videos/tvsho --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac  --delay 10 --chunksize 655360 --downloader-args "-f 22" --feed https://www.youtube.com/watch?v=pC5mGB5enkw
 
 ```
-
-**Capture streaming from local devices, encode with ffmpeg, and upload**
-
-Use `upload --live` to capture video and audio streaming form local devices, and upload
-
-```
-./zbox upload --live --localpath <absolute path to file>/streaming.m3u8 --remotepath /videos/streaming --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac  --delay 10 --chunksize 655360 
-```
-
 
 ## Download
 
@@ -1674,7 +1711,7 @@ Use `sp-info` to get your stake pool information and settings.
 
 Lock creates delegate pool for current client and given blobber. 
 The tokens locked for the blobber stake can be unlocked any time, excluding times 
-when the tokens held by opened offers. The tokens collect interest.
+when the tokens held by opened offers. The tokens earn block rewards.
 `sp-lock` returns the id of the new stake pool, this will be needed to reference
 to stake pool later.
 
@@ -1740,28 +1777,6 @@ Get information about all stake pools of current user.
 ./zbox sp-user-info
 ```
 
-## Pay interests
-
-Changes in stake pool pays all pending rewards, But if there are no 
-changes interests will not be paid.
-`sp-pay-interests`  command can be used to force payment of interest for 
-all delegates. Use `sp-info` to check if interest can be paid or not.
-
-| Parameter  | Required | Description          | default        | Valid values |
-|------------|----------|----------------------|----------------|--------------|
-| blobber_id |          | id of blobber        | current client | string       |
-
-<details>
-  <summary>sp-pay-interests</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/124602256-93a19900-de60-11eb-9ddd-74f6e0570e47.png)
-
-</details>
-
-```
-./zbox sp-pay-interests --blobber_id <blobber_id>
-```
-
 ## Write pool info
 
 Write pool information. Use allocation id to filter results to a singe allocation.
@@ -1772,7 +1787,7 @@ Write pool information. Use allocation id to filter results to a singe allocatio
 | json          | no       | print result in json format | false   | boolean      |
 
 <details>
-  <summary>sp-pay-interests</summary>
+  <summary>wp-info</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/124603444-d9ab2c80-de61-11eb-82f2-900d540ba63f.png)
 

@@ -201,12 +201,11 @@ var syncCmd = &cobra.Command{
 				}
 				continue
 			}
-			if err == nil {
-				//wg.Wait()
-			} else {
+			if err != nil {
 				PrintError(err.Error())
 			}
 		}
+		wg.Wait()
 		if commit {
 			commitDiff(lDiff, allocationObj, fileMetas)
 		}

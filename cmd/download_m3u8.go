@@ -168,7 +168,6 @@ func (d *M3u8Downloader) autoRefreshList() {
 }
 
 func (d *M3u8Downloader) download(item MediaItem) (string, error) {
-
 	wg := &sync.WaitGroup{}
 	statusBar := &StatusBar{wg: wg}
 	wg.Add(1)
@@ -176,41 +175,22 @@ func (d *M3u8Downloader) download(item MediaItem) (string, error) {
 	localPath := filepath.Join(d.localDir, item.Name)
 	remotePath := item.Path
 
-	if len(d.remotePath) > 0 {
+	downloader, err := sdk.CreateDownloader(d.allocationID, localPath, remotePath,
+		sdk.WithAllocation(d.allocationObj),
+		sdk.WithAuthticket(d.authTicket, d.lookupHash),
+		sdk.WithRxPay(d.rxPay))
 
-		err := d.allocationObj.DownloadFile(localPath, remotePath, statusBar)
-
-		if err != nil {
-			return "", err
-		}
-
-		wg.Wait()
+	if err != nil {
+		return "", err
 	}
 
-	//TODO: add download ts files from auth ticket
-	// allocationObj, err = sdk.GetAllocationFromAuthTicket(authticket)
-	// if err != nil {
-	// 	PrintError("Error fetching the allocation", err)
-	// 	os.Exit(1)
-	// }
-	// at := sdk.InitAuthTicket(authticket)
-	// filename, err := at.GetFileName()
-	// if err != nil {
-	// 	PrintError("Error getting the filename from authticket", err)
-	// 	os.Exit(1)
-	// }
-	// if len(lookuphash) == 0 {
-	// 	lookuphash, err = at.GetLookupHash()
-	// 	if err != nil {
-	// 		PrintError("Error getting the lookuphash from authticket", err)
-	// 		os.Exit(1)
-	// 	}
-	// }
+	err = downloader.Start(statusBar)
 
-	// return d.allocationObj.DownloadFromAuthTicket(localpath,
-	// 	authticket, lookuphash, filename, rxPay, statusBar)
+	if err != nil {
+		return "", err
+	}
 
-	//}
+	wg.Wait()
 
 	return item.Name, nil
 }
