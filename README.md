@@ -1740,8 +1740,8 @@ Use `sp-info` to get your stake pool information and settings.
 
 Lock creates delegate pool for current client and given blobber. 
 The tokens locked for the blobber stake can be unlocked any time, excluding times 
-when the tokens held by opened offers. These tokens will earn rewards depending on the actions
-of the linked blobber. 
+when the tokens held by opened offers. These tokens will earn rewards depending on the 
+actions of the linked blobber. 
 `sp-lock` returns the id of the new stake pool, this will be needed to reference
 to stake pool later.
 
