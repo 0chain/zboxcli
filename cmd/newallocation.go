@@ -61,6 +61,9 @@ var newallocationCmd = &cobra.Command{
 				return
 			}
 			lock, freeStorageMarker := processFreeStorageFlags(flags)
+			if lock < 0 {
+				log.Fatal("Only positive values are allowed for --lock")
+			}
 
 			allocationID, err := sdk.CreateFreeAllocation(freeStorageMarker, lock)
 			if err != nil {
@@ -91,6 +94,9 @@ var newallocationCmd = &cobra.Command{
 		var lockf float64
 		if lockf, err = flags.GetFloat64("lock"); err != nil {
 			log.Fatal("error: invalid 'lock' value:", err)
+		}
+		if lock < 0 {
+			log.Fatal("Only positive values are allowed for --lock")
 		}
 
 		if convertFromUSD {
@@ -270,6 +276,6 @@ func storeAllocation(allocationID string) {
 	}
 	defer file.Close()
 	//Only one allocation ID per file.
-	fmt.Fprintf(file, allocationID)
+	fmt.Fprint(file, allocationID)
 
 }
