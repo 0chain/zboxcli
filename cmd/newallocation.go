@@ -231,8 +231,8 @@ func processFreeStorageFlags(flags *pflag.FlagSet) (int64, string) {
 
 func init() {
 	rootCmd.AddCommand(newallocationCmd)
-	datashards = newallocationCmd.PersistentFlags().Int("data", 1, "--data 2")
-	parityshards = newallocationCmd.PersistentFlags().Int("parity", 1, "--parity 2")
+	datashards = newallocationCmd.PersistentFlags().Int("data", 2, "--data 2")
+	parityshards = newallocationCmd.PersistentFlags().Int("parity", 2, "--parity 2")
 	size = newallocationCmd.PersistentFlags().Int64("size", 2147483648, "--size 10000")
 	allocationFileName = newallocationCmd.PersistentFlags().String("allocationFileName", "allocation.txt", "--allocationFileName allocation.txt")
 	newallocationCmd.PersistentFlags().
