@@ -10,8 +10,6 @@ on:
       - master
       - staging
   pull_request:
-    paths-ignore:
-      - '**.md'
 
 jobs:
   unit-test:
