@@ -115,7 +115,7 @@ var uploadCmd = &cobra.Command{
 
 		chunkSize, _ := cmd.Flags().GetInt("chunksize")
 
-		if err := startChunkedUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar, false); err != nil {
+		if err := startChunkedUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar, false, false); err != nil {
 			PrintError("Upload failed.", err)
 			os.Exit(1)
 		}

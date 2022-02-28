@@ -123,6 +123,10 @@ var downloadCmd = &cobra.Command{
 				} else {
 					errE = allocationObj.DownloadFromAuthTicket(localpath,
 						authticket, lookuphash, filename, rxPay, statusBar)
+					if errE != nil {
+						// PrintError("Error download file from auth ticket", errE)
+						os.Exit(1)
+					}
 				}
 			}
 		} else if len(remotepath) > 0 {

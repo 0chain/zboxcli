@@ -7,7 +7,8 @@ go 1.16
 
 require (
 	github.com/0chain/errors v1.0.3
-	github.com/0chain/gosdk v1.6.1-0.20220216034913-ace8c9aa8888
+	github.com/0chain/gosdk v1.7.3-0.20220228132502-aba106051571
+	github.com/icza/bitio v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.1.1
 	github.com/spf13/pflag v1.0.5
