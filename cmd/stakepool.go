@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/0chain/gosdk/core/common"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
 	"github.com/0chain/zboxcli/util"
@@ -224,9 +223,7 @@ var spUnlock = &cobra.Command{
 			}
 		}
 
-		var unstake common.Timestamp
-		unstake, err = sdk.StakePoolUnlock(blobberID, poolID,
-			zcncore.ConvertToValue(fee))
+		unstake, err := sdk.StakePoolUnlock(blobberID, poolID, zcncore.ConvertToValue(fee))
 
 		// an error
 		if err != nil {
@@ -234,7 +231,7 @@ var spUnlock = &cobra.Command{
 		}
 
 		// can't unlock for now
-		if unstake > 0 {
+		if !unstake {
 			fmt.Println("tokens can't be unlocked due to opened offers")
 			fmt.Printf("the pool marked as releasing, wait and retry to succeed")
 			fmt.Printf("to reduce blobber commitments cancel or finalize allocations")

@@ -28,6 +28,9 @@ var updateAllocationCmd = &cobra.Command{
 
 		if flags.Changed("free_storage") {
 			lock, freeStorageMarker := processFreeStorageFlags(flags)
+			if lock < 0 {
+				log.Fatal("Only positive values are allowed for --lock")
+			}
 
 			txnHash, err := sdk.CreateFreeUpdateAllocation(freeStorageMarker, allocID, lock)
 			if err != nil {
@@ -50,6 +53,10 @@ var updateAllocationCmd = &cobra.Command{
 		if lockf, err = flags.GetFloat64("lock"); err != nil {
 			log.Fatal("error: invalid 'lock' value:", err)
 		}
+		if lock < 0 {
+			log.Fatal("Only positive values are allowed for --lock")
+		}
+
 		lock = zcncore.ConvertToValue(lockf)
 
 		size, err := flags.GetInt64("size")
