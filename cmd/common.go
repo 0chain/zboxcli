@@ -8,6 +8,7 @@ import (
 
 	"github.com/0chain/gosdk/core/transaction"
 	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk/zcncore"
 	"gopkg.in/cheggaaa/pb.v1"
 )
 
@@ -84,7 +85,7 @@ type ZCNStatus struct {
 
 func (zcn *ZCNStatus) OnWalletCreateComplete(status int, wallet string, err string) {
 	defer zcn.wg.Done()
-	if status == ZCNStatusError {
+	if status == zcncore.StatusError {
 		zcn.success = false
 		zcn.errMsg = err
 		zcn.walletString = ""
