@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/0chain/errors v1.0.3
-	github.com/0chain/gosdk v1.7.3-0.20220306050831-300285d6f4b1
+	github.com/0chain/gosdk v1.7.3-0.20220305004937-1b3247988866
 	github.com/icza/bitio v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.1.1
@@ -36,6 +36,7 @@ require (
 	github.com/mitchellh/mapstructure v1.4.2 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
+	github.com/rogpeppe/go-internal v1.8.0 // indirect
 	github.com/shirou/gopsutil v3.21.10+incompatible // indirect
 	github.com/spf13/afero v1.6.0 // indirect
 	github.com/spf13/cast v1.4.1 // indirect
