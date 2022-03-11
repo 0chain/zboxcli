@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/0chain/gosdk/core/encryption"
+	"github.com/0chain/gosdk/core/sys"
 	"github.com/0chain/gosdk/zboxcore/client"
 	"github.com/0chain/gosdk/zcncore"
 	"github.com/0chain/zboxcli/util"
@@ -74,7 +75,7 @@ var signCmd = &cobra.Command{
 		} else {
 			data = encryption.Hash(data)
 		}
-		sign, err := client.Sign(data)
+		sign, err := sys.Sign(data, client.GetClient().SignatureScheme, client.GetClientSysKeys())
 		if err != nil {
 			fmt.Println("Error generating the signature. ", err.Error())
 			return
