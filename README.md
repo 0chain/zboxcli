@@ -469,9 +469,8 @@ e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429 removed as a cu
 ## Transfer allocation ownership
 
 `transferallocation` changes the owner of an allocation. Only a curator, 
-previously added by an [addcurator](#add-curator) command can change an 
-allocation's ownership. If the current owner wants to transfer ownership
-they have to first add themselves as a curator using [addcurator](#add-curator).
+previously added by an [addcurator](#add-curator) command, or, the current owner of the allocation, can change an 
+allocation's ownership.
 
 `transferallocation` does not move any funds, only changes the owner, 
 and the owner's public key.
