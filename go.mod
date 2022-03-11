@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/0chain/errors v1.0.3
-	github.com/0chain/gosdk v1.7.3-0.20220308143920-583ac7798baa
+	github.com/0chain/gosdk v1.7.3-0.20220311001040-e9b0ad48e2cf
 	github.com/icza/bitio v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
