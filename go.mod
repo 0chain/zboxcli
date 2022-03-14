@@ -1,6 +1,6 @@
 module github.com/0chain/zboxcli
 
-go 1.16
+go 1.17
 
 require (
 	github.com/0chain/errors v1.0.3
