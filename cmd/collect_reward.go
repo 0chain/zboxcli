@@ -14,13 +14,25 @@ var collectRewards = &cobra.Command{
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		flags := cmd.Flags()
-		if !flags.Changed("pool_id") {
-			log.Fatal("missing pool id flag")
+		if !flags.Changed("pool_id") && !flags.Changed("provider_id") {
+			log.Fatal("must have pool id or provider id")
 		}
 
-		poolId, err := flags.GetString("pool_id")
-		if err != nil {
-			log.Fatal(err)
+		var poolId, providerId string
+		var err error
+
+		if flags.Changed("pool_id") {
+			poolId, err = flags.GetString("pool_id")
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
+
+		if flags.Changed("provider_id") {
+			providerId, err = flags.GetString("provider_id")
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
 
 		if !flags.Changed("provider_type") {
@@ -34,9 +46,9 @@ var collectRewards = &cobra.Command{
 
 		switch providerName {
 		case "blobber":
-			_, err = sdk.CollectRewards(poolId, sdk.ProviderBlobber)
+			_, err = sdk.CollectRewards(providerId, poolId, sdk.ProviderBlobber)
 		case "validator":
-			_, err = sdk.CollectRewards(poolId, sdk.ProviderValidator)
+			_, err = sdk.CollectRewards(providerId, poolId, sdk.ProviderValidator)
 		default:
 			log.Fatal("provider type must be blobber or validator")
 		}
@@ -55,7 +67,8 @@ func init() {
 	collectRewards.PersistentFlags().
 		String("provider_type", "blobber",
 			"provider type")
-
+	collectRewards.PersistentFlags().String("provider_id", "", "blobber or validator id")
+	collectRewards.MarkFlagRequired("provider_id")
 	collectRewards.MarkFlagRequired("pool_id")
 	collectRewards.MarkFlagRequired("provider_type")
 
