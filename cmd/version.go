@@ -2,8 +2,9 @@ package cmd
 
 import (
 	"fmt"
+	"runtime/debug"
 
-	"github.com/0chain/gosdk/zcncore"
+	"github.com/icza/bitio"
 	"github.com/spf13/cobra"
 )
 
@@ -16,9 +17,29 @@ var versionCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Version info:")
 		fmt.Println("\tzbox....: ", VersionStr)
-		fmt.Println("\tgosdk...: ", zcncore.GetVersion())
-		return
+		fmt.Println("\tgosdk...: ", getVersion("github.com/0chain/gosdk"))
 	},
+}
+
+func getVersion(path string) string {
+	_ = bitio.NewReader
+	bi, ok := debug.ReadBuildInfo()
+	if !ok {
+		fmt.Println("Failed to read build info")
+		return ""
+	}
+
+	for _, dep := range bi.Deps {
+		if dep.Path == path {
+			if dep.Replace != nil && dep.Replace.Version != "" {
+				return dep.Replace.Version
+			}
+
+			return dep.Version
+		}
+	}
+
+	return ""
 }
 
 func init() {
