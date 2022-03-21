@@ -17,11 +17,12 @@ func printStakePoolInfo(info *sdk.StakePoolInfo) {
 	fmt.Println("going to unlock, total:", info.UnstakeTotal)
 
 	fmt.Println("capacity:")
-	fmt.Println("  free:       ", info.Free, "(for current write price)")
-	fmt.Println("  capacity:   ", info.Capacity, "(blobber bid)")
-	fmt.Println("  write_price:", info.WritePrice, "(blobber write price)")
-	fmt.Println("  offers_total:", info.OffersTotal, "(total stake committed to offers)")
-
+	fmt.Println("  capacity:         ", info.Capacity, "(blobber bid)")
+	fmt.Println("  free:             ", info.Free, "(for current write price)")
+	fmt.Println("  write_price:      ", info.WritePrice, "(blobber write price)")
+	fmt.Println("  offers_total:     ", info.OffersTotal, "(total stake committed to offers)")
+	fmt.Println("  unstake_total:    ", info.UnstakeTotal, "(total stake not available for further commitments)")
+	fmt.Println("  unclaimed rewards:", info.Rewards)
 	if len(info.Delegate) == 0 {
 		fmt.Println("delegate_pools: no delegate pools")
 	} else {
@@ -30,31 +31,20 @@ func printStakePoolInfo(info *sdk.StakePoolInfo) {
 			fmt.Println("- id:               ", dp.ID)
 			fmt.Println("  balance:          ", dp.Balance)
 			fmt.Println("  delegate_id:      ", dp.DelegateID)
-			fmt.Println("  rewards:          ", dp.Rewards)
-			fmt.Println("  penalty:          ", dp.Penalty)
-			var gtu string
-			if dp.Unstake {
-				gtu = "<unstaking>"
-			} else {
-				gtu = "<not going>"
-			}
-
-			fmt.Println("  going to unlock at:", gtu)
+			fmt.Println("  unclaimed reward: ", dp.Rewards)
+			fmt.Println("  total_reward:     ", dp.TotalReward)
+			fmt.Println("  total_penalty:    ", dp.TotalPenalty)
+			fmt.Println("  status:           ", dp.Status)
+			fmt.Println("  round_created:    ", dp.RoundCreated)
+			fmt.Println("  unstake:          ", dp.UnStake)
 		}
 	}
-	fmt.Println("penalty:  ", info.Penalty, "(total blobber penalty for all time)")
-
-	fmt.Println("rewards:")
-	fmt.Println("  charge:  ", info.Rewards.Charge, "(for all time)")
-	fmt.Println("  blobber:  ", info.Rewards.Blobber, "(for all time)")
-	fmt.Println("  validator:", info.Rewards.Validator, "(for all time)")
-
 	// settings
 	fmt.Println("settings:")
-	fmt.Println("  delegate_wallet:", info.Settings.DelegateWallet)
-	fmt.Println("  min_stake:      ", info.Settings.MinStake.String())
-	fmt.Println("  max_stake:      ", info.Settings.MaxStake.String())
-	fmt.Println("  num_delegates:  ", info.Settings.NumDelegates)
+	fmt.Println("  delegate_wallet:  ", info.Settings.DelegateWallet)
+	fmt.Println("  min_stake:        ", info.Settings.MinStake.String())
+	fmt.Println("  max_stake:        ", info.Settings.MaxStake.String())
+	fmt.Println("  num_delegates:    ", info.Settings.NumDelegates)
 }
 
 func printStakePoolUserInfo(info *sdk.StakePoolUserInfo) {
@@ -68,8 +58,12 @@ func printStakePoolUserInfo(info *sdk.StakePoolUserInfo) {
 			fmt.Println("  - id:               ", dp.ID)
 			fmt.Println("    balance:          ", dp.Balance)
 			fmt.Println("    delegate_id:      ", dp.DelegateID)
-			fmt.Println("    rewards:          ", dp.Rewards)
-			fmt.Println("    penalty:          ", dp.Penalty)
+			fmt.Println("    unclaimed reward:       ", dp.Rewards)
+			fmt.Println("    total rewards:          ", dp.TotalReward)
+			fmt.Println("    total penalty:          ", dp.TotalPenalty)
+			fmt.Println("    status:          ", dp.Status)
+			fmt.Println("    round_created:   ", dp.RoundCreated)
+			fmt.Println("    unstake:         ", dp.UnStake)
 		}
 	}
 }
