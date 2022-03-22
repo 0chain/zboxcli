@@ -11,64 +11,67 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
     - [Other Platform Builds](#other-platform-builds)
     - [Use custom miner/sharder](#use-custom-minersharder)
   - [Running zbox](#running-zbox)
-  - [Global Flags](#global-flags)
-  - [Commands](#commands)
-      - [Creating and Managing Allocations](#creating-and-managing-allocations)
-         - [Register wallet](#register-wallet)
-         - [Create new allocation](#create-new-allocation)
-         - [Free storage allocation](#free-storage-allocation)
-         - [Update allocation](#update-allocation)
-         - [Cancel allocation](#cancel-allocation)
-         - [Finalise allocation](#finalise-allocation)
-         - [Add curator](#add-curator)
-         - [Remove curator](#remove-curator)
-         - [Transfer allocation ownership](#transfer-allocation-ownership)
-         - [List blobbers](#list-blobbers)
-         - [Detailed blobber information](#detailed-blobber-information)
-         - [List all files](#list-all-files)
-         - [List owner's allocations](#list-owners-allocations)
-         - [Update blobber settings](#update-blobber-settings)
-       - [Uploading and Managing Files](#uploading-and-managing-files)
-         - [Upload](#upload)
-            - [Stream](#stream)
-            - [Feed](#feed)
-         - [Download](#download)
-         - [Update](#update)
-         - [Delete](#delete)
-         - [Share](#share)
-            - [share-encrypted revoke](#share-encrypted-revoke)
-         - [List](#list)
-         - [Copy](#copy)
-         - [Move](#move)
-         - [Sync](#sync)
-         - [Get differences](#get-differences)
-         - [Get wallet](#get-wallet)
-         - [Get](#get)
-         - [Get metadata](#get-metadata)
-         - [Download cost](#download-cost)
-         - [Upload cost](#upload-cost)
-         - [Rename](#rename)
-         - [Stats](#stats)
-         - [Repair](#repair)
-         - [Add collaborator](#add-collaborator)
-         - [Delete collaborator](#delete-collaborator)
-         - [Commit](#commit)
-         - [Sign data|](#sign-data)
-         - [Streaming](#streaming)
-      - [Lock and Unlock Tokens](#lock-and-unlock-tokens)
-        - [Challenge pool information](#challenge-pool-information)
-        - [Create read pool](#create-read-pool)
-        - [Read pool info](#read-pool-info)
-        - [Lock tokens into read pool](#lock-tokens-into-read-pool)
-        - [Unlock tokens from read pool](#unlock-tokens-from-read-pool)
-        - [Storage SC configurations](#storage-sc-configurations)
-        - [Stake pool info](#stake-pool-info)
-        - [Lock tokens into stake pool](#lock-tokens-into-stake-pool)
-        - [Unlock tokens from stake pool](#unlock-tokens-from-stake-pool)
-        - [Stake pools info of user](#stake-pools-info-of-user)
-        - [Write pool info](#write-pool-info)
-        - [Lock tokens into write pool](#lock-tokens-into-write-pool)
-        - [Unlock tokens from write pool](#unlock-tokens-from-write-pool)
+    - [Global Flags](#global-flags)
+- [Commands](#commands)
+  - [Creating and Managing Allocations](#creating-and-managing-allocations)
+  - [Register wallet](#register-wallet)
+  - [Create new allocation](#create-new-allocation)
+      - [Free storage allocation](#free-storage-allocation)
+  - [Update allocation](#update-allocation)
+    - [Cancel allocation](#cancel-allocation)
+  - [Finalise allocation](#finalise-allocation)
+  - [Add curator](#add-curator)
+  - [Remove curator](#remove-curator)
+  - [Transfer allocation ownership](#transfer-allocation-ownership)
+  - [List blobbers](#list-blobbers)
+  - [Detailed blobber information](#detailed-blobber-information)
+  - [List all files](#list-all-files)
+  - [List owner's allocations](#list-owners-allocations)
+  - [Update blobber settings](#update-blobber-settings)
+  - [Uploading and Managing files](#uploading-and-managing-files)
+  - [Upload](#upload)
+  - [Stream](#stream)
+  - [Feed](#feed)
+  - [Download](#download)
+  - [Update](#update)
+  - [Delete](#delete)
+  - [Share](#share)
+      - [share-encrypted revoke](#share-encrypted-revoke)
+  - [List](#list)
+  - [Copy](#copy)
+  - [Move](#move)
+  - [Sync](#sync)
+  - [Get differences](#get-differences)
+  - [Get wallet](#get-wallet)
+  - [Get](#get)
+  - [Get metadata](#get-metadata)
+  - [Rename](#rename)
+  - [Stats](#stats)
+  - [Repair](#repair)
+  - [Add collaborator](#add-collaborator)
+  - [Delete collaborator](#delete-collaborator)
+  - [Lock and Unlock Tokens](#lock-and-unlock-tokens)
+    - [Challenge pool information](#challenge-pool-information)
+  - [Create read pool](#create-read-pool)
+  - [Collect rewards](#collect-rewards)
+  - [Read pool info](#read-pool-info)
+  - [Lock tokens into read pool](#lock-tokens-into-read-pool)
+  - [Unlock tokens from read pool](#unlock-tokens-from-read-pool)
+  - [Storage SC configurations](#storage-sc-configurations)
+  - [Stake pool info](#stake-pool-info)
+  - [Lock tokens into stake pool](#lock-tokens-into-stake-pool)
+    - [Unlock tokens from stake pool](#unlock-tokens-from-stake-pool)
+  - [Stake pools info of user](#stake-pools-info-of-user)
+  - [Write pool info](#write-pool-info)
+  - [Lock tokens into write pool](#lock-tokens-into-write-pool)
+  - [Unlock tokens from write pool](#unlock-tokens-from-write-pool)
+  - [Download cost](#download-cost)
+  - [Upload cost](#upload-cost)
+  - [Commit](#commit)
+  - [Sign data|](#sign-data)
+  - [Streaming](#streaming)
+      - [How it works:](#how-it-works)
+      - [Usage](#usage)
   - [Troubleshooting](#troubleshooting)
     
 ## Installation Guides
@@ -954,11 +957,11 @@ Example
 Response:
 
 ```
-Auth Ticket eyJjbGllbnRfaWQiOiIiLCJvd25lcl9pZCI6IjE3ZTExOTQwNmQ4ODg3ZDAyOGIxNDE0YWNmZTQ3ZTg4MDhmNWIzZjk4Njk2OTk4Nzg3YTIwNTVhN2VkYjk3YWYiLCJhbGxvY2F0aW9uX2lkIjoiODlkYjBjZDI5NjE4NWRkOTg2YmEzY2I0ZDBlODE0OTE3NmUxNmIyZGIyMWEwZTVjMDZlMTBmZjBiM2YxNGE3NyIsImZpbGVfcGF0aF9oYXNoIjoiM2NhNzIyNTQwZTY1M2Y3NTQ1NjI5ZjBkYzE5ZGY2ODk5ZTI0MDRjNDI4ZDRiMWZlMmM0NjI3ZGQ3MWY3ZmQ2NCIsImFjdHVhbF9maWxlX2hhc2giOiIyYmM5NWE5Zjg0NDlkZDEyNjFmNmJkNTg3ZjY3ZTA2OWUxMWFhMGJiIiwiZmlsZV9uYW1lIjoidGVzdC5wZGYiLCJyZWZlcmVuY2VfdHlwZSI6ImYiLCJleHBpcmF0aW9uIjoxNjM1ODQ5MzczLCJ0aW1lc3RhbXAiOjE2MjgwNzMzNzMsInJlX2VuY3J5cHRpb25fa2V5IjoiIiwiZW5jcnlwdGVkIjpmYWxzZSwic2lnbmF0dXJlIjoiZDRiOTM4ZTE0MDk0ZmZkOGFiMDcwOWFmN2QyMDAyZTdlMGFmNmU3MWJlNGFmMmRjNmUxMGYxZWJmZTUwOTMxOSJ9
+Auth token eyJjbGllbnRfaWQiOiIiLCJvd25lcl9pZCI6IjE3ZTExOTQwNmQ4ODg3ZDAyOGIxNDE0YWNmZTQ3ZTg4MDhmNWIzZjk4Njk2OTk4Nzg3YTIwNTVhN2VkYjk3YWYiLCJhbGxvY2F0aW9uX2lkIjoiODlkYjBjZDI5NjE4NWRkOTg2YmEzY2I0ZDBlODE0OTE3NmUxNmIyZGIyMWEwZTVjMDZlMTBmZjBiM2YxNGE3NyIsImZpbGVfcGF0aF9oYXNoIjoiM2NhNzIyNTQwZTY1M2Y3NTQ1NjI5ZjBkYzE5ZGY2ODk5ZTI0MDRjNDI4ZDRiMWZlMmM0NjI3ZGQ3MWY3ZmQ2NCIsImFjdHVhbF9maWxlX2hhc2giOiIyYmM5NWE5Zjg0NDlkZDEyNjFmNmJkNTg3ZjY3ZTA2OWUxMWFhMGJiIiwiZmlsZV9uYW1lIjoidGVzdC5wZGYiLCJyZWZlcmVuY2VfdHlwZSI6ImYiLCJleHBpcmF0aW9uIjoxNjM1ODQ5MzczLCJ0aW1lc3RhbXAiOjE2MjgwNzMzNzMsInJlX2VuY3J5cHRpb25fa2V5IjoiIiwiZW5jcnlwdGVkIjpmYWxzZSwic2lnbmF0dXJlIjoiZDRiOTM4ZTE0MDk0ZmZkOGFiMDcwOWFmN2QyMDAyZTdlMGFmNmU3MWJlNGFmMmRjNmUxMGYxZWJmZTUwOTMxOSJ9
 ```
 
 ```
-Auth Ticket decoded 
+Auth token decoded 
 
 {"client_id":"","owner_id":"17e119406d8887d028b1414acfe47e8808f5b3f98696998787a2055a7edb97af","allocation_id":"89db0cd296185dd986ba3cb4d0e8149176e16b2db21a0e5c06e10ff0b3f14a77","file_path_hash":"3ca722540e653f7545629f0dc19df6899e2404c428d4b1fe2c4627dd71f7fd64","actual_file_hash":"2bc95a9f8449dd1261f6bd587f67e069e11aa0bb","file_name":"test.pdf","reference_type":"f","expiration":1635849373,"timestamp":1628073373,"re_encryption_key":"","encrypted":false,"signature":"d4b938e14094ffd8ab0709af7d2002e7e0af6e71be4af2dc6e10f1ebfe509319"}
 ```
@@ -995,11 +998,11 @@ Use *clientid* of the user to share with. *encryptionpublickey* -  key from comm
 Response:
 
 ```
-Auth Ticket eyJjbGllbnRfaWQiOiIwMGZmODhkY2IxNjQ2Y2RlZjA2OWE4MGE0MGQwMWNlOTYyMmQ3ZmUzYmQ0ZWNjMzIzYTcwZTdkNmVkMWE2YjY3Iiwib3duZXJfaWQiOiIxN2UxMTk0MDZkODg4N2QwMjhiMTQxNGFjZmU0N2U4ODA4ZjViM2Y5ODY5Njk5ODc4N2EyMDU1YTdlZGI5N2FmIiwiYWxsb2NhdGlvbl9pZCI6Ijg5ZGIwY2QyOTYxODVkZDk4NmJhM2NiNGQwZTgxNDkxNzZlMTZiMmRiMjFhMGU1YzA2ZTEwZmYwYjNmMTRhNzciLCJmaWxlX3BhdGhfaGFzaCI6IjM2Mjk0MGMwMTZlOWZlZTQ4ZmI5MTA0OGI4MzJjOGFlNWQ2MGUyYzUzMmQ1OGNlYzdmNGM0YjBmZTRkZjM2MzYiLCJhY3R1YWxfZmlsZV9oYXNoIjoiMmJjOTVhOWY4NDQ5ZGQxMjYxZjZiZDU4N2Y2N2UwNjllMTFhYTBiYiIsImZpbGVfbmFtZSI6InRlc3QyLnBkZiIsInJlZmVyZW5jZV90eXBlIjoiZiIsImV4cGlyYXRpb24iOjE2MzU4NDk4NDMsInRpbWVzdGFtcCI6MTYyODA3Mzg0MywicmVfZW5jcnlwdGlvbl9rZXkiOiIiLCJlbmNyeXB0ZWQiOnRydWUsInNpZ25hdHVyZSI6IjNlNGMwOTAwMzAwN2M5NzUzZjFiNGIwODExMWM4OGRlY2JmZjU2MDRmNTIwZDZjMmYyMTdhMzUyZTFkMmE0MTEifQ==
+Auth token eyJjbGllbnRfaWQiOiIwMGZmODhkY2IxNjQ2Y2RlZjA2OWE4MGE0MGQwMWNlOTYyMmQ3ZmUzYmQ0ZWNjMzIzYTcwZTdkNmVkMWE2YjY3Iiwib3duZXJfaWQiOiIxN2UxMTk0MDZkODg4N2QwMjhiMTQxNGFjZmU0N2U4ODA4ZjViM2Y5ODY5Njk5ODc4N2EyMDU1YTdlZGI5N2FmIiwiYWxsb2NhdGlvbl9pZCI6Ijg5ZGIwY2QyOTYxODVkZDk4NmJhM2NiNGQwZTgxNDkxNzZlMTZiMmRiMjFhMGU1YzA2ZTEwZmYwYjNmMTRhNzciLCJmaWxlX3BhdGhfaGFzaCI6IjM2Mjk0MGMwMTZlOWZlZTQ4ZmI5MTA0OGI4MzJjOGFlNWQ2MGUyYzUzMmQ1OGNlYzdmNGM0YjBmZTRkZjM2MzYiLCJhY3R1YWxfZmlsZV9oYXNoIjoiMmJjOTVhOWY4NDQ5ZGQxMjYxZjZiZDU4N2Y2N2UwNjllMTFhYTBiYiIsImZpbGVfbmFtZSI6InRlc3QyLnBkZiIsInJlZmVyZW5jZV90eXBlIjoiZiIsImV4cGlyYXRpb24iOjE2MzU4NDk4NDMsInRpbWVzdGFtcCI6MTYyODA3Mzg0MywicmVfZW5jcnlwdGlvbl9rZXkiOiIiLCJlbmNyeXB0ZWQiOnRydWUsInNpZ25hdHVyZSI6IjNlNGMwOTAwMzAwN2M5NzUzZjFiNGIwODExMWM4OGRlY2JmZjU2MDRmNTIwZDZjMmYyMTdhMzUyZTFkMmE0MTEifQ==
 ```
 
 ```
-Auth Ticket decoded 
+Auth token decoded 
 
 {"client_id":"00ff88dcb1646cdef069a80a40d01ce9622d7fe3bd4ecc323a70e7d6ed1a6b67","owner_id":"17e119406d8887d028b1414acfe47e8808f5b3f98696998787a2055a7edb97af","allocation_id":"89db0cd296185dd986ba3cb4d0e8149176e16b2db21a0e5c06e10ff0b3f14a77","file_path_hash":"362940c016e9fee48fb91048b832c8ae5d60e2c532d58cec7f4c4b0fe4df3636","actual_file_hash":"2bc95a9f8449dd1261f6bd587f67e069e11aa0bb","file_name":"test2.pdf","reference_type":"f","expiration":1635849843,"timestamp":1628073843,"re_encryption_key":"","encrypted":true,"signature":"3e4c09003007c9753f1b4b08111c88decbff5604f520d6c2f217a352e1d2a411"}
 ```
