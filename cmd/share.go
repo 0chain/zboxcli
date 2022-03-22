@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 
+	"github.com/0chain/gosdk/core/common"
 	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
@@ -51,7 +53,7 @@ var shareCmd = &cobra.Command{
 		}
 
 		var fileName string
-		var available int64
+
 		_, fileName = filepath.Split(remotepath)
 		refereeClientID := cmd.Flag("clientid").Value.String()
 
@@ -65,15 +67,21 @@ var shareCmd = &cobra.Command{
 			fmt.Println("Share revoked for client " + refereeClientID)
 		} else {
 			expiration, _ := cmd.Flags().GetInt64("expiration-seconds")
-			available, _ = cmd.Flags().GetInt64("available-after")
+			availableAfter := time.Now()
 
-			if len(refereeClientID) == 0 && available > 0 {
-				PrintError("Cannot set available-after if the clientid is empty")
-				os.Exit(1)
+			availableAfterInput, _ := cmd.Flags().GetString("available-after")
+
+			if len(availableAfterInput) > 0 {
+				if aa, err := common.ParseTime(availableAfter, availableAfterInput); err != nil {
+					PrintError(err.Error())
+					os.Exit(1)
+				} else {
+					availableAfter = *aa
+				}
 			}
 
 			encryptionpublickey := cmd.Flag("encryptionpublickey").Value.String()
-			ref, err := allocationObj.GetAuthTicket(remotepath, fileName, refType, refereeClientID, encryptionpublickey, expiration, available)
+			ref, err := allocationObj.GetAuthTicket(remotepath, fileName, refType, refereeClientID, encryptionpublickey, expiration, &availableAfter)
 			if err != nil {
 				PrintError(err.Error())
 				os.Exit(1)
@@ -90,7 +98,7 @@ func init() {
 	shareCmd.PersistentFlags().String("clientid", "", "ClientID of the user to share with. Leave blank for public share")
 	shareCmd.PersistentFlags().String("encryptionpublickey", "", "Encryption public key of the client you want to share with. Can be retrieved by the getwallet command")
 	shareCmd.PersistentFlags().Int64("expiration-seconds", 0, "Authticket will expire when the seconds specified have elapsed after the instant of its creation")
-	shareCmd.PersistentFlags().Int64("available-after", 0, "Timelock for private file that makes the file available for download at certain time")
+	shareCmd.PersistentFlags().String("available-after", "", "Timelock for private file that makes the file available for download at certain time. 4 inputs are supported: +1h30m, +30, 1647858200 and 2022-03-21 10:21:38")
 	shareCmd.PersistentFlags().Bool("revoke", false, "Revoke share for remotepath")
 	shareCmd.MarkFlagRequired("allocation")
 	shareCmd.MarkFlagRequired("remotepath")
