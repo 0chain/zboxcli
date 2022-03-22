@@ -86,7 +86,7 @@ var shareCmd = &cobra.Command{
 				PrintError(err.Error())
 				os.Exit(1)
 			}
-			fmt.Println("Auth Ticket: " + ref)
+			fmt.Println("Auth token: " + ref)
 		}
 	},
 }
