@@ -66,18 +66,25 @@ var shareCmd = &cobra.Command{
 			}
 			fmt.Println("Share revoked for client " + refereeClientID)
 		} else {
-			expiration, _ := cmd.Flags().GetInt64("expiration-seconds")
+			expiration, err := cmd.Flags().GetInt64("expiration-seconds")
+			if err != nil {
+				PrintError(err.Error())
+				os.Exit(1)
+			}
+
 			availableAfter := time.Now()
-
-			availableAfterInput, _ := cmd.Flags().GetString("available-after")
-
+			availableAfterInput, err := cmd.Flags().GetString("available-after")
+			if err != nil {
+				PrintError(err.Error())
+				os.Exit(1)
+			}
 			if len(availableAfterInput) > 0 {
-				if aa, err := common.ParseTime(availableAfter, availableAfterInput); err != nil {
+				aa, err := common.ParseTime(availableAfter, availableAfterInput)
+				if err != nil {
 					PrintError(err.Error())
 					os.Exit(1)
-				} else {
-					availableAfter = *aa
 				}
+				availableAfter = *aa
 			}
 
 			encryptionpublickey := cmd.Flag("encryptionpublickey").Value.String()

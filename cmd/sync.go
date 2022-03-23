@@ -156,7 +156,16 @@ var syncCmd = &cobra.Command{
 
 				encrypt := len(encryptpath) != 0 && strings.Contains(lPath, encryptpath)
 
-				err = startChunkedUpload(cmd, allocationObj, lPath, "", f.Path, encrypt, chunkSize, attrs, statusBar, false, true)
+				err = startChunkedUpload(cmd, allocationObj, chunkedUploadArgs{
+					localPath:     lPath,
+					thumbnailPath: "",
+					remotePath:    f.Path,
+					encrypt:       encrypt,
+					chunkSize:     chunkSize,
+					attrs:         attrs,
+					// isUpdate:      false,
+					isRepair: true,
+				}, statusBar)
 
 				// if len(encryptpath) != 0 && strings.Contains(lPath, encryptpath) {
 				// 	err = allocationObj.EncryptAndUploadFile(lPath, f.Path, attrs, statusBar)
@@ -168,7 +177,17 @@ var syncCmd = &cobra.Command{
 
 				encrypt := len(encryptpath) != 0 && strings.Contains(lPath, encryptpath)
 
-				err = startChunkedUpload(cmd, allocationObj, lPath, "", f.Path, encrypt, chunkSize, f.Attributes, statusBar, true, false)
+				err = startChunkedUpload(cmd, allocationObj,
+					chunkedUploadArgs{
+						localPath:     lPath,
+						thumbnailPath: "",
+						remotePath:    f.Path,
+						encrypt:       encrypt,
+						chunkSize:     chunkSize,
+						attrs:         f.Attributes,
+						isUpdate:      true,
+						// isRepair: false,
+					}, statusBar)
 
 				// if len(encryptpath) != 0 && strings.Contains(lPath, encryptpath) {
 				// 	err = allocationObj.EncryptAndUpdateFile(lPath, f.Path,
