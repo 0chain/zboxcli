@@ -10,7 +10,7 @@ import (
 	"github.com/0chain/gosdk/core/common"
 	"github.com/0chain/gosdk/zboxcore/blockchain"
 	"github.com/0chain/gosdk/zboxcore/fileref"
-	. "github.com/0chain/gosdk/zboxcore/logger"
+	"github.com/0chain/gosdk/zboxcore/logger"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/zboxcli/util"
 
@@ -41,8 +41,8 @@ var getallocationCmd = &cobra.Command{
 	Long:  `Gets the allocation info`,
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		fflags := cmd.Flags()                      // fflags is a *flag.FlagSet
-		if fflags.Changed("allocation") == false { // check if the flag "path" is set
+		fflags := cmd.Flags()              // fflags is a *flag.FlagSet
+		if !fflags.Changed("allocation") { // check if the flag "path" is set
 			PrintError("Error: allocation flag is missing") // If not, we'll let the user know
 			os.Exit(1)                                      // and os.Exit(1)
 		}
@@ -50,7 +50,7 @@ var getallocationCmd = &cobra.Command{
 		doJSON, _ := cmd.Flags().GetBool("json")
 		alloc, err := sdk.GetAllocation(allocationID)
 		if err != nil {
-			Logger.Error("Error fetching the allocation", err)
+			logger.Logger.Error("Error fetching the allocation", err)
 			log.Fatal("Error fetching/verifying the allocation")
 		}
 		if doJSON {
@@ -142,9 +142,7 @@ var getallocationCmd = &cobra.Command{
 		fmt.Println("  price:")
 		fmt.Println("    time_unit:  ", alloc.TimeUnit)
 		fmt.Println("    read_price: ", calculateDownloadCost(alloc, GB, blockspermarker), "/ GB (by 64KB)")
-		fmt.Println("    write_price:", uploadCostFor1GB(alloc),
-			fmt.Sprintf("/ GB / %s", alloc.TimeUnit))
-		return
+		fmt.Println("    write_price:", uploadCostFor1GB(alloc), fmt.Sprintf("/ GB / %s", alloc.TimeUnit))
 	},
 }
 
@@ -388,7 +386,7 @@ var getUploadCostCmd = &cobra.Command{
 		// until allocation ends
 		if end {
 			var expiry = time.Unix(alloc.Expiration, 0)
-			duration = expiry.Sub(time.Now())
+			duration = time.Until(expiry)
 		}
 
 		uploadCost(alloc, fi.Size(), localPath, duration)
