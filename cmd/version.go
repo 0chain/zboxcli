@@ -5,6 +5,7 @@ import (
 	"runtime/debug"
 
 	"github.com/icza/bitio"
+	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )
 
@@ -15,6 +16,16 @@ var versionCmd = &cobra.Command{
 	Short: "Prints version information",
 	Long:  `Prints version information`,
 	Run: func(cmd *cobra.Command, args []string) {
+		doJSON, _ := cmd.Flags().GetBool("json")
+
+		if doJSON {
+			j := make(map[string]string)
+			j["zbox"] = VersionStr
+			j["gosdk"] = getVersion("github.com/0chain/gosdk")
+			util.PrintJSON(j)
+			return
+		}				
+		
 		fmt.Println("Version info:")
 		fmt.Println("\tzbox....: ", VersionStr)
 		fmt.Println("\tgosdk...: ", getVersion("github.com/0chain/gosdk"))
@@ -44,4 +55,5 @@ func getVersion(path string) string {
 
 func init() {
 	rootCmd.AddCommand(versionCmd)
+	versionCmd.Flags().Bool("json", false, "pass this option to print response as json data")
 }
