@@ -14,20 +14,20 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
     - [Global Flags](#global-flags)
   - [Commands](#commands)
     - [Creating and Managing Allocations](#creating-and-managing-allocations)
-    - [Register wallet](#register-wallet)
-    - [Create new allocation](#create-new-allocation)
-      - [Free storage allocation](#free-storage-allocation)
-    - [Update allocation](#update-allocation)
-    - [Cancel allocation](#cancel-allocation)
-    - [Finalise allocation](#finalise-allocation)
-    - [Add curator](#add-curator)
-    - [Remove curator](#remove-curator)
-    - [Transfer allocation ownership](#transfer-allocation-ownership)
-    - [List blobbers](#list-blobbers)
-    - [Detailed blobber information](#detailed-blobber-information)
-    - [List all files](#list-all-files)
-    - [List owner's allocations](#list-owners-allocations)
-    - [Update blobber settings](#update-blobber-settings)
+      - [Register wallet](#register-wallet)
+      - [Create new allocation](#create-new-allocation)
+        - [Free storage allocation](#free-storage-allocation)
+      - [Update allocation](#update-allocation)
+      - [Cancel allocation](#cancel-allocation)
+      - [Finalise allocation](#finalise-allocation)
+      - [Add curator](#add-curator)
+      - [Remove curator](#remove-curator)
+      - [Transfer allocation ownership](#transfer-allocation-ownership)
+      - [List blobbers](#list-blobbers)
+      - [Detailed blobber information](#detailed-blobber-information)
+      - [List all files](#list-all-files)
+      - [List owner's allocations](#list-owners-allocations)
+      - [Update blobber settings](#update-blobber-settings)
     - [Uploading and Managing files](#uploading-and-managing-files)
       - [Upload](#upload)
       - [Stream](#stream)
@@ -41,37 +41,37 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
       - [Copy](#copy)
       - [Move](#move)
       - [Sync](#sync)
-    - [Get differences](#get-differences)
-    - [Get wallet](#get-wallet)
-    - [Get](#get)
-    - [Get metadata](#get-metadata)
-    - [Rename](#rename)
-    - [Stats](#stats)
-    - [Repair](#repair)
-    - [Add collaborator](#add-collaborator)
-    - [Delete collaborator](#delete-collaborator)
+      - [Get differences](#get-differences)
+      - [Get wallet](#get-wallet)
+      - [Get](#get)
+      - [Get metadata](#get-metadata)
+      - [Rename](#rename)
+      - [Stats](#stats)
+      - [Repair](#repair)
+      - [Add collaborator](#add-collaborator)
+      - [Delete collaborator](#delete-collaborator)
+      - [Commit](#commit)
+      - [Sign data](#sign-data)
+      - [Streaming](#streaming)
+        - [How it works:](#how-it-works)
+        - [Usage](#usage)
     - [Lock and Unlock Tokens](#lock-and-unlock-tokens)
-    - [Challenge pool information](#challenge-pool-information)
-    - [Create read pool](#create-read-pool)
-    - [Collect rewards](#collect-rewards)
-    - [Read pool info](#read-pool-info)
-    - [Lock tokens into read pool](#lock-tokens-into-read-pool)
-    - [Unlock tokens from read pool](#unlock-tokens-from-read-pool)
-    - [Storage SC configurations](#storage-sc-configurations)
-    - [Stake pool info](#stake-pool-info)
-    - [Lock tokens into stake pool](#lock-tokens-into-stake-pool)
-    - [Unlock tokens from stake pool](#unlock-tokens-from-stake-pool)
-    - [Stake pools info of user](#stake-pools-info-of-user)
-    - [Write pool info](#write-pool-info)
-    - [Lock tokens into write pool](#lock-tokens-into-write-pool)
-    - [Unlock tokens from write pool](#unlock-tokens-from-write-pool)
-    - [Download cost](#download-cost)
-    - [Upload cost](#upload-cost)
-    - [Commit](#commit)
-    - [Sign data](#sign-data)
-    - [Streaming](#streaming)
-      - [How it works:](#how-it-works)
-      - [Usage](#usage)
+      - [Challenge pool information](#challenge-pool-information)
+      - [Create read pool](#create-read-pool)
+      - [Collect rewards](#collect-rewards)
+      - [Read pool info](#read-pool-info)
+      - [Lock tokens into read pool](#lock-tokens-into-read-pool)
+      - [Unlock tokens from read pool](#unlock-tokens-from-read-pool)
+      - [Storage SC configurations](#storage-sc-configurations)
+      - [Stake pool info](#stake-pool-info)
+      - [Lock tokens into stake pool](#lock-tokens-into-stake-pool)
+      - [Unlock tokens from stake pool](#unlock-tokens-from-stake-pool)
+      - [Stake pools info of user](#stake-pools-info-of-user)
+      - [Write pool info](#write-pool-info)
+      - [Lock tokens into write pool](#lock-tokens-into-write-pool)
+      - [Unlock tokens from write pool](#unlock-tokens-from-write-pool)
+      - [Download cost](#download-cost)
+      - [Upload cost](#upload-cost)
   - [Troubleshooting](#troubleshooting)
     
 ## Installation Guides
@@ -189,7 +189,7 @@ To get a more descriptive view of all the zbox functionalities check zbox cli
 documentation at docs.0chain.net.
 
 ### Creating and Managing Allocations
-### Register wallet
+#### Register wallet
 
 `register` is used when needed to register a given wallet to the blockchain. 
 This could be because the blockchain network has been reset and you wished to register
@@ -207,7 +207,7 @@ Sample output
 Wallet registered
 ```
 
-### Create new allocation
+#### Create new allocation
 
 Command `newallocation` reserves hard disk space on the blobbers. Later `upload`
 can be used to save files to the blobber. `newallocation` has three modes triggered 
@@ -260,7 +260,7 @@ and `free_storage` parameters.
 
 </details>
 
-#### Free storage allocation
+##### Free storage allocation
 
 Entities can give free `0chain` storage in the form of markers. A marker takes the 
 form of a json file
@@ -310,7 +310,7 @@ Response:
 Allocation created : d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
 ```
 
-### Update allocation
+#### Update allocation
 
 `updateallocation` updates allocation settings. It has two modes depending on 
 the presence of the `free_storage` field. 
@@ -363,7 +363,7 @@ Allocation updated with txId : fb84185dae620bbba8386286726f1efcd20d2516bcf1a4482
 
 You can see more txn details using above txID in block explorer [here](https://beta.0chain.net/).
 
-### Cancel allocation
+#### Cancel allocation
 
 `alloc-cancel` immediately return all remaining tokens from challenge pool back to the 
 allocation's owner and cancels the allocation. If blobbers already got some tokens, 
@@ -389,7 +389,7 @@ Example
 ./zbox alloc-cancel --allocation <allocation_id>
 ```
 
-### Finalise allocation
+#### Finalise allocation
  
 `alloc-fini` finalises an expired allocation. An allocation becomes expired when
 the expiry time has passed followed by a period equal to the challenge completion
@@ -418,7 +418,7 @@ Example
 ./zbox alloc-fini --allocation <allocation_id>
 ```
 
-### Add curator
+#### Add curator
 
 `addcurator` adds a curator to an allocation.
 A curator can transfer ownership of an allocation. Each allocation 
@@ -444,7 +444,7 @@ maintains a list of these curators.
 e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429 added as a curator to allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
 ```
 
-### Remove curator
+#### Remove curator
 A curator can be removed from an allocation by using the `removecurator` command , 
 
 | Parameter  | Required | Description                           | Valid Values |
@@ -469,7 +469,7 @@ Response:
 ```
 e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429 removed as a curator to allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
 ```
-### Transfer allocation ownership
+#### Transfer allocation ownership
 
 `transferallocation` changes the owner of an allocation. Only a curator, 
 previously added by an [addcurator](#add-curator) command, or, the current owner of the allocation, can change an 
@@ -503,7 +503,7 @@ Output
 transferred ownership of fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d to 8b87739cd6c966c150a8a6e7b327435d4a581d9d9cc1d86a88c8a13ae1ad7a96
 ```
 
-### List blobbers
+#### List blobbers
 
 Use `ls-blobbers` command to show active blobbers.
 
@@ -543,7 +543,7 @@ Example
     max_offer_duration:  744h0m0s
 ```
 
-### Detailed blobber information
+#### Detailed blobber information
 
 Use `bl-info` command to get detailed blobber information.
 
@@ -587,7 +587,7 @@ settings:
   service_charge:  30 %
 ```
 
-### List all files
+#### List all files
 
 `list-all` lists al the files stored with an allocation
 
@@ -600,7 +600,7 @@ settings:
 ./zbox list-all --allocation 4ebeb69feeaeb3cd308570321981d61beea55db65cbeba4ba3b75c173c0f141b
 ```
 
-### List owner's allocations
+#### List owner's allocations
 
 `listallocations` provides a list of all allocations owned by the user.
 
@@ -625,7 +625,7 @@ ZED | CANCELED | R  PRICE |   W  PRICE
 ```
 
 
-### Update blobber settings
+#### Update blobber settings
 
 Use `./zbox bl-update ` to update a blobber's configuration settings. This updates the settings
 on the blockchain not the blobber.
@@ -1208,7 +1208,7 @@ Local cache saved.
 
 It will sync your localpath with the remote and do all the required CRUD operations.
 
-### Get differences 
+#### Get differences 
  `./zbox get-diff` command returns the differences between the local files specified by `localpath` and the files stored
 on the root remotepath of the allocation.`localcache` flag can also be specified to use the local cache of remote snapshot created during [Sync](#sync) for file comparison.
 
@@ -1235,7 +1235,7 @@ Response:
 {"operation":"Download","path":"/myfiles/file2.txt","type":"f","attributes":{}}]
 ```
 
-### Get wallet
+#### Get wallet
 
 Use `getwallet` command to get additional wallet information including Encryption 
 Public Key,Client ID which are required for Private File Sharing.
@@ -1260,7 +1260,7 @@ Response:
 
 Response will give details for current selected wallet (or wallet file specified by optional --wallet parameter)
 
-### Get
+#### Get
 
 Use `get` command to get the information about the allocation such as total size , used size, number of challenges 
 and challenges passed/failed/open/redeemed.
@@ -1312,7 +1312,7 @@ allocation:
         challenge_completion_time: 2m0s
 ```
 
-### Get metadata
+#### Get metadata
 
 Use `meta` command to get metadata for a given remote file. Use must either be the
 owner of the allocation on have an auth ticket or be a collaborator. 
@@ -1367,7 +1367,7 @@ TYPE | NAME  |                           LOOKUP HASH                            
 
 Response will be metadata for the given filepath/lookuphash (if using authTicket)
 
-### Rename
+#### Rename
 
 `rename` command renames a file existing already on dStorage. Only the 
 allocation's owner can rename a file.
@@ -1398,7 +1398,7 @@ Response:
 /1.txt renamed
 ```
 
-### Stats
+#### Stats
 
 `stats` command gets upload, download and challenge statistics for a file.
 Only the owner can get a files stats.
@@ -1435,7 +1435,7 @@ Response:
   876b4cd610eb1aac63c53cdfd4d3a0ac91d94f2d6b858bb195f72b6dc0f33b55 | 1.txt | /1.txt | 2065 |       3 |               1 |          0 | true              
 ```
 
-### Repair
+#### Repair
 
 Use `start-repair` command to repair a file on dStorage.
 ![repair](https://user-images.githubusercontent.com/65766301/120052600-b364c680-c043-11eb-9bf2-038ab244fed6.png)
@@ -1468,7 +1468,7 @@ Response:
 Repair file completed, Total files repaired:  0
 ```
 
-### Add collaborator
+#### Add collaborator
 
 Use `add-collab` command to add a collaborator for a file on dStorage. 
 Collaborators can perform read actions on the collaboration file, with the owner paying.
@@ -1502,7 +1502,7 @@ Collaborator d477d12134c2d7ba5ab71ac8ad37f244224695ef3215be990c3215d531c5a329 ad
 
 You can check all collaborators for a file in metadata json response.
 
-### Delete collaborator
+#### Delete collaborator
 
 Use command delete-collab to remove a collaborator for a file
 
@@ -1530,9 +1530,110 @@ Response will be a confirmation that collaborator is removed on all blobbers for
 ```
 Collaborator d477d12134c2d7ba5ab71ac8ad37f244224695ef3215be990c3215d531c5a329 removed successfully for the file /1.txt
 ```
+
+
+#### Commit
+
+Commit file changes to chain
+
+| Parameter  | Required | Description                                       | Valid values |
+|------------|----------|---------------------------------------------------|--------------|
+| allocation | yes      | allocation id                                     | string       |
+| authticket | no       | auth ticket for file to commit                    | string       |
+| filemeta   | no       | meta for commit if applicable                     | string       |
+| lookuphash | no       | remote lookuphash to commit, use with authticket  | string       |
+| newvalue   | no       | new value for the folder operation if applicatble | string       |
+| operation  | yes      | operation name for commit change                  | string       |
+| remotepath | no       | remote path of object to commit                   | string       |
+
+#### Sign data
+
+`sign-data` uses the information from your wallet to sign the input data string
+
+| Parameter   | Required | Description                                   | default | Valid values |
+|-------------|----------|-----------------------------------------------|---------|--------------|
+| data  | yes      | string to sign                                 |         | string       |
+
+
+```shell
+./zbox sign-data "data to sign"
+Signature : 9432ab2ee602062afaf48c4016b373a65db48a8546a81c09dead40e54966399e
+```
+
+------
+
+#### Streaming
+
+Video streaming with Zbox CLI can be implemented with players for different operating platforms(iOS, Android Mac).Zbox CLI does not have a player itself and use the the downloadFileByBlocks helper function to properly returns file-chunks with correct byte range.
+
+![streaming-android](https://user-images.githubusercontent.com/65766301/120052635-ce373b00-c043-11eb-94a5-a9711078ee54.png)
+
+##### How it works:
+
+When the user starts the video player (ExoPlayer for Android or AVPlayer for iOS), A ZChainDataSource starts chunked download and requests chunks of video from the buffer(a Middleman between streaming player and Zbox).
+
+After the arrival of the first chunk, the player starts requesting more chunks from the buffer, which requests the Zbox SDK. Zbox SDK, which is built using GO, makes use of the downloadFileByBlocks method to reliably download large files by chunking them into a sequence of parts that can be downloaded individually. Once the blocks are downloaded, they are read into input streams and added to the media source of the streaming player.
+
+The task of downloading files and writing them to buffer using Zbox SDK happens constantly, and If players request random bits of video, they are delivered instantly by a buffer.
+
+In a case, if the player didn't receive chunks (for example, it's still not downloaded), then the player switches to STALE state, and the video stream will pause. During the STALE state, a player tries to make multiple requests for chunks; if didn't receive a response, the video stream stops.
+
+
+##### Usage
+
+To understand how Zbox CLI provides downloading of files by blocks. Let's consider an allocation that has `audio. mp3 ` file stored on dStorage. Make sure the file has a large size(more than 64 kB(64000 bytes)) to download the file by blocks. The size and other attributes of the sample `audio. mp3` file can be viewed using
+
+```
+./zbox list --allocation $ALLOC --remotepath /myfiles
+```
+
+Response:
+
+```
+  TYPE |   NAME    |        PATH        |  SIZE   | NUM BLOCKS |LOOKUP HASH      | IS ENCRYPTED | DOWNLOADS PAYER
++------+-----------+--------------------+---------+------------+----------------
+  f    | audio.mp3 | /myfiles/audio.mp3 | 5992396 |         92 | 3cea39505cc30fb9f6fc5c6045284188feb14eac8ff3a19577701c4f6d973239 | NO           | owner
+
+```
+
+Here we can see the `audio.mp3` file of size (5993286) bytes having 92 blocks.If we want to download a certain number of blocks for the `audio.mp3` file we can use the `--endblock` or `--startblock` flag with `./zbox download` command. Other flags for download can be viewed using `./zbox download --help`
+
+
+```
+Flags:
+    
+  -b, --blockspermarker int   pass this option to download multiple blocks per marker (default 10)       
+  -e, --endblock int          pass this option to download till specific block number                     
+  -h, --help                  help for download
+  --localpath string          Local path of file to download                           
+  --remotepath string         Remote path to download
+   -s, --startblock int       Pass this option to download from specific block number                                                                                                         
+```
+
+For only downloading three blocks of `audio.mp3` file, we specify `--startblock` and`--endblock` with integer value of 1 and 3. `--blockspermarker` flag can also be specified to download multiple blocks at a time(default is 10).
+
+Sample command for downloading till 3rd block of the `audio.mp3` file would be:
+
+```
+./zbox download --localpath /root --remotepath /myfiles/audio.mp3 --allocation $ALLOC --startblock 1 --endblock 3 
+```
+
+Response:
+
+```
+ 393216 / 2996198 [====================>-----------------------------------------------------------------------------------------------------------------------------------------]  13.12% 1s
+Status completed callback. Type = audio/mpeg. Name = audio.mp3
+
+```
+
+As we can see, the downloaded file size(393216) is less than the original(2996198), which means zbox has downloaded some blocks of the file.
+
+
+
+
 ### Lock and Unlock Tokens
 
-### Challenge pool information
+#### Challenge pool information
 
 Use `cp-info` command to get the challenge pool brief information.
 
@@ -1566,7 +1667,7 @@ POOL ID: 6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7:challe
 
  Balance is the current challenge pool balance. Start,Expire time and the finalization are allocations related.
 
-### Create read pool
+#### Create read pool
 
 Use `rp-create` to create a read pool, `rp-create` has no parameters.
 
@@ -1581,7 +1682,7 @@ Use `rp-create` to create a read pool, `rp-create` has no parameters.
 ./zbox rp-create
 ```
 
-### Collect rewards
+#### Collect rewards
 
 Use `collect-rewards` to transfer reward tokens from a stake pool in which you have 
 invested to your wallet.
@@ -1610,7 +1711,7 @@ later by using [sp-info](#stake-pool-info) or [sp-user-info](#stake-pools-info-o
 ./zbox colect-reward --pool_id 1e701ac4e1a003ff75c5bfab62b06ec7418b9b81740ff7c6e4928bf6c0fe5792 --provider_type blobber
 ```
 
-### Read pool info
+#### Read pool info
 
 Use `rp-info` to get read pool information.
 
@@ -1629,7 +1730,7 @@ Use `rp-info` to get read pool information.
 ```
 ./zbox rp-info
 ```
-### Lock tokens into read pool
+#### Lock tokens into read pool
 
 Lock some tokens in read pool associated with an allocation. 
 * Uses two different formats, you can either define a specific blobber
@@ -1677,7 +1778,7 @@ each blobber's Terms.ReadPrice.
 
 </details>
 
-### Unlock tokens from read pool
+#### Unlock tokens from read pool
 
 Use `rp-unlock` to unlock tokens from an expired read pool by pool id. 
 See `rp-info` for the POOL_ID and the expiration.
@@ -1698,7 +1799,7 @@ See `rp-info` for the POOL_ID and the expiration.
 ./zbox rp-unlock --pool_id <pool_id>
 ```
 
-### Storage SC configurations
+#### Storage SC configurations
 
 Show storage SC configuration.
 
@@ -1718,7 +1819,7 @@ Show storage SC configuration.
 ./zbox sc-config
 ```
 
-### Stake pool info
+#### Stake pool info
 
 Use `sp-info` to get your stake pool information and settings.
 
@@ -1738,7 +1839,7 @@ Use `sp-info` to get your stake pool information and settings.
 ./zbox sp-info --blobber_id <blobber_id>
 ```
 
-### Lock tokens into stake pool
+#### Lock tokens into stake pool
 
 Lock creates delegate pool for current client and given blobber. 
 The tokens locked for the blobber stake can be unlocked any time, excluding times 
@@ -1764,7 +1865,7 @@ to stake pool later.
 ./zbox sp-lock --blobber_id <blobber_id> --tokens 1.0
 ```
 
-### Unlock tokens from stake pool
+#### Unlock tokens from stake pool
 
 Unlock a stake pool by pool owner. If the stake pool cannot be unlocked as 
 it would leave insufficient funds for opened offers, then `sp-unlock` tags 
@@ -1789,7 +1890,7 @@ blobber allocation for any new allocations.
 ./zbox sp-unlock --blobber_id <blobber_id> --pool_id <pool_id>
 ```
 
-### Stake pools info of user
+#### Stake pools info of user
 
 Get information about all stake pools of current user.
 
@@ -1809,7 +1910,7 @@ Get information about all stake pools of current user.
 ./zbox sp-user-info
 ```
 
-### Write pool info
+#### Write pool info
 
 Write pool information. Use allocation id to filter results to a singe allocation.
 
@@ -1839,7 +1940,7 @@ Filtering by allocation.
 ./zbox wp-info --allocation <allocation_id>
 ```
 
-### Lock tokens into write pool
+#### Lock tokens into write pool
 
 `wp-lock` can be used to lock tokens in a write pool associated with an allocation. 
 All tokens will be divided between allocation blobbers depending on their write price.
@@ -1890,7 +1991,7 @@ each blobber's Terms.ReadPrice.
 ```
 
 
-### Unlock tokens from write pool
+#### Unlock tokens from write pool
 
 `wp-unlock` unlocks an expired write pool by its POOL_ID. See `wp-info` for the pool id and the expiration. 
 An expired write pool, associated with an allocation, can be locked until allocation finalization even if it's expired. It possible in cases where related blobber doesn't give their min lock demands. The finalization will pay the demand and unlock the pool.
@@ -1911,7 +2012,7 @@ An expired write pool, associated with an allocation, can be locked until alloca
 ./zbox wp-unlock --pool_id <pool_id>
 ```
 
-### Download cost
+#### Download cost
 
 `get-download-cost` determines the cost for downloading the remote file from dStorage. The client must be an 
   owner, collaborator, or using an auth ticket to determine the download cost of the file.
@@ -1938,7 +2039,7 @@ Response:
 0.0000107434 tokens for 10 64KB blocks (24 B) of <remote_path_of_file> .
 ```
 
-### Upload cost
+#### Upload cost
 
 `get-upload-cost` determines the cost for uploading a local file on dStorage. 
 `--duration` Ignored if `--end` true, in which case the cost of upload calculated until
@@ -1966,103 +2067,6 @@ Response:
 ```
  0.0000000028 tokens / 720h0m0s for 24 B of <remote_path_of_file>
 ```  
-### Commit
-
-Commit file changes to chain
-
-| Parameter  | Required | Description                                       | Valid values |
-|------------|----------|---------------------------------------------------|--------------|
-| allocation | yes      | allocation id                                     | string       |
-| authticket | no       | auth ticket for file to commit                    | string       |
-| filemeta   | no       | meta for commit if applicable                     | string       |
-| lookuphash | no       | remote lookuphash to commit, use with authticket  | string       |
-| newvalue   | no       | new value for the folder operation if applicatble | string       |
-| operation  | yes      | operation name for commit change                  | string       |
-| remotepath | no       | remote path of object to commit                   | string       |
-
-### Sign data
-
-`sign-data` uses the information from your wallet to sign the input data string
-
-| Parameter   | Required | Description                                   | default | Valid values |
-|-------------|----------|-----------------------------------------------|---------|--------------|
-| data  | yes      | string to sign                                 |         | string       |
-
-
-```shell
-./zbox sign-data "data to sign"
-Signature : 9432ab2ee602062afaf48c4016b373a65db48a8546a81c09dead40e54966399e
-```
-
-------
-
-### Streaming
-
-Video streaming with Zbox CLI can be implemented with players for different operating platforms(iOS, Android Mac).Zbox CLI does not have a player itself and use the the downloadFileByBlocks helper function to properly returns file-chunks with correct byte range.
-
-![streaming-android](https://user-images.githubusercontent.com/65766301/120052635-ce373b00-c043-11eb-94a5-a9711078ee54.png)
-
-#### How it works:
-
-When the user starts the video player (ExoPlayer for Android or AVPlayer for iOS), A ZChainDataSource starts chunked download and requests chunks of video from the buffer(a Middleman between streaming player and Zbox).
-
-After the arrival of the first chunk, the player starts requesting more chunks from the buffer, which requests the Zbox SDK. Zbox SDK, which is built using GO, makes use of the downloadFileByBlocks method to reliably download large files by chunking them into a sequence of parts that can be downloaded individually. Once the blocks are downloaded, they are read into input streams and added to the media source of the streaming player.
-
-The task of downloading files and writing them to buffer using Zbox SDK happens constantly, and If players request random bits of video, they are delivered instantly by a buffer.
-
-In a case, if the player didn't receive chunks (for example, it's still not downloaded), then the player switches to STALE state, and the video stream will pause. During the STALE state, a player tries to make multiple requests for chunks; if didn't receive a response, the video stream stops.
-
-
-#### Usage
-
-To understand how Zbox CLI provides downloading of files by blocks. Let's consider an allocation that has `audio. mp3 ` file stored on dStorage. Make sure the file has a large size(more than 64 kB(64000 bytes)) to download the file by blocks. The size and other attributes of the sample `audio. mp3` file can be viewed using
-
-```
-./zbox list --allocation $ALLOC --remotepath /myfiles
-```
-
-Response:
-
-```
-  TYPE |   NAME    |        PATH        |  SIZE   | NUM BLOCKS |LOOKUP HASH      | IS ENCRYPTED | DOWNLOADS PAYER
-+------+-----------+--------------------+---------+------------+----------------
-  f    | audio.mp3 | /myfiles/audio.mp3 | 5992396 |         92 | 3cea39505cc30fb9f6fc5c6045284188feb14eac8ff3a19577701c4f6d973239 | NO           | owner
-
-```
-
-Here we can see the `audio.mp3` file of size (5993286) bytes having 92 blocks.If we want to download a certain number of blocks for the `audio.mp3` file we can use the `--endblock` or `--startblock` flag with `./zbox download` command. Other flags for download can be viewed using `./zbox download --help`
-
-
-```
-Flags:
-    
-  -b, --blockspermarker int   pass this option to download multiple blocks per marker (default 10)       
-  -e, --endblock int          pass this option to download till specific block number                     
-  -h, --help                  help for download
-  --localpath string          Local path of file to download                           
-  --remotepath string         Remote path to download
-   -s, --startblock int       Pass this option to download from specific block number                                                                                                         
-```
-
-For only downloading three blocks of `audio.mp3` file, we specify `--startblock` and`--endblock` with integer value of 1 and 3. `--blockspermarker` flag can also be specified to download multiple blocks at a time(default is 10).
-
-Sample command for downloading till 3rd block of the `audio.mp3` file would be:
-
-```
-./zbox download --localpath /root --remotepath /myfiles/audio.mp3 --allocation $ALLOC --startblock 1 --endblock 3 
-```
-
-Response:
-
-```
- 393216 / 2996198 [====================>-----------------------------------------------------------------------------------------------------------------------------------------]  13.12% 1s
-Status completed callback. Type = audio/mpeg. Name = audio.mp3
-
-```
-
-As we can see, the downloaded file size(393216) is less than the original(2996198), which means zbox has downloaded some blocks of the file.
-
-
 
 ## Troubleshooting
 
