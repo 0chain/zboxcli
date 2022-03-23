@@ -70,13 +70,13 @@ var getallocationCmd = &cobra.Command{
 			return fmt.Sprintf("%s-%s", common.Balance(pr.Min), common.Balance(pr.Max))
 		}
 
-		blockspermarker, err := cmd.Flags().GetInt("blockspermarker")
+		blocksPerMarker, err := cmd.Flags().GetInt("blocksPerMarker")
 		if err != nil {
-			log.Fatal("invalid blockspermarker. Error: ", err)
+			log.Fatal("invalid blocks-per-marker. Error: ", err)
 		}
 
-		if blockspermarker <= 0 {
-			log.Fatal("invalid blockspermarker. Should be greater than 0")
+		if blocksPerMarker <= 0 {
+			log.Fatal("invalid blocks-per-marker. Should be greater than 0")
 		}
 
 		fmt.Println("allocation:")
@@ -141,7 +141,7 @@ var getallocationCmd = &cobra.Command{
 
 		fmt.Println("  price:")
 		fmt.Println("    time_unit:  ", alloc.TimeUnit)
-		fmt.Println("    read_price: ", calculateDownloadCost(alloc, GB, blockspermarker), "/ GB (by 64KB)")
+		fmt.Println("    read_price: ", calculateDownloadCost(alloc, GB, blocksPerMarker), "/ GB (by 64KB)")
 		fmt.Println("    write_price:", uploadCostFor1GB(alloc), fmt.Sprintf("/ GB / %s", alloc.TimeUnit))
 	},
 }
@@ -156,7 +156,7 @@ func sizeInGB(size int64) float64 {
 	return float64(size) / GB
 }
 
-func calculateDownloadCost(alloc *sdk.Allocation, fileSize int64, blockspermarker int) common.Balance {
+func calculateDownloadCost(alloc *sdk.Allocation, fileSize int64, blocksPerMarker int) common.Balance {
 	chunkSize := fileref.CHUNK_SIZE
 	dataShards := alloc.DataShards
 
@@ -164,30 +164,30 @@ func calculateDownloadCost(alloc *sdk.Allocation, fileSize int64, blockspermarke
 	singleShardSize := fileref.CHUNK_SIZE * dataShards
 	totalShards := int(math.Ceil(float64(fileSize) / float64(singleShardSize)))
 
-	// Currently if for example, blockspermarker is 10, and there are say 11 shards. First 10 shards will be covered
-	// by first readmarker. Second readmarker is signed with blockspermarker number of blocks i.e. 10
+	// Currently if for example, blocksPerMarker is 10, and there are say 11 shards. First 10 shards will be covered
+	// by first readmarker. Second readmarker is signed with blocksPerMarker number of blocks i.e. 10
 	// so user ends up paying for 20 shards
-	totRMsForEachBlobber := int(math.Ceil(float64(totalShards) / float64(blockspermarker)))
+	totRMsForEachBlobber := int(math.Ceil(float64(totalShards) / float64(blocksPerMarker)))
 
 	var cost float64
 
 	for _, d := range alloc.BlobberDetails {
 		readPrice := d.Terms.ReadPrice.ToToken()
 		for i := 0; i < totRMsForEachBlobber; i++ {
-			cost += sizeInGB(int64(chunkSize)*int64(blockspermarker)) * float64(readPrice)
+			cost += sizeInGB(int64(chunkSize)*int64(blocksPerMarker)) * float64(readPrice)
 		}
 	}
 
 	return common.ToBalance(cost)
 }
-func downloadCost(alloc *sdk.Allocation, meta *sdk.ConsolidatedFileMeta, blockspermarker int) {
+func downloadCost(alloc *sdk.Allocation, meta *sdk.ConsolidatedFileMeta, blocksPerMarker int) {
 	if meta.Type != fileref.FILE {
 		log.Fatal("not a file")
 	}
 	// singleShardSize collection of data-shards
 	singleShardSize := fileref.CHUNK_SIZE * alloc.DataShards
 	totalShards := int(math.Ceil(float64(meta.ActualFileSize) / float64(singleShardSize)))
-	requiredBalance := calculateDownloadCost(alloc, meta.ActualFileSize, blockspermarker)
+	requiredBalance := calculateDownloadCost(alloc, meta.ActualFileSize, blocksPerMarker)
 
 	fmt.Printf("%s tokens for %d 64KB blocks (%s) of %s\n", requiredBalance, totalShards*(alloc.DataShards+alloc.ParityShards),
 		common.Size(meta.Size), meta.Path)
@@ -212,14 +212,14 @@ var getDownloadCostCmd = &cobra.Command{
 		}
 
 		allocID = cmd.Flag("allocation").Value.String()
-		blockspermarker, err := cmd.Flags().GetInt("blockspermarker")
+		blocksPerMarker, err := cmd.Flags().GetInt("blocks-per-marker")
 
 		if err != nil {
-			log.Fatal("invalid blockspermarker value: ", err)
+			log.Fatal("invalid blocks-per-marker value: ", err)
 		}
 
-		if blockspermarker <= 0 {
-			log.Fatal("blockspermarker value cannot be <= 0")
+		if blocksPerMarker <= 0 {
+			log.Fatal("blocks-per-marker value cannot be <= 0")
 		}
 
 		var (
@@ -267,7 +267,7 @@ var getDownloadCostCmd = &cobra.Command{
 				log.Fatal("can't get file meta: ", err)
 			}
 
-			downloadCost(alloc, meta, blockspermarker)
+			downloadCost(alloc, meta, blocksPerMarker)
 			return
 		}
 
@@ -290,7 +290,7 @@ var getDownloadCostCmd = &cobra.Command{
 			log.Fatal("can't get file meta: ", err)
 		}
 
-		downloadCost(alloc, meta, blockspermarker)
+		downloadCost(alloc, meta, blocksPerMarker)
 	},
 }
 
@@ -399,14 +399,14 @@ func init() {
 	rootCmd.AddCommand(getUploadCostCmd)
 
 	getallocationCmd.PersistentFlags().String("allocation", "", "Allocation ID")
-	getallocationCmd.PersistentFlags().Int("blockspermarker", 10, "blocks signed per Read Marker")
+	getallocationCmd.PersistentFlags().Int("blocks-per-marker", 10, "blocks signed per Read Marker")
 	getallocationCmd.MarkFlagRequired("allocation")
 	getallocationCmd.Flags().Bool("json", false, "pass this option to print response as json data")
 
 	dcpf := getDownloadCostCmd.PersistentFlags()
 	dcpf.String("allocation", "", "allocation ID, required")
 	dcpf.String("remotepath", "", "remote path of file")
-	dcpf.Int("blockspermarker", 10, "blocks signed per Read Marker")
+	dcpf.Int("blocks-per-marker", 10, "blocks signed per Read Marker")
 	dcpf.String("authticket", "", "authticket")
 	dcpf.String("lookuphash", "", "lookuphash, for the remote file")
 	getDownloadCostCmd.MarkFlagRequired("allocation")
