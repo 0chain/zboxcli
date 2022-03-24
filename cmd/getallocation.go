@@ -70,7 +70,7 @@ var getallocationCmd = &cobra.Command{
 			return fmt.Sprintf("%s-%s", common.Balance(pr.Min), common.Balance(pr.Max))
 		}
 
-		blocksPerMarker, err := cmd.Flags().GetInt("blocksPerMarker")
+		blocksPerMarker, err := cmd.Flags().GetInt("blocks-per-marker")
 		if err != nil {
 			log.Fatal("invalid blocks-per-marker. Error: ", err)
 		}
