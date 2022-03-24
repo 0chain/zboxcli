@@ -164,7 +164,7 @@ var syncCmd = &cobra.Command{
 					chunkSize:     chunkSize,
 					attrs:         attrs,
 					// isUpdate:      false,
-					isRepair: true,
+					// isRepair: false,
 				}, statusBar)
 
 				// if len(encryptpath) != 0 && strings.Contains(lPath, encryptpath) {
