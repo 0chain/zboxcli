@@ -115,7 +115,17 @@ var uploadCmd = &cobra.Command{
 
 		chunkSize, _ := cmd.Flags().GetInt("chunksize")
 
-		if err := startChunkedUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar, false); err != nil {
+		if err := startChunkedUpload(cmd, allocationObj,
+			chunkedUploadArgs{
+				localPath:     localpath,
+				thumbnailPath: thumbnailpath,
+				remotePath:    remotepath,
+				encrypt:       encrypt,
+				chunkSize:     chunkSize,
+				attrs:         attrs,
+				// isUpdate:      false,
+				// isRepair:      false,
+			}, statusBar); err != nil {
 			PrintError("Upload failed.", err.Error())
 			os.Exit(1)
 		}
@@ -285,9 +295,21 @@ var streamCmd = &cobra.Command{
 	},
 }
 
-func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath, thumbnailPath, remotePath string, encrypt bool, chunkSize int, attrs fileref.Attributes, statusBar sdk.StatusCallback, isUpdate bool) error {
+type chunkedUploadArgs struct {
+	localPath     string
+	remotePath    string
+	thumbnailPath string
 
-	fileReader, err := os.Open(localPath)
+	encrypt   bool
+	chunkSize int
+	isUpdate  bool
+	isRepair  bool
+	attrs     fileref.Attributes
+}
+
+func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, args chunkedUploadArgs, statusBar sdk.StatusCallback) error {
+
+	fileReader, err := os.Open(args.localPath)
 	if err != nil {
 		return err
 	}
@@ -303,29 +325,29 @@ func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, local
 		return err
 	}
 
-	remotePath = zboxutil.RemoteClean(remotePath)
+	remotePath := zboxutil.RemoteClean(args.remotePath)
 	isabs := zboxutil.IsRemoteAbs(remotePath)
 	if !isabs {
 		err = thrown.New("invalid_path", "Path should be valid and absolute")
 		return err
 	}
-	remotePath = zboxutil.GetFullRemotePath(localPath, remotePath)
+	remotePath = zboxutil.GetFullRemotePath(args.localPath, remotePath)
 
 	_, fileName := filepath.Split(remotePath)
 
 	fileMeta := sdk.FileMeta{
-		Path:       localPath,
+		Path:       args.localPath,
 		ActualSize: fileInfo.Size(),
 		MimeType:   mimeType,
 		RemoteName: fileName,
 		RemotePath: remotePath,
-		Attributes: attrs,
+		Attributes: args.attrs,
 	}
 
-	ChunkedUpload, err := sdk.CreateChunkedUpload(util.GetHomeDir(), allocationObj, fileMeta, fileReader, isUpdate, false,
-		sdk.WithThumbnailFile(thumbnailPath),
-		sdk.WithChunkSize(int64(chunkSize)),
-		sdk.WithEncrypt(encrypt),
+	ChunkedUpload, err := sdk.CreateChunkedUpload(util.GetHomeDir(), allocationObj, fileMeta, fileReader, args.isUpdate, args.isRepair,
+		sdk.WithThumbnailFile(args.thumbnailPath),
+		sdk.WithChunkSize(int64(args.chunkSize)),
+		sdk.WithEncrypt(args.encrypt),
 		sdk.WithStatusCallback(statusBar))
 	if err != nil {
 		return err
