@@ -27,6 +27,4 @@ sp_lock.sh
 rp_lock.sh
 .idea/
 .vscode
-cred
-publiccred
-.gitignore
+go.work
