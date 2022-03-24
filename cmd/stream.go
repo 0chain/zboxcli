@@ -13,15 +13,14 @@ import (
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zboxcore/zboxutil"
 	"github.com/0chain/zboxcli/util"
-
 	"github.com/spf13/cobra"
 )
 
-// uploadCmd represents upload command
-var uploadCmd = &cobra.Command{
-	Use:   "upload",
-	Short: "upload file to blobbers",
-	Long:  `upload file to blobbers`,
+// streamCmd represents upload command with --live flag
+var streamCmd = &cobra.Command{
+	Use:   "stream",
+	Short: "capture video and audio streaming form local devices, and upload",
+	Long:  "capture video and audio streaming form local devices, and upload",
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags()              // fflags is a *flag.FlagSet
@@ -47,7 +46,6 @@ var uploadCmd = &cobra.Command{
 		}
 		remotepath := cmd.Flag("remotepath").Value.String()
 		localpath := cmd.Flag("localpath").Value.String()
-		thumbnailpath := cmd.Flag("thumbnailpath").Value.String()
 		encrypt, _ := cmd.Flags().GetBool("encrypt")
 		commit, _ := cmd.Flags().GetBool("commit")
 
@@ -59,10 +57,8 @@ var uploadCmd = &cobra.Command{
 		}
 		var attrs fileref.Attributes
 		if fflags.Changed("attr-who-pays-for-reads") {
-			var (
-				wp  common.WhoPays
-				wps string
-			)
+			var wp common.WhoPays
+			var wps string
 			if wps, err = fflags.GetString("attr-who-pays-for-reads"); err != nil {
 				log.Fatalf("getting 'attr-who-pays-for-reads' flag: %v", err)
 			}
@@ -74,8 +70,11 @@ var uploadCmd = &cobra.Command{
 
 		chunkSize, _ := cmd.Flags().GetInt("chunksize")
 
-		if err := startChunkedUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar, false); err != nil {
-			PrintError("Upload failed.", err.Error())
+		// capture video and audio from local default camera and micrlphone, and upload it to zcn
+		err = startLiveUpload(cmd, allocationObj, localpath, remotepath, encrypt, chunkSize, attrs)
+
+		if err != nil {
+			PrintError("Upload failed.", err)
 			os.Exit(1)
 		}
 		wg.Wait()
@@ -92,20 +91,18 @@ var uploadCmd = &cobra.Command{
 	},
 }
 
-func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath, thumbnailPath, remotePath string, encrypt bool, chunkSize int, attrs fileref.Attributes, statusBar sdk.StatusCallback, isUpdate bool) error {
+func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath string, remotePath string, encrypt bool, chunkSize int, attrs fileref.Attributes) error {
 
-	fileReader, err := os.Open(localPath)
-	if err != nil {
-		return err
-	}
-	defer fileReader.Close()
+	delay, _ := cmd.Flags().GetInt("delay")
 
-	fileInfo, err := fileReader.Stat()
+	reader, err := sdk.CreateFfmpegRecorder(localPath, delay)
 	if err != nil {
 		return err
 	}
 
-	mimeType, err := zboxutil.GetFileContentType(fileReader)
+	defer reader.Close()
+
+	mimeType, err := reader.GetFileContentType()
 	if err != nil {
 		return err
 	}
@@ -120,41 +117,46 @@ func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, local
 
 	_, fileName := filepath.Split(remotePath)
 
-	fileMeta := sdk.FileMeta{
-		Path:       localPath,
-		ActualSize: fileInfo.Size(),
+	liveMeta := sdk.LiveMeta{
 		MimeType:   mimeType,
 		RemoteName: fileName,
 		RemotePath: remotePath,
 		Attributes: attrs,
 	}
 
-	chunkedUpload, err := sdk.CreateChunkedUpload(util.GetHomeDir(), allocationObj, fileMeta, fileReader, isUpdate, false,
-		sdk.WithThumbnailFile(thumbnailPath),
-		sdk.WithChunkSize(int64(chunkSize)),
-		sdk.WithEncrypt(encrypt),
-		sdk.WithStatusCallback(statusBar))
-	if err != nil {
-		return err
-	}
+	liveUpload := sdk.CreateLiveUpload(util.GetHomeDir(), allocationObj, liveMeta, reader,
+		sdk.WithLiveChunkSize(chunkSize),
+		sdk.WithLiveEncrypt(encrypt),
+		sdk.WithLiveStatusCallback(func() sdk.StatusCallback {
+			wg := &sync.WaitGroup{}
+			statusBar := &StatusBar{wg: wg}
+			wg.Add(1)
 
-	return chunkedUpload.Start()
+			return statusBar
+		}),
+		sdk.WithLiveDelay(delay))
+
+	return liveUpload.Start()
 }
 
 func init() {
-	rootCmd.AddCommand(uploadCmd)
 
-	uploadCmd.PersistentFlags().String("allocation", "", "Allocation ID")
-	uploadCmd.PersistentFlags().String("remotepath", "", "Remote path to upload")
-	uploadCmd.PersistentFlags().String("localpath", "", "Local path of file to upload")
-	uploadCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
-	uploadCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
-	uploadCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
-	uploadCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
-	uploadCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "chunk size")
+	// stream Command
+	rootCmd.AddCommand(streamCmd)
+	streamCmd.PersistentFlags().String("allocation", "", "Allocation ID")
+	streamCmd.PersistentFlags().String("remotepath", "", "Remote path to upload")
+	streamCmd.PersistentFlags().String("localpath", "", "Local path of file to upload")
+	streamCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
+	streamCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
+	streamCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
+	streamCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
 
-	uploadCmd.MarkFlagRequired("allocation")
-	uploadCmd.MarkFlagRequired("remotepath")
-	uploadCmd.MarkFlagRequired("localpath")
+	streamCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "chunk size")
+
+	streamCmd.Flags().Int("delay", 5, "set segment duration to seconds.")
+
+	streamCmd.MarkFlagRequired("allocation")
+	streamCmd.MarkFlagRequired("remotepath")
+	streamCmd.MarkFlagRequired("localpath")
 
 }
