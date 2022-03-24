@@ -295,11 +295,12 @@ var blobberUpdateCmd = &cobra.Command{
 			blob.StakePoolSettings.ServiceCharge = sc
 		}
 
-		if _, err = sdk.UpdateBlobberSettings(blob); err != nil {
+		var n int64
+		if _, n, err = sdk.UpdateBlobberSettings(blob); err != nil {
 			log.Fatal(err)
 		}
-
 		fmt.Println("blobber settings updated successfully")
+		fmt.Println("Nonce:", n)
 
 	},
 }

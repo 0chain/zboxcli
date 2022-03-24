@@ -104,12 +104,13 @@ var wpLock = &cobra.Command{
 			}
 		}
 
-		err = sdk.WritePoolLock(duration, allocID, blobberID,
+		_, n, err := sdk.WritePoolLock(duration, allocID, blobberID,
 			zcncore.ConvertToValue(tokens), zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to lock tokens in write pool: %v", err)
 		}
 		fmt.Println("locked")
+		fmt.Println("Nonce:", n)
 	},
 }
 
@@ -142,11 +143,13 @@ var wpUnlock = &cobra.Command{
 			}
 		}
 
-		err = sdk.WritePoolUnlock(poolID, zcncore.ConvertToValue(fee))
+		_, n, err := sdk.WritePoolUnlock(poolID, zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to unlock tokens in write pool: %v", err)
 		}
 		fmt.Println("unlocked")
+		fmt.Println("Nonce:", n)
+
 	},
 }
 

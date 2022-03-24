@@ -65,11 +65,12 @@ var newallocationCmd = &cobra.Command{
 				log.Fatal("Only positive values are allowed for --lock")
 			}
 
-			allocationID, err := sdk.CreateFreeAllocation(freeStorageMarker, lock)
+			allocationID, n, err := sdk.CreateFreeAllocation(freeStorageMarker, lock)
 			if err != nil {
 				log.Fatal("Error creating free allocation: ", err)
 			}
-			log.Print("Allocation created: ", allocationID)
+			log.Println("Allocation created: ", allocationID)
+			log.Println("Nonce:", n)
 			storeAllocation(allocationID)
 			return
 		}
@@ -171,8 +172,9 @@ var newallocationCmd = &cobra.Command{
 			}
 		}
 		var allocationID string
+		var n int64
 		if len(owner) == 0 {
-			allocationID, err = sdk.CreateAllocation(*datashards, *parityshards,
+			allocationID, n, err = sdk.CreateAllocation(*datashards, *parityshards,
 				*size, expireAt, readPrice, writePrice, mcct, lock)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
@@ -188,13 +190,14 @@ var newallocationCmd = &cobra.Command{
 				}
 			}
 
-			allocationID, err = sdk.CreateAllocationForOwner(owner, ownerPublicKey, *datashards, *parityshards,
+			allocationID, n, err = sdk.CreateAllocationForOwner(owner, ownerPublicKey, *datashards, *parityshards,
 				*size, expireAt, readPrice, writePrice, mcct, lock, blockchain.GetPreferredBlobbers())
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
 		}
-		log.Print("Allocation created: ", allocationID)
+		log.Println("Allocation created: ", allocationID)
+		log.Println("Nonce:", n)
 		storeAllocation(allocationID)
 
 	},

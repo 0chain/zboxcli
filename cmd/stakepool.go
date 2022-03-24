@@ -173,12 +173,13 @@ var spLock = &cobra.Command{
 		}
 
 		var poolID string
-		poolID, err = sdk.StakePoolLock(blobberID,
+		poolID, n, err := sdk.StakePoolLock(blobberID,
 			zcncore.ConvertToValue(tokens), zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to lock tokens in stake pool: %v", err)
 		}
 		fmt.Println("tokens locked, pool id:", poolID)
+		fmt.Println("Nonce:", n)
 	},
 }
 
@@ -217,8 +218,7 @@ var spUnlock = &cobra.Command{
 			}
 		}
 
-		unstake, err := sdk.StakePoolUnlock(blobberID, poolID, zcncore.ConvertToValue(fee))
-
+		unstake, n, err := sdk.StakePoolUnlock(blobberID, poolID, zcncore.ConvertToValue(fee))
 		// an error
 		if err != nil {
 			log.Fatalf("Failed to unlock tokens in stake pool: %v", err)
@@ -235,6 +235,7 @@ var spUnlock = &cobra.Command{
 
 		// success
 		fmt.Println("tokens has unlocked, pool deleted")
+		fmt.Println("Nonce:", n)
 	},
 }
 
