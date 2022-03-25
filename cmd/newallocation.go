@@ -70,7 +70,7 @@ var newallocationCmd = &cobra.Command{
 				log.Fatal("Error creating free allocation: ", err)
 			}
 			log.Println("Allocation created: ", allocationID)
-			log.Println("Nonce:", n)
+			//log.Println("nonce:", n)
 			storeAllocation(allocationID)
 			return
 		}
@@ -197,7 +197,7 @@ var newallocationCmd = &cobra.Command{
 			}
 		}
 		log.Println("Allocation created: ", allocationID)
-		log.Println("Nonce:", n)
+		//log.Println("nonce:", n)
 		storeAllocation(allocationID)
 
 	},

@@ -300,7 +300,7 @@ var blobberUpdateCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 		fmt.Println("blobber settings updated successfully")
-		fmt.Println("Nonce:", n)
+		fmt.Println("nonce:", n)
 
 	},
 }

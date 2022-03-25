@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
-	"github.com/0chain/zboxcli/util"
 	"github.com/0chain/gosdk/zcncore"
+	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )
 
@@ -110,7 +110,7 @@ var wpLock = &cobra.Command{
 			log.Fatalf("Failed to lock tokens in write pool: %v", err)
 		}
 		fmt.Println("locked")
-		fmt.Println("Nonce:", n)
+		fmt.Println("nonce:", n)
 	},
 }
 
@@ -148,7 +148,7 @@ var wpUnlock = &cobra.Command{
 			log.Fatalf("Failed to unlock tokens in write pool: %v", err)
 		}
 		fmt.Println("unlocked")
-		fmt.Println("Nonce:", n)
+		fmt.Println("nonce:", n)
 
 	},
 }
@@ -161,7 +161,6 @@ func init() {
 	wpInfo.PersistentFlags().String("allocation", "",
 		"allocation, optional")
 	wpInfo.Flags().Bool("json", false, "pass this option to print response as json data")
-
 
 	wpLock.PersistentFlags().Duration("duration", 0,
 		"lock duration, required")

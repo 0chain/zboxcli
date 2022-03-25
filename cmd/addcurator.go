@@ -32,13 +32,13 @@ var addCuratorCmd = &cobra.Command{
 			log.Fatal("invalid 'curator_id' flag: ", err)
 		}
 
-		_, n,  err := sdk.AddCurator(curatorID, allocationID)
+		_, n, err := sdk.AddCurator(curatorID, allocationID)
 
 		if err != nil {
 			log.Fatal("Error adding curator:", err)
 		}
 		log.Println(curatorID + " added " + curatorID + " as a curator to allocation " + allocationID)
-		log.Println("Nonce:", n)
+		//log.Println("nonce:", n)
 	},
 }
 

@@ -179,7 +179,7 @@ var spLock = &cobra.Command{
 			log.Fatalf("Failed to lock tokens in stake pool: %v", err)
 		}
 		fmt.Println("tokens locked, pool id:", poolID)
-		fmt.Println("Nonce:", n)
+		fmt.Println("nonce:", n)
 	},
 }
 
@@ -235,7 +235,7 @@ var spUnlock = &cobra.Command{
 
 		// success
 		fmt.Println("tokens has unlocked, pool deleted")
-		fmt.Println("Nonce:", n)
+		fmt.Println("nonce:", n)
 	},
 }
 

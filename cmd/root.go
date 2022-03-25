@@ -195,7 +195,7 @@ func initConfig() {
 		fmt.Println("Error in sdk init", err)
 		os.Exit(1)
 	}
-	
+
 	// additional settings depending network latency
 	blockchain.SetMaxTxnQuery(cfg.MaxTxnQuery)
 	blockchain.SetQuerySleepTime(cfg.QuerySleepTime)
@@ -215,7 +215,7 @@ func initConfig() {
 			fmt.Printf("Failed to create read pool: %v\n", err)
 			os.Exit(1)
 		}
-		fmt.Println("Nonce:", n)
+		fmt.Println("nonce:", n)
 		fmt.Println("Read pool created successfully")
 	}
 }

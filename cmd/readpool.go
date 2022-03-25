@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
-	"github.com/0chain/zboxcli/util"
 	"github.com/0chain/gosdk/zcncore"
+	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )
 
@@ -24,7 +24,7 @@ var rpCreate = &cobra.Command{
 			log.Fatalf("Failed to create read pool: %v\n", err)
 		}
 		fmt.Println("Read pool created successfully")
-		fmt.Println("Nonce:", n)
+		fmt.Println("nonce:", n)
 	},
 }
 
@@ -64,7 +64,6 @@ var rpInfo = &cobra.Command{
 			}
 		}
 		doJSON, _ := cmd.Flags().GetBool("json")
-
 
 		var info *sdk.AllocationPoolStats
 		if info, err = sdk.GetReadPoolInfo(""); err != nil {
@@ -144,7 +143,7 @@ var rpLock = &cobra.Command{
 			log.Fatalf("Failed to lock tokens in read pool: %v", err)
 		}
 		fmt.Println("locked")
-		log.Println("Nonce:", n)
+		//log.Println("nonce:", n)
 	},
 }
 
@@ -182,7 +181,7 @@ var rpUnlock = &cobra.Command{
 			log.Fatalf("Failed to unlock tokens in read pool: %v", err)
 		}
 		fmt.Println("unlocked")
-		fmt.Println("Nonce:", n)
+		fmt.Println("nonce:", n)
 	},
 }
 
