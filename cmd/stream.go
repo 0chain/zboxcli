@@ -71,7 +71,7 @@ var streamCmd = &cobra.Command{
 		chunkSize, _ := cmd.Flags().GetInt("chunksize")
 
 		// capture video and audio from local default camera and micrlphone, and upload it to zcn
-		err = startLiveUpload(cmd, allocationObj, localpath, remotepath, encrypt, chunkSize, attrs)
+		err = startLiveUpload(cmd, allocationObj, localpath, remotepath, encrypt, chunkSize, streamChunkNumber, attrs)
 
 		if err != nil {
 			PrintError("Upload failed.", err)
@@ -91,7 +91,7 @@ var streamCmd = &cobra.Command{
 	},
 }
 
-func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath string, remotePath string, encrypt bool, chunkSize int, attrs fileref.Attributes) error {
+func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath string, remotePath string, encrypt bool, chunkSize, chunkNumber int, attrs fileref.Attributes) error {
 
 	delay, _ := cmd.Flags().GetInt("delay")
 
@@ -126,6 +126,7 @@ func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPat
 
 	liveUpload := sdk.CreateLiveUpload(util.GetHomeDir(), allocationObj, liveMeta, reader,
 		sdk.WithLiveChunkSize(chunkSize),
+		sdk.WithLiveChunkNumber(chunkNumber),
 		sdk.WithLiveEncrypt(encrypt),
 		sdk.WithLiveStatusCallback(func() sdk.StatusCallback {
 			wg := &sync.WaitGroup{}
@@ -138,6 +139,8 @@ func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPat
 
 	return liveUpload.Start()
 }
+
+var streamChunkNumber int
 
 func init() {
 
@@ -152,6 +155,7 @@ func init() {
 	streamCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
 
 	streamCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "chunk size")
+	streamCmd.Flags().IntVarP(&streamChunkNumber, "chunknumber", "", 1, "how many chunks should be uploaded in a http request")
 
 	streamCmd.Flags().Int("delay", 5, "set segment duration to seconds.")
 
