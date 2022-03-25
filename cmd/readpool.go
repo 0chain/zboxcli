@@ -143,7 +143,7 @@ var rpLock = &cobra.Command{
 			log.Fatalf("Failed to lock tokens in read pool: %v", err)
 		}
 		fmt.Println("locked")
-		//log.Println("nonce:", n)
+		n = n //log.Println("nonce:", n)
 	},
 }
 

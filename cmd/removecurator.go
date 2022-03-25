@@ -37,7 +37,7 @@ var removeCuratorCmd = &cobra.Command{
 			log.Fatal("Error adding curator:", err)
 		}
 		log.Println(curatorID + " removed " + curatorID + " as a curator to allocation " + allocationID)
-		//log.Println("nonce:", n)
+		n = n //log.Println("nonce:", n)
 	},
 }
 

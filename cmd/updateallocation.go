@@ -37,7 +37,7 @@ var updateAllocationCmd = &cobra.Command{
 				log.Fatal("Error free update allocation: ", err)
 			}
 			log.Println("Allocation updated with txId : " + txnHash)
-			//log.Println("nonce:", n)
+			n = n //log.Println("nonce:", n)
 			return
 		}
 
@@ -78,7 +78,7 @@ var updateAllocationCmd = &cobra.Command{
 			log.Fatal("Error updating allocation:", err)
 		}
 		log.Println("Allocation updated with txId : " + txnHash)
-		//log.Println("nonce:", n)
+		n = n //log.Println("nonce:", n)
 	},
 }
 

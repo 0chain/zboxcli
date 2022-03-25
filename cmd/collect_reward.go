@@ -45,7 +45,7 @@ var collectRewards = &cobra.Command{
 			log.Fatal("Error paying reward:", err)
 		}
 		log.Println("transferred reward tokens")
-		//log.Println("nonce:", n)
+		n = n //log.Println("nonce:", n)
 	},
 }
 

@@ -58,7 +58,7 @@ and empties write pool moving left tokens to client.`,
 		}
 		// success
 		log.Print("Allocation finalized with txId : " + txnHash)
-		//log.Println("nonce:", n)
+		n = n //log.Println("nonce:", n)
 	},
 }
 
@@ -89,7 +89,7 @@ allocation flow.`,
 			log.Fatal("Error creating allocation:", err)
 		}
 		log.Println("Allocation canceled with txId : " + txnHash)
-		//log.Println("nonce:", n)
+		n = n //log.Println("nonce:", n)
 	},
 }
 

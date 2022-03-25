@@ -38,7 +38,7 @@ var addCmd = &cobra.Command{
 			log.Fatal("Error adding free storage assigner:", err)
 		}
 		log.Println(name + " added as free storage assigner")
-		//log.Println("nonce:", n)
+		n = n //log.Println("nonce:", n)
 
 	},
 }
