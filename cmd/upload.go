@@ -17,6 +17,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var uploadChunkNumber int = 1
+
 // uploadCmd represents upload command
 var uploadCmd = &cobra.Command{
 	Use:   "upload",
@@ -81,6 +83,7 @@ var uploadCmd = &cobra.Command{
 				remotePath:    remotepath,
 				encrypt:       encrypt,
 				chunkSize:     chunkSize,
+				chunkNumber:   uploadChunkNumber,
 				attrs:         attrs,
 				// isUpdate:      false,
 				// isRepair:      false,
@@ -107,11 +110,12 @@ type chunkedUploadArgs struct {
 	remotePath    string
 	thumbnailPath string
 
-	encrypt   bool
-	chunkSize int
-	isUpdate  bool
-	isRepair  bool
-	attrs     fileref.Attributes
+	encrypt     bool
+	chunkSize   int
+	chunkNumber int
+	isUpdate    bool
+	isRepair    bool
+	attrs       fileref.Attributes
 }
 
 func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, args chunkedUploadArgs, statusBar sdk.StatusCallback) error {
@@ -151,11 +155,19 @@ func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, args 
 		Attributes: args.attrs,
 	}
 
-	chunkedUpload, err := sdk.CreateChunkedUpload(util.GetHomeDir(), allocationObj, fileMeta, fileReader, args.isUpdate, args.isRepair,
+	options := []sdk.ChunkedUploadOption{
 		sdk.WithThumbnailFile(args.thumbnailPath),
 		sdk.WithChunkSize(int64(args.chunkSize)),
 		sdk.WithEncrypt(args.encrypt),
-		sdk.WithStatusCallback(statusBar))
+		sdk.WithStatusCallback(statusBar),
+		sdk.WithChunkNumber(args.chunkNumber),
+	}
+
+	chunkedUpload, err := sdk.CreateChunkedUpload(util.GetHomeDir(), allocationObj,
+		fileMeta, fileReader,
+		args.isUpdate, args.isRepair,
+		options...)
+
 	if err != nil {
 		return err
 	}
@@ -174,6 +186,7 @@ func init() {
 	uploadCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
 	uploadCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
 	uploadCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "chunk size")
+	uploadCmd.Flags().IntVarP(&uploadChunkNumber, "chunknumber", "", 1, "how many chunks should be uploaded in a http request")
 
 	uploadCmd.MarkFlagRequired("allocation")
 	uploadCmd.MarkFlagRequired("remotepath")
