@@ -24,7 +24,7 @@ var rpCreate = &cobra.Command{
 			log.Fatalf("Failed to create read pool: %v\n", err)
 		}
 		fmt.Println("Read pool created successfully")
-		fmt.Println("nonce:", n)
+		n = n //log.Println("nonce:", n)
 	},
 }
 
@@ -181,7 +181,7 @@ var rpUnlock = &cobra.Command{
 			log.Fatalf("Failed to unlock tokens in read pool: %v", err)
 		}
 		fmt.Println("unlocked")
-		fmt.Println("nonce:", n)
+		n = n //log.Println("nonce:", n)
 	},
 }
 

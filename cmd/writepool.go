@@ -110,7 +110,7 @@ var wpLock = &cobra.Command{
 			log.Fatalf("Failed to lock tokens in write pool: %v", err)
 		}
 		fmt.Println("locked")
-		fmt.Println("nonce:", n)
+		n = n //log.Println("nonce:", n)
 	},
 }
 
@@ -148,7 +148,7 @@ var wpUnlock = &cobra.Command{
 			log.Fatalf("Failed to unlock tokens in write pool: %v", err)
 		}
 		fmt.Println("unlocked")
-		fmt.Println("nonce:", n)
+		n = n //log.Println("nonce:", n)
 
 	},
 }

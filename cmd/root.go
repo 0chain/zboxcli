@@ -215,7 +215,7 @@ func initConfig() {
 			fmt.Printf("Failed to create read pool: %v\n", err)
 			os.Exit(1)
 		}
-		fmt.Println("nonce:", n)
+		n = n //log.Println("nonce:", n)
 		fmt.Println("Read pool created successfully")
 	}
 }
