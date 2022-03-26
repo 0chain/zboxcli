@@ -930,6 +930,7 @@ Use share command to generate an authtoken that provides authorization to the ho
 * --remotepath string Remote path to share
 * --expiration-seconds number The seconds after which the ticket will expire(defaults to number of seconds in 90 days 
 if option not provided)
+* --available-after Timelock for private file that makes the file available for download at certain time. 4 input formats are supported: +1h30m, +30, 1647858200 and 2022-03-21 10:21:38
 
 `auth ticket` can be used with  [download](#download), [commit](#commit) and [list](#list), 
 [meta](#get-metadata) and [get_download_cost](#download-cost), but only for files in 
@@ -940,9 +941,10 @@ the pre-defined remote path.
 | allocation          | yes      | allocation id                                                     | string       |
 | clientid            | no       | id of user to share file with, leave blank for public share       | string       |
 | encryptionpublickey | no       | public key of the client to share file with, required if clientId | string       |
-| expiration-seconds | no       | seconds before `auth ticket` expires | int       |
+| expiration-seconds  | no       | seconds before `auth ticket` expires                              | int          |
 | remotepath          | yes      | remote path of file to share                                      | string       |
-| revoke          | no      | revoke share for remote path                                     | flag       |
+| revoke              | no       | revoke share for remote path                                      | flag         |
+| available-after     | no       | timelock for private file that makes the file available for download at certain time. 4 input formats are supported: +1h30m, +30, 1647858200 and 2022-03-21 10:21:38. default value is current local time|string  |
 
 <details>
   <summary>share</summary>
