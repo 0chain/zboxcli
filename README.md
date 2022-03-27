@@ -677,6 +677,7 @@ The user must be the owner of the allocation.You can request the file be encrypt
 | remotepath              | yes      | remote path to upload file to, use to access file later            |         | string                 |
 | thumbnailpath           | no       | local path of thumbnaSil                                           |         | file path              |
 | chunksize               | no       | chunk size                                                         | 65536   | int                    |
+| chunknumber             | no       | how many chunks should be uploaded in a http request               | 1       | int                    |
 
 
 <details>
@@ -729,10 +730,11 @@ The user must be the owner of the allocation.You can request the file be encrypt
 | allocation              | yes      | allocation id, sender must be allocation owner                     |         | string                 |
 | commit                  | no       | save metadata to blockchain                                        | false   | boolean                |
 | encrypt                 | no       | encrypt file before upload                                         | false   | boolean                |
-| localpath               | yes      | local path of segment files to download, generate and upload                                   |         | file path              |
+| localpath               | yes      | local path of segment files to download, generate and upload       |         | file path              |
 | remotepath              | yes      | remote path to upload file to, use to access file later            |         | string                 |
 | thumbnailpath           | no       | local path of thumbnaSil                                           |         | file path              |
 | chunksize               | no       | chunk size                                                         | 65536   | int                    |
+| chunknumber             | no       | how many chunks should be uploaded in a http request               | 1       | int                    |
 | delay                   | no       | set segment duration to seconds.                                   | 5       | int                    |
 
 <details>
@@ -755,10 +757,11 @@ The user must be the owner of the allocation.You can request the file be encrypt
 | allocation              | yes      | allocation id, sender must be allocation owner                     |         | string                 |
 | commit                  | no       | save metadata to blockchain                                        | false   | boolean                |
 | encrypt                 | no       | encrypt file before upload                                         | false   | boolean                |
-| localpath               | yes      | local path of segment files to download, generate and upload                                   |         | file path              |
+| localpath               | yes      | local path of segment files to download, generate and upload       |         | file path              |
 | remotepath              | yes      | remote path to upload file to, use to access file later            |         | string                 |
 | thumbnailpath           | no       | local path of thumbnaSil                                           |         | file path              |
 | chunksize               | no       | chunk size                                                         | 65536   | int                    |
+| chunknumber             | no       | how many chunks should be uploaded in a http request               | 1       | int                    |
 | delay                   | no       | set segment duration to seconds.                                   | 5       | int                    |
 | feed                    | no       | set remote live feed to url.                                       | false   | url                    |
 | downloader-args         | no       | pass args to youtube-dl to download video. default is \"-q -f best\". | -q -f best | [youtube-dl](https://github.com/ytdl-org/youtube-dl/blob/master/README.md#options)|
@@ -875,6 +878,8 @@ can update a file.  To add collaborators to an allocation, use
 | thumbnailpath | no       | local fumbnail file to upload |         | file path    |
 | commit        | no       | save meta data to blockchain  | false   | boolean      |
 | chunksize     | no       | chunk size                    | 65536   | int          |
+| chunknumber   | no       | how many chunks should be uploaded in a http request   | 1       | int          |
+
 
 <details>
   <summary>update</summary>
@@ -925,6 +930,7 @@ Use share command to generate an authtoken that provides authorization to the ho
 * --remotepath string Remote path to share
 * --expiration-seconds number The seconds after which the ticket will expire(defaults to number of seconds in 90 days 
 if option not provided)
+* --available-after Timelock for private file that makes the file available for download at certain time. 4 input formats are supported: +1h30m, +30, 1647858200 and 2022-03-21 10:21:38
 
 `auth ticket` can be used with  [download](#download), [commit](#commit) and [list](#list), 
 [meta](#get-metadata) and [get_download_cost](#download-cost), but only for files in 
@@ -935,9 +941,10 @@ the pre-defined remote path.
 | allocation          | yes      | allocation id                                                     | string       |
 | clientid            | no       | id of user to share file with, leave blank for public share       | string       |
 | encryptionpublickey | no       | public key of the client to share file with, required if clientId | string       |
-| expiration-seconds | no       | seconds before `auth ticket` expires | int       |
+| expiration-seconds  | no       | seconds before `auth ticket` expires                              | int          |
 | remotepath          | yes      | remote path of file to share                                      | string       |
-| revoke          | no      | revoke share for remote path                                     | flag       |
+| revoke              | no       | revoke share for remote path                                      | flag         |
+| available-after     | no       | timelock for private file that makes the file available for download at certain time. 4 input formats are supported: +1h30m, +30, 1647858200 and 2022-03-21 10:21:38. default value is current local time|string  |
 
 <details>
   <summary>share</summary>
@@ -1167,11 +1174,12 @@ Only the allocation's owner can successfully run `sync`.
 | allocation  | yes      | allocation id                                                                                 |         | string       |
 | commit      | no       | commet metadata to blockchain                                                                 | false   | boolean      |
 | encryptpath | no       | local directory path to be uploaded as encrypted                                              | false   | boolean      |
-| excludepath  | no       | paths to exclude from sync                                                                    |         | string array |
+| excludepath  | no       | paths to exclude from sync                                                                   |         | string array |
 | localchache | no       | local chache of remote snapshot. Used for comparsion with remote. After sync will be updated. |         | string       |
 | localpath   | yes      | local directory to which to sync                                                              |         | file path    |
 | uploadonly  | no       | only upload and update files                                                                  | false   | boolean      |
 | chunksize   | no       | chunk size                                                                                    | 65536   | int          |
+| chunknumber | no       | how many chunks should be uploaded in a http request                                          | 1       | int          |
 
 <details>
   <summary>sync</summary>
