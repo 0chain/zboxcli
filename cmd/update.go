@@ -65,7 +65,17 @@ var updateCmd = &cobra.Command{
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
 
-		err = startChunkedUpload(cmd, allocationObj, localpath, thumbnailpath, remotepath, encrypt, chunkSize, attrs, statusBar, true)
+		err = startChunkedUpload(cmd, allocationObj, chunkedUploadArgs{
+			localPath:     localpath,
+			remotePath:    remotepath,
+			thumbnailPath: thumbnailpath,
+			encrypt:       encrypt,
+			chunkSize:     chunkSize,
+			chunkNumber:   updateChunkNumber,
+			attrs:         attrs,
+			isUpdate:      true,
+			// isRepair:      false,
+		}, statusBar)
 
 		if err != nil {
 			PrintError("Update failed.", err)
@@ -86,6 +96,8 @@ var updateCmd = &cobra.Command{
 	},
 }
 
+var updateChunkNumber int
+
 func init() {
 	rootCmd.AddCommand(updateCmd)
 	updateCmd.PersistentFlags().String("allocation", "", "Allocation ID")
@@ -96,6 +108,7 @@ func init() {
 	updateCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
 
 	updateCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "chunk size")
+	updateCmd.Flags().IntVarP(&updateChunkNumber, "chunknumber", "", 1, "how many chunks should be uploaded in a http request")
 
 	updateCmd.MarkFlagRequired("allocation")
 	updateCmd.MarkFlagRequired("localpath")
