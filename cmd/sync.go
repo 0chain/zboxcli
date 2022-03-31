@@ -156,7 +156,17 @@ var syncCmd = &cobra.Command{
 
 				encrypt := len(encryptpath) != 0 && strings.Contains(lPath, encryptpath)
 
-				err = startChunkedUpload(cmd, allocationObj, lPath, "", f.Path, encrypt, chunkSize, attrs, statusBar, false)
+				err = startChunkedUpload(cmd, allocationObj, chunkedUploadArgs{
+					localPath:     lPath,
+					thumbnailPath: "",
+					remotePath:    f.Path,
+					encrypt:       encrypt,
+					chunkSize:     chunkSize,
+					chunkNumber:   syncChunkNumber,
+					attrs:         attrs,
+					// isUpdate:      false,
+					// isRepair: false,
+				}, statusBar)
 
 				// if len(encryptpath) != 0 && strings.Contains(lPath, encryptpath) {
 				// 	err = allocationObj.EncryptAndUploadFile(lPath, f.Path, attrs, statusBar)
@@ -168,7 +178,18 @@ var syncCmd = &cobra.Command{
 
 				encrypt := len(encryptpath) != 0 && strings.Contains(lPath, encryptpath)
 
-				err = startChunkedUpload(cmd, allocationObj, lPath, "", f.Path, encrypt, chunkSize, f.Attributes, statusBar, true)
+				err = startChunkedUpload(cmd, allocationObj,
+					chunkedUploadArgs{
+						localPath:     lPath,
+						thumbnailPath: "",
+						remotePath:    f.Path,
+						encrypt:       encrypt,
+						chunkSize:     chunkSize,
+						chunkNumber:   syncChunkNumber,
+						attrs:         f.Attributes,
+						isUpdate:      true,
+						// isRepair: false,
+					}, statusBar)
 
 				// if len(encryptpath) != 0 && strings.Contains(lPath, encryptpath) {
 				// 	err = allocationObj.EncryptAndUpdateFile(lPath, f.Path,
@@ -271,6 +292,8 @@ var getDiffCmd = &cobra.Command{
 
 // statsCmd.Flags().Bool("json", false, "pass this option to print response as json data")
 
+var syncChunkNumber int
+
 func init() {
 	rootCmd.AddCommand(syncCmd)
 	rootCmd.AddCommand(getDiffCmd)
@@ -287,6 +310,7 @@ After sync complete, remote snapshot will be updated to the same file for next u
 	syncCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction - only works with uploadonly")
 
 	syncCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "chunk size")
+	syncCmd.Flags().IntVarP(&syncChunkNumber, "chunknumber", "", 1, "how many chunks should be uploaded in a http request")
 
 	getDiffCmd.PersistentFlags().String("allocation", "", "Allocation ID")
 	getDiffCmd.PersistentFlags().String("localpath", "", "Local dir path to sync")
