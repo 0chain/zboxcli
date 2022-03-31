@@ -322,7 +322,7 @@ the presence of the `free_storage` field.
 If not a `free_storage` update, then tokens will come from those locked. 
 Further we can add a blobber to the allocation,
 adding a blobber will allow a blobber to be removed.
-An increase in blobber count will increment the parity sharders.
+An increase in blobber count will increment the parity shards.
 
   
 | Parameter     | Required | Description                                                         | Valid Values |
