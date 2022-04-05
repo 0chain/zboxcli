@@ -27,19 +27,19 @@ var updateAllocationCmd = &cobra.Command{
 		}
 
 		var addBlobberId, removeBlobberId string
-		if flags.Changed("add_blobber") == true {
+		if flags.Changed("add_blobber") {
 			addBlobberId, err = flags.GetString("add_blobber")
 			if err != nil {
 				log.Fatal("invalid 'add_blobber' flag: ", err)
 			}
-			if flags.Changed("remove_blobber") == true {
+			if flags.Changed("remove_blobber") {
 				removeBlobberId, err = flags.GetString("remove_blobber")
 				if err != nil {
 					log.Fatal("invalid 'remove_blobber' flag: ", err)
 				}
 			}
 		} else {
-			if flags.Changed("remove_blobber") == true {
+			if flags.Changed("remove_blobber") {
 				log.Fatal("Error: cannot remove blobber without adding one")
 			}
 		}
