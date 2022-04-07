@@ -319,18 +319,23 @@ the presence of the `free_storage` field.
 * `otherwise` Update an allocation applying the settings indicated by the
   remaining parameters.  
 
-If not a `free_storage` update, then tokens will come from those locked. If there are
+If not a `free_storage` update, then tokens will come from those locked. 
+Further we can add a blobber to the allocation,
+adding a blobber will allow a blobber to be removed.
+An increase in blobber count will increment the parity shards.
 
   
-| Parameter     | Required | Description                                            | Valid Values |
-|---------------|----------|--------------------------------------------------------|--------------|
-| allocation    | yes      | allocation id                                          | string       |
-| expiry        |          | adjust storage expiration time                         | duration     |
-| free_storage  |          | free storage marker file                               | string       |
-| lock          | yes*     | lock additional tokens in write pool                    | int          |
-| set_immutable |          | sets allocation so that data can no longer be modified | boolean      |
-| update_terms |          | will update the allocation with the latest blobber terms | boolean      |
-| size          |          | adjust allocation size                                 | bytes        |
+| Parameter     | Required | Description                                                         | Valid Values |
+|---------------|----------|---------------------------------------------------------------------|--------------|
+| allocation    | yes      | allocation id                                                       | string       |
+| expiry        |          | adjust storage expiration time                                      | duration     |
+| free_storage  |          | free storage marker file                                            | string       |
+| lock          | yes*     | lock additional tokens in write pool                                | int          |
+| set_immutable |          | sets allocation so that data can no longer be modified              | boolean      |
+| update_terms |          | will update the allocation with the latest blobber terms            | boolean      |
+| size          |          | adjust allocation size                                              | bytes        |
+| add_blobber |          | add a new blobber to the allocation, required for remove_blobber    | string       |
+| remove_blobber   |      | remove a blobber from the allocation, requires an add_blobber option | string2      |
 `*` only required if free_storage not set.
 
 <details>

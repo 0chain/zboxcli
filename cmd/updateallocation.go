@@ -26,6 +26,24 @@ var updateAllocationCmd = &cobra.Command{
 			log.Fatal("invalid 'allocation_id' flag: ", err)
 		}
 
+		var addBlobberId, removeBlobberId string
+		if flags.Changed("add_blobber") {
+			addBlobberId, err = flags.GetString("add_blobber")
+			if err != nil {
+				log.Fatal("invalid 'add_blobber' flag: ", err)
+			}
+			if flags.Changed("remove_blobber") {
+				removeBlobberId, err = flags.GetString("remove_blobber")
+				if err != nil {
+					log.Fatal("invalid 'remove_blobber' flag: ", err)
+				}
+			}
+		} else {
+			if flags.Changed("remove_blobber") {
+				log.Fatal("Error: cannot remove blobber without adding one")
+			}
+		}
+
 		if flags.Changed("free_storage") {
 			lock, freeStorageMarker := processFreeStorageFlags(flags)
 			if lock < 0 {
@@ -72,8 +90,16 @@ var updateAllocationCmd = &cobra.Command{
 
 		setImmutable, _ := cmd.Flags().GetBool("set_immutable")
 
-		txnHash, n, err := sdk.UpdateAllocation(size,
-			int64(expiry/time.Second), allocID, lock, setImmutable, updateTerms)
+		txnHash, n, err := sdk.UpdateAllocation(
+			size,
+			int64(expiry/time.Second),
+			allocID,
+			lock,
+			setImmutable,
+			updateTerms,
+			addBlobberId,
+			removeBlobberId,
+		)
 		if err != nil {
 			log.Fatal("Error updating allocation:", err)
 		}
@@ -86,6 +112,10 @@ func init() {
 	rootCmd.AddCommand(updateAllocationCmd)
 	updateAllocationCmd.PersistentFlags().String("allocation", "",
 		"Allocation ID")
+	updateAllocationCmd.PersistentFlags().String("add_blobber", "",
+		"ID of blobber to add to the allocation")
+	updateAllocationCmd.PersistentFlags().String("remove_blobber", "",
+		"ID of blobber to remove from the allocation")
 	updateAllocationCmd.PersistentFlags().Float64("lock", 0.0,
 		"lock write pool with given number of tokens, required")
 	updateAllocationCmd.PersistentFlags().Int64("size", 0,
