@@ -154,7 +154,6 @@ func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, args 
 
 	options := []sdk.ChunkedUploadOption{
 		sdk.WithThumbnailFile(args.thumbnailPath),
-		sdk.WithChunkSize(int64(args.chunkSize)),
 		sdk.WithEncrypt(args.encrypt),
 		sdk.WithStatusCallback(statusBar),
 		sdk.WithChunkNumber(args.chunkNumber),
