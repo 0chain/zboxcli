@@ -182,7 +182,6 @@ var syncCmd = &cobra.Command{
 						thumbnailPath: "",
 						remotePath:    f.Path,
 						encrypt:       encrypt,
-						chunkSize:     chunkSize,
 						chunkNumber:   syncChunkNumber,
 						attrs:         f.Attributes,
 						isUpdate:      true,

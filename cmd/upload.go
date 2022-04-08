@@ -80,7 +80,6 @@ var uploadCmd = &cobra.Command{
 				thumbnailPath: thumbnailpath,
 				remotePath:    remotepath,
 				encrypt:       encrypt,
-				chunkSize:     chunkSize,
 				chunkNumber:   uploadChunkNumber,
 				attrs:         attrs,
 				// isUpdate:      false,
