@@ -74,8 +74,6 @@ var uploadCmd = &cobra.Command{
 			attrs.WhoPaysForReads = wp // set given value
 		}
 
-		chunkSize, _ := cmd.Flags().GetInt("chunksize")
-
 		if err := startChunkedUpload(cmd, allocationObj,
 			chunkedUploadArgs{
 				localPath:     localpath,
@@ -111,7 +109,6 @@ type chunkedUploadArgs struct {
 	thumbnailPath string
 
 	encrypt     bool
-	chunkSize   int
 	chunkNumber int
 	isUpdate    bool
 	isRepair    bool
@@ -185,7 +182,6 @@ func init() {
 	uploadCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
 	uploadCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
 	uploadCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
-	uploadCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "chunk size")
 	uploadCmd.Flags().IntVarP(&uploadChunkNumber, "chunknumber", "", 1, "how many chunks should be uploaded in a http request")
 
 	uploadCmd.MarkFlagRequired("allocation")

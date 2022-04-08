@@ -122,7 +122,6 @@ var syncCmd = &cobra.Command{
 
 		uploadOnly, _ := cmd.Flags().GetBool("uploadonly")
 		commit, _ := cmd.Flags().GetBool("commit")
-		chunkSize, _ := cmd.Flags().GetInt("chunksize")
 
 		lDiff, err := allocationObj.GetAllocationDiff(localcache, localpath, filter, exclPath)
 		if err != nil {
@@ -161,7 +160,6 @@ var syncCmd = &cobra.Command{
 					thumbnailPath: "",
 					remotePath:    f.Path,
 					encrypt:       encrypt,
-					chunkSize:     chunkSize,
 					chunkNumber:   syncChunkNumber,
 					attrs:         attrs,
 					// isUpdate:      false,
@@ -309,7 +307,6 @@ After sync complete, remote snapshot will be updated to the same file for next u
 	syncCmd.Flags().Bool("uploadonly", false, "pass this option to only upload/update the files")
 	syncCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction - only works with uploadonly")
 
-	syncCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "chunk size")
 	syncCmd.Flags().IntVarP(&syncChunkNumber, "chunknumber", "", 1, "how many chunks should be uploaded in a http request")
 
 	getDiffCmd.PersistentFlags().String("allocation", "", "Allocation ID")
