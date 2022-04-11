@@ -50,7 +50,7 @@ var cpInfo = &cobra.Command{
 		}
 
 		var info *sdk.ChallengePoolInfo
-		if info, err = sdk.GetChallengePoolInfo(allocID); err != nil {
+		if info, err = storageSdk.GetChallengePoolInfo(allocID); err != nil {
 			log.Fatalf("Failed to get challenge pool info: %v", err)
 		}
 		if doJSON {

@@ -39,7 +39,7 @@ var listCmd = &cobra.Command{
 				os.Exit(1)                                      // and os.Exit(1)
 			}
 			allocationID := cmd.Flag("allocation").Value.String()
-			allocationObj, err := sdk.GetAllocation(allocationID)
+			allocationObj, err := storageSdk.GetAllocation(allocationID)
 			if err != nil {
 				PrintError("Error fetching the allocation", err)
 				os.Exit(1)
@@ -82,7 +82,7 @@ var listCmd = &cobra.Command{
 			}
 			util.WriteTable(os.Stdout, header, []string{}, data)
 		} else if len(authticket) > 0 {
-			allocationObj, err := sdk.GetAllocationFromAuthTicket(authticket)
+			allocationObj, err := storageSdk.GetAllocationFromAuthTicket(authticket)
 			if err != nil {
 				PrintError("Error fetching the allocation", err)
 				os.Exit(1)
@@ -153,7 +153,7 @@ var listAllCmd = &cobra.Command{
 		}
 
 		allocationID := cmd.Flag("allocation").Value.String()
-		allocationObj, err := sdk.GetAllocation(allocationID)
+		allocationObj, err := storageSdk.GetAllocation(allocationID)
 		if err != nil {
 			PrintError("Error fetching the allocation", err)
 			os.Exit(1)

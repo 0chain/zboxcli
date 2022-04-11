@@ -3,7 +3,6 @@ package cmd
 import (
 	"log"
 
-	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
 )
 
@@ -32,7 +31,7 @@ var removeCuratorCmd = &cobra.Command{
 			log.Fatal("invalid 'curator_id' flag: ", err)
 		}
 
-		_, err = sdk.RemoveCurator(curatorID, allocationID)
+		_, err = storageSdk.RemoveCurator(curatorID, allocationID)
 		if err != nil {
 			log.Fatal("Error adding curator:", err)
 		}

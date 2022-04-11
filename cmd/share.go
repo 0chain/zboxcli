@@ -8,7 +8,6 @@ import (
 
 	"github.com/0chain/gosdk/core/common"
 	"github.com/0chain/gosdk/zboxcore/fileref"
-	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
 )
 
@@ -29,7 +28,7 @@ var shareCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		allocationID := cmd.Flag("allocation").Value.String()
-		allocationObj, err := sdk.GetAllocation(allocationID)
+		allocationObj, err := storageSdk.GetAllocation(allocationID)
 		if err != nil {
 			PrintError("Error fetching the allocation", err)
 			os.Exit(1)

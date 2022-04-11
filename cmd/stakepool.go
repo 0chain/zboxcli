@@ -91,7 +91,7 @@ var spInfo = &cobra.Command{
 		}
 
 		var info *sdk.StakePoolInfo
-		if info, err = sdk.GetStakePoolInfo(blobberID); err != nil {
+		if info, err = storageSdk.GetStakePoolInfo(blobberID); err != nil {
 			log.Fatalf("Failed to get stake pool info: %v", err)
 		}
 		if doJSON {
@@ -125,7 +125,7 @@ var spUserInfo = &cobra.Command{
 		}
 
 		var info *sdk.StakePoolUserInfo
-		if info, err = sdk.GetStakePoolUserInfo(clientID); err != nil {
+		if info, err = storageSdk.GetStakePoolUserInfo(clientID); err != nil {
 			log.Fatalf("Failed to get stake pool info: %v", err)
 		}
 		if doJSON {
@@ -173,7 +173,7 @@ var spLock = &cobra.Command{
 		}
 
 		var poolID string
-		poolID, err = sdk.StakePoolLock(blobberID,
+		poolID, err = storageSdk.StakePoolLock(blobberID,
 			zcncore.ConvertToValue(tokens), zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to lock tokens in stake pool: %v", err)
@@ -217,7 +217,7 @@ var spUnlock = &cobra.Command{
 			}
 		}
 
-		unstake, err := sdk.StakePoolUnlock(blobberID, poolID, zcncore.ConvertToValue(fee))
+		unstake, err := storageSdk.StakePoolUnlock(blobberID, poolID, zcncore.ConvertToValue(fee))
 
 		// an error
 		if err != nil {

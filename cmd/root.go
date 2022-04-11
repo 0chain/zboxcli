@@ -32,6 +32,7 @@ var bSilent bool
 var allocUnderRepair bool
 
 var walletJSON string
+var storageSdk sdk.StorageSdkSchema
 
 var rootCmd = &cobra.Command{
 	Use:   "zbox",
@@ -188,7 +189,7 @@ func initConfig() {
 	}
 
 	//init the storage sdk with the known miners, sharders and client wallet info
-	err = sdk.InitStorageSDK(walletJSON, cfg.BlockWorker, cfg.ChainID, cfg.SignatureScheme, cfg.PreferredBlobbers)
+	storageSdk, err = sdk.InitStorageSDK(walletJSON, cfg.BlockWorker, cfg.ChainID, cfg.SignatureScheme, cfg.PreferredBlobbers)
 	if err != nil {
 		fmt.Println("Error in sdk init", err)
 		os.Exit(1)
@@ -208,7 +209,7 @@ func initConfig() {
 
 	if fresh {
 		fmt.Println("Creating related read pool for storage smart-contract...")
-		if err = sdk.CreateReadPool(); err != nil {
+		if err = storageSdk.CreateReadPool(); err != nil {
 			fmt.Printf("Failed to create read pool: %v\n", err)
 			os.Exit(1)
 		}

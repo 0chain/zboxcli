@@ -31,7 +31,7 @@ var renameCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		allocationID := cmd.Flag("allocation").Value.String()
-		allocationObj, err := sdk.GetAllocation(allocationID)
+		allocationObj, err := storageSdk.GetAllocation(allocationID)
 		if err != nil {
 			PrintError("Error fetching the allocation", err)
 			os.Exit(1)

@@ -3,7 +3,6 @@ package cmd
 import (
 	"log"
 
-	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
 )
 
@@ -40,7 +39,7 @@ var transferAllocationCmd = &cobra.Command{
 			log.Fatal("invalid 'new_owner_key' flag: ", err)
 		}
 
-		_, err = sdk.CuratorTransferAllocation(allocationId, newOwnerId, newOwnerPublicKey)
+		_, err = storageSdk.CuratorTransferAllocation(allocationId, newOwnerId, newOwnerPublicKey)
 		if err != nil {
 			log.Fatal("Error adding curator:", err)
 		}

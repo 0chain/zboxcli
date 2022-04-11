@@ -84,7 +84,7 @@ var downloadCmd = &cobra.Command{
 				os.Exit(1)
 			}
 
-			allocationObj, err = sdk.GetAllocationFromAuthTicket(authticket)
+			allocationObj, err = storageSdk.GetAllocationFromAuthTicket(authticket)
 			if err != nil {
 				PrintError("Error fetching the allocation", err)
 				os.Exit(1)
@@ -131,7 +131,7 @@ var downloadCmd = &cobra.Command{
 				os.Exit(1)                                      // and return
 			}
 			allocationID := cmd.Flag("allocation").Value.String()
-			allocationObj, err = sdk.GetAllocation(allocationID)
+			allocationObj, err = storageSdk.GetAllocation(allocationID)
 
 			if err != nil {
 				PrintError("Error fetching the allocation", err)

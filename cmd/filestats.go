@@ -4,7 +4,6 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )
@@ -28,7 +27,7 @@ var statsCmd = &cobra.Command{
 		allocationID := cmd.Flag("allocation").Value.String()
 		doJSON, _ := cmd.Flags().GetBool("json")
 
-		allocationObj, err := sdk.GetAllocation(allocationID)
+		allocationObj, err := storageSdk.GetAllocation(allocationID)
 		if err != nil {
 			PrintError("Error fetching the allocation", err)
 			os.Exit(1)

@@ -48,7 +48,7 @@ var getallocationCmd = &cobra.Command{
 		}
 		allocationID := cmd.Flag("allocation").Value.String()
 		doJSON, _ := cmd.Flags().GetBool("json")
-		alloc, err := sdk.GetAllocation(allocationID)
+		alloc, err := storageSdk.GetAllocation(allocationID)
 		if err != nil {
 			logger.Logger.Error("Error fetching the allocation", err)
 			log.Fatal("Error fetching/verifying the allocation")
@@ -259,7 +259,7 @@ var getDownloadCostCmd = &cobra.Command{
 
 			// by remote path
 
-			if alloc, err = sdk.GetAllocation(allocID); err != nil {
+			if alloc, err = storageSdk.GetAllocation(allocID); err != nil {
 				log.Fatal("fetching the allocation: ", err)
 			}
 
@@ -273,7 +273,7 @@ var getDownloadCostCmd = &cobra.Command{
 
 		// by authentication ticket
 
-		alloc, err = sdk.GetAllocationFromAuthTicket(authTicket)
+		alloc, err = storageSdk.GetAllocationFromAuthTicket(authTicket)
 		if err != nil {
 			log.Fatal("can't get allocation object: ", err)
 		}
@@ -379,7 +379,7 @@ var getUploadCostCmd = &cobra.Command{
 		}
 
 		var alloc *sdk.Allocation
-		if alloc, err = sdk.GetAllocation(allocID); err != nil {
+		if alloc, err = storageSdk.GetAllocation(allocID); err != nil {
 			log.Fatal("fetching the allocation: ", err)
 		}
 

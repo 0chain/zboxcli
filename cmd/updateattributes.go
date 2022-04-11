@@ -52,7 +52,7 @@ var updateAttributesCmd = &cobra.Command{
 			}
 		}
 
-		if alloc, err = sdk.GetAllocation(allocID); err != nil {
+		if alloc, err = storageSdk.GetAllocation(allocID); err != nil {
 			log.Fatal("fetching the allocation: ", err)
 		}
 

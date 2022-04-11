@@ -68,7 +68,7 @@ func createM3u8Downloader(localPath, remotePath, authTicket, allocationID, looku
 			return nil, errors.New("Error: allocation flag is missing") // If not, we'll let the user know
 		}
 
-		allocationObj, err := sdk.GetAllocation(allocationID)
+		allocationObj, err := storageSdk.GetAllocation(allocationID)
 
 		if err != nil {
 			return nil, fmt.Errorf("Error fetching the allocation: %s", err)
@@ -77,7 +77,7 @@ func createM3u8Downloader(localPath, remotePath, authTicket, allocationID, looku
 		downloader.allocationObj = allocationObj
 
 	} else if len(authTicket) > 0 {
-		allocationObj, err := sdk.GetAllocationFromAuthTicket(authTicket)
+		allocationObj, err := storageSdk.GetAllocationFromAuthTicket(authTicket)
 		if err != nil {
 			return nil, fmt.Errorf("Error fetching the allocation: %s", err)
 		}

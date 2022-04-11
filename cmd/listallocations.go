@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/0chain/gosdk/core/common"
-	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/zboxcli/util"
 
 	"github.com/spf13/cobra"
@@ -19,7 +18,7 @@ var listallocationsCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		doJSON, _ := cmd.Flags().GetBool("json")
 
-		allocations, err := sdk.GetAllocations()
+		allocations, err := storageSdk.GetAllocations()
 		if err != nil {
 			PrintError("Error getting allocations list." + err.Error())
 			os.Exit(1)

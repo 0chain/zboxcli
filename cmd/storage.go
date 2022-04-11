@@ -55,7 +55,7 @@ var scConfig = &cobra.Command{
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		doJSON, _ := cmd.Flags().GetBool("json")
-		var conf, err = sdk.GetStorageSCConfig()
+		var conf, err = storageSdk.GetStorageSCConfig()
 		if err != nil {
 			log.Fatalf("Failed to get storage SC configurations: %v", err)
 		}
@@ -107,7 +107,7 @@ var lsBlobers = &cobra.Command{
 		doJSON, _ := cmd.Flags().GetBool("json")
 		doAll, _ := cmd.Flags().GetBool("all")
 
-		var list, err = sdk.GetBlobbers()
+		var list, err = storageSdk.GetBlobbers()
 		var defaultList = filterActiveBlobbers(list)
 
 		if err != nil {
@@ -157,7 +157,7 @@ var blobberInfoCmd = &cobra.Command{
 		}
 
 		var blob *sdk.Blobber
-		if blob, err = sdk.GetBlobber(blobberID); err != nil {
+		if blob, err = storageSdk.GetBlobber(blobberID); err != nil {
 			log.Fatal(err)
 		}
 
@@ -208,7 +208,7 @@ var blobberUpdateCmd = &cobra.Command{
 		}
 
 		var blob *sdk.Blobber
-		if blob, err = sdk.GetBlobber(blobberID); err != nil {
+		if blob, err = storageSdk.GetBlobber(blobberID); err != nil {
 			log.Fatal(err)
 		}
 
@@ -295,7 +295,7 @@ var blobberUpdateCmd = &cobra.Command{
 			blob.StakePoolSettings.ServiceCharge = sc
 		}
 
-		if _, err = sdk.UpdateBlobberSettings(blob); err != nil {
+		if _, err = storageSdk.UpdateBlobberSettings(blob); err != nil {
 			log.Fatal(err)
 		}
 

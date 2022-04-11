@@ -31,7 +31,7 @@ var moveCmd = &cobra.Command{
 			return
 		}
 		allocationID := cmd.Flag("allocation").Value.String()
-		allocationObj, err := sdk.GetAllocation(allocationID)
+		allocationObj, err := storageSdk.GetAllocation(allocationID)
 		if err != nil {
 			fmt.Println("Error fetching the allocation", err)
 			return

@@ -34,9 +34,9 @@ var collectRewards = &cobra.Command{
 
 		switch providerName {
 		case "blobber":
-			_, err = sdk.CollectRewards(poolId, sdk.ProviderBlobber)
+			_, err = storageSdk.CollectRewards(poolId, sdk.ProviderBlobber)
 		case "validator":
-			_, err = sdk.CollectRewards(poolId, sdk.ProviderValidator)
+			_, err = storageSdk.CollectRewards(poolId, sdk.ProviderValidator)
 		default:
 			log.Fatal("provider type must be blobber or validator")
 		}

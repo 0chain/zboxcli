@@ -108,7 +108,7 @@ var syncCmd = &cobra.Command{
 			exclPath, _ = cmd.Flags().GetStringArray("excludepath")
 		}
 
-		allocationObj, err := sdk.GetAllocation(allocationID)
+		allocationObj, err := storageSdk.GetAllocation(allocationID)
 		if err != nil {
 			PrintError("Error fetching the allocation", err)
 			os.Exit(1)
@@ -272,7 +272,7 @@ var getDiffCmd = &cobra.Command{
 			exclPath, _ = cmd.Flags().GetStringArray("excludepath")
 		}
 
-		allocationObj, err := sdk.GetAllocation(allocationID)
+		allocationObj, err := storageSdk.GetAllocation(allocationID)
 		if err != nil {
 			PrintError("Error fetching the allocation", err)
 			os.Exit(1)

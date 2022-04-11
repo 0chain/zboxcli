@@ -65,7 +65,7 @@ var newallocationCmd = &cobra.Command{
 				log.Fatal("Only positive values are allowed for --lock")
 			}
 
-			allocationID, err := sdk.CreateFreeAllocation(freeStorageMarker, lock)
+			allocationID, err := storageSdk.CreateFreeAllocation(freeStorageMarker, lock)
 			if err != nil {
 				log.Fatal("Error creating free allocation: ", err)
 			}
@@ -155,7 +155,7 @@ var newallocationCmd = &cobra.Command{
 		var expireAt = time.Now().Add(expire).Unix()
 
 		if costOnly {
-			minCost, err := sdk.GetAllocationMinLock(*datashards, *parityshards, *size, expireAt, readPrice, writePrice, mcct)
+			minCost, err := storageSdk.GetAllocationMinLock(*datashards, *parityshards, *size, expireAt, readPrice, writePrice, mcct)
 			if err != nil {
 				log.Fatal("Error fetching cost: ", err)
 			}
@@ -172,7 +172,7 @@ var newallocationCmd = &cobra.Command{
 		}
 		var allocationID string
 		if len(owner) == 0 {
-			allocationID, err = sdk.CreateAllocation(*datashards, *parityshards,
+			allocationID, err = storageSdk.CreateAllocation(*datashards, *parityshards,
 				*size, expireAt, readPrice, writePrice, mcct, lock)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
@@ -188,7 +188,7 @@ var newallocationCmd = &cobra.Command{
 				}
 			}
 
-			allocationID, err = sdk.CreateAllocationForOwner(owner, ownerPublicKey, *datashards, *parityshards,
+			allocationID, err = storageSdk.CreateAllocationForOwner(owner, ownerPublicKey, *datashards, *parityshards,
 				*size, expireAt, readPrice, writePrice, mcct, lock, blockchain.GetPreferredBlobbers())
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)

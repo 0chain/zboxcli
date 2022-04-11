@@ -3,7 +3,6 @@ package cmd
 import (
 	"log"
 
-	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
 )
 
@@ -33,7 +32,7 @@ var addCmd = &cobra.Command{
 			log.Fatal("invalid 'max' flag: ", err)
 		}
 
-		err = sdk.AddFreeStorageAssigner(name, key, limit, max)
+		err = storageSdk.AddFreeStorageAssigner(name, key, limit, max)
 		if err != nil {
 			log.Fatal("Error adding free storage assigner:", err)
 		}

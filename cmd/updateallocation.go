@@ -4,7 +4,6 @@ import (
 	"log"
 	"time"
 
-	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
 	"github.com/spf13/cobra"
 )
@@ -50,7 +49,7 @@ var updateAllocationCmd = &cobra.Command{
 				log.Fatal("Only positive values are allowed for --lock")
 			}
 
-			txnHash, err := sdk.CreateFreeUpdateAllocation(freeStorageMarker, allocID, lock)
+			txnHash, err := storageSdk.CreateFreeUpdateAllocation(freeStorageMarker, allocID, lock)
 			if err != nil {
 				log.Fatal("Error free update allocation: ", err)
 			}
@@ -89,7 +88,7 @@ var updateAllocationCmd = &cobra.Command{
 
 		setImmutable, _ := cmd.Flags().GetBool("set_immutable")
 
-		txnHash, err := sdk.UpdateAllocation(
+		txnHash, err := storageSdk.UpdateAllocation(
 			size,
 			int64(expiry/time.Second),
 			allocID,

@@ -10,7 +10,7 @@ import (
 
 func isFinalized(allocID string) (ok bool, err error) {
 	var alloc *sdk.Allocation
-	if alloc, err = sdk.GetAllocation(allocID); err != nil {
+	if alloc, err = storageSdk.GetAllocation(allocID); err != nil {
 		return false, fmt.Errorf("can't get allocation from sharders: %v", err)
 	}
 	return alloc.Finalized, nil
@@ -49,7 +49,7 @@ and empties write pool moving left tokens to client.`,
 		// check out allocation first
 		allocShouldNotBeFinalized(allocID)
 
-		txnHash, err := sdk.FinalizeAllocation(allocID)
+		txnHash, err := storageSdk.FinalizeAllocation(allocID)
 		if err != nil {
 			// check again, a blobber can finalize it
 			allocShouldNotBeFinalized(allocID)
@@ -83,7 +83,7 @@ allocation flow.`,
 			log.Fatal("invalid 'allocation' flag: ", err)
 		}
 
-		txnHash, err := sdk.CancelAllocation(allocID)
+		txnHash, err := storageSdk.CancelAllocation(allocID)
 		if err != nil {
 			log.Fatal("Error creating allocation:", err)
 		}

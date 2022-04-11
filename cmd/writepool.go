@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
-	"github.com/0chain/zboxcli/util"
 	"github.com/0chain/gosdk/zcncore"
+	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )
 
@@ -33,7 +33,7 @@ var wpInfo = &cobra.Command{
 		doJSON, _ := cmd.Flags().GetBool("json")
 
 		var info *sdk.AllocationPoolStats
-		if info, err = sdk.GetWritePoolInfo(""); err != nil {
+		if info, err = storageSdk.GetWritePoolInfo(""); err != nil {
 			log.Fatalf("Failed to get write pool info: %v", err)
 		}
 		if len(info.Pools) == 0 {
@@ -104,7 +104,7 @@ var wpLock = &cobra.Command{
 			}
 		}
 
-		err = sdk.WritePoolLock(duration, allocID, blobberID,
+		err = storageSdk.WritePoolLock(duration, allocID, blobberID,
 			zcncore.ConvertToValue(tokens), zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to lock tokens in write pool: %v", err)
@@ -142,7 +142,7 @@ var wpUnlock = &cobra.Command{
 			}
 		}
 
-		err = sdk.WritePoolUnlock(poolID, zcncore.ConvertToValue(fee))
+		err = storageSdk.WritePoolUnlock(poolID, zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to unlock tokens in write pool: %v", err)
 		}
@@ -158,7 +158,6 @@ func init() {
 	wpInfo.PersistentFlags().String("allocation", "",
 		"allocation, optional")
 	wpInfo.Flags().Bool("json", false, "pass this option to print response as json data")
-
 
 	wpLock.PersistentFlags().Duration("duration", 0,
 		"lock duration, required")

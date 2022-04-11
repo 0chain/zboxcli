@@ -9,7 +9,6 @@ import (
 	"github.com/0chain/gosdk/zcncore"
 	"github.com/0chain/zboxcli/util"
 
-	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
 )
 
@@ -43,7 +42,7 @@ var walletinfoCmd = &cobra.Command{
 
 		header := []string{"Public Key", "ClientID", "Encryption Public Key"}
 		data := make([][]string, 1)
-		encPubKey, err := sdk.GetClientEncryptedPublicKey()
+		encPubKey, err := storageSdk.GetClientEncryptedPublicKey()
 		if err != nil {
 			fmt.Println("Error getting the public key for encryption. ", err.Error())
 			return
