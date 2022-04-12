@@ -681,7 +681,6 @@ The user must be the owner of the allocation.You can request the file be encrypt
 | localpath               | yes      | local path of the file to upload                                   |         | file path              |
 | remotepath              | yes      | remote path to upload file to, use to access file later            |         | string                 |
 | thumbnailpath           | no       | local path of thumbnaSil                                           |         | file path              |
-| chunksize               | no       | chunk size                                                         | 65536   | int                    |
 | chunknumber             | no       | how many chunks should be uploaded in a http request               | 1       | int                    |
 
 
@@ -738,7 +737,6 @@ The user must be the owner of the allocation.You can request the file be encrypt
 | localpath               | yes      | local path of segment files to download, generate and upload       |         | file path              |
 | remotepath              | yes      | remote path to upload file to, use to access file later            |         | string                 |
 | thumbnailpath           | no       | local path of thumbnaSil                                           |         | file path              |
-| chunksize               | no       | chunk size                                                         | 65536   | int                    |
 | chunknumber             | no       | how many chunks should be uploaded in a http request               | 1       | int                    |
 | delay                   | no       | set segment duration to seconds.                                   | 5       | int                    |
 
@@ -765,7 +763,6 @@ The user must be the owner of the allocation.You can request the file be encrypt
 | localpath               | yes      | local path of segment files to download, generate and upload       |         | file path              |
 | remotepath              | yes      | remote path to upload file to, use to access file later            |         | string                 |
 | thumbnailpath           | no       | local path of thumbnaSil                                           |         | file path              |
-| chunksize               | no       | chunk size                                                         | 65536   | int                    |
 | chunknumber             | no       | how many chunks should be uploaded in a http request               | 1       | int                    |
 | delay                   | no       | set segment duration to seconds.                                   | 5       | int                    |
 | feed                    | no       | set remote live feed to url.                                       | false   | url                    |
@@ -810,7 +807,7 @@ format code  extension  resolution note
 `--downloader-args "-f 22"` dowloads video with `22           mp4        1280x676   720p 2117k , avc1.64001F, 30fps, mp4a.40.2 (44100Hz) (best)`
 
 ```
-./zbox feed --localpath <absolute path to file>/tvshow.m3u8 --remotepath /videos/tvsho --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac  --delay 10 --chunksize 655360 --downloader-args "-f 22" --feed https://www.youtube.com/watch?v=pC5mGB5enkw
+./zbox feed --localpath <absolute path to file>/tvshow.m3u8 --remotepath /videos/tvsho --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac  --delay 10 --downloader-args "-f 22" --feed https://www.youtube.com/watch?v=pC5mGB5enkw
 
 ```
 
@@ -882,7 +879,6 @@ can update a file.  To add collaborators to an allocation, use
 | remotepath    | yes      | remote file to upload         |         | string       |
 | thumbnailpath | no       | local fumbnail file to upload |         | file path    |
 | commit        | no       | save meta data to blockchain  | false   | boolean      |
-| chunksize     | no       | chunk size                    | 65536   | int          |
 | chunknumber   | no       | how many chunks should be uploaded in a http request   | 1       | int          |
 
 
@@ -1183,7 +1179,6 @@ Only the allocation's owner can successfully run `sync`.
 | localchache | no       | local chache of remote snapshot. Used for comparsion with remote. After sync will be updated. |         | string       |
 | localpath   | yes      | local directory to which to sync                                                              |         | file path    |
 | uploadonly  | no       | only upload and update files                                                                  | false   | boolean      |
-| chunksize   | no       | chunk size                                                                                    | 65536   | int          |
 | chunknumber | no       | how many chunks should be uploaded in a http request                                          | 1       | int          |
 
 <details>
