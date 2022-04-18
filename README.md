@@ -223,6 +223,7 @@ and `free_storage` parameters.
 * Use `owner` if you want to create and fund an allocation for someone else. If 
   using this option then you need to provide the new owner's public key. Otherwise,
   the owner defaults to the client.
+* Use `blobbers` if you want to add custom list of blobbers. Otherwise, blockchain's preferred blobbers will be used.
 
 
 
@@ -242,6 +243,7 @@ and `free_storage` parameters.
 | size               | size of space reserved on blobbers                        | 2147483648     | bytes          |
 | usd                | give token value in USD                                   |                | flag         |
 | write_price        | filter blobbers by write price range                      | 0-inf          | range        |
+| blobbers        | list of preferred blobbers  | blockchain preferred blobbers         | string array        |
 
 
 <details>
