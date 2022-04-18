@@ -153,9 +153,15 @@ var newallocationCmd = &cobra.Command{
 		}
 
 		var expireAt = time.Now().Add(expire).Unix()
+		var blobbers = blockchain.GetPreferredBlobbers()
+		if flags.Changed("blobbers") {
+			if blobbers, err = flags.GetStringArray("blobbers"); err != nil {
+				log.Fatal("invalid owner value: ", err)
+			}
+		}
 
 		if costOnly {
-			minCost, err := sdk.GetAllocationMinLock(*datashards, *parityshards, *size, expireAt, readPrice, writePrice, mcct)
+			minCost, err := sdk.GetAllocationMinLock(*datashards, *parityshards, *size, expireAt, readPrice, writePrice, mcct, blobbers)
 			if err != nil {
 				log.Fatal("Error fetching cost: ", err)
 			}
@@ -173,7 +179,7 @@ var newallocationCmd = &cobra.Command{
 		var allocationID string
 		if len(owner) == 0 {
 			allocationID, err = sdk.CreateAllocation(*datashards, *parityshards,
-				*size, expireAt, readPrice, writePrice, mcct, lock)
+				*size, expireAt, readPrice, writePrice, mcct, lock, blobbers)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
