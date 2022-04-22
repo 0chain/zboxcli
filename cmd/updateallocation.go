@@ -90,6 +90,7 @@ var updateAllocationCmd = &cobra.Command{
 		setImmutable, _ := cmd.Flags().GetBool("set_immutable")
 
 		txnHash, err := sdk.UpdateAllocation(
+			updateAllocationName,
 			size,
 			int64(expiry/time.Second),
 			allocID,
@@ -105,6 +106,8 @@ var updateAllocationCmd = &cobra.Command{
 		log.Print("Allocation updated with txId : " + txnHash)
 	},
 }
+
+var updateAllocationName string
 
 func init() {
 	rootCmd.AddCommand(updateAllocationCmd)
@@ -127,5 +130,8 @@ func init() {
 		"update blobber terms")
 
 	updateAllocationCmd.MarkFlagRequired("allocation")
+
+	updateAllocationCmd.Flags().StringVarP(&updateAllocationName, "name", "",
+		"", "allocation name")
 
 }
