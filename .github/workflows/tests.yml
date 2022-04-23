@@ -15,10 +15,10 @@ jobs:
   unit-test:
     runs-on: [self-hosted, build]
     steps:
-      - name: Setup go 1.17
+      - name: Setup go 1.18
         uses: actions/setup-go@v2
         with:
-          go-version: '1.17'
+          go-version: '1.18'
 
       - name: Clone Zbox
         uses: actions/checkout@v2
@@ -30,10 +30,10 @@ jobs:
     runs-on: [self-hosted, build]
     needs: unit-test
     steps:
-      - name: Setup go 1.17
+      - name: Setup go 1.18
         uses: actions/setup-go@v2
         with:
-          go-version: '1.17'
+          go-version: '1.18'
 
       - name: Clone 0Box
         uses: actions/checkout@v2
