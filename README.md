@@ -11,64 +11,67 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
     - [Other Platform Builds](#other-platform-builds)
     - [Use custom miner/sharder](#use-custom-minersharder)
   - [Running zbox](#running-zbox)
-  - [Global Flags](#global-flags)
+    - [Global Flags](#global-flags)
   - [Commands](#commands)
-      - [Creating and Managing Allocations](#creating-and-managing-allocations)
-         - [Register wallet](#register-wallet)
-         - [Create new allocation](#create-new-allocation)
-         - [Free storage allocation](#free-storage-allocation)
-         - [Update allocation](#update-allocation)
-         - [Cancel allocation](#cancel-allocation)
-         - [Finalise allocation](#finalise-allocation)
-         - [Add curator](#add-curator)
-         - [Remove curator](#remove-curator)
-         - [Transfer allocation ownership](#transfer-allocation-ownership)
-         - [List blobbers](#list-blobbers)
-         - [Detailed blobber information](#detailed-blobber-information)
-         - [List all files](#list-all-files)
-         - [List owner's allocations](#list-owners-allocations)
-         - [Update blobber settings](#update-blobber-settings)
-       - [Uploading and Managing Files](#uploading-and-managing-files)
-         - [Upload](#upload)
-            - [Stream](#stream)
-            - [Feed](#feed)
-         - [Download](#download)
-         - [Update](#update)
-         - [Delete](#delete)
-         - [Share](#share)
-            - [share-encrypted revoke](#share-encrypted-revoke)
-         - [List](#list)
-         - [Copy](#copy)
-         - [Move](#move)
-         - [Sync](#sync)
-         - [Get differences](#get-differences)
-         - [Get wallet](#get-wallet)
-         - [Get](#get)
-         - [Get metadata](#get-metadata)
-         - [Download cost](#download-cost)
-         - [Upload cost](#upload-cost)
-         - [Rename](#rename)
-         - [Stats](#stats)
-         - [Repair](#repair)
-         - [Add collaborator](#add-collaborator)
-         - [Delete collaborator](#delete-collaborator)
-         - [Commit](#commit)
-         - [Sign data|](#sign-data)
-         - [Streaming](#streaming)
-      - [Lock and Unlock Tokens](#lock-and-unlock-tokens)
-        - [Challenge pool information](#challenge-pool-information)
-        - [Create read pool](#create-read-pool)
-        - [Read pool info](#read-pool-info)
-        - [Lock tokens into read pool](#lock-tokens-into-read-pool)
-        - [Unlock tokens from read pool](#unlock-tokens-from-read-pool)
-        - [Storage SC configurations](#storage-sc-configurations)
-        - [Stake pool info](#stake-pool-info)
-        - [Lock tokens into stake pool](#lock-tokens-into-stake-pool)
-        - [Unlock tokens from stake pool](#unlock-tokens-from-stake-pool)
-        - [Stake pools info of user](#stake-pools-info-of-user)
-        - [Write pool info](#write-pool-info)
-        - [Lock tokens into write pool](#lock-tokens-into-write-pool)
-        - [Unlock tokens from write pool](#unlock-tokens-from-write-pool)
+    - [Creating and Managing Allocations](#creating-and-managing-allocations)
+      - [Register wallet](#register-wallet)
+      - [Create new allocation](#create-new-allocation)
+        - [Free storage allocation](#free-storage-allocation)
+      - [Update allocation](#update-allocation)
+      - [Cancel allocation](#cancel-allocation)
+      - [Finalise allocation](#finalise-allocation)
+      - [Add curator](#add-curator)
+      - [Remove curator](#remove-curator)
+      - [Transfer allocation ownership](#transfer-allocation-ownership)
+      - [List blobbers](#list-blobbers)
+      - [Detailed blobber information](#detailed-blobber-information)
+      - [List all files](#list-all-files)
+      - [List owner's allocations](#list-owners-allocations)
+      - [Update blobber settings](#update-blobber-settings)
+    - [Uploading and Managing files](#uploading-and-managing-files)
+      - [Upload](#upload)
+      - [Stream](#stream)
+      - [Feed](#feed)
+      - [Download](#download)
+      - [Update](#update)
+      - [Delete](#delete)
+      - [Share](#share)
+        - [share-encrypted revoke](#share-encrypted-revoke)
+      - [List](#list)
+      - [Copy](#copy)
+      - [Move](#move)
+      - [Sync](#sync)
+      - [Get differences](#get-differences)
+      - [Get wallet](#get-wallet)
+      - [Get](#get)
+      - [Get metadata](#get-metadata)
+      - [Rename](#rename)
+      - [Stats](#stats)
+      - [Repair](#repair)
+      - [Add collaborator](#add-collaborator)
+      - [Delete collaborator](#delete-collaborator)
+      - [Commit](#commit)
+      - [Sign data](#sign-data)
+      - [Streaming](#streaming)
+        - [How it works:](#how-it-works)
+        - [Usage](#usage)
+    - [Lock and Unlock Tokens](#lock-and-unlock-tokens)
+      - [Challenge pool information](#challenge-pool-information)
+      - [Create read pool](#create-read-pool)
+      - [Collect rewards](#collect-rewards)
+      - [Read pool info](#read-pool-info)
+      - [Lock tokens into read pool](#lock-tokens-into-read-pool)
+      - [Unlock tokens from read pool](#unlock-tokens-from-read-pool)
+      - [Storage SC configurations](#storage-sc-configurations)
+      - [Stake pool info](#stake-pool-info)
+      - [Lock tokens into stake pool](#lock-tokens-into-stake-pool)
+      - [Unlock tokens from stake pool](#unlock-tokens-from-stake-pool)
+      - [Stake pools info of user](#stake-pools-info-of-user)
+      - [Write pool info](#write-pool-info)
+      - [Lock tokens into write pool](#lock-tokens-into-write-pool)
+      - [Unlock tokens from write pool](#unlock-tokens-from-write-pool)
+      - [Download cost](#download-cost)
+      - [Upload cost](#upload-cost)
   - [Troubleshooting](#troubleshooting)
     
 ## Installation Guides
@@ -178,15 +181,15 @@ version|Prints version information
 | --wallet_client_key string | Specify a wallet client_key (By default client_key specified in $HOME/.zcn/wallet.json is used) | zbox [command] --wallet_client_key  < client_key> |
 
  
-# Commands
+## Commands
 
 Note in this document, we will only show the commands for particular functionalities, 
 the response will vary depending on your usage and may not be provided in all places.
 To get a more descriptive view of all the zbox functionalities check zbox cli 
 documentation at docs.0chain.net.
 
-## Creating and Managing Allocations
-## Register wallet
+### Creating and Managing Allocations
+#### Register wallet
 
 `register` is used when needed to register a given wallet to the blockchain. 
 This could be because the blockchain network has been reset and you wished to register
@@ -204,7 +207,7 @@ Sample output
 Wallet registered
 ```
 
-## Create new allocation
+#### Create new allocation
 
 Command `newallocation` reserves hard disk space on the blobbers. Later `upload`
 can be used to save files to the blobber. `newallocation` has three modes triggered 
@@ -257,7 +260,7 @@ and `free_storage` parameters.
 
 </details>
 
-#### Free storage allocation
+##### Free storage allocation
 
 Entities can give free `0chain` storage in the form of markers. A marker takes the 
 form of a json file
@@ -307,7 +310,7 @@ Response:
 Allocation created : d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
 ```
 
-## Update allocation
+#### Update allocation
 
 `updateallocation` updates allocation settings. It has two modes depending on 
 the presence of the `free_storage` field. 
@@ -316,18 +319,23 @@ the presence of the `free_storage` field.
 * `otherwise` Update an allocation applying the settings indicated by the
   remaining parameters.  
 
-If not a `free_storage` update, then tokens will come from those locked. If there are
+If not a `free_storage` update, then tokens will come from those locked. 
+Further we can add a blobber to the allocation,
+adding a blobber will allow a blobber to be removed.
+An increase in blobber count will increment the parity shards.
 
   
-| Parameter     | Required | Description                                            | Valid Values |
-|---------------|----------|--------------------------------------------------------|--------------|
-| allocation    | yes      | allocation id                                          | string       |
-| expiry        |          | adjust storage expiration time                         | duration     |
-| free_storage  |          | free storage marker file                               | string       |
-| lock          | yes*     | lock additional tokens in write pool                    | int          |
-| set_immutable |          | sets allocation so that data can no longer be modified | boolean      |
-| update_terms |          | will update the allocation with the latest blobber terms | boolean      |
-| size          |          | adjust allocation size                                 | bytes        |
+| Parameter     | Required | Description                                                         | Valid Values |
+|---------------|----------|---------------------------------------------------------------------|--------------|
+| allocation    | yes      | allocation id                                                       | string       |
+| expiry        |          | adjust storage expiration time                                      | duration     |
+| free_storage  |          | free storage marker file                                            | string       |
+| lock          | yes*     | lock additional tokens in write pool                                | int          |
+| set_immutable |          | sets allocation so that data can no longer be modified              | boolean      |
+| update_terms |          | will update the allocation with the latest blobber terms            | boolean      |
+| size          |          | adjust allocation size                                              | bytes        |
+| add_blobber |          | add a new blobber to the allocation, required for remove_blobber    | string       |
+| remove_blobber   |      | remove a blobber from the allocation, requires an add_blobber option | string2      |
 `*` only required if free_storage not set.
 
 <details>
@@ -360,7 +368,7 @@ Allocation updated with txId : fb84185dae620bbba8386286726f1efcd20d2516bcf1a4482
 
 You can see more txn details using above txID in block explorer [here](https://beta.0chain.net/).
 
-### Cancel allocation
+#### Cancel allocation
 
 `alloc-cancel` immediately return all remaining tokens from challenge pool back to the 
 allocation's owner and cancels the allocation. If blobbers already got some tokens, 
@@ -386,7 +394,7 @@ Example
 ./zbox alloc-cancel --allocation <allocation_id>
 ```
 
-## Finalise allocation
+#### Finalise allocation
  
 `alloc-fini` finalises an expired allocation. An allocation becomes expired when
 the expiry time has passed followed by a period equal to the challenge completion
@@ -415,7 +423,7 @@ Example
 ./zbox alloc-fini --allocation <allocation_id>
 ```
 
-## Add curator
+#### Add curator
 
 `addcurator` adds a curator to an allocation.
 A curator can transfer ownership of an allocation. Each allocation 
@@ -441,7 +449,7 @@ maintains a list of these curators.
 e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429 added as a curator to allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
 ```
 
-## Remove curator
+#### Remove curator
 A curator can be removed from an allocation by using the `removecurator` command , 
 
 | Parameter  | Required | Description                           | Valid Values |
@@ -466,12 +474,11 @@ Response:
 ```
 e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429 removed as a curator to allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
 ```
-## Transfer allocation ownership
+#### Transfer allocation ownership
 
 `transferallocation` changes the owner of an allocation. Only a curator, 
-previously added by an [addcurator](#add-curator) command can change an 
-allocation's ownership. If the current owner wants to transfer ownership
-they have to first add themselves as a curator using [addcurator](#add-curator).
+previously added by an [addcurator](#add-curator) command, or, the current owner of the allocation, can change an 
+allocation's ownership.
 
 `transferallocation` does not move any funds, only changes the owner, 
 and the owner's public key.
@@ -501,7 +508,7 @@ Output
 transferred ownership of fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d to 8b87739cd6c966c150a8a6e7b327435d4a581d9d9cc1d86a88c8a13ae1ad7a96
 ```
 
-## List blobbers
+#### List blobbers
 
 Use `ls-blobbers` command to show active blobbers.
 
@@ -541,7 +548,7 @@ Example
     max_offer_duration:  744h0m0s
 ```
 
-## Detailed blobber information
+#### Detailed blobber information
 
 Use `bl-info` command to get detailed blobber information.
 
@@ -585,7 +592,7 @@ settings:
   service_charge:  30 %
 ```
 
-## List all files
+#### List all files
 
 `list-all` lists al the files stored with an allocation
 
@@ -598,7 +605,7 @@ settings:
 ./zbox list-all --allocation 4ebeb69feeaeb3cd308570321981d61beea55db65cbeba4ba3b75c173c0f141b
 ```
 
-## List owner's allocations
+#### List owner's allocations
 
 `listallocations` provides a list of all allocations owned by the user.
 
@@ -623,7 +630,7 @@ ZED | CANCELED | R  PRICE |   W  PRICE
 ```
 
 
-## Update blobber settings
+#### Update blobber settings
 
 Use `./zbox bl-update ` to update a blobber's configuration settings. This updates the settings
 on the blockchain not the blobber.
@@ -656,8 +663,8 @@ Update blobber read price
 ```
 ./zbox bl-update --blobber_id 0ece681f6b00221c5567865b56040eaab23795a843ed629ce71fb340a5566ba3 --read_price 0.1
 ```
-## Uploading and Managing files
-## Upload
+### Uploading and Managing files
+#### Upload
 
 Use `upload` command to upload file(s).
 - upload a local file
@@ -674,7 +681,7 @@ The user must be the owner of the allocation.You can request the file be encrypt
 | localpath               | yes      | local path of the file to upload                                   |         | file path              |
 | remotepath              | yes      | remote path to upload file to, use to access file later            |         | string                 |
 | thumbnailpath           | no       | local path of thumbnaSil                                           |         | file path              |
-| chunksize               | no       | chunk size                                                         | 65536   | int                    |
+| chunknumber             | no       | how many chunks should be uploaded in a http request               | 1       | int                    |
 
 
 <details>
@@ -716,7 +723,7 @@ Response:
 Status completed callback. Type = application/octet-stream. Name = sensitivedata.txt
 ```
 
-## Stream
+#### Stream
 
 Use `stream` to capture video and audio streaming form local devices, and upload
 
@@ -727,10 +734,10 @@ The user must be the owner of the allocation.You can request the file be encrypt
 | allocation              | yes      | allocation id, sender must be allocation owner                     |         | string                 |
 | commit                  | no       | save metadata to blockchain                                        | false   | boolean                |
 | encrypt                 | no       | encrypt file before upload                                         | false   | boolean                |
-| localpath               | yes      | local path of segment files to download, generate and upload                                   |         | file path              |
+| localpath               | yes      | local path of segment files to download, generate and upload       |         | file path              |
 | remotepath              | yes      | remote path to upload file to, use to access file later            |         | string                 |
 | thumbnailpath           | no       | local path of thumbnaSil                                           |         | file path              |
-| chunksize               | no       | chunk size                                                         | 65536   | int                    |
+| chunknumber             | no       | how many chunks should be uploaded in a http request               | 1       | int                    |
 | delay                   | no       | set segment duration to seconds.                                   | 5       | int                    |
 
 <details>
@@ -740,7 +747,7 @@ The user must be the owner of the allocation.You can request the file be encrypt
 
 </details>
 
-## Feed
+#### Feed
 
 Use `feed` command to automatically download segment files from remote live feed with `--downloader-args "-q -f best"`
  - encode them into new segment files with `--delay` and `--ffmpeg-args`, and upload. 
@@ -753,10 +760,10 @@ The user must be the owner of the allocation.You can request the file be encrypt
 | allocation              | yes      | allocation id, sender must be allocation owner                     |         | string                 |
 | commit                  | no       | save metadata to blockchain                                        | false   | boolean                |
 | encrypt                 | no       | encrypt file before upload                                         | false   | boolean                |
-| localpath               | yes      | local path of segment files to download, generate and upload                                   |         | file path              |
+| localpath               | yes      | local path of segment files to download, generate and upload       |         | file path              |
 | remotepath              | yes      | remote path to upload file to, use to access file later            |         | string                 |
 | thumbnailpath           | no       | local path of thumbnaSil                                           |         | file path              |
-| chunksize               | no       | chunk size                                                         | 65536   | int                    |
+| chunknumber             | no       | how many chunks should be uploaded in a http request               | 1       | int                    |
 | delay                   | no       | set segment duration to seconds.                                   | 5       | int                    |
 | feed                    | no       | set remote live feed to url.                                       | false   | url                    |
 | downloader-args         | no       | pass args to youtube-dl to download video. default is \"-q -f best\". | -q -f best | [youtube-dl](https://github.com/ytdl-org/youtube-dl/blob/master/README.md#options)|
@@ -800,11 +807,11 @@ format code  extension  resolution note
 `--downloader-args "-f 22"` dowloads video with `22           mp4        1280x676   720p 2117k , avc1.64001F, 30fps, mp4a.40.2 (44100Hz) (best)`
 
 ```
-./zbox feed --localpath <absolute path to file>/tvshow.m3u8 --remotepath /videos/tvsho --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac  --delay 10 --chunksize 655360 --downloader-args "-f 22" --feed https://www.youtube.com/watch?v=pC5mGB5enkw
+./zbox feed --localpath <absolute path to file>/tvshow.m3u8 --remotepath /videos/tvsho --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac  --delay 10 --downloader-args "-f 22" --feed https://www.youtube.com/watch?v=pC5mGB5enkw
 
 ```
 
-## Download
+#### Download
 
 Use `download` command to download your own or a shared file. 
 * `owner` The owner of the allocation can always download files, in this case the owner pays for the download.
@@ -857,7 +864,7 @@ Note: You can download by using only 1 on the below combination:
 
 Downloaded file will be in the location specified by the `localpath` argument.
 
-## Update
+#### Update
 
 Use `update` command to update content of an existing file in the remote path. 
 Like [upload](#upload) command. Only the owner of the allocation or a collaborator
@@ -872,7 +879,8 @@ can update a file.  To add collaborators to an allocation, use
 | remotepath    | yes      | remote file to upload         |         | string       |
 | thumbnailpath | no       | local fumbnail file to upload |         | file path    |
 | commit        | no       | save meta data to blockchain  | false   | boolean      |
-| chunksize     | no       | chunk size                    | 65536   | int          |
+| chunknumber   | no       | how many chunks should be uploaded in a http request   | 1       | int          |
+
 
 <details>
   <summary>update</summary>
@@ -881,7 +889,7 @@ can update a file.  To add collaborators to an allocation, use
 
 </details>
 
-## Delete
+#### Delete
 
 Use `delete` command to delete your file on the allocation. Only the owner
 of the application can delete a file.
@@ -913,7 +921,7 @@ Response:
 
 File successfully deleted (Can be verified using [list](https://github.com/0chain/zboxcli#List))
 
-## Share
+#### Share
 ![Alt text](documents/share_cli.png?raw=true "Share")
 
 Use share command to generate an authtoken that provides authorization to the holder to the specified file on the remotepath.
@@ -923,6 +931,7 @@ Use share command to generate an authtoken that provides authorization to the ho
 * --remotepath string Remote path to share
 * --expiration-seconds number The seconds after which the ticket will expire(defaults to number of seconds in 90 days 
 if option not provided)
+* --available-after Timelock for private file that makes the file available for download at certain time. 4 input formats are supported: +1h30m, +30, 1647858200 and 2022-03-21 10:21:38
 
 `auth ticket` can be used with  [download](#download), [commit](#commit) and [list](#list), 
 [meta](#get-metadata) and [get_download_cost](#download-cost), but only for files in 
@@ -933,9 +942,10 @@ the pre-defined remote path.
 | allocation          | yes      | allocation id                                                     | string       |
 | clientid            | no       | id of user to share file with, leave blank for public share       | string       |
 | encryptionpublickey | no       | public key of the client to share file with, required if clientId | string       |
-| expiration-seconds | no       | seconds before `auth ticket` expires | int       |
+| expiration-seconds  | no       | seconds before `auth ticket` expires                              | int          |
 | remotepath          | yes      | remote path of file to share                                      | string       |
-| revoke          | no      | revoke share for remote path                                     | flag       |
+| revoke              | no       | revoke share for remote path                                      | flag         |
+| available-after     | no       | timelock for private file that makes the file available for download at certain time. 4 input formats are supported: +1h30m, +30, 1647858200 and 2022-03-21 10:21:38. default value is current local time|string  |
 
 <details>
   <summary>share</summary>
@@ -1041,7 +1051,7 @@ zbox download --allocation 76ad9fa86f9b6685880553588a250586806ba5d7d20fc229d6905
 
 This method works for both: encrypted and non-encrypted files.
 
-#### share-encrypted revoke
+##### share-encrypted revoke
 
 This will cancel the share for particular buyer that was performed by the seller using zbox share. *Works only for files with --encrypted tag.*
 
@@ -1056,7 +1066,7 @@ Response
 
 Returns status message showing whether the operation was successful or not.
 
-## List
+#### List
 
 Use `list` command to list files in given remote path of the dStorage. An auth ticket should be provided when
 not sent by the allocation's owner. Using an auth ticket requires a `lookuphash` to indicate the path for which to list
@@ -1091,7 +1101,7 @@ auth ticket :eyJjbGllbnRfaWQiOiJiNmRlNTYyYjU3YTBiNTkzZDA0ODA2MjRmNzlhNTVlZDQ2ZGJ
 
 Response will be a list with information for each file/folder in the given path. The information includes lookuphash which is require for download via authticket.
 
-## Copy
+#### Copy
 
 Use `copy` command to copy file to another folder path in dStorage. 
 Only the owner of the allocation can copy an object.
@@ -1123,7 +1133,7 @@ Response:
 /file.txt copied
 ```
 
-## Move
+#### Move
 
 Use `move` command to move file to another remote folder path on dStorage. 
 Only the owner of the allocation can copy an object.
@@ -1155,7 +1165,7 @@ Response:
 /file.txt moved
 ```
 
-## Sync
+#### Sync
 
 `sync` command syncs all files from the local folder recursively to the remote.
 Only the allocation's owner can successfully run `sync`.
@@ -1165,11 +1175,11 @@ Only the allocation's owner can successfully run `sync`.
 | allocation  | yes      | allocation id                                                                                 |         | string       |
 | commit      | no       | commet metadata to blockchain                                                                 | false   | boolean      |
 | encryptpath | no       | local directory path to be uploaded as encrypted                                              | false   | boolean      |
-| excludepath  | no       | paths to exclude from sync                                                                    |         | string array |
+| excludepath  | no       | paths to exclude from sync                                                                   |         | string array |
 | localchache | no       | local chache of remote snapshot. Used for comparsion with remote. After sync will be updated. |         | string       |
 | localpath   | yes      | local directory to which to sync                                                              |         | file path    |
 | uploadonly  | no       | only upload and update files                                                                  | false   | boolean      |
-| chunksize   | no       | chunk size                                                                                    | 65536   | int          |
+| chunknumber | no       | how many chunks should be uploaded in a http request                                          | 1       | int          |
 
 <details>
   <summary>sync</summary>
@@ -1206,7 +1216,7 @@ Local cache saved.
 
 It will sync your localpath with the remote and do all the required CRUD operations.
 
-## Get differences 
+#### Get differences 
  `./zbox get-diff` command returns the differences between the local files specified by `localpath` and the files stored
 on the root remotepath of the allocation.`localcache` flag can also be specified to use the local cache of remote snapshot created during [Sync](#sync) for file comparison.
 
@@ -1233,7 +1243,7 @@ Response:
 {"operation":"Download","path":"/myfiles/file2.txt","type":"f","attributes":{}}]
 ```
 
-## Get wallet
+#### Get wallet
 
 Use `getwallet` command to get additional wallet information including Encryption 
 Public Key,Client ID which are required for Private File Sharing.
@@ -1258,7 +1268,7 @@ Response:
 
 Response will give details for current selected wallet (or wallet file specified by optional --wallet parameter)
 
-## Get
+#### Get
 
 Use `get` command to get the information about the allocation such as total size , used size, number of challenges 
 and challenges passed/failed/open/redeemed.
@@ -1310,7 +1320,7 @@ allocation:
         challenge_completion_time: 2m0s
 ```
 
-## Get metadata
+#### Get metadata
 
 Use `meta` command to get metadata for a given remote file. Use must either be the
 owner of the allocation on have an auth ticket or be a collaborator. 
@@ -1365,7 +1375,7 @@ TYPE | NAME  |                           LOOKUP HASH                            
 
 Response will be metadata for the given filepath/lookuphash (if using authTicket)
 
-## Rename
+#### Rename
 
 `rename` command renames a file existing already on dStorage. Only the 
 allocation's owner can rename a file.
@@ -1396,7 +1406,7 @@ Response:
 /1.txt renamed
 ```
 
-## Stats
+#### Stats
 
 `stats` command gets upload, download and challenge statistics for a file.
 Only the owner can get a files stats.
@@ -1433,7 +1443,7 @@ Response:
   876b4cd610eb1aac63c53cdfd4d3a0ac91d94f2d6b858bb195f72b6dc0f33b55 | 1.txt | /1.txt | 2065 |       3 |               1 |          0 | true              
 ```
 
-## Repair
+#### Repair
 
 Use `start-repair` command to repair a file on dStorage.
 ![repair](https://user-images.githubusercontent.com/65766301/120052600-b364c680-c043-11eb-9bf2-038ab244fed6.png)
@@ -1466,7 +1476,7 @@ Response:
 Repair file completed, Total files repaired:  0
 ```
 
-## Add collaborator
+#### Add collaborator
 
 Use `add-collab` command to add a collaborator for a file on dStorage. 
 Collaborators can perform read actions on the collaboration file, with the owner paying.
@@ -1500,7 +1510,7 @@ Collaborator d477d12134c2d7ba5ab71ac8ad37f244224695ef3215be990c3215d531c5a329 ad
 
 You can check all collaborators for a file in metadata json response.
 
-## Delete collaborator
+#### Delete collaborator
 
 Use command delete-collab to remove a collaborator for a file
 
@@ -1528,443 +1538,9 @@ Response will be a confirmation that collaborator is removed on all blobbers for
 ```
 Collaborator d477d12134c2d7ba5ab71ac8ad37f244224695ef3215be990c3215d531c5a329 removed successfully for the file /1.txt
 ```
-## Lock and Unlock Tokens
 
-### Challenge pool information
 
-Use `cp-info` command to get the challenge pool brief information.
-
-| Parameter  | Required | Description                 | default | Valid values |
-|------------|----------|-----------------------------|---------|--------------|
-| allocation | yes      | allocation id               |         | string       |
-| json       | no       | print result in json format | false   | boolean      |
-
-<details>
-  <summary>cp-info</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/124506637-fe50c700-ddc3-11eb-9e8e-f59f88c89b6c.png)
-
-</details>
-
-Example
-
-```
-./zbox cp-info --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc   
-```
-
-Response:
-
-```
-POOL ID: 6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7:challengepool:8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc
-    BALANCE    |             START             |            EXPIRE             | FINIALIZED  
-+--------------+-------------------------------+-------------------------------+------------+
-  0.0000002796 | 2021-04-17 00:27:23 +0700 +07 | 2021-05-24 00:29:23 +0700 +07 | false    
-```
-
-
- Balance is the current challenge pool balance. Start,Expire time and the finalization are allocations related.
-
-## Create read pool
-
-Use `rp-create` to create a read pool, `rp-create` has no parameters.
-
-<details>
-  <summary>rp-create</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/127875827-f0301162-5c62-4964-989a-d56d4b2292af.png)
-
-</details>
-
-```
-./zbox rp-create
-```
-
-## Collect rewards
-
-Use `collect-rewards` to transfer reward tokens from a stake pool in which you have 
-invested to your wallet.
-
-You earn rewards for:
-Blobbers
-- File space used by allocation owners and associates.
-- A min lock demand for each allocation.
-- Block rewards. Each block a reward gets paid out to blobber stakeholders in the form of a random lottery.
-Validators
-- Payment for validating blobber challenge responses.
-
-The stake pool keeps an account for all stakeholders to maintain accrued rewards.
-These rewards can be accessed using this `collect-rewards` command.
-
-
-| Parameter     | Required | Description          | default | Valid values |
-|---------------|----------|----------------------|---------|--------------|
-| pool_id       | yes      | stake pool id        |         | string       |
-| provider_type | no       | blobber or validator | blobber | string       |
-
-The pool_id gets returned when you created the stake pool, and can be identified
-later by using [sp-info](#stake-pool-info) or [sp-user-info](#stake-pools-info-of-user).
-
-```bash
-./zbox colect-reward --pool_id 1e701ac4e1a003ff75c5bfab62b06ec7418b9b81740ff7c6e4928bf6c0fe5792 --provider_type blobber
-```
-
-## Read pool info
-
-Use `rp-info` to get read pool information.
-
-| Parameter  | Required | Description                 | default | Valid values |
-|------------|----------|-----------------------------|---------|--------------|
-| allocation | no       | allocation id               |         | string       |
-| json       | no       | print result in json format | false   | boolean      |
-
-<details>
-  <summary>rp-info</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/124507524-d8c4bd00-ddc5-11eb-853e-513957cf3dbb.png)
-
-</details>
-
-```
-./zbox rp-info
-```
-## Lock tokens into read pool
-
-Lock some tokens in read pool associated with an allocation. 
-* Uses two different formats, you can either define a specific blobber
-  to lock all tokens, or spread across all the allocations blobbers automatically.
-* If the user does not have a pre-existing read pool, then the smart-contract
-  creates one.
-
-Anyone can lock tokens with a read pool attached an allocation. These tokens can
-be used to pay read access to files stored with the allocation. To use 
-these tokens the user must be the allocation owner, collaborator or have an auth ticket. 
-
-| Parameter  | Required | Description            | default | Valid values |
-|------------|----------|------------------------|---------|--------------|
-| allocation | yes      | allocation id          |         | string       |
-| blobber    | no       | blobber id to lock for |         | string       |
-| duration   | yes      | lock duration          |         | duration   |
-| fee        |          | transaction fee        | 0       | int          |
-| tokens     | yes      | tokens to lock         |         | int          |
-
-```
-./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1
-```
-
-<details>
-  <summary>rp-lock with a specific blobber</summary>
-
-```shell
-./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1 --blobber f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25 
-```
-![image](https://user-images.githubusercontent.com/6240686/125474085-c57c29a5-127e-4e8e-b560-c235ade869f1.png)
-
-</details>
-
-<details>
-  <summary>rp-lock spread across all blobbers</summary>
-
-Tokens are spread between the blobber pools weighted by 
-each blobber's Terms.ReadPrice.
-
-```shell
-./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1
-```
-
-![image](https://user-images.githubusercontent.com/6240686/125474486-1c2e1dba-7e61-4e9c-94f4-2a1ebf06d2de.png)
-
-</details>
-
-## Unlock tokens from read pool
-
-Use `rp-unlock` to unlock tokens from an expired read pool by pool id. 
-See `rp-info` for the POOL_ID and the expiration.
-
-| Parameter | Required | Description          | default | Valid values |
-|-----------|----------|----------------------|---------|--------------|
-| fee       | no       | transaction fee      | 0       | float        |
-| pool_id   | yes      | id of pool to unlock |         | string       |
-
-<details>
-  <summary>rp-unlock</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/124578670-53352180-de46-11eb-99a5-07debf17e351.png)
-
-</details>
-
-```
-./zbox rp-unlock --pool_id <pool_id>
-```
-
-## Storage SC configurations
-
-Show storage SC configuration.
-
-| Parameter  | Required | Description                 | default | Valid values |
-|------------|----------|-----------------------------|---------|--------------|
-| allocation | yes      | allocation id               |         | string       |
-| json       | no       | print result in json format | false   | boolean      |
-
-<details>
-  <summary>sc-config</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/124578670-53352180-de46-11eb-99a5-07debf17e351.png)
-
-</details>
-
-```
-./zbox sc-config
-```
-
-## Stake pool info
-
-Use `sp-info` to get your stake pool information and settings.
-
-| Parameter  | Required | Description                 | default        | Valid values |
-|------------|----------|-----------------------------|----------------|--------------|
-| blobber_id |          | id of blobber               | current client | string       |
-| json       | no       | print result in json format | false          | boolean      |
-
-<details>
-  <summary>sp-info</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/124581849-63023500-de49-11eb-8927-50d9ff97671b.png)
-
-</details>
-
-```
-./zbox sp-info --blobber_id <blobber_id>
-```
-
-## Lock tokens into stake pool
-
-Lock creates delegate pool for current client and given blobber. 
-The tokens locked for the blobber stake can be unlocked any time, excluding times 
-when the tokens held by opened offers. These tokens will earn rewards depending on the 
-actions of the linked blobber. 
-`sp-lock` returns the id of the new stake pool, this will be needed to reference
-to stake pool later.
-
-| Parameter  | Required | Description     | default        | Valid values |
-|------------|----------|-----------------|----------------|--------------|
-| blobber_id |          | id of blobber   | current client | string       |
-| fee        | no       | transaction fee | 0              | float        |
-| tokens     | yes      | tokens to lock  |                | float        |
-
-<details>
-  <summary>sp-lock</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/124585686-73b4aa00-de4d-11eb-83cb-334f7c54543e.png)
-
-</details>
-
-```
-./zbox sp-lock --blobber_id <blobber_id> --tokens 1.0
-```
-
-### Unlock tokens from stake pool
-
-Unlock a stake pool by pool owner. If the stake pool cannot be unlocked as 
-it would leave insufficient funds for opened offers, then `sp-unlock` tags 
-the stake pool to be unlocked later. This tag prevents the stake pool affecting 
-blobber allocation for any new allocations.
-
-| Parameter  | Required | Description          | default        | Valid values |
-|------------|----------|----------------------|----------------|--------------|
-| blobber_id |          | id of blobber        | current client | string       |
-| fee        | no       | transaction fee      | 0              | float        |
-| pool id    | yes      | id of pool to unlock |                | string       |
-
-<details>
-  <summary>sp-unlock</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/124597566-8e8e1b00-de5b-11eb-8926-867687aaa06a.png)
-
-</details>
-
-
-```
-./zbox sp-unlock --blobber_id <blobber_id> --pool_id <pool_id>
-```
-
-## Stake pools info of user
-
-Get information about all stake pools of current user.
-
-| Parameter  | Required | Description                 | default        | Valid values |
-|------------|----------|-----------------------------|----------------|--------------|
-| json       | no       | print result in json format | false          | boolean      |
-
-
-<details>
-  <summary>sp-user-info</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/124600324-7ff53300-de5e-11eb-9b78-5a4f9c59a536.png)
-
-</details>
-
-```
-./zbox sp-user-info
-```
-
-## Write pool info
-
-Write pool information. Use allocation id to filter results to a singe allocation.
-
-| Parameter     | Required | Description                 | default | Valid values |
-|---------------|----------|-----------------------------|---------|--------------|
-| allocation id | no       | allocation id               |         | string       |
-| json          | no       | print result in json format | false   | boolean      |
-
-<details>
-  <summary>wp-info</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/124603444-d9ab2c80-de61-11eb-82f2-900d540ba63f.png)
-
-</details>
-
-
-For all write pools.
-
-
-```
-./zbox wp-info
-```
-
-Filtering by allocation.
-
-```
-./zbox wp-info --allocation <allocation_id>
-```
-
-## Lock tokens into write pool
-
-`wp-lock` can be used to lock tokens in a write pool associated with an allocation. 
-All tokens will be divided between allocation blobbers depending on their write price.
-* Uses two different formats, you can either define a specific blobber
-  to lock all tokens, or spread across all the allocations blobbers automatically.
-* If the user does not have a pre-existing read pool, then the smart-contract
-  creates one.
-  
-Anyone can lock tokens with a write pool attached an allocation. These tokens can 
-be used to pay for the allocation updates and min lock demand as needed. Any tokens
-moved into the challenge pool to underwrite blobbers' min lock demands return to the
-allocation's owner on closing the allocation.
-
-| Parameter     | Required | Description                       | default | Valid values |
-|---------------|----------|-----------------------------------|---------|--------------|
-| allocation id | no       | allocation id                     |         | string       |
-| blobber       | no       | blobber id                        |         | string       |
-| duration      | yes      | duration for which to lock tokens |         | duration     |
-| fee           | no       | transaction fee                   | 0       | float        |
-| tokens        | yes      | number of tokens to lock          |         | float        |
-
-<details>
-  <summary>rp-lock with a specific blobber</summary>
-
-```shell
-./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1 --blobber f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25 
-```
-![image](https://user-images.githubusercontent.com/6240686/123988183-b4c93c00-d9bf-11eb-825c-9a5849fedbbf.png)
-
-</details>
-
-<details>
-  <summary>rp-lock spread across all blobbers</summary>
-
-Tokens are spread between the blobber pools weighted by
-each blobber's Terms.ReadPrice.
-
-```shell
-./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1
-```
-
-![image](https://user-images.githubusercontent.com/6240686/123979735-e5f23e00-d9b8-11eb-8232-339a4a3374d0.png)
-
-</details>
-
-```
-./zbox wp-lock --allocation <allocation_id> --duration 40m --tokens 1
-```
-
-
-## Unlock tokens from write pool
-
-`wp-unlock` unlocks an expired write pool by its POOL_ID. See `wp-info` for the pool id and the expiration. 
-An expired write pool, associated with an allocation, can be locked until allocation finalization even if it's expired. It possible in cases where related blobber doesn't give their min lock demands. The finalization will pay the demand and unlock the pool.
-
-| Parameter | Required | Description          | default | Valid values |
-|-----------|----------|----------------------|---------|--------------|
-| fee       | no       | transaction fee      | 0       | float        |
-| pool_id   | yes      | id of pool to unlock |         | string       |
-
-<details>
-  <summary>rp-unlock</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/123980742-b09a2000-d9b9-11eb-8987-c18ff90ee705.png)
-
-</details>
-
-```
-./zbox wp-unlock --pool_id <pool_id>
-```
-
-## Download cost
-
-`get-download-cost` determines the cost for downloading the remote file from dStorage. The client must be an 
-  owner, collaborator, or using an auth ticket to determine the download cost of the file.
-
-| Parameter  | Required | Description                               | default | Valid values |
-|------------|----------|-------------------------------------------|---------|--------------|
-| allocation | yes      | allocation id                             |         | string       |
-| authticket | no       | auth ticket to use if not the owner       |         | string       |
-| lookuphash | no       | hash of remote file, use with auth ticket |         | string       |
-| remotepath | no       | file of which to get stats, use if owner  |         | string       |
-
-<details>
-  <summary>get-download-cost</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/124497750-41ef0500-ddb3-11eb-99ea-115a4e234eda.png)
-
-</details>
-Command:
-```
-./zbox get-download-cost --allocation <allocation_id> --remotepath /path/file.ext
-```
-Response:
-```
-0.0000107434 tokens for 10 64KB blocks (24 B) of <remote_path_of_file> .
-```
-
-## Upload cost
-
-`get-upload-cost` determines the cost for uploading a local file on dStorage. 
-`--duration` Ignored if `--end` true, in which case the cost of upload calculated until
-the allocation expires.
-
-| Parameter  | Required | Description                          | default | Valid values |
-|------------|----------|--------------------------------------|---------|--------------|
-| allocation | yes      | allocation id                        |         | string       |
-| duration   | no       | duration for which to upload file    |         | duration     |
-| end        | no       | upload file until allocation expires | false   | boolean      |
-| localpath   | yes      | local of path to calculate upload    |         | file path    |
-
-<details>
-  <summary>get-upload-cost</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/124501898-51be1780-ddba-11eb-8c1a-d238cfd8f43f.png)
-
-</details>
-
-Command:
-```
-./zbox get-upload-cost --allocation <allocation_id> --localpath ./path/file.ext
-```
-Response:
-```
- 0.0000000028 tokens / 720h0m0s for 24 B of <remote_path_of_file>
-```  
-## Commit
+#### Commit
 
 Commit file changes to chain
 
@@ -1978,7 +1554,7 @@ Commit file changes to chain
 | operation  | yes      | operation name for commit change                  | string       |
 | remotepath | no       | remote path of object to commit                   | string       |
 
-## Sign data|
+#### Sign data
 
 `sign-data` uses the information from your wallet to sign the input data string
 
@@ -1994,13 +1570,13 @@ Signature : 9432ab2ee602062afaf48c4016b373a65db48a8546a81c09dead40e54966399e
 
 ------
 
-## Streaming
+#### Streaming
 
 Video streaming with Zbox CLI can be implemented with players for different operating platforms(iOS, Android Mac).Zbox CLI does not have a player itself and use the the downloadFileByBlocks helper function to properly returns file-chunks with correct byte range.
 
 ![streaming-android](https://user-images.githubusercontent.com/65766301/120052635-ce373b00-c043-11eb-94a5-a9711078ee54.png)
 
-#### How it works:
+##### How it works:
 
 When the user starts the video player (ExoPlayer for Android or AVPlayer for iOS), A ZChainDataSource starts chunked download and requests chunks of video from the buffer(a Middleman between streaming player and Zbox).
 
@@ -2011,7 +1587,7 @@ The task of downloading files and writing them to buffer using Zbox SDK happens 
 In a case, if the player didn't receive chunks (for example, it's still not downloaded), then the player switches to STALE state, and the video stream will pause. During the STALE state, a player tries to make multiple requests for chunks; if didn't receive a response, the video stream stops.
 
 
-#### Usage
+##### Usage
 
 To understand how Zbox CLI provides downloading of files by blocks. Let's consider an allocation that has `audio. mp3 ` file stored on dStorage. Make sure the file has a large size(more than 64 kB(64000 bytes)) to download the file by blocks. The size and other attributes of the sample `audio. mp3` file can be viewed using
 
@@ -2062,6 +1638,444 @@ As we can see, the downloaded file size(393216) is less than the original(299619
 
 
 
+
+### Lock and Unlock Tokens
+
+#### Challenge pool information
+
+Use `cp-info` command to get the challenge pool brief information.
+
+| Parameter  | Required | Description                 | default | Valid values |
+|------------|----------|-----------------------------|---------|--------------|
+| allocation | yes      | allocation id               |         | string       |
+| json       | no       | print result in json format | false   | boolean      |
+
+<details>
+  <summary>cp-info</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124506637-fe50c700-ddc3-11eb-9e8e-f59f88c89b6c.png)
+
+</details>
+
+Example
+
+```
+./zbox cp-info --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc   
+```
+
+Response:
+
+```
+POOL ID: 6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7:challengepool:8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc
+    BALANCE    |             START             |            EXPIRE             | FINIALIZED  
++--------------+-------------------------------+-------------------------------+------------+
+  0.0000002796 | 2021-04-17 00:27:23 +0700 +07 | 2021-05-24 00:29:23 +0700 +07 | false    
+```
+
+
+ Balance is the current challenge pool balance. Start,Expire time and the finalization are allocations related.
+
+#### Create read pool
+
+Use `rp-create` to create a read pool, `rp-create` has no parameters.
+
+<details>
+  <summary>rp-create</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/127875827-f0301162-5c62-4964-989a-d56d4b2292af.png)
+
+</details>
+
+```
+./zbox rp-create
+```
+
+#### Collect rewards
+
+Use `collect-rewards` to transfer reward tokens from a stake pool in which you have 
+invested to your wallet.
+
+You earn rewards for:
+Blobbers
+- File space used by allocation owners and associates.
+- A min lock demand for each allocation.
+- Block rewards. Each block a reward gets paid out to blobber stakeholders in the form of a random lottery.
+Validators
+- Payment for validating blobber challenge responses.
+
+The stake pool keeps an account for all stakeholders to maintain accrued rewards.
+These rewards can be accessed using this `collect-rewards` command.
+
+
+| Parameter     | Required | Description          | default | Valid values |
+|---------------|----------|----------------------|---------|--------------|
+| pool_id       | yes      | stake pool id        |         | string       |
+| provider_type | no       | blobber or validator | blobber | string       |
+
+The pool_id gets returned when you created the stake pool, and can be identified
+later by using [sp-info](#stake-pool-info) or [sp-user-info](#stake-pools-info-of-user).
+
+```bash
+./zbox colect-reward --pool_id 1e701ac4e1a003ff75c5bfab62b06ec7418b9b81740ff7c6e4928bf6c0fe5792 --provider_type blobber
+```
+
+#### Read pool info
+
+Use `rp-info` to get read pool information.
+
+| Parameter  | Required | Description                 | default | Valid values |
+|------------|----------|-----------------------------|---------|--------------|
+| allocation | no       | allocation id               |         | string       |
+| json       | no       | print result in json format | false   | boolean      |
+
+<details>
+  <summary>rp-info</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124507524-d8c4bd00-ddc5-11eb-853e-513957cf3dbb.png)
+
+</details>
+
+```
+./zbox rp-info
+```
+#### Lock tokens into read pool
+
+Lock some tokens in read pool associated with an allocation. 
+* Uses two different formats, you can either define a specific blobber
+  to lock all tokens, or spread across all the allocations blobbers automatically.
+* If the user does not have a pre-existing read pool, then the smart-contract
+  creates one.
+
+Anyone can lock tokens with a read pool attached an allocation. These tokens can
+be used to pay read access to files stored with the allocation. To use 
+these tokens the user must be the allocation owner, collaborator or have an auth ticket. 
+
+| Parameter  | Required | Description            | default | Valid values |
+|------------|----------|------------------------|---------|--------------|
+| allocation | yes      | allocation id          |         | string       |
+| blobber    | no       | blobber id to lock for |         | string       |
+| duration   | yes      | lock duration          |         | duration   |
+| fee        |          | transaction fee        | 0       | int          |
+| tokens     | yes      | tokens to lock         |         | int          |
+
+```
+./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1
+```
+
+<details>
+  <summary>rp-lock with a specific blobber</summary>
+
+```shell
+./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1 --blobber f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25 
+```
+![image](https://user-images.githubusercontent.com/6240686/125474085-c57c29a5-127e-4e8e-b560-c235ade869f1.png)
+
+</details>
+
+<details>
+  <summary>rp-lock spread across all blobbers</summary>
+
+Tokens are spread between the blobber pools weighted by 
+each blobber's Terms.ReadPrice.
+
+```shell
+./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1
+```
+
+![image](https://user-images.githubusercontent.com/6240686/125474486-1c2e1dba-7e61-4e9c-94f4-2a1ebf06d2de.png)
+
+</details>
+
+#### Unlock tokens from read pool
+
+Use `rp-unlock` to unlock tokens from an expired read pool by pool id. 
+See `rp-info` for the POOL_ID and the expiration.
+
+| Parameter | Required | Description          | default | Valid values |
+|-----------|----------|----------------------|---------|--------------|
+| fee       | no       | transaction fee      | 0       | float        |
+| pool_id   | yes      | id of pool to unlock |         | string       |
+
+<details>
+  <summary>rp-unlock</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124578670-53352180-de46-11eb-99a5-07debf17e351.png)
+
+</details>
+
+```
+./zbox rp-unlock --pool_id <pool_id>
+```
+
+#### Storage SC configurations
+
+Show storage SC configuration.
+
+| Parameter  | Required | Description                 | default | Valid values |
+|------------|----------|-----------------------------|---------|--------------|
+| allocation | yes      | allocation id               |         | string       |
+| json       | no       | print result in json format | false   | boolean      |
+
+<details>
+  <summary>sc-config</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124578670-53352180-de46-11eb-99a5-07debf17e351.png)
+
+</details>
+
+```
+./zbox sc-config
+```
+
+#### Stake pool info
+
+Use `sp-info` to get your stake pool information and settings.
+
+| Parameter  | Required | Description                 | default        | Valid values |
+|------------|----------|-----------------------------|----------------|--------------|
+| blobber_id |          | id of blobber               | current client | string       |
+| json       | no       | print result in json format | false          | boolean      |
+
+<details>
+  <summary>sp-info</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124581849-63023500-de49-11eb-8927-50d9ff97671b.png)
+
+</details>
+
+```
+./zbox sp-info --blobber_id <blobber_id>
+```
+
+#### Lock tokens into stake pool
+
+Lock creates delegate pool for current client and given blobber. 
+The tokens locked for the blobber stake can be unlocked any time, excluding times 
+when the tokens held by opened offers. These tokens will earn rewards depending on the 
+actions of the linked blobber. 
+`sp-lock` returns the id of the new stake pool, this will be needed to reference
+to stake pool later.
+
+| Parameter  | Required | Description     | default        | Valid values |
+|------------|----------|-----------------|----------------|--------------|
+| blobber_id |          | id of blobber   | current client | string       |
+| fee        | no       | transaction fee | 0              | float        |
+| tokens     | yes      | tokens to lock  |                | float        |
+
+<details>
+  <summary>sp-lock</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124585686-73b4aa00-de4d-11eb-83cb-334f7c54543e.png)
+
+</details>
+
+```
+./zbox sp-lock --blobber_id <blobber_id> --tokens 1.0
+```
+
+#### Unlock tokens from stake pool
+
+Unlock a stake pool by pool owner. If the stake pool cannot be unlocked as 
+it would leave insufficient funds for opened offers, then `sp-unlock` tags 
+the stake pool to be unlocked later. This tag prevents the stake pool affecting 
+blobber allocation for any new allocations.
+
+| Parameter  | Required | Description          | default        | Valid values |
+|------------|----------|----------------------|----------------|--------------|
+| blobber_id |          | id of blobber        | current client | string       |
+| fee        | no       | transaction fee      | 0              | float        |
+| pool id    | yes      | id of pool to unlock |                | string       |
+
+<details>
+  <summary>sp-unlock</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124597566-8e8e1b00-de5b-11eb-8926-867687aaa06a.png)
+
+</details>
+
+
+```
+./zbox sp-unlock --blobber_id <blobber_id> --pool_id <pool_id>
+```
+
+#### Stake pools info of user
+
+Get information about all stake pools of current user.
+
+| Parameter  | Required | Description                 | default        | Valid values |
+|------------|----------|-----------------------------|----------------|--------------|
+| json       | no       | print result in json format | false          | boolean      |
+
+
+<details>
+  <summary>sp-user-info</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124600324-7ff53300-de5e-11eb-9b78-5a4f9c59a536.png)
+
+</details>
+
+```
+./zbox sp-user-info
+```
+
+#### Write pool info
+
+Write pool information. Use allocation id to filter results to a singe allocation.
+
+| Parameter     | Required | Description                 | default | Valid values |
+|---------------|----------|-----------------------------|---------|--------------|
+| allocation id | no       | allocation id               |         | string       |
+| json          | no       | print result in json format | false   | boolean      |
+
+<details>
+  <summary>wp-info</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124603444-d9ab2c80-de61-11eb-82f2-900d540ba63f.png)
+
+</details>
+
+
+For all write pools.
+
+
+```
+./zbox wp-info
+```
+
+Filtering by allocation.
+
+```
+./zbox wp-info --allocation <allocation_id>
+```
+
+#### Lock tokens into write pool
+
+`wp-lock` can be used to lock tokens in a write pool associated with an allocation. 
+All tokens will be divided between allocation blobbers depending on their write price.
+* Uses two different formats, you can either define a specific blobber
+  to lock all tokens, or spread across all the allocations blobbers automatically.
+* If the user does not have a pre-existing read pool, then the smart-contract
+  creates one.
+  
+Anyone can lock tokens with a write pool attached an allocation. These tokens can 
+be used to pay for the allocation updates and min lock demand as needed. Any tokens
+moved into the challenge pool to underwrite blobbers' min lock demands return to the
+allocation's owner on closing the allocation.
+
+| Parameter     | Required | Description                       | default | Valid values |
+|---------------|----------|-----------------------------------|---------|--------------|
+| allocation id | no       | allocation id                     |         | string       |
+| blobber       | no       | blobber id                        |         | string       |
+| duration      | yes      | duration for which to lock tokens |         | duration     |
+| fee           | no       | transaction fee                   | 0       | float        |
+| tokens        | yes      | number of tokens to lock          |         | float        |
+
+<details>
+  <summary>rp-lock with a specific blobber</summary>
+
+```shell
+./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1 --blobber f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25 
+```
+![image](https://user-images.githubusercontent.com/6240686/123988183-b4c93c00-d9bf-11eb-825c-9a5849fedbbf.png)
+
+</details>
+
+<details>
+  <summary>rp-lock spread across all blobbers</summary>
+
+Tokens are spread between the blobber pools weighted by
+each blobber's Terms.ReadPrice.
+
+```shell
+./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1
+```
+
+![image](https://user-images.githubusercontent.com/6240686/123979735-e5f23e00-d9b8-11eb-8232-339a4a3374d0.png)
+
+</details>
+
+```
+./zbox wp-lock --allocation <allocation_id> --duration 40m --tokens 1
+```
+
+
+#### Unlock tokens from write pool
+
+`wp-unlock` unlocks an expired write pool by its POOL_ID. See `wp-info` for the pool id and the expiration. 
+An expired write pool, associated with an allocation, can be locked until allocation finalization even if it's expired. It possible in cases where related blobber doesn't give their min lock demands. The finalization will pay the demand and unlock the pool.
+
+| Parameter | Required | Description          | default | Valid values |
+|-----------|----------|----------------------|---------|--------------|
+| fee       | no       | transaction fee      | 0       | float        |
+| pool_id   | yes      | id of pool to unlock |         | string       |
+
+<details>
+  <summary>rp-unlock</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/123980742-b09a2000-d9b9-11eb-8987-c18ff90ee705.png)
+
+</details>
+
+```
+./zbox wp-unlock --pool_id <pool_id>
+```
+
+#### Download cost
+
+`get-download-cost` determines the cost for downloading the remote file from dStorage. The client must be an 
+  owner, collaborator, or using an auth ticket to determine the download cost of the file.
+
+| Parameter  | Required | Description                               | default | Valid values |
+|------------|----------|-------------------------------------------|---------|--------------|
+| allocation | yes      | allocation id                             |         | string       |
+| authticket | no       | auth ticket to use if not the owner       |         | string       |
+| lookuphash | no       | hash of remote file, use with auth ticket |         | string       |
+| remotepath | no       | file of which to get stats, use if owner  |         | string       |
+
+<details>
+  <summary>get-download-cost</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124497750-41ef0500-ddb3-11eb-99ea-115a4e234eda.png)
+
+</details>
+Command:
+```
+./zbox get-download-cost --allocation <allocation_id> --remotepath /path/file.ext
+```
+Response:
+```
+0.0000107434 tokens for 10 64KB blocks (24 B) of <remote_path_of_file> .
+```
+
+#### Upload cost
+
+`get-upload-cost` determines the cost for uploading a local file on dStorage. 
+`--duration` Ignored if `--end` true, in which case the cost of upload calculated until
+the allocation expires.
+
+| Parameter  | Required | Description                          | default | Valid values |
+|------------|----------|--------------------------------------|---------|--------------|
+| allocation | yes      | allocation id                        |         | string       |
+| duration   | no       | duration for which to upload file    |         | duration     |
+| end        | no       | upload file until allocation expires | false   | boolean      |
+| localpath   | yes      | local of path to calculate upload    |         | file path    |
+
+<details>
+  <summary>get-upload-cost</summary>
+
+![image](https://user-images.githubusercontent.com/6240686/124501898-51be1780-ddba-11eb-8c1a-d238cfd8f43f.png)
+
+</details>
+
+Command:
+```
+./zbox get-upload-cost --allocation <allocation_id> --localpath ./path/file.ext
+```
+Response:
+```
+ 0.0000000028 tokens / 720h0m0s for 24 B of <remote_path_of_file>
+```  
+
 ## Troubleshooting
 
 1. Both `rp-info` and `rp-lock` are not working.
@@ -2077,4 +2091,3 @@ Failed to get read pool info: error requesting read pool info: consensus_failed:
 ```
 
 This can happen if read pool is not yet created for wallet. Read pool is usually created when new wallet is created by `zbox` or `zwallet`. However, if wallet is recovered through `zwallet recoverwallet`, read pool may not have been created. Simply run `zbox rp-create`  to create a read pool.
-

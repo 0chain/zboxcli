@@ -1,0 +1,47 @@
+name: "Upgrade 0Chain GoSDK"
+
+concurrency:
+  group: "gosdk-${{ github.ref }}"
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch:
+    inputs:
+      gosdk:
+        description: 'The version of 0Chain GoSDK'
+        required: true
+
+jobs:
+  create-pr:
+    runs-on: [self-hosted, build]
+    steps:
+      - name: Setup go 1.18
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.18' 
+
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Upgrade 0Chain GoSDK
+        run: |
+          echo "BRANCH=$(echo ${{github.event.inputs.gosdk}} | sed 's/\//-/g')" >> $GITHUB_ENV
+
+          go get github.com/0chain/gosdk@${{github.event.inputs.gosdk}}
+          go mod tidy
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          base: staging
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: upgrade GoSDK to ${{ github.event.inputs.gosdk }}
+          branch: gosdk-upgrade-${{ env.BRANCH }}
+          delete-branch: true
+          title: Upgrade 0Chain GoSDK to ${{ github.event.inputs.gosdk }}
+          body: |
+            0Chain GoSDK `${{ github.event.inputs.gosdk }}` is released.
+            see full changelog on https://github.com/0chain/gosdk/releases/tag/${{ github.event.inputs.gosdk }}
+          draft: false
+          reviewers: cnlangzi
+          labels: GoSDK

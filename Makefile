@@ -22,16 +22,17 @@ default: help show
 #GO BUILD SDK
 gomod-download:
 	go mod download
+	go mod tidy
 
 gomod-clean:
 	go clean -i -r -x -modcache  ./...
 
 $(ZBOX): gomod-download
 	$(eval VERSION=$(shell git describe --tags --dirty --always))
-	go build -x -v -tags bn256 -ldflags "-X main.VersionStr=$(VERSION)" -o $(ZBOX) main.go
+	CGO_ENABLED=1 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=$(VERSION)" -o $(ZBOX) main.go
 
 zboxcli-test:
-	go test -tags bn256 ./...
+	CGO_ENABLED=1 go test -tags bn256 ./...
 
 install: $(ZBOX) zboxcli-test
 
