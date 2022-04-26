@@ -171,10 +171,19 @@ var newallocationCmd = &cobra.Command{
 				log.Fatal("invalid owner value: ", err)
 			}
 		}
+
+		var allocationName string
+		if flags.Changed("name") {
+			allocationName, err = flags.GetString("name")
+			if err != nil {
+				log.Fatal("invalid allocation name: ", err)
+			}
+		}
+
 		var allocationID string
 		var n int64
 		if len(owner) == 0 {
-			allocationID, n, err = sdk.CreateAllocation(*datashards, *parityshards,
+			allocationID, n, err = sdk.CreateAllocation(allocationName, *datashards, *parityshards,
 				*size, expireAt, readPrice, writePrice, mcct, lock)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
@@ -190,7 +199,7 @@ var newallocationCmd = &cobra.Command{
 				}
 			}
 
-			allocationID, n, err = sdk.CreateAllocationForOwner(owner, ownerPublicKey, *datashards, *parityshards,
+			allocationID, n, err = sdk.CreateAllocationForOwner(allocationName, owner, ownerPublicKey, *datashards, *parityshards,
 				*size, expireAt, readPrice, writePrice, mcct, lock, blockchain.GetPreferredBlobbers())
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
@@ -265,6 +274,8 @@ func init() {
 		"create an allocation with someone else as owner")
 	newallocationCmd.Flags().String("owner_public_key", "",
 		"public key of owner, user when creating an allocation for somone else")
+
+	newallocationCmd.Flags().String("name", "", "allocation name")
 
 }
 
