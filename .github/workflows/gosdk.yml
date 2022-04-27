@@ -34,7 +34,7 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           base: staging
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GOSDK }}
           commit-message: upgrade GoSDK to ${{ github.event.inputs.gosdk }}
           branch: gosdk-upgrade-${{ env.BRANCH }}
           delete-branch: true
