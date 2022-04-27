@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/0chain/errors v1.0.3
-	github.com/0chain/gosdk v1.8.3-0.20220426160108-27152fccde4b
+	github.com/0chain/gosdk v1.8.3-0.20220427201918-00b7c3b8d9c5
 	github.com/icza/bitio v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.4.0
@@ -61,6 +61,3 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
-
-// temporary, for development
-//replace github.com/0chain/gosdk => ../gosdk
