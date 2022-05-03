@@ -71,10 +71,8 @@ var feedCmd = &cobra.Command{
 			attrs.WhoPaysForReads = wp // set given value
 		}
 
-		chunkSize, _ := cmd.Flags().GetInt("chunksize")
-
 		// download video from remote live feed(eg youtube), and sync it to zcn
-		err = startFeedUpload(cmd, allocationObj, localpath, remotepath, encrypt, chunkSize, feedChunkNumber, attrs)
+		err = startFeedUpload(cmd, allocationObj, localpath, remotepath, encrypt, feedChunkNumber, attrs)
 
 		if err != nil {
 			PrintError("Upload failed.", err)
@@ -94,7 +92,7 @@ var feedCmd = &cobra.Command{
 	},
 }
 
-func startFeedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath, remotePath string, encrypt bool, chunkSize, chunkNumber int, attrs fileref.Attributes) error {
+func startFeedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath, remotePath string, encrypt bool, chunkNumber int, attrs fileref.Attributes) error {
 
 	downloadArgs, _ := cmd.Flags().GetString("downloader-args")
 	ffmpegArgs, _ := cmd.Flags().GetString("ffmpeg-args")
@@ -135,7 +133,6 @@ func startFeedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPat
 	}
 
 	syncUpload := sdk.CreateLiveUpload(util.GetHomeDir(), allocationObj, liveMeta, reader,
-		sdk.WithLiveChunkSize(chunkSize),
 		sdk.WithLiveChunkNumber(chunkNumber),
 		sdk.WithLiveEncrypt(encrypt),
 		sdk.WithLiveStatusCallback(func() sdk.StatusCallback {
@@ -164,7 +161,6 @@ func init() {
 	feedCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
 	feedCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
 
-	feedCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "chunk size")
 	feedCmd.Flags().IntVarP(&feedChunkNumber, "chunknumber", "", 1, "how many chunks should be uploaded in a http request")
 
 	feedCmd.Flags().Int("delay", 5, "set segment duration to seconds.")

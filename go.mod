@@ -1,13 +1,13 @@
 module github.com/0chain/zboxcli
 
-go 1.17
+go 1.18
 
 require (
 	github.com/0chain/errors v1.0.3
 	github.com/0chain/gosdk v1.8.3-0.20220502163359-12c43df8264d
 	github.com/icza/bitio v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/spf13/cobra v1.1.1
+	github.com/spf13/cobra v1.4.0
 	github.com/spf13/pflag v1.0.5
 	gopkg.in/cheggaaa/pb.v1 v1.0.28
 )
@@ -62,3 +62,6 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
+
+// temporary, for development
+//replace github.com/0chain/gosdk => ../gosdk
