@@ -22,6 +22,7 @@ default: help show
 #GO BUILD SDK
 gomod-download:
 	go mod download
+	go mod tidy
 
 gomod-clean:
 	go clean -i -r -x -modcache  ./...
