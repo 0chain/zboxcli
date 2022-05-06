@@ -600,7 +600,7 @@ Use `status` command to get the status of a blobber or validator
 | Parameter | Required | Description                                | default | Valid values |
 |-----------|----------|--------------------------------------------|---------|--------------|
 | id        | yes      | id of provider of which we want the status |         | string       |
-| type   | no       | provider type: blobber or validator        | blobber | string       |
+| type      | no       | provider type: blobber or validator        | blobber | string       |
 | json      | no       | print result in json format                | false   | boolean      |
 
 ```shell
