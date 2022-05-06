@@ -119,6 +119,7 @@ When you run the `zbox` command in terminal with no arguments, it will list all 
 [alloc-cancel](#cancel-allocation)|Cancel an allocation
 [alloc-fini](#finalise-allocation)|Finalize an expired allocation
 [bl-info](#detailed-blobber-information)|Get blobber info
+[status](#status)|Get blobber or validator status
 [bl-update](#update-blobber-settings)|Update blobber settings by its delegate\_wallet owner
 [commit](#commit)| commit file changes to chain
 [collect-reward](#collect-rewards)|transfer reward tokens from a stake pool to your wallet.
@@ -591,6 +592,21 @@ settings:
   num_delegates:   50
   service_charge:  30 %
 ```
+
+#### status
+
+Use `status` command to get the status of a blobber or validator
+
+| Parameter | Required | Description                                | default | Valid values |
+|-----------|----------|--------------------------------------------|---------|--------------|
+| id        | yes      | id of provider of which we want the status |         | string       |
+| type   | no       | provider type: blobber or validator        | blobber | string       |
+| json      | no       | print result in json format                | false   | boolean      |
+
+```shell
+./zbox list-all --id 4ebeb69feeaeb3cd308570321981d61beea55db65cbeba4ba3b75c173c0f141b
+```
+
 
 #### List all files
 
