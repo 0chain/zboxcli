@@ -33,12 +33,11 @@ var addCmd = &cobra.Command{
 			log.Fatal("invalid 'max' flag: ", err)
 		}
 
-		_, n, err := sdk.AddFreeStorageAssigner(name, key, limit, max)
+		_, _, err = sdk.AddFreeStorageAssigner(name, key, limit, max)
 		if err != nil {
 			log.Fatal("Error adding free storage assigner:", err)
 		}
 		log.Println(name + " added as free storage assigner")
-		n = n //log.Println("nonce:", n)
 
 	},
 }

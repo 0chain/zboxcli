@@ -210,12 +210,10 @@ func initConfig() {
 
 	if fresh {
 		fmt.Println("Creating related read pool for storage smart-contract...")
-		n := int64(0)
-		if _, n, err = sdk.CreateReadPool(); err != nil {
+		if _, _, err = sdk.CreateReadPool(); err != nil {
 			fmt.Printf("Failed to create read pool: %v\n", err)
 			os.Exit(1)
 		}
-		n = n //log.Println("nonce:", n)
 		fmt.Println("Read pool created successfully")
 	}
 }

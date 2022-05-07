@@ -40,12 +40,11 @@ var transferAllocationCmd = &cobra.Command{
 			log.Fatal("invalid 'new_owner_key' flag: ", err)
 		}
 
-		_, n, err := sdk.CuratorTransferAllocation(allocationId, newOwnerId, newOwnerPublicKey)
+		_, _, err = sdk.CuratorTransferAllocation(allocationId, newOwnerId, newOwnerPublicKey)
 		if err != nil {
 			log.Fatal("Error adding curator:", err)
 		}
 		log.Println("transferred ownership of allocation " + allocationId + " to " + newOwnerId)
-		n = n //log.Println("nonce:", n)
 	},
 }
 

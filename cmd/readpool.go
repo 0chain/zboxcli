@@ -19,12 +19,10 @@ var rpCreate = &cobra.Command{
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		var err error
-		var n int64
-		if _, n, err = sdk.CreateReadPool(); err != nil {
+		if _, _, err = sdk.CreateReadPool(); err != nil {
 			log.Fatalf("Failed to create read pool: %v\n", err)
 		}
 		fmt.Println("Read pool created successfully")
-		n = n //log.Println("nonce:", n)
 	},
 }
 
@@ -137,13 +135,12 @@ var rpLock = &cobra.Command{
 			}
 		}
 
-		_, n, err := sdk.ReadPoolLock(duration, allocID, blobberID,
+		_, _, err = sdk.ReadPoolLock(duration, allocID, blobberID,
 			zcncore.ConvertToValue(tokens), zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to lock tokens in read pool: %v", err)
 		}
 		fmt.Println("locked")
-		n = n //log.Println("nonce:", n)
 	},
 }
 
@@ -176,12 +173,11 @@ var rpUnlock = &cobra.Command{
 			}
 		}
 
-		_, n, err := sdk.ReadPoolUnlock(poolID, zcncore.ConvertToValue(fee))
+		_, _, err = sdk.ReadPoolUnlock(poolID, zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to unlock tokens in read pool: %v", err)
 		}
 		fmt.Println("unlocked")
-		n = n //log.Println("nonce:", n)
 	},
 }
 

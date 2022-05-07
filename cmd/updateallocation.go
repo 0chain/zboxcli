@@ -50,12 +50,11 @@ var updateAllocationCmd = &cobra.Command{
 				log.Fatal("Only positive values are allowed for --lock")
 			}
 
-			txnHash, n, err := sdk.CreateFreeUpdateAllocation(freeStorageMarker, allocID, lock)
+			txnHash, _, err := sdk.CreateFreeUpdateAllocation(freeStorageMarker, allocID, lock)
 			if err != nil {
 				log.Fatal("Error free update allocation: ", err)
 			}
 			log.Println("Allocation updated with txId : " + txnHash)
-			n = n //log.Println("nonce:", n)
 			return
 		}
 
@@ -98,7 +97,7 @@ var updateAllocationCmd = &cobra.Command{
 			}
 		}
 
-		txnHash, n, err := sdk.UpdateAllocation(
+		txnHash, _, err := sdk.UpdateAllocation(
 			allocationName,
 			size,
 			int64(expiry/time.Second),
@@ -113,7 +112,6 @@ var updateAllocationCmd = &cobra.Command{
 			log.Fatal("Error updating allocation:", err)
 		}
 		log.Println("Allocation updated with txId : " + txnHash)
-		n = n //log.Println("nonce:", n)
 	},
 }
 

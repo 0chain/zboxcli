@@ -32,12 +32,11 @@ var removeCuratorCmd = &cobra.Command{
 			log.Fatal("invalid 'curator_id' flag: ", err)
 		}
 
-		_, n, err := sdk.RemoveCurator(curatorID, allocationID)
+		_, _, err = sdk.RemoveCurator(curatorID, allocationID)
 		if err != nil {
 			log.Fatal("Error adding curator:", err)
 		}
 		log.Println(curatorID + " removed " + curatorID + " as a curator to allocation " + allocationID)
-		n = n //log.Println("nonce:", n)
 	},
 }
 
