@@ -49,7 +49,7 @@ and empties write pool moving left tokens to client.`,
 		// check out allocation first
 		allocShouldNotBeFinalized(allocID)
 
-		txnHash, err := sdk.FinalizeAllocation(allocID)
+		txnHash, _, err := sdk.FinalizeAllocation(allocID)
 		if err != nil {
 			// check again, a blobber can finalize it
 			allocShouldNotBeFinalized(allocID)
@@ -83,11 +83,11 @@ allocation flow.`,
 			log.Fatal("invalid 'allocation' flag: ", err)
 		}
 
-		txnHash, err := sdk.CancelAllocation(allocID)
+		txnHash, _, err := sdk.CancelAllocation(allocID)
 		if err != nil {
 			log.Fatal("Error creating allocation:", err)
 		}
-		log.Print("Allocation canceled with txId : " + txnHash)
+		log.Println("Allocation canceled with txId : " + txnHash)
 	},
 }
 

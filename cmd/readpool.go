@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
-	"github.com/0chain/zboxcli/util"
 	"github.com/0chain/gosdk/zcncore"
+	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )
 
@@ -19,7 +19,7 @@ var rpCreate = &cobra.Command{
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		var err error
-		if err = sdk.CreateReadPool(); err != nil {
+		if _, _, err = sdk.CreateReadPool(); err != nil {
 			log.Fatalf("Failed to create read pool: %v\n", err)
 		}
 		fmt.Println("Read pool created successfully")
@@ -62,7 +62,6 @@ var rpInfo = &cobra.Command{
 			}
 		}
 		doJSON, _ := cmd.Flags().GetBool("json")
-
 
 		var info *sdk.AllocationPoolStats
 		if info, err = sdk.GetReadPoolInfo(""); err != nil {
@@ -136,7 +135,7 @@ var rpLock = &cobra.Command{
 			}
 		}
 
-		err = sdk.ReadPoolLock(duration, allocID, blobberID,
+		_, _, err = sdk.ReadPoolLock(duration, allocID, blobberID,
 			zcncore.ConvertToValue(tokens), zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to lock tokens in read pool: %v", err)
@@ -174,7 +173,7 @@ var rpUnlock = &cobra.Command{
 			}
 		}
 
-		err = sdk.ReadPoolUnlock(poolID, zcncore.ConvertToValue(fee))
+		_, _, err = sdk.ReadPoolUnlock(poolID, zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to unlock tokens in read pool: %v", err)
 		}
