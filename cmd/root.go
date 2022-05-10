@@ -28,6 +28,7 @@ var walletFile string
 var walletClientID string
 var walletClientKey string
 var cDir string
+var nonce int64
 var bSilent bool
 var allocUnderRepair bool
 
@@ -49,6 +50,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&walletFile, "wallet", "", "wallet file (default is wallet.json)")
 	rootCmd.PersistentFlags().StringVar(&walletClientID, "wallet_client_id", "", "wallet client_id")
 	rootCmd.PersistentFlags().StringVar(&walletClientKey, "wallet_client_key", "", "wallet client_key")
+	rootCmd.PersistentFlags().Int64Var(&nonce, "withNonce", 0, "nonce that will be used in transaction (default is 0)")
 	rootCmd.PersistentFlags().StringVar(&cDir, "configDir", "", "configuration directory (default is $HOME/.zcn)")
 	rootCmd.PersistentFlags().BoolVar(&bSilent, "silent", false, "Do not show interactive sdk logs (shown by default)")
 }
@@ -188,7 +190,7 @@ func initConfig() {
 	}
 
 	//init the storage sdk with the known miners, sharders and client wallet info
-	err = sdk.InitStorageSDK(walletJSON, cfg.BlockWorker, cfg.ChainID, cfg.SignatureScheme, cfg.PreferredBlobbers)
+	err = sdk.InitStorageSDK(walletJSON, cfg.BlockWorker, cfg.ChainID, cfg.SignatureScheme, cfg.PreferredBlobbers, nonce)
 	if err != nil {
 		fmt.Println("Error in sdk init", err)
 		os.Exit(1)
@@ -208,7 +210,7 @@ func initConfig() {
 
 	if fresh {
 		fmt.Println("Creating related read pool for storage smart-contract...")
-		if err = sdk.CreateReadPool(); err != nil {
+		if _, _, err = sdk.CreateReadPool(); err != nil {
 			fmt.Printf("Failed to create read pool: %v\n", err)
 			os.Exit(1)
 		}
