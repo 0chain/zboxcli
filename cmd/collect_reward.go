@@ -46,16 +46,16 @@ var collectRewards = &cobra.Command{
 
 		switch providerName {
 		case "blobber":
-			_, err = sdk.CollectRewards(providerId, poolId, sdk.ProviderBlobber)
+			_, _, err = sdk.CollectRewards(providerId, poolId, sdk.ProviderBlobber)
 		case "validator":
-			_, err = sdk.CollectRewards(providerId, poolId, sdk.ProviderValidator)
+			_, _, err = sdk.CollectRewards(providerId, poolId, sdk.ProviderValidator)
 		default:
 			log.Fatal("provider type must be blobber or validator")
 		}
 		if err != nil {
 			log.Fatal("Error paying reward:", err)
 		}
-		log.Print("transferred reward tokens")
+		log.Println("transferred reward tokens")
 	},
 }
 
