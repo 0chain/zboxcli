@@ -255,9 +255,9 @@ var blobberUpdateCmd = &cobra.Command{
 			blob.Terms.MaxOfferDuration = mod
 		}
 
-		if flags.Changed("cct") {
+		if flags.Changed("challenge_completion_time") {
 			var cct time.Duration
-			if cct, err = flags.GetDuration("cct"); err != nil {
+			if cct, err = flags.GetDuration("challenge_completion_time"); err != nil {
 				log.Fatal(err)
 			}
 			blob.Terms.ChallengeCompletionTime = cct
