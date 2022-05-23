@@ -25,15 +25,15 @@ var transferAllocationCmd = &cobra.Command{
 		}
 
 		if flags.Changed("new_owner") == false {
-			log.Fatal("Error: curator flag is missing")
+			log.Fatal("Error: new_owner flag is missing")
 		}
 		newOwnerId, err := flags.GetString("new_owner")
 		if err != nil {
-			log.Fatal("invalid 'new_owner_id' flag: ", err)
+			log.Fatal("invalid 'new_owner' flag: ", err)
 		}
 
 		if flags.Changed("new_owner_key") == false {
-			log.Fatal("Error: curator flag is missing")
+			log.Fatal("Error: new_owner_key flag is missing")
 		}
 		newOwnerPublicKey, err := flags.GetString("new_owner_key")
 		if err != nil {
