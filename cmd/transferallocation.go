@@ -17,7 +17,7 @@ var transferAllocationCmd = &cobra.Command{
 		var flags = cmd.Flags()
 
 		if flags.Changed("allocation") == false {
-			log.Fatal("Error: curator flag is missing")
+			log.Fatal("Error: allocation flag is missing")
 		}
 		allocationId, err := flags.GetString("allocation")
 		if err != nil {
@@ -42,7 +42,7 @@ var transferAllocationCmd = &cobra.Command{
 
 		_, _, err = sdk.CuratorTransferAllocation(allocationId, newOwnerId, newOwnerPublicKey)
 		if err != nil {
-			log.Fatal("Error adding curator:", err)
+			log.Fatal("Error transferring allocation:", err)
 		}
 		log.Println("transferred ownership of allocation " + allocationId + " to " + newOwnerId)
 	},
