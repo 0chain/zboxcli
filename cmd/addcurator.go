@@ -37,7 +37,7 @@ var addCuratorCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal("Error adding curator:", err)
 		}
-		log.Println(curatorID + " added " + curatorID + " as a curator to allocation " + allocationID)
+		log.Println(clientWallet.ClientID + " added " + curatorID + " as a curator to allocation " + allocationID)
 	},
 }
 
