@@ -34,10 +34,6 @@ func printReadPoolStat(stat []*sdk.AllocationPoolStat) {
 		fmt.Println("  allocation_id: ", st.AllocationID)
 		fmt.Println("  locked:        ", st.Locked)
 		fmt.Println("  blobbers:")
-		for _, b := range st.Blobbers {
-			fmt.Println("  - blobber_id: ", b.BlobberID)
-			fmt.Println("  - balance:    ", b.Balance.String())
-		}
 	}
 	fmt.Println()
 }
