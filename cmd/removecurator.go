@@ -21,7 +21,7 @@ var removeCuratorCmd = &cobra.Command{
 		}
 		allocationID, err := flags.GetString("allocation")
 		if err != nil {
-			log.Fatal("invalid 'allocation_id' flag: ", err)
+			log.Fatal("invalid 'allocation' flag: ", err)
 		}
 
 		if flags.Changed("curator") == false {
@@ -29,12 +29,12 @@ var removeCuratorCmd = &cobra.Command{
 		}
 		curatorID, err := flags.GetString("curator")
 		if err != nil {
-			log.Fatal("invalid 'curator_id' flag: ", err)
+			log.Fatal("invalid 'curator' flag: ", err)
 		}
 
 		_, _, err = sdk.RemoveCurator(curatorID, allocationID)
 		if err != nil {
-			log.Fatal("Error adding curator:", err)
+			log.Fatal("Error removing curator:", err)
 		}
 		log.Println(curatorID + " removed " + curatorID + " as a curator to allocation " + allocationID)
 	},
