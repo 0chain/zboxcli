@@ -33,7 +33,6 @@ func printReadPoolStat(stat []*sdk.AllocationPoolStat) {
 		fmt.Println("  expire_at:     ", st.ExpireAt.ToTime().String())
 		fmt.Println("  allocation_id: ", st.AllocationID)
 		fmt.Println("  locked:        ", st.Locked)
-		fmt.Println("  blobbers:")
 	}
 	fmt.Println()
 }
