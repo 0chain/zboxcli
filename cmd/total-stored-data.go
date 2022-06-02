@@ -21,7 +21,6 @@ var totalStoredData = &cobra.Command{
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		var err error
-
 		doJSON, _ := cmd.Flags().GetBool("json")
 		var info = make(map[string]int64)
 		if info, err = sdk.GetTotalStoredData(); err != nil {
