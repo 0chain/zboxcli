@@ -25,6 +25,7 @@ var totalStoredData = &cobra.Command{
 		var info = make(map[string]int64)
 		if info, err = sdk.GetTotalStoredData(); err != nil {
 			log.Fatalf("Failed to get total stored data: %v", err)
+			return
 		}
 		if doJSON {
 			util.PrintJSON(info)
