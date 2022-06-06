@@ -46,7 +46,7 @@ var wpInfo = &cobra.Command{
 			util.PrintJSON(info.Pools)
 			return
 		}
-		printReadPoolStat(info.Pools)
+		printWritePoolStat(info.Pools)
 	},
 }
 
