@@ -92,7 +92,7 @@ var validatorUpdateCmd = &cobra.Command{
 			if minStake, err = flags.GetFloat64("min_stake"); err != nil {
 				log.Fatal(err)
 			}
-			validator.StakePoolSettings.MinStake = common.ToBalance(minStake)
+			validator.MinStake = common.ToBalance(minStake)
 		}
 
 		if flags.Changed("max_stake") {
@@ -100,7 +100,7 @@ var validatorUpdateCmd = &cobra.Command{
 			if maxStake, err = flags.GetFloat64("max_stake"); err != nil {
 				log.Fatal(err)
 			}
-			validator.StakePoolSettings.MaxStake = common.ToBalance(maxStake)
+			validator.MaxStake = common.ToBalance(maxStake)
 		}
 
 		if flags.Changed("num_delegates") {
@@ -108,7 +108,7 @@ var validatorUpdateCmd = &cobra.Command{
 			if nd, err = flags.GetInt("num_delegates"); err != nil {
 				log.Fatal(err)
 			}
-			validator.StakePoolSettings.NumDelegates = nd
+			validator.NumDelegates = nd
 		}
 
 		if flags.Changed("service_charge") {
@@ -116,7 +116,7 @@ var validatorUpdateCmd = &cobra.Command{
 			if sc, err = flags.GetFloat64("service_charge"); err != nil {
 				log.Fatal(err)
 			}
-			validator.StakePoolSettings.ServiceCharge = sc
+			validator.ServiceCharge = sc
 		}
 
 		if _, _, err = sdk.UpdateValidatorSettings(validator); err != nil {
