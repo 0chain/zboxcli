@@ -119,6 +119,7 @@ When you run the `zbox` command in terminal with no arguments, it will list all 
 [alloc-cancel](#cancel-allocation)|Cancel an allocation
 [alloc-fini](#finalise-allocation)|Finalize an expired allocation
 [bl-info](#detailed-blobber-information)|Get blobber info
+[validator-info](#detailed-validator-information)|Get validator info
 [bl-update](#update-blobber-settings)|Update blobber settings by its delegate\_wallet owner
 [validator-update](#update-validator-settings)|Update validator settings by its delegate\_wallet owner
 [commit](#commit)| commit file changes to chain
