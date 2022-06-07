@@ -6,9 +6,60 @@ import (
 
 	"github.com/0chain/gosdk/core/common"
 	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/zboxcli/util"
 
 	"github.com/spf13/cobra"
 )
+
+var validatorInfoCmd = &cobra.Command{
+	Use:   "validator-info",
+	Short: "Get validator info",
+	Long:  `Get validator info`,
+	Args:  cobra.MinimumNArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+
+		var (
+			flags = cmd.Flags()
+
+			json        bool
+			validatorID string
+			err         error
+		)
+
+		if flags.Changed("json") {
+			if json, err = flags.GetBool("json"); err != nil {
+				log.Fatal("invalid 'json' flag: ", err)
+			}
+		}
+
+		if !flags.Changed("validator_id") {
+			log.Fatal("missing required 'validator_id' flag")
+		}
+
+		if validatorID, err = flags.GetString("validator_id"); err != nil {
+			log.Fatal("error in 'validator_id' flag: ", err)
+		}
+
+		var validator *sdk.Validator
+		if validator, err = sdk.GetValidator(validatorID); err != nil {
+			log.Fatal(err)
+		}
+
+		if json {
+			util.PrintJSON(validator)
+			return
+		}
+
+		fmt.Println("id:               ", validator.ID)
+		fmt.Println("url:              ", validator.BaseURL)
+		fmt.Println("settings:")
+		fmt.Println("  delegate_wallet:", validator.DelegateWallet)
+		fmt.Println("  min_stake:      ", validator.MinStake)
+		fmt.Println("  max_stake:      ", validator.MaxStake)
+		fmt.Println("  num_delegates:  ", validator.NumDelegates)
+		fmt.Println("  service_charge: ", validator.ServiceCharge*100, "%")
+	},
+}
 
 var validatorUpdateCmd = &cobra.Command{
 	Use:   "validator-update",
@@ -78,6 +129,12 @@ var validatorUpdateCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(validatorUpdateCmd)
+	rootCmd.AddCommand(validatorInfoCmd)
+
+	validatorInfoCmd.Flags().String("validator_id", "", "validator ID, required")
+	validatorInfoCmd.Flags().Bool("json", false,
+		"pass this option to print response as json data")
+	validatorInfoCmd.MarkFlagRequired("validator_id")
 
 	buf := validatorUpdateCmd.Flags()
 	buf.String("validator_id", "", "validator ID, required")
