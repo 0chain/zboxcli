@@ -27,8 +27,7 @@ var rpCreate = &cobra.Command{
 
 func printReadPoolInfo(stat *sdk.ReadPool) {
 	fmt.Println()
-	fmt.Println("  balance for own allocations:            ", stat.OwnerBalance)
-	fmt.Println("  balance for other allocations:          ", stat.VisitorBalance)
+	fmt.Println("  		balance :            ", stat.Balance)
 	fmt.Println()
 }
 
@@ -62,7 +61,7 @@ var rpInfo = &cobra.Command{
 			log.Fatalf("Failed to get read pool info: %v", err)
 		}
 
-		if info.OwnerBalance == 0 && info.VisitorBalance == 0 {
+		if info.Balance == 0 {
 			fmt.Println("no tokens locked")
 			return
 		}
@@ -104,14 +103,7 @@ var rpLock = &cobra.Command{
 			}
 		}
 
-		isOwner := true
-		if flags.Changed("owner") {
-			if isOwner, err = flags.GetBool("owner"); err != nil {
-				log.Fatal("invalid 'owner' flag: ", err)
-			}
-		}
-
-		_, _, err = sdk.ReadPoolLock(zcncore.ConvertToValue(tokens), zcncore.ConvertToValue(fee), isOwner)
+		_, _, err = sdk.ReadPoolLock(zcncore.ConvertToValue(tokens), zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to lock tokens in read pool: %v", err)
 		}
@@ -140,14 +132,7 @@ var rpUnlock = &cobra.Command{
 			}
 		}
 
-		isOwner := true
-		if flags.Changed("owner") {
-			if isOwner, err = flags.GetBool("owner"); err != nil {
-				log.Fatal("invalid 'owner' flag: ", err)
-			}
-		}
-
-		_, _, err = sdk.ReadPoolUnlock(zcncore.ConvertToValue(fee), isOwner)
+		_, _, err = sdk.ReadPoolUnlock(zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to unlock tokens in read pool: %v", err)
 		}
@@ -165,11 +150,8 @@ func init() {
 
 	rpLock.PersistentFlags().Float64("tokens", 0.0,
 		"lock tokens number, required")
-	rpLock.PersistentFlags().Bool("owner", true,
-		"lock tokens for owned allocations (false = visiting allocations), optional")
 	rpLock.PersistentFlags().Float64("fee", 0.0,
 		"transaction fee, default 0")
-
 	rpLock.MarkFlagRequired("tokens")
 
 	rpUnlock.PersistentFlags().Float64("fee", 0.0,
