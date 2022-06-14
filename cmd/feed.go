@@ -114,7 +114,7 @@ func startFeedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPat
 		return err
 	}
 
-	remotePath, fileName, err := resolvePathAndFileNameForUpload(localPath, remotePath)
+	remotePath, fileName, err := fullPathAndFileNameForUpload(localPath, remotePath)
 	if err != nil {
 		return err
 	}
