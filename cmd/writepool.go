@@ -98,6 +98,10 @@ var wpLock = &cobra.Command{
 			log.Fatal("invalid 'tokens' flag: ", err)
 		}
 
+		if tokens < 0 {
+			log.Fatal("invalid token amount: negative")
+		}
+
 		if flags.Changed("fee") {
 			if fee, err = flags.GetFloat64("fee"); err != nil {
 				log.Fatal("invalid 'fee' flag: ", err)
