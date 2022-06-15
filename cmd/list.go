@@ -14,8 +14,8 @@ import (
 // listCmd represents list command
 var listCmd = &cobra.Command{
 	Use:   "list",
-	Short: "list files from blobbers",
-	Long:  `list files from blobbers`,
+	Short: "list files of a directory from blobbers",
+	Long:  `list files of a directory from blobbers`,
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags() // fflags is a *flag.FlagSet
@@ -193,8 +193,8 @@ var listAllCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(listCmd)
 	listCmd.PersistentFlags().String("allocation", "", "Allocation ID")
-	listCmd.PersistentFlags().String("remotepath", "", "Remote path to list from")
-	listCmd.PersistentFlags().String("authticket", "", "Auth ticket fot the file to download if you dont own it")
+	listCmd.PersistentFlags().String("remotepath", "", "Remote path of directory to list from")
+	listCmd.PersistentFlags().String("authticket", "", "Auth ticket of the directory to list from")
 	listCmd.PersistentFlags().String("lookuphash", "", "The remote lookuphash of the object retrieved from the list")
 	listCmd.Flags().Bool("json", false, "pass this option to print response as json data")
 	listCmd.MarkFlagRequired("allocation")
