@@ -196,7 +196,7 @@ func fullPathAndFileNameForUpload(localPath, remotePath string) (string, string,
 	}
 
 	fullRemotePath := zboxutil.GetFullRemotePath(localPath, remotePath)
-	_, fileName := filepath.Split(remotePath)
+	_, fileName := filepath.Split(fullRemotePath)
 
 	return fullRemotePath, fileName, nil
 }
