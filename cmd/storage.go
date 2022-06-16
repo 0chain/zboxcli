@@ -78,7 +78,7 @@ func printBlobbers(nodes []*sdk.Blobber) {
 		fmt.Println("  url:                  ", val.BaseURL)
 		fmt.Println("  used / total capacity:", val.Used.String(), "/",
 			val.Capacity.String())
-		fmt.Println("  last_health_check:	 ", val.LastHealthCheck)
+		fmt.Println("  last_health_check:	 ", val.LastHealthCheck.ToTime())
 		fmt.Println("  terms:")
 		fmt.Println("    read_price:         ", val.Terms.ReadPrice.String(), "/ GB")
 		fmt.Println("    write_price:        ", val.Terms.WritePrice.String(), "/ GB / time_unit")
