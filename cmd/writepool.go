@@ -46,7 +46,7 @@ var wpInfo = &cobra.Command{
 			util.PrintJSON(info.Pools)
 			return
 		}
-		printReadPoolStat(info.Pools)
+		printWritePoolStat(info.Pools)
 	},
 }
 
@@ -96,6 +96,10 @@ var wpLock = &cobra.Command{
 
 		if tokens, err = flags.GetFloat64("tokens"); err != nil {
 			log.Fatal("invalid 'tokens' flag: ", err)
+		}
+
+		if tokens < 0 {
+			log.Fatal("invalid token amount: negative")
 		}
 
 		if flags.Changed("fee") {
