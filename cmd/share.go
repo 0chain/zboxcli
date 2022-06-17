@@ -89,7 +89,6 @@ var shareCmd = &cobra.Command{
 				}
 				availableAfter = *aa
 			}
-			whoPays, err := cmd.Flags().GetInt("who-pays")
 			if err != nil {
 				PrintError(err.Error())
 				os.Exit(1)
@@ -97,7 +96,7 @@ var shareCmd = &cobra.Command{
 			encryptionpublickey := cmd.Flag("encryptionpublickey").Value.String()
 			ref, err := allocationObj.GetAuthTicket(
 				remotepath, fileName, refType, refereeClientID, encryptionpublickey,
-				whoPays, expiration, &availableAfter)
+				expiration, &availableAfter)
 
 			if err != nil {
 				PrintError(err.Error())
@@ -117,7 +116,6 @@ func init() {
 	shareCmd.PersistentFlags().Int64("expiration-seconds", 0, "Authticket will expire when the seconds specified have elapsed after the instant of its creation")
 	shareCmd.PersistentFlags().String("available-after", "", "Timelock for private file that makes the file available for download at certain time. 4 input formats are supported: +1h30m, +30, 1647858200 and 2022-03-21 10:21:38. Default value is current local time.")
 	shareCmd.PersistentFlags().Bool("revoke", false, "Revoke share for remotepath")
-	shareCmd.PersistentFlags().Int("who-pays", 0, "Who Pays; Owner or 3rd party. Default is owner")
 	shareCmd.MarkFlagRequired("allocation")
 	shareCmd.MarkFlagRequired("remotepath")
 }
