@@ -3,11 +3,9 @@ package cmd
 import (
 	"log"
 	"os"
-	"path/filepath"
 	"strings"
 	"sync"
 
-	thrown "github.com/0chain/errors"
 	"github.com/0chain/gosdk/core/common"
 	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
@@ -105,15 +103,10 @@ func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPat
 		return err
 	}
 
-	remotePath = zboxutil.RemoteClean(remotePath)
-	isabs := zboxutil.IsRemoteAbs(remotePath)
-	if !isabs {
-		err = thrown.New("invalid_path", "Path should be valid and absolute")
+	remotePath, fileName, err := fullPathAndFileNameForUpload(localPath, remotePath)
+	if err != nil {
 		return err
 	}
-	remotePath = zboxutil.GetFullRemotePath(localPath, remotePath)
-
-	_, fileName := filepath.Split(remotePath)
 
 	liveMeta := sdk.LiveMeta{
 		MimeType:   mimeType,
