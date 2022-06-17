@@ -59,7 +59,6 @@ var updateCmd = &cobra.Command{
 		thumbnailpath := cmd.Flag("thumbnailpath").Value.String()
 		encrypt, _ := cmd.Flags().GetBool("encrypt")
 		commit, _ := cmd.Flags().GetBool("commit")
-		chunkSize, _ := cmd.Flags().GetInt("chunksize")
 
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
@@ -70,7 +69,6 @@ var updateCmd = &cobra.Command{
 			remotePath:    remotepath,
 			thumbnailPath: thumbnailpath,
 			encrypt:       encrypt,
-			chunkSize:     chunkSize,
 			chunkNumber:   updateChunkNumber,
 			attrs:         attrs,
 			isUpdate:      true,
@@ -107,7 +105,6 @@ func init() {
 	updateCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
 	updateCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
 
-	updateCmd.Flags().Int("chunksize", sdk.CHUNK_SIZE, "chunk size")
 	updateCmd.Flags().IntVarP(&updateChunkNumber, "chunknumber", "", 1, "how many chunks should be uploaded in a http request")
 
 	updateCmd.MarkFlagRequired("allocation")

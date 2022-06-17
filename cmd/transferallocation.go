@@ -17,7 +17,7 @@ var transferAllocationCmd = &cobra.Command{
 		var flags = cmd.Flags()
 
 		if flags.Changed("allocation") == false {
-			log.Fatal("Error: curator flag is missing")
+			log.Fatal("Error: allocation flag is missing")
 		}
 		allocationId, err := flags.GetString("allocation")
 		if err != nil {
@@ -25,26 +25,26 @@ var transferAllocationCmd = &cobra.Command{
 		}
 
 		if flags.Changed("new_owner") == false {
-			log.Fatal("Error: curator flag is missing")
+			log.Fatal("Error: new_owner flag is missing")
 		}
 		newOwnerId, err := flags.GetString("new_owner")
 		if err != nil {
-			log.Fatal("invalid 'new_owner_id' flag: ", err)
+			log.Fatal("invalid 'new_owner' flag: ", err)
 		}
 
 		if flags.Changed("new_owner_key") == false {
-			log.Fatal("Error: curator flag is missing")
+			log.Fatal("Error: new_owner_key flag is missing")
 		}
 		newOwnerPublicKey, err := flags.GetString("new_owner_key")
 		if err != nil {
 			log.Fatal("invalid 'new_owner_key' flag: ", err)
 		}
 
-		_, err = sdk.CuratorTransferAllocation(allocationId, newOwnerId, newOwnerPublicKey)
+		_, _, err = sdk.CuratorTransferAllocation(allocationId, newOwnerId, newOwnerPublicKey)
 		if err != nil {
-			log.Fatal("Error adding curator:", err)
+			log.Fatal("Error transferring allocation:", err)
 		}
-		log.Print("transferred ownership of allocation " + allocationId + " to " + newOwnerId)
+		log.Println("transferred ownership of allocation " + allocationId + " to " + newOwnerId)
 	},
 }
 

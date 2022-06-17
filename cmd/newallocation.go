@@ -65,7 +65,7 @@ var newallocationCmd = &cobra.Command{
 				log.Fatal("Only positive values are allowed for --lock")
 			}
 
-			allocationID, err := sdk.CreateFreeAllocation(freeStorageMarker, lock)
+			allocationID, _, err := sdk.CreateFreeAllocation(freeStorageMarker, lock)
 			if err != nil {
 				log.Fatal("Error creating free allocation: ", err)
 			}
@@ -79,8 +79,8 @@ var newallocationCmd = &cobra.Command{
 		}
 
 		var (
-			lock int64 // lock with given number of tokens
-			err  error //
+			lock uint64 // lock with given number of tokens
+			err  error  //
 		)
 
 		if !costOnly {
@@ -94,9 +94,6 @@ var newallocationCmd = &cobra.Command{
 		var lockf float64
 		if lockf, err = flags.GetFloat64("lock"); err != nil {
 			log.Fatal("error: invalid 'lock' value:", err)
-		}
-		if lock < 0 {
-			log.Fatal("Only positive values are allowed for --lock")
 		}
 
 		if convertFromUSD {
@@ -170,9 +167,18 @@ var newallocationCmd = &cobra.Command{
 				log.Fatal("invalid owner value: ", err)
 			}
 		}
+
+		var allocationName string
+		if flags.Changed("name") {
+			allocationName, err = flags.GetString("name")
+			if err != nil {
+				log.Fatal("invalid allocation name: ", err)
+			}
+		}
+
 		var allocationID string
 		if len(owner) == 0 {
-			allocationID, err = sdk.CreateAllocation(*datashards, *parityshards,
+			allocationID, _, err = sdk.CreateAllocation(allocationName, *datashards, *parityshards,
 				*size, expireAt, readPrice, writePrice, mcct, lock)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
@@ -188,7 +194,7 @@ var newallocationCmd = &cobra.Command{
 				}
 			}
 
-			allocationID, err = sdk.CreateAllocationForOwner(owner, ownerPublicKey, *datashards, *parityshards,
+			allocationID, _, err = sdk.CreateAllocationForOwner(allocationName, owner, ownerPublicKey, *datashards, *parityshards,
 				*size, expireAt, readPrice, writePrice, mcct, lock, blockchain.GetPreferredBlobbers())
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
@@ -200,7 +206,7 @@ var newallocationCmd = &cobra.Command{
 	},
 }
 
-func processFreeStorageFlags(flags *pflag.FlagSet) (int64, string) {
+func processFreeStorageFlags(flags *pflag.FlagSet) (uint64, string) {
 	if flags.Changed("read_price") {
 		log.Fatal("free storage, read_price is predefined")
 	}
@@ -262,6 +268,8 @@ func init() {
 		"create an allocation with someone else as owner")
 	newallocationCmd.Flags().String("owner_public_key", "",
 		"public key of owner, user when creating an allocation for somone else")
+
+	newallocationCmd.Flags().String("name", "", "allocation name")
 
 }
 

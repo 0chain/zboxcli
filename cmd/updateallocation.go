@@ -26,17 +26,35 @@ var updateAllocationCmd = &cobra.Command{
 			log.Fatal("invalid 'allocation_id' flag: ", err)
 		}
 
+		var addBlobberId, removeBlobberId string
+		if flags.Changed("add_blobber") {
+			addBlobberId, err = flags.GetString("add_blobber")
+			if err != nil {
+				log.Fatal("invalid 'add_blobber' flag: ", err)
+			}
+			if flags.Changed("remove_blobber") {
+				removeBlobberId, err = flags.GetString("remove_blobber")
+				if err != nil {
+					log.Fatal("invalid 'remove_blobber' flag: ", err)
+				}
+			}
+		} else {
+			if flags.Changed("remove_blobber") {
+				log.Fatal("Error: cannot remove blobber without adding one")
+			}
+		}
+
 		if flags.Changed("free_storage") {
 			lock, freeStorageMarker := processFreeStorageFlags(flags)
 			if lock < 0 {
 				log.Fatal("Only positive values are allowed for --lock")
 			}
 
-			txnHash, err := sdk.CreateFreeUpdateAllocation(freeStorageMarker, allocID, lock)
+			txnHash, _, err := sdk.CreateFreeUpdateAllocation(freeStorageMarker, allocID, lock)
 			if err != nil {
 				log.Fatal("Error free update allocation: ", err)
 			}
-			log.Print("Allocation updated with txId : " + txnHash)
+			log.Println("Allocation updated with txId : " + txnHash)
 			return
 		}
 
@@ -49,12 +67,9 @@ var updateAllocationCmd = &cobra.Command{
 		}
 
 		var lockf float64
-		var lock int64
+		var lock uint64
 		if lockf, err = flags.GetFloat64("lock"); err != nil {
 			log.Fatal("error: invalid 'lock' value:", err)
-		}
-		if lock < 0 {
-			log.Fatal("Only positive values are allowed for --lock")
 		}
 
 		lock = zcncore.ConvertToValue(lockf)
@@ -71,12 +86,29 @@ var updateAllocationCmd = &cobra.Command{
 
 		setImmutable, _ := cmd.Flags().GetBool("set_immutable")
 
-		txnHash, err := sdk.UpdateAllocation(size,
-			int64(expiry/time.Second), allocID, lock, setImmutable, updateTerms)
+		var allocationName string
+		if flags.Changed("name") {
+			allocationName, err = flags.GetString("name")
+			if err != nil {
+				log.Fatal("invalid allocation name: ", err)
+			}
+		}
+
+		txnHash, _, err := sdk.UpdateAllocation(
+			allocationName,
+			size,
+			int64(expiry/time.Second),
+			allocID,
+			lock,
+			setImmutable,
+			updateTerms,
+			addBlobberId,
+			removeBlobberId,
+		)
 		if err != nil {
 			log.Fatal("Error updating allocation:", err)
 		}
-		log.Print("Allocation updated with txId : " + txnHash)
+		log.Println("Allocation updated with txId : " + txnHash)
 	},
 }
 
@@ -84,6 +116,10 @@ func init() {
 	rootCmd.AddCommand(updateAllocationCmd)
 	updateAllocationCmd.PersistentFlags().String("allocation", "",
 		"Allocation ID")
+	updateAllocationCmd.PersistentFlags().String("add_blobber", "",
+		"ID of blobber to add to the allocation")
+	updateAllocationCmd.PersistentFlags().String("remove_blobber", "",
+		"ID of blobber to remove from the allocation")
 	updateAllocationCmd.PersistentFlags().Float64("lock", 0.0,
 		"lock write pool with given number of tokens, required")
 	updateAllocationCmd.PersistentFlags().Int64("size", 0,
@@ -97,5 +133,7 @@ func init() {
 		"update blobber terms")
 
 	updateAllocationCmd.MarkFlagRequired("allocation")
+
+	updateAllocationCmd.Flags().String("name", "", "allocation name")
 
 }
