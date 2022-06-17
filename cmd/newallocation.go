@@ -79,8 +79,8 @@ var newallocationCmd = &cobra.Command{
 		}
 
 		var (
-			lock int64 // lock with given number of tokens
-			err  error //
+			lock uint64 // lock with given number of tokens
+			err  error  //
 		)
 
 		if !costOnly {
@@ -94,9 +94,6 @@ var newallocationCmd = &cobra.Command{
 		var lockf float64
 		if lockf, err = flags.GetFloat64("lock"); err != nil {
 			log.Fatal("error: invalid 'lock' value:", err)
-		}
-		if lock < 0 {
-			log.Fatal("Only positive values are allowed for --lock")
 		}
 
 		if convertFromUSD {
@@ -209,7 +206,7 @@ var newallocationCmd = &cobra.Command{
 	},
 }
 
-func processFreeStorageFlags(flags *pflag.FlagSet) (int64, string) {
+func processFreeStorageFlags(flags *pflag.FlagSet) (uint64, string) {
 	if flags.Changed("read_price") {
 		log.Fatal("free storage, read_price is predefined")
 	}

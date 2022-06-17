@@ -67,12 +67,9 @@ var updateAllocationCmd = &cobra.Command{
 		}
 
 		var lockf float64
-		var lock int64
+		var lock uint64
 		if lockf, err = flags.GetFloat64("lock"); err != nil {
 			log.Fatal("error: invalid 'lock' value:", err)
-		}
-		if lock < 0 {
-			log.Fatal("Only positive values are allowed for --lock")
 		}
 
 		lock = zcncore.ConvertToValue(lockf)
