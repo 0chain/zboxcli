@@ -163,6 +163,7 @@ var validatorUpdateCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(validatorUpdateCmd)
 	rootCmd.AddCommand(validatorInfoCmd)
+	rootCmd.AddCommand(lsValidators)
 
 	validatorInfoCmd.Flags().String("validator_id", "", "validator ID, required")
 	validatorInfoCmd.Flags().Bool("json", false,
@@ -176,4 +177,6 @@ func init() {
 	buf.Int("num_delegates", 0, "update num_delegates, optional")
 	buf.Float64("service_charge", 0.0, "update service_charge, optional")
 	validatorUpdateCmd.MarkFlagRequired("validator_id")
+
+	lsValidators.Flags().Bool("json", false, "pass this flag to get response as json object")
 }
