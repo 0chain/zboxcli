@@ -238,7 +238,6 @@ and `free_storage` parameters.
 | owner              | owner's id, use for funding an allocation for another     | | string        |
 | owner_public_key   | public key, use for funding an allocation for another     |              | string     |
 | lock               | lock write pool with given number of tokens               |                | float        |
-| mcct               | max challenge completion time                             | 1h             | duration     |
 | parity             | number of parity shards, effects availability             | 2              | int          |
 | read_price         | filter blobbers by read price range                       | 0-inf          | range        |
 | size               | size of space reserved on blobbers                        | 2147483648     | bytes          |
@@ -537,7 +536,6 @@ Example
     read_price:          0.01 tok / GB
     write_price:         0.01 tok / GB / time_unit
     min_lock_demand:     0.1
-    cct:                 2m0s
     max_offer_duration:  744h0m0s
 - id:                    788b1deced159f12d3810c61b4b8d381e80188c470e9798939f2e5036d964ffc
   url:                   http://five.devnet-0chain.net:31301
@@ -546,7 +544,6 @@ Example
     read_price:          0.01 tok / GB
     write_price:         0.01 tok / GB / time_unit
     min_lock_demand:     0.1
-    cct:                 2m0s
     max_offer_duration:  744h0m0s
 ```
 
@@ -585,7 +582,6 @@ terms:
   write_price:        0.1 tok / GB
   min_lock_demand:    10 %
   max_offer_duration: 744h0m0s
-  cct:                2m0s
 settings:
   delegate_wallet: 8b87739cd6c966c150a8a6e7b327435d4a581d9d9cc1d86a88c8a13ae1ad7a96
   min_stake:       1 tok
@@ -641,7 +637,6 @@ on the blockchain not the blobber.
 |--------------------|----------|-------------------------------------------|---------|--------------|
 | blobber_id         | yes      | id of blobber of which to update settings |         | string       |
 | capacity           | no       | update blobber capacity                   |         | int          |
-| cct                | no       | update challenge completion time          |         | duration     |
 | max_offer_duration | no       | update max offer duration                 |         | duration     |
 | max_stake          | no       | update maximum stake                      |         | float        |
 | min_lock_demand    | no       | update minimum lock demand                |         | float        |
