@@ -146,21 +146,14 @@ func init() {
 }
 
 func printListDirResult(outJson bool, ref *sdk.ListResult) {
-	// For directories, print the children (contents).
-	// For file, only print the root.
-	list := ref.Children
-	if ref.Type == fileref.FILE {
-		list = []*sdk.ListResult{ref}
-	}
-
 	if outJson {
-		util.PrintJSON(list)
+		util.PrintJSON(ref.Children)
 		return
 	}
 
 	header := []string{"Type", "Name", "Path", "Size", "Num Blocks", "Lookup Hash", "Is Encrypted", "Downloads payer"}
-	data := make([][]string, len(list))
-	for idx, child := range list {
+	data := make([][]string, len(ref.Children))
+	for idx, child := range ref.Children {
 		size := strconv.FormatInt(child.Size, 10)
 		if child.Type == fileref.DIRECTORY {
 			size = ""
