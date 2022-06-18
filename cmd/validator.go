@@ -11,6 +11,46 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func printValidators(nodes []*sdk.Validator) {
+	if len(nodes) == 0 {
+		fmt.Println("no validators registered yet")
+		return
+	}
+	for _, validator := range nodes {
+		fmt.Println("id:               ", validator.ID)
+		fmt.Println("url:              ", validator.BaseURL)
+		fmt.Println("settings:")
+		fmt.Println("  delegate_wallet:", validator.DelegateWallet)
+		fmt.Println("  min_stake:      ", validator.MinStake)
+		fmt.Println("  max_stake:      ", validator.MaxStake)
+		fmt.Println("  num_delegates:  ", validator.NumDelegates)
+		fmt.Println("  service_charge: ", validator.ServiceCharge*100, "%")
+	}
+}
+
+// lsBlobers shows active blobbers
+var lsValidators = &cobra.Command{
+	Use:   "ls-validators",
+	Short: "Show active Validators.",
+	Long:  `Show active Validators in the network.`,
+	Args:  cobra.MinimumNArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		doJSON, _ := cmd.Flags().GetBool("json")
+
+		var list, err = sdk.GetValidators()
+
+		if err != nil {
+			log.Fatalf("Failed to get storage SC configurations: %v", err)
+		}
+
+		if doJSON {
+			util.PrintJSON(list)
+		} else {
+			printValidators(list)
+		}
+	},
+}
+
 var validatorInfoCmd = &cobra.Command{
 	Use:   "validator-info",
 	Short: "Get validator info",
@@ -47,17 +87,10 @@ var validatorInfoCmd = &cobra.Command{
 
 		if json {
 			util.PrintJSON(validator)
-			return
+		} else {
+			printValidators([]*sdk.Validator{validator})
 		}
 
-		fmt.Println("id:               ", validator.ID)
-		fmt.Println("url:              ", validator.BaseURL)
-		fmt.Println("settings:")
-		fmt.Println("  delegate_wallet:", validator.DelegateWallet)
-		fmt.Println("  min_stake:      ", validator.MinStake)
-		fmt.Println("  max_stake:      ", validator.MaxStake)
-		fmt.Println("  num_delegates:  ", validator.NumDelegates)
-		fmt.Println("  service_charge: ", validator.ServiceCharge*100, "%")
 	},
 }
 
