@@ -132,15 +132,10 @@ func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, args 
 		return err
 	}
 
-	remotePath := zboxutil.RemoteClean(args.remotePath)
-	isabs := zboxutil.IsRemoteAbs(remotePath)
-	if !isabs {
-		err = thrown.New("invalid_path", "Path should be valid and absolute")
+	remotePath, fileName, err := fullPathAndFileNameForUpload(args.localPath, args.remotePath)
+	if err != nil {
 		return err
 	}
-	remotePath = zboxutil.GetFullRemotePath(args.localPath, remotePath)
-
-	_, fileName := filepath.Split(remotePath)
 
 	fileMeta := sdk.FileMeta{
 		Path:       args.localPath,
@@ -186,4 +181,22 @@ func init() {
 	uploadCmd.MarkFlagRequired("remotepath")
 	uploadCmd.MarkFlagRequired("localpath")
 
+}
+
+func fullPathAndFileNameForUpload(localPath, remotePath string) (string, string, error) {
+	isUploadToDir := strings.HasSuffix(remotePath, "/")
+	remotePath = zboxutil.RemoteClean(remotePath)
+	if !zboxutil.IsRemoteAbs(remotePath) {
+		return "", "", thrown.New("invalid_path", "Path should be valid and absolute")
+	}
+
+	// re-add trailing slash to indicate intending to upload to directory
+	if isUploadToDir && !strings.HasSuffix(remotePath, "/") {
+		remotePath += "/"
+	}
+
+	fullRemotePath := zboxutil.GetFullRemotePath(localPath, remotePath)
+	_, fileName := filepath.Split(fullRemotePath)
+
+	return fullRemotePath, fileName, nil
 }
