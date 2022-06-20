@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 	"os"
-	"path/filepath"
 	"strings"
 	"sync"
 
@@ -115,15 +114,10 @@ func startFeedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPat
 		return err
 	}
 
-	remotePath = zboxutil.RemoteClean(remotePath)
-	isabs := zboxutil.IsRemoteAbs(remotePath)
-	if !isabs {
-		err = thrown.New("invalid_path", "Path should be valid and absolute")
+	remotePath, fileName, err := fullPathAndFileNameForUpload(localPath, remotePath)
+	if err != nil {
 		return err
 	}
-	remotePath = zboxutil.GetFullRemotePath(localPath, remotePath)
-
-	_, fileName := filepath.Split(remotePath)
 
 	liveMeta := sdk.LiveMeta{
 		MimeType:   mimeType,

@@ -106,7 +106,6 @@ var getallocationCmd = &cobra.Command{
 			fmt.Println("        write_price:              ", d.Terms.WritePrice, "/ GB")
 			fmt.Println("        min_lock_demand:          ", d.Terms.MinLockDemand*100, "%")
 			fmt.Println("        max_offer_duration:       ", d.Terms.MaxOfferDuration)
-			fmt.Println("        challenge_completion_time:", d.Terms.ChallengeCompletionTime)
 		}
 
 		if len(alloc.Curators) < 1 {
