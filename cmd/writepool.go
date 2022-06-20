@@ -25,10 +25,6 @@ var wpLock = &cobra.Command{
 			err     error
 		)
 
-		if !flags.Changed("duration") {
-			log.Fatal("missing required 'duration' flag")
-		}
-
 		if !flags.Changed("allocation") {
 			log.Fatal("missing required 'allocation' flag")
 		}
@@ -79,11 +75,10 @@ var wpUnlock = &cobra.Command{
 		)
 
 		if !flags.Changed("allocation") {
-			log.Fatal("missing required 'pool_id' flag")
+			log.Fatal("missing required 'allocation' flag")
 		}
-
-		if allocID, err = flags.GetString("pool_id"); err != nil {
-			log.Fatal("invalid 'pool_id' flag: ", err)
+		if allocID, err = flags.GetString("allocation"); err != nil {
+			log.Fatal("invalid 'allocation' flag: ", err)
 		}
 
 		if flags.Changed("fee") {
