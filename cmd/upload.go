@@ -1,15 +1,12 @@
 package cmd
 
 import (
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
 	"sync"
 
 	thrown "github.com/0chain/errors"
-	"github.com/0chain/gosdk/core/common"
-	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zboxcore/zboxutil"
 	"github.com/0chain/zboxcli/util"
@@ -59,20 +56,6 @@ var uploadCmd = &cobra.Command{
 		if strings.HasPrefix(remotepath, "/Encrypted") {
 			encrypt = true
 		}
-		var attrs fileref.Attributes
-		if fflags.Changed("attr-who-pays-for-reads") {
-			var (
-				wp  common.WhoPays
-				wps string
-			)
-			if wps, err = fflags.GetString("attr-who-pays-for-reads"); err != nil {
-				log.Fatalf("getting 'attr-who-pays-for-reads' flag: %v", err)
-			}
-			if err = wp.Parse(wps); err != nil {
-				log.Fatal(err)
-			}
-			attrs.WhoPaysForReads = wp // set given value
-		}
 
 		if err := startChunkedUpload(cmd, allocationObj,
 			chunkedUploadArgs{
@@ -81,7 +64,6 @@ var uploadCmd = &cobra.Command{
 				remotePath:    remotepath,
 				encrypt:       encrypt,
 				chunkNumber:   uploadChunkNumber,
-				attrs:         attrs,
 				// isUpdate:      false,
 				// isRepair:      false,
 			}, statusBar); err != nil {
@@ -111,7 +93,6 @@ type chunkedUploadArgs struct {
 	chunkNumber int
 	isUpdate    bool
 	isRepair    bool
-	attrs       fileref.Attributes
 }
 
 func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, args chunkedUploadArgs, statusBar sdk.StatusCallback) error {
@@ -148,7 +129,6 @@ func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, args 
 		MimeType:   mimeType,
 		RemoteName: fileName,
 		RemotePath: remotePath,
-		Attributes: args.attrs,
 	}
 
 	options := []sdk.ChunkedUploadOption{
