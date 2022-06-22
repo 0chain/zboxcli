@@ -76,7 +76,7 @@ func printBlobbers(nodes []*sdk.Blobber) {
 	for _, val := range nodes {
 		fmt.Println("- id:                   ", val.ID)
 		fmt.Println("  url:                  ", val.BaseURL)
-		fmt.Println("  used / total capacity:", val.Used.String(), "/",
+		fmt.Println("  allocated / total capacity:", val.Allocated.String(), "/",
 			val.Capacity.String())
 		fmt.Println("  last_health_check:	 ", val.LastHealthCheck.ToTime())
 		fmt.Println("  terms:")
@@ -169,7 +169,7 @@ var blobberInfoCmd = &cobra.Command{
 		fmt.Println("url:              ", blob.BaseURL)
 		fmt.Println("capacity:         ", blob.Capacity)
 		fmt.Println("last_health_check:", blob.LastHealthCheck.ToTime())
-		fmt.Println("capacity_used:    ", blob.Used)
+		fmt.Println("capacity_used:    ", blob.Allocated)
 		fmt.Println("terms:")
 		fmt.Println("  read_price:        ", blob.Terms.ReadPrice, "/ GB")
 		fmt.Println("  write_price:       ", blob.Terms.WritePrice, "/ GB")
