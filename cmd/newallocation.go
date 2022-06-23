@@ -104,7 +104,7 @@ var newallocationCmd = &cobra.Command{
 		}
 		lock = zcncore.ConvertToValue(lockf)
 
-		const maxPrice = math.MaxUint
+		const maxPrice = math.MaxInt64/100
 		var (
 			readPrice  = sdk.PriceRange{Min: 0, Max: maxPrice}
 			writePrice = sdk.PriceRange{Min: 0, Max: maxPrice}
