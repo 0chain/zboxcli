@@ -151,7 +151,7 @@ func printListDirResult(outJson bool, ref *sdk.ListResult) {
 		return
 	}
 
-	header := []string{"Type", "Name", "Path", "Size", "Num Blocks", "Lookup Hash", "Is Encrypted", "Downloads payer"}
+	header := []string{"Type", "Name", "Path", "Size", "Num Blocks", "Lookup Hash", "Is Encrypted"}
 	data := make([][]string, len(ref.Children))
 	for idx, child := range ref.Children {
 		size := strconv.FormatInt(child.Size, 10)
@@ -174,7 +174,6 @@ func printListDirResult(outJson bool, ref *sdk.ListResult) {
 			strconv.FormatInt(child.NumBlocks, 10),
 			child.LookupHash,
 			isEncrypted,
-			child.Attributes.WhoPaysForReads.String(),
 		}
 	}
 

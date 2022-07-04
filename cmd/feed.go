@@ -2,14 +2,11 @@ package cmd
 
 import (
 	"context"
-	"log"
 	"os"
 	"strings"
 	"sync"
 
 	thrown "github.com/0chain/errors"
-	"github.com/0chain/gosdk/core/common"
-	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zboxcore/zboxutil"
 	"github.com/0chain/zboxcli/util"
@@ -55,23 +52,9 @@ var feedCmd = &cobra.Command{
 		if strings.HasPrefix(remotepath, "/Encrypted") {
 			encrypt = true
 		}
-		var attrs fileref.Attributes
-		if fflags.Changed("attr-who-pays-for-reads") {
-			var (
-				wp  common.WhoPays
-				wps string
-			)
-			if wps, err = fflags.GetString("attr-who-pays-for-reads"); err != nil {
-				log.Fatalf("getting 'attr-who-pays-for-reads' flag: %v", err)
-			}
-			if err = wp.Parse(wps); err != nil {
-				log.Fatal(err)
-			}
-			attrs.WhoPaysForReads = wp // set given value
-		}
 
 		// download video from remote live feed(eg youtube), and sync it to zcn
-		err = startFeedUpload(cmd, allocationObj, localpath, remotepath, encrypt, feedChunkNumber, attrs)
+		err = startFeedUpload(cmd, allocationObj, localpath, remotepath, encrypt, feedChunkNumber)
 
 		if err != nil {
 			PrintError("Upload failed.", err)
@@ -91,7 +74,7 @@ var feedCmd = &cobra.Command{
 	},
 }
 
-func startFeedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath, remotePath string, encrypt bool, chunkNumber int, attrs fileref.Attributes) error {
+func startFeedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath, remotePath string, encrypt bool, chunkNumber int) error {
 
 	downloadArgs, _ := cmd.Flags().GetString("downloader-args")
 	ffmpegArgs, _ := cmd.Flags().GetString("ffmpeg-args")
@@ -123,7 +106,6 @@ func startFeedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPat
 		MimeType:   mimeType,
 		RemoteName: fileName,
 		RemotePath: remotePath,
-		Attributes: attrs,
 	}
 
 	syncUpload := sdk.CreateLiveUpload(util.GetHomeDir(), allocationObj, liveMeta, reader,
