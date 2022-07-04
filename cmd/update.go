@@ -1,24 +1,12 @@
 package cmd
 
 import (
-	"log"
 	"os"
 	"sync"
 
-	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
 )
-
-func getRemoteFileAttributes(alloc *sdk.Allocation, remotePath string) (
-	attrs fileref.Attributes) {
-
-	fileMeta, err := alloc.GetFileMeta(remotePath)
-	if err != nil {
-		log.Fatal("Unable to fetch existing file meta data for update")
-	}
-	return fileMeta.Attributes
-}
 
 // updateCmd represents update file command
 var updateCmd = &cobra.Command{
@@ -52,8 +40,6 @@ var updateCmd = &cobra.Command{
 			PrintError("Error: can not update Encrypted Folder")
 			os.Exit(1)
 		}
-		// get original file attributes
-		var attrs = getRemoteFileAttributes(allocationObj, remotepath)
 
 		localpath := cmd.Flag("localpath").Value.String()
 		thumbnailpath := cmd.Flag("thumbnailpath").Value.String()
@@ -70,7 +56,6 @@ var updateCmd = &cobra.Command{
 			thumbnailPath: thumbnailpath,
 			encrypt:       encrypt,
 			chunkNumber:   updateChunkNumber,
-			attrs:         attrs,
 			isUpdate:      true,
 			// isRepair:      false,
 		}, statusBar)
