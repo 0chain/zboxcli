@@ -23,7 +23,6 @@ type M3u8Downloader struct {
 	remotePath   string
 	authTicket   string
 	allocationID string
-	rxPay        bool
 
 	allocationObj *sdk.Allocation
 
@@ -34,7 +33,7 @@ type M3u8Downloader struct {
 	done           chan error
 }
 
-func createM3u8Downloader(localPath, remotePath, authTicket, allocationID, lookupHash string, rxPay bool, delay int) (*M3u8Downloader, error) {
+func createM3u8Downloader(localPath, remotePath, authTicket, allocationID, lookupHash string, delay int) (*M3u8Downloader, error) {
 	if len(remotePath) == 0 && (len(authTicket) == 0) {
 		return nil, errors.New("Error: remotepath / authticket flag is missing")
 	}
@@ -57,7 +56,6 @@ func createM3u8Downloader(localPath, remotePath, authTicket, allocationID, looku
 		remotePath:     remotePath,
 		authTicket:     authTicket,
 		allocationID:   allocationID,
-		rxPay:          rxPay,
 		waitToDownload: make(chan MediaItem, 100),
 		playlist:       sdk.NewMediaPlaylist(delay, dir, file),
 		done:           make(chan error, 1),
@@ -178,7 +176,7 @@ func (d *M3u8Downloader) download(item MediaItem) (string, error) {
 	downloader, err := sdk.CreateDownloader(d.allocationID, localPath, remotePath,
 		sdk.WithAllocation(d.allocationObj),
 		sdk.WithAuthticket(d.authTicket, d.lookupHash),
-		sdk.WithRxPay(d.rxPay))
+	)
 
 	if err != nil {
 		return "", err
