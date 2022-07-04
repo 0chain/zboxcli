@@ -168,6 +168,8 @@ var blobberInfoCmd = &cobra.Command{
 		fmt.Println("id:               ", blob.ID)
 		fmt.Println("url:              ", blob.BaseURL)
 		fmt.Println("capacity:         ", blob.Capacity)
+		fmt.Println("is killed:        ", blob.IsKilled)
+		fmt.Println("is shut down:     ", blob.IsShutDown)
 		fmt.Println("last_health_check:", blob.LastHealthCheck.ToTime())
 		fmt.Println("capacity_used:    ", blob.Allocated)
 		fmt.Println("terms:")
