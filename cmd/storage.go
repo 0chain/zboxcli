@@ -84,6 +84,8 @@ func printBlobbers(nodes []*sdk.Blobber) {
 		fmt.Println("    write_price:        ", val.Terms.WritePrice.String(), "/ GB / time_unit")
 		fmt.Println("    min_lock_demand:    ", val.Terms.MinLockDemand)
 		fmt.Println("    max_offer_duration: ", val.Terms.MaxOfferDuration.String())
+		fmt.Println("    is killed           ", val.IsKilled)
+		fmt.Println("    is shut down        ", val.IsShutDown)
 	}
 }
 
