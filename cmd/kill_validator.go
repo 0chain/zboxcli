@@ -33,7 +33,7 @@ var killValidatorCmd = &cobra.Command{
 			}
 		}
 
-		_, err = sdk.KillBlobber(validatorId, zcncore.ConvertToValue(fee))
+		_, err = sdk.KillValidator(validatorId, zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatal("failed to kill validator, id: "+validatorId, err)
 		}

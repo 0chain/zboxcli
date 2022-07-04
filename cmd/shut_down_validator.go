@@ -24,7 +24,7 @@ var shutDownValidatorCmd = &cobra.Command{
 			}
 		}
 
-		_, err = sdk.ShutDownBlobber(zcncore.ConvertToValue(fee))
+		_, err = sdk.ShutDownValidator(zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatal("failed to shut down validator", err)
 		}
