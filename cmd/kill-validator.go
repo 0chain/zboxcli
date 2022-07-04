@@ -10,15 +10,15 @@ import (
 )
 
 var killValidatorCmd = &cobra.Command{
-	Use:   "kill-blobber",
-	Short: "punitively deactivate a blobber",
-	Long:  "punitively deactivate a blobber",
+	Use:   "kill-validator",
+	Short: "punitively deactivate a validator",
+	Long:  "punitively deactivate a validator",
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		var err error
 		flags := cmd.Flags()
 		if flags.Changed("id") == false {
-			PrintError("id is missing")
+			PrintError("validator id is missing")
 			os.Exit(1)
 		}
 		validatorId, err := flags.GetString("id")
@@ -44,6 +44,6 @@ var killValidatorCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(killValidatorCmd)
-	cancelAllocationCmd.PersistentFlags().String("id", "", "blobbers Id")
-	_ = cancelAllocationCmd.MarkFlagRequired("id")
+	killValidatorCmd.PersistentFlags().String("id", "", "validator's id")
+	_ = killValidatorCmd.MarkFlagRequired("id")
 }

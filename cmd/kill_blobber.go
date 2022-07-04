@@ -46,6 +46,6 @@ var killBlobberCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(killBlobberCmd)
-	cancelAllocationCmd.PersistentFlags().String("id", "", "blobbers Id")
-	_ = cancelAllocationCmd.MarkFlagRequired("id")
+	killBlobberCmd.PersistentFlags().String("id", "", "blobber's id")
+	_ = killBlobberCmd.MarkFlagRequired("id")
 }
