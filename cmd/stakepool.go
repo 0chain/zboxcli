@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
@@ -145,11 +146,12 @@ var spLock = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		var (
-			flags     = cmd.Flags()
-			blobberID string
-			tokens    float64
-			fee       float64
-			err       error
+			flags         = cmd.Flags()
+			blobberID     string
+			tokens        float64
+			fee           float64
+			err           error
+			lockPeriod, _ = time.ParseDuration("36m") //nolint: errcheck
 		)
 
 		if flags.Changed("blobber_id") {
@@ -176,9 +178,18 @@ var spLock = &cobra.Command{
 			}
 		}
 
+		if flags.Changed("lock_period") {
+			lp, err := flags.GetDuration("lock_period")
+			if err != nil {
+				log.Fatal("invalid 'lock_period' flag: ", err)
+			}
+
+			lockPeriod = lp
+		}
+
 		var poolID string
 		poolID, _, err = sdk.StakePoolLock(blobberID,
-			zcncore.ConvertToValue(tokens), zcncore.ConvertToValue(fee))
+			zcncore.ConvertToValue(tokens), zcncore.ConvertToValue(fee), lockPeriod)
 		if err != nil {
 			log.Fatalf("Failed to lock tokens in stake pool: %v", err)
 		}
@@ -259,6 +270,8 @@ func init() {
 		"tokens to lock, required")
 	spLock.PersistentFlags().Float64("fee", 0.0,
 		"transaction fee, default 0")
+	spLock.PersistentFlags().String("lock_period", "36m",
+		"token lock period, default 36m")
 	spLock.MarkFlagRequired("tokens")
 	spLock.MarkFlagRequired("blobber_id")
 
