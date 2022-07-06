@@ -65,6 +65,9 @@ func printStakePoolUserInfo(info *sdk.StakePoolUserInfo) {
 			fmt.Println("    status:          ", dp.Status)
 			fmt.Println("    round_created:   ", dp.RoundCreated)
 			fmt.Println("    unstake:         ", dp.UnStake)
+			fmt.Println("    lock_period:     ", dp.LockPeriod.String())
+			fmt.Println("    locked_at:       ", dp.LockedAt.String())
+
 		}
 	}
 }
