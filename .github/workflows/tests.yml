@@ -74,7 +74,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: "Deploy 0Chain"
-        uses: 0chain/actions/deploy-0chain@master
+        uses: 0chain/actions/deploy-0chain@remove-zproxy
         with:
           kube_config: ${{ secrets[format('DEV{0}KC', env.RUNNER_NUMBER)] }}
           teardown_condition: "TESTS_PASSED"
@@ -93,7 +93,7 @@ jobs:
           custom_go_sdk_version: staging
 
       - name: "Run System tests"
-        uses: 0chain/actions/run-system-tests@master
+        uses: 0chain/actions/run-system-tests@remove-zproxy
         with:
           system_tests_branch: master
           network: ${{ env.NETWORK_URL }}
