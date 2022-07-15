@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"sync"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
@@ -38,6 +39,11 @@ var renameCmd = &cobra.Command{
 		}
 		remotepath := cmd.Flag("remotepath").Value.String()
 		destname := cmd.Flag("destname").Value.String()
+		oldName := filepath.Base(remotepath)
+		if oldName == destname {
+			fmt.Println(remotepath + " renamed")
+			return
+		}
 		commit, _ := cmd.Flags().GetBool("commit")
 
 		statsMap, err := allocationObj.GetFileStats(remotepath)
