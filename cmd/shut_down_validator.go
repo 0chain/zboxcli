@@ -24,7 +24,15 @@ var shutDownValidatorCmd = &cobra.Command{
 			}
 		}
 
-		_, err = sdk.ShutDownValidator(zcncore.ConvertToValue(fee))
+		var validatorid string
+		if flags.Changed("fee") {
+			if validatorid, err = flags.GetString("validator_id"); err != nil {
+				log.Fatal("invalid 'validator id': ", err)
+			}
+		}
+
+
+		_, err = sdk.ShutDownValidator(validatorid, zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatal("failed to shut down validator", err)
 		}
@@ -35,4 +43,6 @@ var shutDownValidatorCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(shutDownValidatorCmd)
+	shutDownValidatorCmd.PersistentFlags().String("validator_id", "", "the blobber id which you want to shut down")
+	shutDownValidatorCmd.Flags().Float64("fee", 0.0, "fee for transaction")
 }

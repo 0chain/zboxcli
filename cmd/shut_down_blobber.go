@@ -24,7 +24,14 @@ var shutDownBlobberCmd = &cobra.Command{
 			}
 		}
 
-		_, err = sdk.ShutDownBlobber(zcncore.ConvertToValue(fee))
+		var blobberid string
+		if flags.Changed("blobber_id") {
+			if blobberid, err = flags.GetString("blobber_id") ; err != nil {
+				log.Fatal("invalid 'blobber_id' flag: ", err)
+			}
+		}
+
+		_, err = sdk.ShutDownBlobber(blobberid, zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatal("failed to shut down blobber", err)
 		}
@@ -35,4 +42,6 @@ var shutDownBlobberCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(shutDownBlobberCmd)
+	shutDownBlobberCmd.PersistentFlags().String("blobber_id", "", "the blobber id which you want to shut down")
+	shutDownBlobberCmd.Flags().Float64("fee", 0.0, "fee for transaction")
 }
