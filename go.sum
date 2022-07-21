@@ -50,6 +50,8 @@ github.com/0chain/gosdk v1.8.6-0.20220712123740-87fe09504b12 h1:NzXfpdPpTa+4+pvB
 github.com/0chain/gosdk v1.8.6-0.20220712123740-87fe09504b12/go.mod h1:JeaXA7gbncHoYbKixUnM58+7S2E9z7IKYY+fV0IQJ/o=
 github.com/0chain/gosdk v1.8.6-0.20220713103330-c1c8f587cca7 h1:RJfk2aoucRb8y7Vgwl43ya48ryuoJVIZT49EfpXPURI=
 github.com/0chain/gosdk v1.8.6-0.20220713103330-c1c8f587cca7/go.mod h1:JeaXA7gbncHoYbKixUnM58+7S2E9z7IKYY+fV0IQJ/o=
+github.com/0chain/gosdk v1.8.6-0.20220721142651-0ac58513082d h1:wJ9472zO+/NhbRSg4wU+44gnJxhekmHqmk+6BH8AWKY=
+github.com/0chain/gosdk v1.8.6-0.20220721142651-0ac58513082d/go.mod h1:JeaXA7gbncHoYbKixUnM58+7S2E9z7IKYY+fV0IQJ/o=
 github.com/Azure/azure-sdk-for-go/sdk/azcore v0.21.1/go.mod h1:fBF9PQNqB8scdgpZ3ufzaLntG0AG7C1WjPMsiFOmfHM=
 github.com/Azure/azure-sdk-for-go/sdk/internal v0.8.3/go.mod h1:KLF4gFr6DcKFZwSuH8w8yEK6DpFl3LP5rhdvAb7Yz5I=
 github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v0.3.0/go.mod h1:tPaiy8S5bQ+S5sOiDlINkp7+Ef339+Nz5L5XO+cnOHo=
