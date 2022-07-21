@@ -3,14 +3,19 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 
+	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )
 
-const PageLimit = 100
+const (
+	PageLimit = 100
+	Layout    = "2006-01-02 15:04:05"
+)
 
 func checkError(err error) {
 	if err != nil {
@@ -29,8 +34,7 @@ var fileRefsCmd = &cobra.Command{
 		checkError(err)
 		pageLimit, err := cmd.Flags().GetUint("page_limit")
 		checkError(err)
-		fmt.Printf("\nHello world\n\n")
-		if pageLimit < 0 || pageLimit > PageLimit {
+		if pageLimit > PageLimit {
 			PrintError("Invalid page limit value. Should be in range (0,100]")
 			os.Exit(1)
 		}
@@ -69,6 +73,29 @@ var fileRefsCmd = &cobra.Command{
 			result.TotalPages, page, len(result.Refs), result.Offset,
 		)
 
+		header := []string{"Type", "Name", "Path", "Size", "Lookup Hash", "Created At"}
+		data := make([][]string, len(result.Refs))
+		for i, ref := range result.Refs {
+			var size string
+			if ref.Type != fileref.DIRECTORY {
+				size = strconv.FormatInt(ref.ActualFileSize, 10)
+			}
+
+			var createdAt string
+			t := time.Unix(int64(ref.CreatedAt), 0)
+			createdAt = t.Local().Format(Layout)
+			data[i] = []string{
+				ref.Type,
+				ref.Name,
+				ref.Path,
+				size,
+				ref.LookupHash,
+				createdAt,
+			}
+
+		}
+
+		util.WriteTable(os.Stdout, header, []string{}, data)
 	},
 }
 
