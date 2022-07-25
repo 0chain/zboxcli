@@ -19,6 +19,9 @@ func printValidators(nodes []*sdk.Validator) {
 	for _, validator := range nodes {
 		fmt.Println("id:               ", validator.ID)
 		fmt.Println("url:              ", validator.BaseURL)
+		fmt.Println("last_health_check: ", validator.LastHealthCheck.ToTime())
+		fmt.Println("is killed:        ", validator.IsKilled)
+		fmt.Println("is shut down:     ", validator.IsShutDown)
 		fmt.Println("settings:")
 		fmt.Println("  delegate_wallet:", validator.DelegateWallet)
 		fmt.Println("  min_stake:      ", validator.MinStake)
