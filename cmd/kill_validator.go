@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"log"
-	"os"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
@@ -18,12 +17,11 @@ var killValidatorCmd = &cobra.Command{
 		var err error
 		flags := cmd.Flags()
 		if flags.Changed("id") == false {
-			PrintError("validator id is missing")
-			os.Exit(1)
+			log.Fatal("validator id is missing")
 		}
 		validatorId, err := flags.GetString("id")
 		if err != nil {
-			log.Fatal("invalid 'allocation' flag: ", err)
+			log.Fatal("invalid 'validator id flag: ", err)
 		}
 
 		var fee float64

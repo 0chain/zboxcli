@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"log"
-	"os"
 
 	"github.com/0chain/gosdk/zcncore"
 
@@ -20,12 +19,11 @@ var killBlobberCmd = &cobra.Command{
 		var err error
 		flags := cmd.Flags()
 		if flags.Changed("id") == false {
-			PrintError("id is missing")
-			os.Exit(1)
+			log.Fatal("id is missing")
 		}
 		blobberId, err := flags.GetString("id")
 		if err != nil {
-			log.Fatal("invalid 'allocation' flag: ", err)
+			log.Fatal("invalid 'blobber id flag: ", err)
 		}
 
 		var fee float64

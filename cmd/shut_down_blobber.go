@@ -24,9 +24,12 @@ var shutDownBlobberCmd = &cobra.Command{
 			}
 		}
 
+		if flags.Changed("id") == false {
+			log.Fatal("id is missing")
+		}
 		var blobberid string
-		if flags.Changed("blobber_id") {
-			if blobberid, err = flags.GetString("blobber_id") ; err != nil {
+		if flags.Changed("id") {
+			if blobberid, err = flags.GetString("id"); err != nil {
 				log.Fatal("invalid 'blobber_id' flag: ", err)
 			}
 		}
@@ -35,13 +38,13 @@ var shutDownBlobberCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal("failed to shut down blobber", err)
 		}
-		log.Println("shut down blobber")
+		log.Println("shut down blobber " + blobberid)
 
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(shutDownBlobberCmd)
-	shutDownBlobberCmd.PersistentFlags().String("blobber_id", "", "the blobber id which you want to shut down")
+	shutDownBlobberCmd.PersistentFlags().String("id", "", "the blobber id which you want to shut down")
 	shutDownBlobberCmd.Flags().Float64("fee", 0.0, "fee for transaction")
 }
