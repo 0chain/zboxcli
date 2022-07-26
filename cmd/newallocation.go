@@ -104,7 +104,7 @@ var newallocationCmd = &cobra.Command{
 		}
 		lock = zcncore.ConvertToValue(lockf)
 
-		const maxPrice = math.MaxInt64/100
+		const maxPrice = math.MaxUint64 / 100
 		var (
 			readPrice  = sdk.PriceRange{Min: 0, Max: maxPrice}
 			writePrice = sdk.PriceRange{Min: 0, Max: maxPrice}
@@ -168,7 +168,7 @@ var newallocationCmd = &cobra.Command{
 
 		var allocationID string
 		if len(owner) == 0 {
-			allocationID, _, err = sdk.CreateAllocation(allocationName, *datashards, *parityshards,
+			allocationID, _, _, err = sdk.CreateAllocation(allocationName, *datashards, *parityshards,
 				*size, expireAt, readPrice, writePrice, lock)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
@@ -184,7 +184,7 @@ var newallocationCmd = &cobra.Command{
 				}
 			}
 
-			allocationID, _, err = sdk.CreateAllocationForOwner(allocationName, owner, ownerPublicKey, *datashards, *parityshards,
+			allocationID, _, _, err = sdk.CreateAllocationForOwner(allocationName, owner, ownerPublicKey, *datashards, *parityshards,
 				*size, expireAt, readPrice, writePrice, lock, blockchain.GetPreferredBlobbers())
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
