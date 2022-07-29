@@ -31,22 +31,6 @@ func printReadPoolInfo(stat *sdk.ReadPool) {
 	fmt.Println()
 }
 
-func printWritePoolStat(stat []*sdk.AllocationPoolStat) {
-	for _, st := range stat {
-		fmt.Println("- id:            ", st.ID)
-		fmt.Println("  balance:       ", st.Balance.String())
-		fmt.Println("  expire_at:     ", st.ExpireAt.ToTime().String())
-		fmt.Println("  allocation_id: ", st.AllocationID)
-		fmt.Println("  locked:        ", st.Locked)
-		fmt.Println("  blobbers:")
-		for _, b := range st.Blobbers {
-			fmt.Println("  - blobber_id: ", b.BlobberID)
-			fmt.Println("  - balance:    ", b.Balance.String())
-		}
-	}
-	fmt.Println()
-}
-
 // rpInfo information
 var rpInfo = &cobra.Command{
 	Use:   "rp-info",
