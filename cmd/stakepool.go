@@ -37,6 +37,7 @@ func printStakePoolInfo(info *sdk.StakePoolInfo) {
 			fmt.Println("  status:           ", dp.Status)
 			fmt.Println("  round_created:    ", dp.RoundCreated)
 			fmt.Println("  unstake:          ", dp.UnStake)
+			fmt.Println("  staked_at:        ", dp.StakedAt.String())
 		}
 	}
 	// settings
@@ -64,6 +65,7 @@ func printStakePoolUserInfo(info *sdk.StakePoolUserInfo) {
 			fmt.Println("    status:          ", dp.Status)
 			fmt.Println("    round_created:   ", dp.RoundCreated)
 			fmt.Println("    unstake:         ", dp.UnStake)
+			fmt.Println("    staked_at:       ", dp.StakedAt.String())
 		}
 	}
 }
@@ -259,6 +261,7 @@ func init() {
 		"tokens to lock, required")
 	spLock.PersistentFlags().Float64("fee", 0.0,
 		"transaction fee, default 0")
+
 	spLock.MarkFlagRequired("tokens")
 	spLock.MarkFlagRequired("blobber_id")
 

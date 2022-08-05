@@ -1722,7 +1722,6 @@ Use `rp-info` to get read pool information.
 
 | Parameter  | Required | Description                 | default | Valid values |
 |------------|----------|-----------------------------|---------|--------------|
-| allocation | no       | allocation id               |         | string       |
 | json       | no       | print result in json format | false   | boolean      |
 
 <details>
@@ -1737,72 +1736,33 @@ Use `rp-info` to get read pool information.
 ```
 #### Lock tokens into read pool
 
-Lock some tokens in read pool associated with an allocation. 
-* Uses two different formats, you can either define a specific blobber
-  to lock all tokens, or spread across all the allocations blobbers automatically.
+Lock some tokens in read pool. ReadPool is not linked to specific allocations anymore.
+Each wallet has a singular, non-expiring, untethered ReadPool. Locked tokens in ReadPool can be unlocked at any time and returned to the original wallet balance.
+
 * If the user does not have a pre-existing read pool, then the smart-contract
   creates one.
 
-Anyone can lock tokens with a read pool attached an allocation. These tokens can
-be used to pay read access to files stored with the allocation. To use 
-these tokens the user must be the allocation owner, collaborator or have an auth ticket. 
+Locked tokens can be used to pay for read access to file(s) stored with different allocations.
+To use these tokens the user must be the allocation owner, collaborator or have an auth ticket. 
 
 | Parameter  | Required | Description            | default | Valid values |
 |------------|----------|------------------------|---------|--------------|
-| allocation | yes      | allocation id          |         | string       |
-| blobber    | no       | blobber id to lock for |         | string       |
-| duration   | yes      | lock duration          |         | duration   |
 | fee        |          | transaction fee        | 0       | int          |
 | tokens     | yes      | tokens to lock         |         | int          |
 
 ```
-./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1
+./zbox rp-lock --tokens 1 
 ```
-
-<details>
-  <summary>rp-lock with a specific blobber</summary>
-
-```shell
-./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1 --blobber f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25 
-```
-![image](https://user-images.githubusercontent.com/6240686/125474085-c57c29a5-127e-4e8e-b560-c235ade869f1.png)
-
-</details>
-
-<details>
-  <summary>rp-lock spread across all blobbers</summary>
-
-Tokens are spread between the blobber pools weighted by 
-each blobber's Terms.ReadPrice.
-
-```shell
-./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1
-```
-
-![image](https://user-images.githubusercontent.com/6240686/125474486-1c2e1dba-7e61-4e9c-94f4-2a1ebf06d2de.png)
-
-</details>
 
 #### Unlock tokens from read pool
 
-Use `rp-unlock` to unlock tokens from an expired read pool by pool id. 
-See `rp-info` for the POOL_ID and the expiration.
+Use `rp-unlock` to unlock tokens from `read pool by ownership.
 
 | Parameter | Required | Description          | default | Valid values |
 |-----------|----------|----------------------|---------|--------------|
 | fee       | no       | transaction fee      | 0       | float        |
-| pool_id   | yes      | id of pool to unlock |         | string       |
 
-<details>
-  <summary>rp-unlock</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/124578670-53352180-de46-11eb-99a5-07debf17e351.png)
-
-</details>
-
-```
-./zbox rp-unlock --pool_id <pool_id>
-```
+Unlocked tokens get returned to the original wallet balance.
 
 #### Storage SC configurations
 
