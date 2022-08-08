@@ -68,7 +68,7 @@ jobs:
           description: "System tests running with default config..."
           state: "pending"
           repository: ${{ github.repository }}
-          context_name: "0Chain System Tests"
+          status_name: "0Chain System Tests"
           target_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           github_token: ${{ github.token }}
 
@@ -112,6 +112,6 @@ jobs:
           description: "System tests with default config ${{ job.status }}"
           state: ${{ job.status }}
           repository: ${{ github.repository }}
-          context_name: "0Chain System Tests"
+          status_name: "0Chain System Tests"
           target_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           github_token: ${{ github.token }}
