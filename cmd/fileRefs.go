@@ -66,11 +66,10 @@ var fileRefsCmd = &cobra.Command{
 			page, pageLimit, fromDate)
 
 		fmt.Printf(""+
-			"\nTotal Pages: %d"+
 			"\nCurrent Page: %d"+
 			"\nRetrieved Refs: %d"+
 			"\nNew Offset: %d\n",
-			result.TotalPages, page, len(result.Refs), result.Offset,
+			page, len(result.Refs), result.Offset,
 		)
 
 		header := []string{"Type", "Name", "Path", "Size", "Lookup Hash", "Created At"}
