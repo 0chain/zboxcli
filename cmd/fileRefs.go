@@ -40,7 +40,7 @@ var fileRefsCmd = &cobra.Command{
 		}
 		allocID, err := cmd.Flags().GetString("allocation")
 		checkError(err)
-		fromDate, err := cmd.Flags().GetDuration("from_date")
+		in, err := cmd.Flags().GetDuration("in")
 		checkError(err)
 		doJSON, err := cmd.Flags().GetBool("json")
 		checkError(err)
@@ -53,7 +53,7 @@ var fileRefsCmd = &cobra.Command{
 		alloc, err := sdk.GetAllocation(allocID)
 		checkError(err)
 
-		d := time.Now().Unix() - int64(fromDate.Seconds())
+		d := time.Now().Unix() - int64(in.Seconds())
 		result, err := alloc.GetRecentlyAddedRefs(int(page), d, int(pageLimit))
 		checkError(err)
 
@@ -62,8 +62,8 @@ var fileRefsCmd = &cobra.Command{
 			return
 		}
 
-		fmt.Printf("\nRequested page:%d with page limit: %d, from date: %v ago\n",
-			page, pageLimit, fromDate)
+		fmt.Printf("\nRequested page:%d with page limit: %d, in last: %v ago\n",
+			page, pageLimit, in)
 
 		fmt.Printf(""+
 			"\nCurrent Page: %d"+
@@ -102,7 +102,7 @@ func init() {
 	rootCmd.AddCommand(fileRefsCmd)
 	fileRefsCmd.PersistentFlags().String("allocation", "", "Allocation ID")
 	fileRefsCmd.PersistentFlags().Uint("page", 0, "Page to get refs from")
-	fileRefsCmd.PersistentFlags().Duration("from_date", 0, "Date to consider refs was added recently")
+	fileRefsCmd.PersistentFlags().Duration("in", 0, "Recent refs in this duration")
 	fileRefsCmd.PersistentFlags().Uint("page_limit", 0, "Number of refs to return in the page")
 	fileRefsCmd.Flags().Bool("json", false, "pass this option to print response as json data")
 	fileRefsCmd.MarkFlagRequired("allocation")
