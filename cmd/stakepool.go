@@ -178,13 +178,13 @@ var spLock = &cobra.Command{
 			}
 		}
 
-		var poolID string
-		poolID, _, err = sdk.StakePoolLock(blobberID,
+		var hash string
+		hash, _, err = sdk.StakePoolLock(blobberID,
 			zcncore.ConvertToValue(tokens), zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to lock tokens in stake pool: %v", err)
 		}
-		fmt.Println("tokens locked, pool id:", poolID)
+		fmt.Println("tokens locked, txn hash:", hash)
 	},
 }
 
@@ -197,10 +197,10 @@ var spUnlock = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		var (
-			flags             = cmd.Flags()
-			blobberID, poolID string
-			fee               float64
-			err               error
+			flags     = cmd.Flags()
+			blobberID string
+			fee       float64
+			err       error
 		)
 
 		if flags.Changed("blobber_id") {
@@ -209,21 +209,13 @@ var spUnlock = &cobra.Command{
 			}
 		}
 
-		if !flags.Changed("pool_id") {
-			log.Fatal("missing required 'pool_id' flag")
-		}
-
-		if poolID, err = flags.GetString("pool_id"); err != nil {
-			log.Fatal("invalid 'pool_id' flag: ", err)
-		}
-
 		if flags.Changed("fee") {
 			if fee, err = flags.GetFloat64("fee"); err != nil {
 				log.Fatal("invalid 'fee' flag: ", err)
 			}
 		}
 
-		unstake, _, err := sdk.StakePoolUnlock(blobberID, poolID, zcncore.ConvertToValue(fee))
+		unstake, _, err := sdk.StakePoolUnlock(blobberID, zcncore.ConvertToValue(fee))
 		// an error
 		if err != nil {
 			log.Fatalf("Failed to unlock tokens in stake pool: %v", err)
@@ -265,12 +257,7 @@ func init() {
 	spLock.MarkFlagRequired("tokens")
 	spLock.MarkFlagRequired("blobber_id")
 
-	spUnlock.PersistentFlags().String("blobber_id", "",
-		"for given blobber, default is current client")
-	spUnlock.PersistentFlags().String("pool_id", "",
-		"pool id to unlock")
-	spUnlock.PersistentFlags().Float64("fee", 0.0,
-		"transaction fee, default 0")
+	spUnlock.PersistentFlags().String("blobber_id", "", "for given blobber, default is current client")
+	spUnlock.PersistentFlags().Float64("fee", 0.0, "transaction fee, default 0")
 	spUnlock.MarkFlagRequired("tokens")
-	spUnlock.MarkFlagRequired("pool_id")
 }
