@@ -38,8 +38,8 @@ cloud.google.com/go/storage v1.14.0/go.mod h1:GrKmX003DSIwi9o29oFT7YDnHYwZoctc3f
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 github.com/0chain/errors v1.0.3 h1:QQZPFxTfnMcRdt32DXbzRQIfGWmBsKoEdszKQDb0rRM=
 github.com/0chain/errors v1.0.3/go.mod h1:xymD6nVgrbgttWwkpSCfLLEJbFO6iHGQwk/yeSuYkIc=
-github.com/0chain/gosdk v1.8.8-0.20220826123005-3c032dcae80f h1:6v2KGEk0oD/qXGUATKnMliLSYPWAccw3+tDwMqyN/Ao=
-github.com/0chain/gosdk v1.8.8-0.20220826123005-3c032dcae80f/go.mod h1:ZQU/M42RUPryspHYEHZkBzKyFOUF7B1GSCwvFItjFyA=
+github.com/0chain/gosdk v1.8.8-0.20220907200927-e654bc6ff794 h1:iFhSmBIZvyAA1vlqJLqX4qJ9HOxbn5Vs6bLxmmDSma0=
+github.com/0chain/gosdk v1.8.8-0.20220907200927-e654bc6ff794/go.mod h1:ZQU/M42RUPryspHYEHZkBzKyFOUF7B1GSCwvFItjFyA=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/VictoriaMetrics/fastcache v1.6.0 h1:C/3Oi3EiBCqufydp1neRZkqcwmEiuRT9c3fqvvgKm5o=
