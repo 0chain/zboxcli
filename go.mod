@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/0chain/errors v1.0.3
-	github.com/0chain/gosdk v1.8.8-0.20220901083029-168c9baa94e9
+	github.com/0chain/gosdk v1.8.8-0.20220903143919-fc9b3cd0f4c9
 	github.com/icza/bitio v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.5.0
