@@ -1806,18 +1806,19 @@ Use `sp-info` to get your stake pool information and settings.
 
 #### Lock tokens into stake pool
 
-Lock creates delegate pool for current client and given blobber. 
-The tokens locked for the blobber stake can be unlocked any time, excluding times 
+Lock creates delegate pool for current client and a given provider (blobber or validator). 
+The tokens locked for the provider stake can be unlocked any time, excluding times 
 when the tokens held by opened offers. These tokens will earn rewards depending on the 
-actions of the linked blobber. 
+actions of the linked provider. 
 `sp-lock` returns the id of the new stake pool, this will be needed to reference
 to stake pool later.
 
-| Parameter  | Required | Description     | default        | Valid values |
-|------------|----------|-----------------|----------------|--------------|
-| blobber_id |          | id of blobber   | current client | string       |
-| fee        | no       | transaction fee | 0              | float        |
-| tokens     | yes      | tokens to lock  |                | float        |
+| Parameter    | Required | Description     | default    | Valid values |
+|--------------|----------|-----------------|------------|--------------|
+| blobber_id   |          | id of blobber   | n/a        | string       |
+| validator_id |          | id of validator | n/a        | string       |
+| fee          | no       | transaction fee | 0          | float        |
+| tokens       | yes      | tokens to lock  |            | float        |
 
 <details>
   <summary>sp-lock</summary>
@@ -1826,22 +1827,29 @@ to stake pool later.
 
 </details>
 
+To stake tokens for blobbers:
 ```
 ./zbox sp-lock --blobber_id <blobber_id> --tokens 1.0
 ```
 
+To stake tokens for validators:
+```
+./zbox sp-lock --validator_id <validator_id> --tokens 1.0
+```
+
 #### Unlock tokens from stake pool
 
-Unlock a stake pool by pool owner. If the stake pool cannot be unlocked as 
-it would leave insufficient funds for opened offers, then `sp-unlock` tags 
-the stake pool to be unlocked later. This tag prevents the stake pool affecting 
-blobber allocation for any new allocations.
+Unlock a stake pool by pool owner using pool_id and provider_id (blobber_id or validator_id).
+If the stake pool cannot be unlocked as it would leave insufficient funds for opened offers,
+then `sp-unlock` tags the stake pool to be unlocked later.
+This tag prevents the stake pool affecting blobber allocation for any new allocations.
 
-| Parameter  | Required | Description          | default        | Valid values |
-|------------|----------|----------------------|----------------|--------------|
-| blobber_id |          | id of blobber        | current client | string       |
-| fee        | no       | transaction fee      | 0              | float        |
-| pool id    | yes      | id of pool to unlock |                | string       |
+| Parameter    | Required | Description          | default    | Valid values |
+|--------------|----------|----------------------|------------|--------------|
+| blobber_id   |          | id of blobber        | n/a        | string       |
+| validator_id |          | id of validator      | n/a        | string       |
+| fee          | no       | transaction fee      | 0          | float        |
+| pool id      | yes      | id of pool to unlock |            | string       |
 
 <details>
   <summary>sp-unlock</summary>
@@ -1850,9 +1858,14 @@ blobber allocation for any new allocations.
 
 </details>
 
-
+To unstake blobber tokens:
 ```
 ./zbox sp-unlock --blobber_id <blobber_id> --pool_id <pool_id>
+```
+
+To unstake validator tokens:
+```
+./zbox sp-unlock --validator_id <validator_id> --pool_id <pool_id>
 ```
 
 #### Stake pools info of user
