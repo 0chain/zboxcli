@@ -2,10 +2,11 @@ package cmd
 
 import (
 	"fmt"
+	"log"
+
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
 	"github.com/0chain/zboxcli/util"
-	"log"
 
 	"github.com/spf13/cobra"
 )
@@ -213,7 +214,6 @@ var spUnlock = &cobra.Command{
 			providerType sdk.ProviderType
 			fee          float64
 			err          error
-
 		)
 
 		if flags.Changed("blobber_id") {
