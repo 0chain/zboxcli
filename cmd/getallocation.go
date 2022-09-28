@@ -122,7 +122,6 @@ var getallocationCmd = &cobra.Command{
 
 		fmt.Println("  read_price_range:         ", priceRangeString(alloc.ReadPriceRange), "(requested)")
 		fmt.Println("  write_price_range:        ", priceRangeString(alloc.WritePriceRange), "(requested)")
-		fmt.Println("  challenge_completion_time:", alloc.ChallengeCompletionTime, "(max)")
 		fmt.Println("  start_time:               ", common.Timestamp(alloc.StartTime).ToTime())
 		fmt.Println("  finalized:                ", alloc.Finalized)
 		fmt.Println("  canceled:                 ", alloc.Canceled)
