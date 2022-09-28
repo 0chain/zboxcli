@@ -34,26 +34,25 @@ var updateCmd = &cobra.Command{
 			PrintError("Error fetching the allocation", err)
 			os.Exit(1)
 		}
-		remotepath := cmd.Flag("remotepath").Value.String()
+		remotePath := cmd.Flag("remotepath").Value.String()
 
-		if remotepath == "/Encrypted" {
+		if remotePath == "/Encrypted" {
 			PrintError("Error: can not update Encrypted Folder")
 			os.Exit(1)
 		}
 
-		localpath := cmd.Flag("localpath").Value.String()
-		thumbnailpath := cmd.Flag("thumbnailpath").Value.String()
+		localPath := cmd.Flag("localpath").Value.String()
+		thumbnailPath := cmd.Flag("thumbnailpath").Value.String()
 		encrypt, _ := cmd.Flags().GetBool("encrypt")
-		commit, _ := cmd.Flags().GetBool("commit")
 
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
 
 		err = startChunkedUpload(cmd, allocationObj, chunkedUploadArgs{
-			localPath:     localpath,
-			remotePath:    remotepath,
-			thumbnailPath: thumbnailpath,
+			localPath:     localPath,
+			remotePath:    remotePath,
+			thumbnailPath: thumbnailPath,
 			encrypt:       encrypt,
 			chunkNumber:   updateChunkNumber,
 			isUpdate:      true,
@@ -69,13 +68,6 @@ var updateCmd = &cobra.Command{
 		if !statusBar.success {
 			os.Exit(1)
 		}
-
-		if commit {
-			statusBar.wg.Add(1)
-			commitMetaTxn(remotepath, "Update", "", "", allocationObj, nil, statusBar)
-			statusBar.wg.Wait()
-		}
-		return
 	},
 }
 
@@ -88,7 +80,6 @@ func init() {
 	updateCmd.PersistentFlags().String("localpath", "", "Local path of file to upload")
 	updateCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
 	updateCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
-	updateCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
 
 	updateCmd.Flags().IntVarP(&updateChunkNumber, "chunknumber", "", 1, "how many chunks should be uploaded in a http request")
 

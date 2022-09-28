@@ -44,24 +44,23 @@ var uploadCmd = &cobra.Command{
 			PrintError("Error fetching the allocation.", err)
 			os.Exit(1)
 		}
-		remotepath := cmd.Flag("remotepath").Value.String()
-		localpath := cmd.Flag("localpath").Value.String()
-		thumbnailpath := cmd.Flag("thumbnailpath").Value.String()
+		remotePath := cmd.Flag("remotepath").Value.String()
+		localPath := cmd.Flag("localpath").Value.String()
+		thumbnailPath := cmd.Flag("thumbnailpath").Value.String()
 		encrypt, _ := cmd.Flags().GetBool("encrypt")
-		commit, _ := cmd.Flags().GetBool("commit")
 
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
-		if strings.HasPrefix(remotepath, "/Encrypted") {
+		if strings.HasPrefix(remotePath, "/Encrypted") {
 			encrypt = true
 		}
 
 		if err := startChunkedUpload(cmd, allocationObj,
 			chunkedUploadArgs{
-				localPath:     localpath,
-				thumbnailPath: thumbnailpath,
-				remotePath:    remotepath,
+				localPath:     localPath,
+				thumbnailPath: thumbnailPath,
+				remotePath:    remotePath,
 				encrypt:       encrypt,
 				chunkNumber:   uploadChunkNumber,
 				// isUpdate:      false,
@@ -73,13 +72,6 @@ var uploadCmd = &cobra.Command{
 		wg.Wait()
 		if !statusBar.success {
 			os.Exit(1)
-		}
-
-		if commit {
-			remotepath = zboxutil.GetFullRemotePath(localpath, remotepath)
-			statusBar.wg.Add(1)
-			commitMetaTxn(remotepath, "Upload", "", "", allocationObj, nil, statusBar)
-			statusBar.wg.Wait()
 		}
 	},
 }
@@ -154,7 +146,7 @@ func init() {
 	uploadCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
 	uploadCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
 	uploadCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
-	uploadCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
+
 	uploadCmd.Flags().IntVarP(&uploadChunkNumber, "chunknumber", "", 1, "how many chunks should be uploaded in a http request")
 
 	uploadCmd.MarkFlagRequired("allocation")
