@@ -50,7 +50,6 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
       - [Repair](#repair)
       - [Add collaborator](#add-collaborator)
       - [Delete collaborator](#delete-collaborator)
-      - [Commit](#commit)
       - [Sign data](#sign-data)
       - [Streaming](#streaming)
         - [How it works:](#how-it-works)
@@ -122,7 +121,6 @@ When you run the `zbox` command in terminal with no arguments, it will list all 
 [validator-info](#detailed-validator-information)|Get validator info
 [bl-update](#update-blobber-settings)|Update blobber settings by its delegate\_wallet owner
 [validator-update](#update-validator-settings)|Update validator settings by its delegate\_wallet owner
-[commit](#commit)| commit file changes to chain
 [collect-reward](#collect-rewards)|transfer reward tokens from a stake pool to your wallet.
 [copy](#copy)|copy an object(file/folder) to another folder on blobbers
 [cp-info](#challenge-pool-information)|Challenge pool information.
@@ -673,7 +671,6 @@ The user must be the owner of the allocation.You can request the file be encrypt
 | Parameter               | Required | Description                                          | Default | Valid values                            |
 |-------------------------|----------|------------------------------------------------------|---------|-----------------------------------------|
 | allocation              | yes      | allocation id, sender must be allocation owner                     |         | string                 |
-| commit                  | no       | save metadata to blockchain                                        | false   | boolean                |
 | encrypt                 | no       | encrypt file before upload                                         | false   | boolean                |
 | localpath               | yes      | local path of the file to upload                                   |         | file path              |
 | remotepath              | yes      | remote path to upload file to, use to access file later            |         | string                 |
@@ -729,7 +726,6 @@ The user must be the owner of the allocation.You can request the file be encrypt
 | Parameter               | Required | Description                                          | Default | Valid values                            |
 |-------------------------|----------|------------------------------------------------------|---------|-----------------------------------------|
 | allocation              | yes      | allocation id, sender must be allocation owner                     |         | string                 |
-| commit                  | no       | save metadata to blockchain                                        | false   | boolean                |
 | encrypt                 | no       | encrypt file before upload                                         | false   | boolean                |
 | localpath               | yes      | local path of segment files to download, generate and upload       |         | file path              |
 | remotepath              | yes      | remote path to upload file to, use to access file later            |         | string                 |
@@ -755,7 +751,6 @@ The user must be the owner of the allocation.You can request the file be encrypt
 | Parameter               | Required | Description                                          | Default | Valid values                            |
 |-------------------------|----------|------------------------------------------------------|---------|-----------------------------------------|
 | allocation              | yes      | allocation id, sender must be allocation owner                     |         | string                 |
-| commit                  | no       | save metadata to blockchain                                        | false   | boolean                |
 | encrypt                 | no       | encrypt file before upload                                         | false   | boolean                |
 | localpath               | yes      | local path of segment files to download, generate and upload       |         | file path              |
 | remotepath              | yes      | remote path to upload file to, use to access file later            |         | string                 |
@@ -824,7 +819,6 @@ Use `startblock` and `endblock` to only download part of the file.
 | allocation      | yes      | allocation id                                                            |         | string       |
 | authticket      | no       | auth ticked if not owner of the allocation, use share to get auth ticket |         | string       |
 | blockspermarker | no       | download multiple blocks per marker                                      | 10      | int          |
-| commit          | no       | save metadata to blockchain                                              | false   | boolean      |
 | endblock        | no       | download until specified block number                                    |         | int          |
 | localpath       | yes      | local path to which to download the file to                              |         | file path    |
 | remotepath      | yes      | remote path to which the file was uploaded                               |         | string       |
@@ -875,7 +869,6 @@ can update a file.  To add collaborators to an allocation, use
 | localpath     | yes      | local file to upload          |         | file path    |
 | remotepath    | yes      | remote file to upload         |         | string       |
 | thumbnailpath | no       | local fumbnail file to upload |         | file path    |
-| commit        | no       | save meta data to blockchain  | false   | boolean      |
 | chunknumber   | no       | how many chunks should be uploaded in a http request   | 1       | int          |
 
 
@@ -895,7 +888,6 @@ of the application can delete a file.
 |------------|----------|-------------------------------|---------|--------------|
 | allocation | yes      | allocation id                 |         | string       |
 | remotepath | yes      | remote path of file to delete |         | string       |
-| commit     | no       | save meta data to blockchain  | false   | boolean      |
 
 <details>
   <summary>delete</summary>
@@ -930,7 +922,7 @@ Use share command to generate an authtoken that provides authorization to the ho
 if option not provided)
 * --available-after Timelock for private file that makes the file available for download at certain time. 4 input formats are supported: +1h30m, +30, 1647858200 and 2022-03-21 10:21:38
 
-`auth ticket` can be used with  [download](#download), [commit](#commit) and [list](#list),
+`auth ticket` can be used with  [download](#download), and [list](#list),
 [meta](#get-metadata) and [get_download_cost](#download-cost), but only for files in
 the pre-defined remote path.
 
@@ -1106,7 +1098,6 @@ Only the owner of the allocation can copy an object.
 | Parameter  | Required | Description                                       | default | Valid values |
 |------------|----------|---------------------------------------------------|---------|--------------|
 | allocation | yes      | allocation id                                     |         | string       |
-| commit     | no       | save metadata to blockchain                       | false   | boolean      |
 | remotepath | yes      | remote path of object to copy                     |         | string       |
 | destpath   | yes      | destination, an existing directory to copy object |         | string       |
 
@@ -1138,7 +1129,6 @@ Only the owner of the allocation can copy an object.
 | Parameter  | Required | Description                                       | default | Valid values |
 |------------|----------|---------------------------------------------------|---------|--------------|
 | allocation | yes      | allocation id                                     |         | string       |
-| commit     | no       | save metadata to blockchain                       | false   | boolean      |
 | remotepath | yes      | remote path of object to copy                     |         | string       |
 | destpath   | yes      | destination, an existing directory to copy object |         | string       |
 
@@ -1170,7 +1160,6 @@ Only the allocation's owner can successfully run `sync`.
 | Parameter   | Required | Description                                                                                   | default | Valid values |
 |-------------|----------|-----------------------------------------------------------------------------------------------|---------|--------------|
 | allocation  | yes      | allocation id                                                                                 |         | string       |
-| commit      | no       | commet metadata to blockchain                                                                 | false   | boolean      |
 | encryptpath | no       | local directory path to be uploaded as encrypted                                              | false   | boolean      |
 | excludepath  | no       | paths to exclude from sync                                                                   |         | string array |
 | localchache | no       | local chache of remote snapshot. Used for comparsion with remote. After sync will be updated. |         | string       |
@@ -1380,7 +1369,6 @@ allocation's owner can rename a file.
 | Parameter  | Required | Description                                       | default | Valid values |
 |------------|----------|---------------------------------------------------|---------|--------------|
 | allocation | yes      | allocation id                                     |         | string       |
-| commit     | no       | save metadata to blockchain                       | false   | boolean      |
 | destname   | yes      | new neame of the object                           |         | string       |
 | remotepath | yes      | remote path of object, do not use with authticket |         | string       |
 
@@ -1536,20 +1524,6 @@ Response will be a confirmation that collaborator is removed on all blobbers for
 Collaborator d477d12134c2d7ba5ab71ac8ad37f244224695ef3215be990c3215d531c5a329 removed successfully for the file /1.txt
 ```
 
-
-#### Commit
-
-Commit file changes to chain
-
-| Parameter  | Required | Description                                       | Valid values |
-|------------|----------|---------------------------------------------------|--------------|
-| allocation | yes      | allocation id                                     | string       |
-| authticket | no       | auth ticket for file to commit                    | string       |
-| filemeta   | no       | meta for commit if applicable                     | string       |
-| lookuphash | no       | remote lookuphash to commit, use with authticket  | string       |
-| newvalue   | no       | new value for the folder operation if applicatble | string       |
-| operation  | yes      | operation name for commit change                  | string       |
-| remotepath | no       | remote path of object to commit                   | string       |
 
 #### Sign data
 
