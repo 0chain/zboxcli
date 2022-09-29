@@ -2,10 +2,11 @@ package cmd
 
 import (
 	"fmt"
+	"log"
+
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
 	"github.com/0chain/zboxcli/util"
-	"log"
 
 	"github.com/spf13/cobra"
 )
@@ -189,13 +190,13 @@ var spLock = &cobra.Command{
 			}
 		}
 
-		var poolID string
-		poolID, _, err = sdk.StakePoolLock(providerType, providerID,
+		var hash string
+		hash, _, err = sdk.StakePoolLock(providerType, providerID,
 			zcncore.ConvertToValue(tokens), zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to lock tokens in stake pool: %v", err)
 		}
-		fmt.Println("tokens locked, pool id:", poolID)
+		fmt.Println("tokens locked, txn hash:", hash)
 	},
 }
 
@@ -209,7 +210,6 @@ var spUnlock = &cobra.Command{
 
 		var (
 			flags        = cmd.Flags()
-			poolID       string
 			providerID   string
 			providerType sdk.ProviderType
 			fee          float64
@@ -234,21 +234,13 @@ var spUnlock = &cobra.Command{
 			log.Fatal("missing flag: one of 'blobber_id' or 'validator_id' is required")
 		}
 
-		if !flags.Changed("pool_id") {
-			log.Fatal("missing required 'pool_id' flag")
-		}
-
-		if poolID, err = flags.GetString("pool_id"); err != nil {
-			log.Fatal("invalid 'pool_id' flag: ", err)
-		}
-
 		if flags.Changed("fee") {
 			if fee, err = flags.GetFloat64("fee"); err != nil {
 				log.Fatal("invalid 'fee' flag: ", err)
 			}
 		}
 
-		unstake, _, err := sdk.StakePoolUnlock(providerType, providerID, poolID, zcncore.ConvertToValue(fee))
+		unstake, _, err := sdk.StakePoolUnlock(providerType, providerID, zcncore.ConvertToValue(fee))
 		// an error
 		if err != nil {
 			log.Fatalf("Failed to unlock tokens in stake pool: %v", err)
@@ -280,25 +272,15 @@ func init() {
 
 	spUserInfo.PersistentFlags().Bool("json", false, "pass this option to print response as json data")
 
-	spLock.PersistentFlags().String("blobber_id", "",
-		"for given blobber")
-	spLock.PersistentFlags().String("validator_id", "",
-		"for given validator")
-	spLock.PersistentFlags().Float64("tokens", 0.0,
-		"tokens to lock, required")
-	spLock.PersistentFlags().Float64("fee", 0.0,
-		"transaction fee, default 0")
+	spLock.PersistentFlags().String("blobber_id", "", "for given blobber")
+	spLock.PersistentFlags().String("validator_id", "", "for given validator")
+	spLock.PersistentFlags().Float64("tokens", 0.0, "tokens to lock, required")
+	spLock.PersistentFlags().Float64("fee", 0.0, "transaction fee, default 0")
 
 	spLock.MarkFlagRequired("tokens")
 
-	spUnlock.PersistentFlags().String("blobber_id", "",
-		"for given blobber")
-	spUnlock.PersistentFlags().String("validator_id", "",
-		"for given validator")
-	spUnlock.PersistentFlags().String("pool_id", "",
-		"pool id to unlock")
-	spUnlock.PersistentFlags().Float64("fee", 0.0,
-		"transaction fee, default 0")
+	spUnlock.PersistentFlags().String("blobber_id", "", "for given blobber")
+	spUnlock.PersistentFlags().String("validator_id", "", "for given validator")
+	spUnlock.PersistentFlags().Float64("fee", 0.0, "transaction fee, default 0")
 	spUnlock.MarkFlagRequired("tokens")
-	spUnlock.MarkFlagRequired("pool_id")
 }

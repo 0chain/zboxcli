@@ -24,17 +24,17 @@ var downloadCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		remotepath := cmd.Flag("remotepath").Value.String()
-		authticket := cmd.Flag("authticket").Value.String()
-		lookuphash := cmd.Flag("lookuphash").Value.String()
+		remotePath := cmd.Flag("remotepath").Value.String()
+		authTicket := cmd.Flag("authticket").Value.String()
+		lookupHash := cmd.Flag("lookuphash").Value.String()
 		thumbnail, _ := cmd.Flags().GetBool("thumbnail")
-		commit, _ := cmd.Flags().GetBool("commit")
-		if len(remotepath) == 0 && len(authticket) == 0 {
+
+		if len(remotePath) == 0 && len(authTicket) == 0 {
 			PrintError("Error: remotepath / authticket flag is missing")
 			os.Exit(1)
 		}
 
-		localpath := cmd.Flag("localpath").Value.String()
+		localPath := cmd.Flag("localpath").Value.String()
 		allocationID := cmd.Flag("allocation").Value.String()
 
 		live, _ := cmd.Flags().GetBool("live")
@@ -42,7 +42,7 @@ var downloadCmd = &cobra.Command{
 		if live {
 			delay, _ := cmd.Flags().GetInt("delay")
 
-			m3u8, err := createM3u8Downloader(localpath, remotepath, authticket, allocationID, lookuphash, delay)
+			m3u8, err := createM3u8Downloader(localPath, remotePath, authTicket, allocationID, lookupHash, delay)
 
 			if err != nil {
 				PrintError("Error: download files and build playlist: ", err)
@@ -75,56 +75,56 @@ var downloadCmd = &cobra.Command{
 		var errE, err error
 		var allocationObj *sdk.Allocation
 
-		if len(authticket) > 0 {
-			at, err := sdk.InitAuthTicket(authticket).Unmarshall()
+		if len(authTicket) > 0 {
+			at, err := sdk.InitAuthTicket(authTicket).Unmarshall()
 
 			if err != nil {
 				PrintError(err)
 				os.Exit(1)
 			}
 
-			allocationObj, err = sdk.GetAllocationFromAuthTicket(authticket)
+			allocationObj, err = sdk.GetAllocationFromAuthTicket(authTicket)
 			if err != nil {
 				PrintError("Error fetching the allocation", err)
 				os.Exit(1)
 			}
 
-			var filename string
+			var fileName string
 
 			if at.RefType == fileref.FILE {
-				filename = at.FileName
-				lookuphash = at.FilePathHash
-			} else if len(lookuphash) > 0 {
-				fileMeta, err := allocationObj.GetFileMetaFromAuthTicket(authticket, lookuphash)
+				fileName = at.FileName
+				lookupHash = at.FilePathHash
+			} else if len(lookupHash) > 0 {
+				fileMeta, err := allocationObj.GetFileMetaFromAuthTicket(authTicket, lookupHash)
 				if err != nil {
 					PrintError("Either remotepath or lookuphash is required when using authticket of directory type")
 					os.Exit(1)
 				}
-				filename = fileMeta.Name
-			} else if len(remotepath) > 0 {
-				lookuphash = fileref.GetReferenceLookup(allocationObj.Tx, remotepath)
+				fileName = fileMeta.Name
+			} else if len(remotePath) > 0 {
+				lookupHash = fileref.GetReferenceLookup(allocationObj.Tx, remotePath)
 
-				pathnames := strings.Split(remotepath, "/")
-				filename = pathnames[len(pathnames)-1]
+				pathNames := strings.Split(remotePath, "/")
+				fileName = pathNames[len(pathNames)-1]
 			} else {
 				PrintError("Either remotepath or lookuphash is required when using authticket of directory type")
 				os.Exit(1)
 			}
 
 			if thumbnail {
-				errE = allocationObj.DownloadThumbnailFromAuthTicket(localpath,
-					authticket, lookuphash, filename, statusBar)
+				errE = allocationObj.DownloadThumbnailFromAuthTicket(localPath,
+					authTicket, lookupHash, fileName, statusBar)
 			} else {
 				if startBlock != 0 || endBlock != 0 {
 					errE = allocationObj.DownloadFromAuthTicketByBlocks(
-						localpath, authticket, startBlock, endBlock, numBlocks,
-						lookuphash, filename, statusBar)
+						localPath, authTicket, startBlock, endBlock, numBlocks,
+						lookupHash, fileName, statusBar)
 				} else {
-					errE = allocationObj.DownloadFromAuthTicket(localpath,
-						authticket, lookuphash, filename, statusBar)
+					errE = allocationObj.DownloadFromAuthTicket(localPath,
+						authTicket, lookupHash, fileName, statusBar)
 				}
 			}
-		} else if len(remotepath) > 0 {
+		} else if len(remotePath) > 0 {
 			if fflags.Changed("allocation") == false { // check if the flag "path" is set
 				PrintError("Error: allocation flag is missing") // If not, we'll let the user know
 				os.Exit(1)                                      // and return
@@ -137,12 +137,12 @@ var downloadCmd = &cobra.Command{
 				os.Exit(1)
 			}
 			if thumbnail {
-				errE = allocationObj.DownloadThumbnail(localpath, remotepath, statusBar)
+				errE = allocationObj.DownloadThumbnail(localPath, remotePath, statusBar)
 			} else {
 				if startBlock != 0 || endBlock != 0 {
-					errE = allocationObj.DownloadFileByBlock(localpath, remotepath, startBlock, endBlock, numBlocks, statusBar)
+					errE = allocationObj.DownloadFileByBlock(localPath, remotePath, startBlock, endBlock, numBlocks, statusBar)
 				} else {
-					errE = allocationObj.DownloadFile(localpath, remotepath, statusBar)
+					errE = allocationObj.DownloadFile(localPath, remotePath, statusBar)
 				}
 			}
 		}
@@ -156,12 +156,7 @@ var downloadCmd = &cobra.Command{
 		if !statusBar.success {
 			os.Exit(1)
 		}
-		if commit {
-			statusBar.wg.Add(1)
-			commitMetaTxn(remotepath, "Download", authticket, lookuphash, allocationObj, nil, statusBar)
-			statusBar.wg.Wait()
-		}
-		return
+
 	},
 }
 
@@ -173,7 +168,7 @@ func init() {
 	downloadCmd.PersistentFlags().String("authticket", "", "Auth ticket fot the file to download if you dont own it")
 	downloadCmd.PersistentFlags().String("lookuphash", "", "The remote lookuphash of the object retrieved from the list")
 	downloadCmd.Flags().BoolP("thumbnail", "t", false, "pass this option to download only the thumbnail")
-	downloadCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
+
 	downloadCmd.Flags().Int64P("startblock", "s", 0, "pass this option to download from specific block number")
 	downloadCmd.Flags().Int64P("endblock", "e", 0, "pass this option to download till specific block number")
 	downloadCmd.Flags().IntP("blockspermarker", "b", 10, "pass this option to download multiple blocks per marker")
