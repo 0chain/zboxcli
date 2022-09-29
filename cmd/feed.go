@@ -8,7 +8,6 @@ import (
 
 	thrown "github.com/0chain/errors"
 	"github.com/0chain/gosdk/zboxcore/sdk"
-	"github.com/0chain/gosdk/zboxcore/zboxutil"
 	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )
@@ -41,20 +40,19 @@ var feedCmd = &cobra.Command{
 			PrintError("Error fetching the allocation.", err)
 			os.Exit(1)
 		}
-		remotepath := cmd.Flag("remotepath").Value.String()
-		localpath := cmd.Flag("localpath").Value.String()
+		remotePath := cmd.Flag("remotepath").Value.String()
+		localPath := cmd.Flag("localpath").Value.String()
 		encrypt, _ := cmd.Flags().GetBool("encrypt")
-		commit, _ := cmd.Flags().GetBool("commit")
 
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
-		if strings.HasPrefix(remotepath, "/Encrypted") {
+		if strings.HasPrefix(remotePath, "/Encrypted") {
 			encrypt = true
 		}
 
 		// download video from remote live feed(eg youtube), and sync it to zcn
-		err = startFeedUpload(cmd, allocationObj, localpath, remotepath, encrypt, feedChunkNumber)
+		err = startFeedUpload(cmd, allocationObj, localPath, remotePath, encrypt, feedChunkNumber)
 
 		if err != nil {
 			PrintError("Upload failed.", err)
@@ -63,13 +61,6 @@ var feedCmd = &cobra.Command{
 		wg.Wait()
 		if !statusBar.success {
 			os.Exit(1)
-		}
-
-		if commit {
-			remotepath = zboxutil.GetFullRemotePath(localpath, remotepath)
-			statusBar.wg.Add(1)
-			commitMetaTxn(remotepath, "Upload", "", "", allocationObj, nil, statusBar)
-			statusBar.wg.Wait()
 		}
 	},
 }
@@ -135,7 +126,6 @@ func init() {
 	feedCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
 	feedCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
 	feedCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
-	feedCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
 
 	feedCmd.Flags().IntVarP(&feedChunkNumber, "chunknumber", "", 1, "how many chunks should be uploaded in a http request")
 
