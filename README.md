@@ -119,7 +119,9 @@ When you run the `zbox` command in terminal with no arguments, it will list all 
 [alloc-cancel](#cancel-allocation)|Cancel an allocation
 [alloc-fini](#finalise-allocation)|Finalize an expired allocation
 [bl-info](#detailed-blobber-information)|Get blobber info
+[validator-info](#detailed-validator-information)|Get validator info
 [bl-update](#update-blobber-settings)|Update blobber settings by its delegate\_wallet owner
+[validator-update](#update-validator-settings)|Update validator settings by its delegate\_wallet owner
 [commit](#commit)| commit file changes to chain
 [collect-reward](#collect-rewards)|transfer reward tokens from a stake pool to your wallet.
 [copy](#copy)|copy an object(file/folder) to another folder on blobbers
@@ -236,7 +238,6 @@ and `free_storage` parameters.
 | owner              | owner's id, use for funding an allocation for another     | | string        |
 | owner_public_key   | public key, use for funding an allocation for another     |              | string     |
 | lock               | lock write pool with given number of tokens               |                | float        |
-| mcct               | max challenge completion time                             | 1h             | duration     |
 | parity             | number of parity shards, effects availability             | 2              | int          |
 | read_price         | filter blobbers by read price range                       | 0-inf          | range        |
 | size               | size of space reserved on blobbers                        | 2147483648     | bytes          |
@@ -535,7 +536,6 @@ Example
     read_price:          0.01 tok / GB
     write_price:         0.01 tok / GB / time_unit
     min_lock_demand:     0.1
-    cct:                 2m0s
     max_offer_duration:  744h0m0s
 - id:                    788b1deced159f12d3810c61b4b8d381e80188c470e9798939f2e5036d964ffc
   url:                   http://five.devnet-0chain.net:31301
@@ -544,7 +544,6 @@ Example
     read_price:          0.01 tok / GB
     write_price:         0.01 tok / GB / time_unit
     min_lock_demand:     0.1
-    cct:                 2m0s
     max_offer_duration:  744h0m0s
 ```
 
@@ -583,7 +582,6 @@ terms:
   write_price:        0.1 tok / GB
   min_lock_demand:    10 %
   max_offer_duration: 744h0m0s
-  cct:                2m0s
 settings:
   delegate_wallet: 8b87739cd6c966c150a8a6e7b327435d4a581d9d9cc1d86a88c8a13ae1ad7a96
   min_stake:       1 tok
@@ -639,7 +637,6 @@ on the blockchain not the blobber.
 |--------------------|----------|-------------------------------------------|---------|--------------|
 | blobber_id         | yes      | id of blobber of which to update settings |         | string       |
 | capacity           | no       | update blobber capacity                   |         | int          |
-| cct                | no       | update challenge completion time          |         | duration     |
 | max_offer_duration | no       | update max offer duration                 |         | duration     |
 | max_stake          | no       | update maximum stake                      |         | float        |
 | min_lock_demand    | no       | update minimum lock demand                |         | float        |
@@ -1725,7 +1722,6 @@ Use `rp-info` to get read pool information.
 
 | Parameter  | Required | Description                 | default | Valid values |
 |------------|----------|-----------------------------|---------|--------------|
-| allocation | no       | allocation id               |         | string       |
 | json       | no       | print result in json format | false   | boolean      |
 
 <details>
@@ -1740,72 +1736,33 @@ Use `rp-info` to get read pool information.
 ```
 #### Lock tokens into read pool
 
-Lock some tokens in read pool associated with an allocation. 
-* Uses two different formats, you can either define a specific blobber
-  to lock all tokens, or spread across all the allocations blobbers automatically.
+Lock some tokens in read pool. ReadPool is not linked to specific allocations anymore.
+Each wallet has a singular, non-expiring, untethered ReadPool. Locked tokens in ReadPool can be unlocked at any time and returned to the original wallet balance.
+
 * If the user does not have a pre-existing read pool, then the smart-contract
   creates one.
 
-Anyone can lock tokens with a read pool attached an allocation. These tokens can
-be used to pay read access to files stored with the allocation. To use 
-these tokens the user must be the allocation owner, collaborator or have an auth ticket. 
+Locked tokens can be used to pay for read access to file(s) stored with different allocations.
+To use these tokens the user must be the allocation owner, collaborator or have an auth ticket. 
 
 | Parameter  | Required | Description            | default | Valid values |
 |------------|----------|------------------------|---------|--------------|
-| allocation | yes      | allocation id          |         | string       |
-| blobber    | no       | blobber id to lock for |         | string       |
-| duration   | yes      | lock duration          |         | duration   |
 | fee        |          | transaction fee        | 0       | int          |
 | tokens     | yes      | tokens to lock         |         | int          |
 
 ```
-./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1
+./zbox rp-lock --tokens 1 
 ```
-
-<details>
-  <summary>rp-lock with a specific blobber</summary>
-
-```shell
-./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1 --blobber f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25 
-```
-![image](https://user-images.githubusercontent.com/6240686/125474085-c57c29a5-127e-4e8e-b560-c235ade869f1.png)
-
-</details>
-
-<details>
-  <summary>rp-lock spread across all blobbers</summary>
-
-Tokens are spread between the blobber pools weighted by 
-each blobber's Terms.ReadPrice.
-
-```shell
-./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1
-```
-
-![image](https://user-images.githubusercontent.com/6240686/125474486-1c2e1dba-7e61-4e9c-94f4-2a1ebf06d2de.png)
-
-</details>
 
 #### Unlock tokens from read pool
 
-Use `rp-unlock` to unlock tokens from an expired read pool by pool id. 
-See `rp-info` for the POOL_ID and the expiration.
+Use `rp-unlock` to unlock tokens from `read pool by ownership.
 
 | Parameter | Required | Description          | default | Valid values |
 |-----------|----------|----------------------|---------|--------------|
 | fee       | no       | transaction fee      | 0       | float        |
-| pool_id   | yes      | id of pool to unlock |         | string       |
 
-<details>
-  <summary>rp-unlock</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/124578670-53352180-de46-11eb-99a5-07debf17e351.png)
-
-</details>
-
-```
-./zbox rp-unlock --pool_id <pool_id>
-```
+Unlocked tokens get returned to the original wallet balance.
 
 #### Storage SC configurations
 
@@ -1849,18 +1806,19 @@ Use `sp-info` to get your stake pool information and settings.
 
 #### Lock tokens into stake pool
 
-Lock creates delegate pool for current client and given blobber. 
-The tokens locked for the blobber stake can be unlocked any time, excluding times 
+Lock creates delegate pool for current client and a given provider (blobber or validator). 
+The tokens locked for the provider stake can be unlocked any time, excluding times 
 when the tokens held by opened offers. These tokens will earn rewards depending on the 
-actions of the linked blobber. 
+actions of the linked provider. 
 `sp-lock` returns the id of the new stake pool, this will be needed to reference
 to stake pool later.
 
-| Parameter  | Required | Description     | default        | Valid values |
-|------------|----------|-----------------|----------------|--------------|
-| blobber_id |          | id of blobber   | current client | string       |
-| fee        | no       | transaction fee | 0              | float        |
-| tokens     | yes      | tokens to lock  |                | float        |
+| Parameter    | Required | Description     | default    | Valid values |
+|--------------|----------|-----------------|------------|--------------|
+| blobber_id   |          | id of blobber   | n/a        | string       |
+| validator_id |          | id of validator | n/a        | string       |
+| fee          | no       | transaction fee | 0          | float        |
+| tokens       | yes      | tokens to lock  |            | float        |
 
 <details>
   <summary>sp-lock</summary>
@@ -1869,22 +1827,29 @@ to stake pool later.
 
 </details>
 
+To stake tokens for blobbers:
 ```
 ./zbox sp-lock --blobber_id <blobber_id> --tokens 1.0
 ```
 
+To stake tokens for validators:
+```
+./zbox sp-lock --validator_id <validator_id> --tokens 1.0
+```
+
 #### Unlock tokens from stake pool
 
-Unlock a stake pool by pool owner. If the stake pool cannot be unlocked as 
-it would leave insufficient funds for opened offers, then `sp-unlock` tags 
-the stake pool to be unlocked later. This tag prevents the stake pool affecting 
-blobber allocation for any new allocations.
+Unlock a stake pool by pool owner using pool_id and provider_id (blobber_id or validator_id).
+If the stake pool cannot be unlocked as it would leave insufficient funds for opened offers,
+then `sp-unlock` tags the stake pool to be unlocked later.
+This tag prevents the stake pool affecting blobber allocation for any new allocations.
 
-| Parameter  | Required | Description          | default        | Valid values |
-|------------|----------|----------------------|----------------|--------------|
-| blobber_id |          | id of blobber        | current client | string       |
-| fee        | no       | transaction fee      | 0              | float        |
-| pool id    | yes      | id of pool to unlock |                | string       |
+| Parameter    | Required | Description          | default    | Valid values |
+|--------------|----------|----------------------|------------|--------------|
+| blobber_id   |          | id of blobber        | n/a        | string       |
+| validator_id |          | id of validator      | n/a        | string       |
+| fee          | no       | transaction fee      | 0          | float        |
+| pool id      | yes      | id of pool to unlock |            | string       |
 
 <details>
   <summary>sp-unlock</summary>
@@ -1893,9 +1858,14 @@ blobber allocation for any new allocations.
 
 </details>
 
-
+To unstake blobber tokens:
 ```
 ./zbox sp-unlock --blobber_id <blobber_id> --pool_id <pool_id>
+```
+
+To unstake validator tokens:
+```
+./zbox sp-unlock --validator_id <validator_id> --pool_id <pool_id>
 ```
 
 #### Stake pools info of user

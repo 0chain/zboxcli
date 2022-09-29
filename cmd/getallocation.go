@@ -88,6 +88,7 @@ var getallocationCmd = &cobra.Command{
 		fmt.Println("  size:           ", common.Size(alloc.Size))
 		fmt.Println("  expiration_date:", common.Timestamp(alloc.Expiration).ToTime())
 		fmt.Println("  immutable:      ", alloc.IsImmutable)
+		fmt.Println("  write pool      ", alloc.WritePool)
 		fmt.Println("  blobbers:")
 
 		for _, d := range alloc.BlobberDetails {
@@ -106,7 +107,6 @@ var getallocationCmd = &cobra.Command{
 			fmt.Println("        write_price:              ", d.Terms.WritePrice, "/ GB")
 			fmt.Println("        min_lock_demand:          ", d.Terms.MinLockDemand*100, "%")
 			fmt.Println("        max_offer_duration:       ", d.Terms.MaxOfferDuration)
-			fmt.Println("        challenge_completion_time:", d.Terms.ChallengeCompletionTime)
 		}
 
 		if len(alloc.Curators) < 1 {

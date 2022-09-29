@@ -16,7 +16,7 @@ var addCuratorCmd = &cobra.Command{
 		var err error
 		var flags = cmd.Flags()
 
-		if flags.Changed("allocation") == false {
+		if !flags.Changed("allocation") {
 			log.Fatal("Error: allocation flag is missing")
 		}
 		allocationID, err := flags.GetString("allocation")
@@ -24,7 +24,7 @@ var addCuratorCmd = &cobra.Command{
 			log.Fatal("invalid 'allocation' flag: ", err)
 		}
 
-		if flags.Changed("curator") == false {
+		if !flags.Changed("curator") {
 			log.Fatal("Error: curator flag is missing")
 		}
 		curatorID, err := flags.GetString("curator")

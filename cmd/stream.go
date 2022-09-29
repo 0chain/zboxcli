@@ -1,15 +1,10 @@
 package cmd
 
 import (
-	"log"
 	"os"
-	"path/filepath"
 	"strings"
 	"sync"
 
-	thrown "github.com/0chain/errors"
-	"github.com/0chain/gosdk/core/common"
-	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zboxcore/zboxutil"
 	"github.com/0chain/zboxcli/util"
@@ -55,21 +50,9 @@ var streamCmd = &cobra.Command{
 		if strings.HasPrefix(remotepath, "/Encrypted") {
 			encrypt = true
 		}
-		var attrs fileref.Attributes
-		if fflags.Changed("attr-who-pays-for-reads") {
-			var wp common.WhoPays
-			var wps string
-			if wps, err = fflags.GetString("attr-who-pays-for-reads"); err != nil {
-				log.Fatalf("getting 'attr-who-pays-for-reads' flag: %v", err)
-			}
-			if err = wp.Parse(wps); err != nil {
-				log.Fatal(err)
-			}
-			attrs.WhoPaysForReads = wp // set given value
-		}
 
 		// capture video and audio from local default camera and micrlphone, and upload it to zcn
-		err = startLiveUpload(cmd, allocationObj, localpath, remotepath, encrypt, streamChunkNumber, attrs)
+		err = startLiveUpload(cmd, allocationObj, localpath, remotepath, encrypt, streamChunkNumber)
 
 		if err != nil {
 			PrintError("Upload failed.", err)
@@ -89,7 +72,7 @@ var streamCmd = &cobra.Command{
 	},
 }
 
-func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath string, remotePath string, encrypt bool, chunkNumber int, attrs fileref.Attributes) error {
+func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPath string, remotePath string, encrypt bool, chunkNumber int) error {
 
 	delay, _ := cmd.Flags().GetInt("delay")
 
@@ -105,21 +88,15 @@ func startLiveUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, localPat
 		return err
 	}
 
-	remotePath = zboxutil.RemoteClean(remotePath)
-	isabs := zboxutil.IsRemoteAbs(remotePath)
-	if !isabs {
-		err = thrown.New("invalid_path", "Path should be valid and absolute")
+	remotePath, fileName, err := fullPathAndFileNameForUpload(localPath, remotePath)
+	if err != nil {
 		return err
 	}
-	remotePath = zboxutil.GetFullRemotePath(localPath, remotePath)
-
-	_, fileName := filepath.Split(remotePath)
 
 	liveMeta := sdk.LiveMeta{
 		MimeType:   mimeType,
 		RemoteName: fileName,
 		RemotePath: remotePath,
-		Attributes: attrs,
 	}
 
 	liveUpload := sdk.CreateLiveUpload(util.GetHomeDir(), allocationObj, liveMeta, reader,
