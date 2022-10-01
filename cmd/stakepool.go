@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
@@ -85,11 +86,12 @@ var spInfo = &cobra.Command{
 
 		doJSON, _ := cmd.Flags().GetBool("json")
 
-		if flags.Changed("blobber_id") {
-			if blobberID, err = flags.GetString("blobber_id"); err != nil {
-				log.Fatalf("can't get 'blobber_id' flag: %v", err)
-			}
+		if !flags.Changed("blobber_id") {
+			PrintError("Error: blobber_id flag is missing")
+			os.Exit(1)
 		}
+
+		blobberID = cmd.Flag("blobber_id").Value.String()
 
 		var info *sdk.StakePoolInfo
 		if info, err = sdk.GetStakePoolInfo(blobberID); err != nil {
@@ -267,7 +269,7 @@ func init() {
 	rootCmd.AddCommand(spUnlock)
 
 	spInfo.PersistentFlags().String("blobber_id", "",
-		"for given blobber, default is current client")
+		"for given blobber")
 	spInfo.PersistentFlags().Bool("json", false, "pass this option to print response as json data")
 
 	spUserInfo.PersistentFlags().Bool("json", false, "pass this option to print response as json data")
