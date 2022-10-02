@@ -6,7 +6,6 @@ import (
 	"sync"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
-	"github.com/0chain/gosdk/zboxcore/zboxutil"
 	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )
@@ -39,20 +38,19 @@ var streamCmd = &cobra.Command{
 			PrintError("Error fetching the allocation.", err)
 			os.Exit(1)
 		}
-		remotepath := cmd.Flag("remotepath").Value.String()
-		localpath := cmd.Flag("localpath").Value.String()
+		remotePath := cmd.Flag("remotepath").Value.String()
+		localPath := cmd.Flag("localpath").Value.String()
 		encrypt, _ := cmd.Flags().GetBool("encrypt")
-		commit, _ := cmd.Flags().GetBool("commit")
 
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
-		if strings.HasPrefix(remotepath, "/Encrypted") {
+		if strings.HasPrefix(remotePath, "/Encrypted") {
 			encrypt = true
 		}
 
 		// capture video and audio from local default camera and micrlphone, and upload it to zcn
-		err = startLiveUpload(cmd, allocationObj, localpath, remotepath, encrypt, streamChunkNumber)
+		err = startLiveUpload(cmd, allocationObj, localPath, remotePath, encrypt, streamChunkNumber)
 
 		if err != nil {
 			PrintError("Upload failed.", err)
@@ -61,13 +59,6 @@ var streamCmd = &cobra.Command{
 		wg.Wait()
 		if !statusBar.success {
 			os.Exit(1)
-		}
-
-		if commit {
-			remotepath = zboxutil.GetFullRemotePath(localpath, remotepath)
-			statusBar.wg.Add(1)
-			commitMetaTxn(remotepath, "Upload", "", "", allocationObj, nil, statusBar)
-			statusBar.wg.Wait()
 		}
 	},
 }
@@ -126,7 +117,6 @@ func init() {
 	streamCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
 	streamCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
 	streamCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
-	streamCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
 
 	streamCmd.Flags().IntVarP(&streamChunkNumber, "chunknumber", "", 1, "how many chunks should be uploaded in a http request")
 

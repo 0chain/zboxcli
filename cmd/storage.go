@@ -170,6 +170,7 @@ var blobberInfoCmd = &cobra.Command{
 		fmt.Println("capacity:         ", blob.Capacity)
 		fmt.Println("last_health_check:", blob.LastHealthCheck.ToTime())
 		fmt.Println("capacity_used:    ", blob.Allocated)
+		fmt.Println("total_stake:      ", blob.TotalStake)
 		fmt.Println("terms:")
 		fmt.Println("  read_price:        ", blob.Terms.ReadPrice, "/ GB")
 		fmt.Println("  write_price:       ", blob.Terms.WritePrice, "/ GB")
