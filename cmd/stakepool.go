@@ -87,7 +87,7 @@ var spInfo = &cobra.Command{
 		doJSON, _ := cmd.Flags().GetBool("json")
 
 		if !flags.Changed("blobber_id") {
-			PrintError("Error: blobber_id flag is missing")
+			log.Fatalf("Error: blobber_id flag is missing")
 			os.Exit(1)
 		}
 
