@@ -91,7 +91,7 @@ var spInfo = &cobra.Command{
 			os.Exit(1)
 		}
 
-		blobberID = cmd.Flag("blobber_id").Value.String()
+			blobberID = flags.GetString("blobber_id")
 
 		var info *sdk.StakePoolInfo
 		if info, err = sdk.GetStakePoolInfo(blobberID); err != nil {
