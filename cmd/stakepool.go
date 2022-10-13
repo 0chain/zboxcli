@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
@@ -88,10 +87,12 @@ var spInfo = &cobra.Command{
 
 		if !flags.Changed("blobber_id") {
 			log.Fatalf("Error: blobber_id flag is missing")
-			os.Exit(1)
 		}
 
-			blobberID = flags.GetString("blobber_id")
+		blobberID, err = flags.GetString("blobber_id")
+		if err != nil {
+			log.Fatalf("Error: cannot get the value of blobber_id")
+		}
 
 		var info *sdk.StakePoolInfo
 		if info, err = sdk.GetStakePoolInfo(blobberID); err != nil {
