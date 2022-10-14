@@ -85,10 +85,13 @@ var spInfo = &cobra.Command{
 
 		doJSON, _ := cmd.Flags().GetBool("json")
 
-		if flags.Changed("blobber_id") {
-			if blobberID, err = flags.GetString("blobber_id"); err != nil {
-				log.Fatalf("can't get 'blobber_id' flag: %v", err)
-			}
+		if !flags.Changed("blobber_id") {
+			log.Fatalf("Error: blobber_id flag is missing")
+		}
+
+		blobberID, err = flags.GetString("blobber_id")
+		if err != nil {
+			log.Fatalf("Error: cannot get the value of blobber_id")
 		}
 
 		var info *sdk.StakePoolInfo
@@ -267,7 +270,7 @@ func init() {
 	rootCmd.AddCommand(spUnlock)
 
 	spInfo.PersistentFlags().String("blobber_id", "",
-		"for given blobber, default is current client")
+		"for given blobber")
 	spInfo.PersistentFlags().Bool("json", false, "pass this option to print response as json data")
 
 	spUserInfo.PersistentFlags().Bool("json", false, "pass this option to print response as json data")
