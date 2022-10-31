@@ -29,6 +29,7 @@ var walletClientID string
 var walletClientKey string
 var cDir string
 var nonce int64
+var txFee float64
 var bSilent bool
 var allocUnderRepair bool
 
@@ -53,6 +54,7 @@ func init() {
 	rootCmd.PersistentFlags().Int64Var(&nonce, "withNonce", 0, "nonce that will be used in transaction (default is 0)")
 	rootCmd.PersistentFlags().StringVar(&cDir, "configDir", "", "configuration directory (default is $HOME/.zcn)")
 	rootCmd.PersistentFlags().BoolVar(&bSilent, "silent", false, "Do not show interactive sdk logs (shown by default)")
+	rootCmd.PersistentFlags().Float64Var(&txFee, "fee", 0, "transaction fee for the given transaction (if unset, it will be set to blockchain min fee)")
 }
 
 func Execute() {
@@ -185,8 +187,15 @@ func initConfig() {
 	}
 
 	//init the storage sdk with the known miners, sharders and client wallet info
-	err = sdk.InitStorageSDK(walletJSON, cfg.BlockWorker, cfg.ChainID, cfg.SignatureScheme, cfg.PreferredBlobbers, nonce)
-	if err != nil {
+	if err = sdk.InitStorageSDK(
+		walletJSON,
+		cfg.BlockWorker,
+		cfg.ChainID,
+		cfg.SignatureScheme,
+		cfg.PreferredBlobbers,
+		nonce,
+		zcncore.ConvertToValue(txFee),
+	); err != nil {
 		fmt.Println("Error in sdk init", err)
 		os.Exit(1)
 	}
