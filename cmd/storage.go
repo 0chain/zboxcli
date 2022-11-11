@@ -106,21 +106,20 @@ var lsBlobers = &cobra.Command{
 		doJSON, _ := cmd.Flags().GetBool("json")
 		doAll, _ := cmd.Flags().GetBool("all")
 
-		var list, err = sdk.GetBlobbers()
-		var defaultList = filterActiveBlobbers(list)
+		options := sdk.GetBlobbersOptions{Active: true}
+		if doAll {
+			options.Active = false
+		}
 
+		var list, err = sdk.GetBlobbers(options)
 		if err != nil {
 			log.Fatalf("Failed to get storage SC configurations: %v", err)
 		}
 
-		if doAll {
-			defaultList = list
-		}
-
 		if doJSON {
-			util.PrintJSON(defaultList)
+			util.PrintJSON(list)
 		} else {
-			printBlobbers(defaultList)
+			printBlobbers(list)
 		}
 
 	},
