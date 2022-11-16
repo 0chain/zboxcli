@@ -42,6 +42,8 @@ github.com/0chain/gosdk v1.8.10-0.20221109045505-4204e51685b3 h1:xjU2YR+Y/YYQYg4
 github.com/0chain/gosdk v1.8.10-0.20221109045505-4204e51685b3/go.mod h1:sxM3NRQLwMWAzXKsKThR03lxHq03rtIMRODM/fdsZ3E=
 github.com/0chain/gosdk v1.8.10-0.20221114050417-2eb86880a362 h1:XOn+x0Uu/7N3C9TRYdYJXsrQRlCHahgG2fLPRKsehYg=
 github.com/0chain/gosdk v1.8.10-0.20221114050417-2eb86880a362/go.mod h1:sxM3NRQLwMWAzXKsKThR03lxHq03rtIMRODM/fdsZ3E=
+github.com/0chain/gosdk v1.8.10-0.20221116021722-28e510948917 h1:9m/auILUXUrrHsk8PBQLVEIc0DJ3fel8qvYoEA5ryrk=
+github.com/0chain/gosdk v1.8.10-0.20221116021722-28e510948917/go.mod h1:sxM3NRQLwMWAzXKsKThR03lxHq03rtIMRODM/fdsZ3E=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/VictoriaMetrics/fastcache v1.6.0 h1:C/3Oi3EiBCqufydp1neRZkqcwmEiuRT9c3fqvvgKm5o=
