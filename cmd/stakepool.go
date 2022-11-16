@@ -12,17 +12,11 @@ import (
 )
 
 func printStakePoolInfo(info *sdk.StakePoolInfo) {
-	fmt.Println("blobber_id:            ", info.ID)
-	fmt.Println("total stake:           ", info.Balance)
-	fmt.Println("going to unlock, total:", info.UnstakeTotal)
-
-	fmt.Println("capacity:")
-	fmt.Println("  capacity:         ", info.Capacity, "(blobber bid)")
-	fmt.Println("  free:             ", info.Free, "(for current write price)")
-	fmt.Println("  write_price:      ", info.WritePrice, "(blobber write price)")
-	fmt.Println("  offers_total:     ", info.OffersTotal, "(total stake committed to offers)")
-	fmt.Println("  unstake_total:    ", info.UnstakeTotal, "(total stake not available for further commitments)")
-	fmt.Println("  unclaimed rewards:", info.Rewards)
+	fmt.Println("pool id:           ", info.ID)
+	fmt.Println("balance:           ", info.Balance)
+	fmt.Println("total stake:       ", info.StakeTotal)
+	fmt.Println("total unstake:     ", info.UnstakeTotal, "(total stake not available for further commitments)")
+	fmt.Println("unclaimed rewards: ", info.Rewards)
 	if len(info.Delegate) == 0 {
 		fmt.Println("delegate_pools: no delegate pools")
 	} else {
@@ -78,21 +72,34 @@ var spInfo = &cobra.Command{
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		var (
-			flags     = cmd.Flags()
-			blobberID string
-			err       error
+			flags        = cmd.Flags()
+			err          error
+			providerID   string
+			providerType sdk.ProviderType
 		)
 
 		doJSON, _ := cmd.Flags().GetBool("json")
 
 		if flags.Changed("blobber_id") {
-			if blobberID, err = flags.GetString("blobber_id"); err != nil {
-				log.Fatalf("can't get 'blobber_id' flag: %v", err)
+			if providerID, err = flags.GetString("blobber_id"); err != nil {
+				log.Fatalf("Error: cannot get the value of blobber_id")
+			} else {
+				providerType = sdk.ProviderBlobber
+			}
+		} else if flags.Changed("validator_id") {
+			if providerID, err = flags.GetString("validator_id"); err != nil {
+				log.Fatalf("Error: cannot get the value of validator_id")
+			} else {
+				providerType = sdk.ProviderValidator
 			}
 		}
 
+		if providerType == 0 || providerID == "" {
+			log.Fatal("Error: missing flag: one of 'blobber_id' or 'validator_id' is required")
+		}
+
 		var info *sdk.StakePoolInfo
-		if info, err = sdk.GetStakePoolInfo(blobberID); err != nil {
+		if info, err = sdk.GetStakePoolInfo(providerType, providerID); err != nil {
 			log.Fatalf("Failed to get stake pool info: %v", err)
 		}
 		if doJSON {
@@ -267,7 +274,9 @@ func init() {
 	rootCmd.AddCommand(spUnlock)
 
 	spInfo.PersistentFlags().String("blobber_id", "",
-		"for given blobber, default is current client")
+		"for given blobber")
+	spInfo.PersistentFlags().String("validator_id", "",
+		"for given validator")
 	spInfo.PersistentFlags().Bool("json", false, "pass this option to print response as json data")
 
 	spUserInfo.PersistentFlags().Bool("json", false, "pass this option to print response as json data")

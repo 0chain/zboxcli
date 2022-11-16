@@ -4,10 +4,10 @@ go 1.18
 
 require (
 	github.com/0chain/errors v1.0.3
-	github.com/0chain/gosdk v1.8.10-0.20221108051117-3f48a67841f8
+	github.com/0chain/gosdk v1.8.10-0.20221114050417-2eb86880a362
 	github.com/icza/bitio v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
-	github.com/spf13/cobra v1.5.0
+	github.com/spf13/cobra v1.6.0
 	github.com/spf13/pflag v1.0.5
 	gopkg.in/cheggaaa/pb.v1 v1.0.28
 )
@@ -27,7 +27,7 @@ require (
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/h2non/filetype v1.1.3 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/herumi/bls-go-binary v1.0.1-0.20220103075647-4e46f4fe2af2 // indirect
+	github.com/herumi/bls-go-binary v1.28.2 // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/klauspost/cpuid/v2 v2.1.2 // indirect
 	github.com/klauspost/reedsolomon v1.11.1 // indirect
