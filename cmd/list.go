@@ -106,22 +106,26 @@ var listAllCmd = &cobra.Command{
 		}
 
 		type fileResp struct {
-			Name string `json:"name"`
-			Path string `json:"path"`
-			Type string `json:"type"`
-			Size int64  `json:"size"`
-			Hash string `json:"hash"`
+			Name         string `json:"name"`
+			Path         string `json:"path"`
+			Type         string `json:"type"`
+			Size         int64  `json:"size"`
+			Hash         string `json:"hash,omitempty"`
+			LookupHash   string `json:"lookup_hash"`
+			EncryptedKey string `json:"encrypted_key,omitempty" `
 		}
 
 		fileResps := make([]fileResp, 0)
 		for path, data := range ref {
 			paths := strings.SplitAfter(path, "/")
 			var resp = fileResp{
-				Name: paths[len(paths)-1],
-				Path: path,
-				Type: data.Type,
-				Size: data.Size,
-				Hash: data.Hash,
+				Name:         paths[len(paths)-1],
+				Path:         path,
+				Type:         data.Type,
+				Size:         data.Size,
+				Hash:         data.Hash,
+				EncryptedKey: data.EncryptedKey,
+				LookupHash:   data.LookupHash,
 			}
 			fileResps = append(fileResps, resp)
 		}
