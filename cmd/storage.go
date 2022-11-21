@@ -87,15 +87,6 @@ func printBlobbers(nodes []*sdk.Blobber) {
 	}
 }
 
-func filterActiveBlobbers(blobbers []*sdk.Blobber) (activeBlobbers []*sdk.Blobber) {
-	for i := range blobbers {
-		if blobbers[i].LastHealthCheck.Within(60 * 60) {
-			activeBlobbers = append(activeBlobbers, blobbers[i])
-		}
-	}
-	return
-}
-
 // lsBlobers shows active blobbers
 var lsBlobers = &cobra.Command{
 	Use:   "ls-blobbers",
@@ -106,23 +97,21 @@ var lsBlobers = &cobra.Command{
 		doJSON, _ := cmd.Flags().GetBool("json")
 		doAll, _ := cmd.Flags().GetBool("all")
 
-		var list, err = sdk.GetBlobbers()
-		var defaultList = filterActiveBlobbers(list)
-
+		// set is_active=true to get only active blobbers
+		isActive := true
+		if doAll {
+			isActive = false
+		}
+		var list, err = sdk.GetBlobbers(isActive)
 		if err != nil {
 			log.Fatalf("Failed to get storage SC configurations: %v", err)
 		}
 
-		if doAll {
-			defaultList = list
-		}
-
 		if doJSON {
-			util.PrintJSON(defaultList)
+			util.PrintJSON(list)
 		} else {
-			printBlobbers(defaultList)
+			printBlobbers(list)
 		}
-
 	},
 }
 
