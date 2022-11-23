@@ -13,7 +13,8 @@ import (
 )
 
 var listallocationsCmd = &cobra.Command{
-	Use:   "listallocations",
+	Use:   "list-allocations",
+	Aliases: []string{"listallocations"},
 	Short: "List allocations for the client",
 	Long:  `List allocations for the client`,
 	Run: func(cmd *cobra.Command, args []string) {

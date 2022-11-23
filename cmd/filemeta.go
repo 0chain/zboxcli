@@ -13,6 +13,7 @@ import (
 // filemetaCmd represents file meta command
 var filemetaCmd = &cobra.Command{
 	Use:   "meta",
+	Aliases: []string{"file-meta"},
 	Short: "get meta data of files from blobbers",
 	Long:  `get meta data of files from blobbers`,
 	Args:  cobra.MinimumNArgs(0),

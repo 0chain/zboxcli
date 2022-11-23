@@ -11,7 +11,8 @@ import (
 
 // updateAllocationCmd used to change allocation size and expiration
 var updateAllocationCmd = &cobra.Command{
-	Use:   "updateallocation",
+	Use:   "update-allocation",
+	Aliases: []string{"updateallocation"},
 	Short: "Updates allocation's expiry and size",
 	Long:  `Updates allocation's expiry and size`,
 	Args:  cobra.MinimumNArgs(0),

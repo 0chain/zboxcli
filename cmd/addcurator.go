@@ -8,7 +8,8 @@ import (
 )
 
 var addCuratorCmd = &cobra.Command{
-	Use:   "addcurator",
+	Use:   "add-curator",
+	Aliases: []string{"addcurator"},
 	Short: "Adds a curator to an allocation",
 	Long:  "Adds a curator to an allocation",
 	Args:  cobra.MinimumNArgs(0),

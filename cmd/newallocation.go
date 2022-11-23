@@ -47,7 +47,8 @@ func getPriceRange(val string) (pr sdk.PriceRange, err error) {
 
 // newallocationCmd represents the new allocation command
 var newallocationCmd = &cobra.Command{
-	Use:   "newallocation",
+	Use:   "new-allocation",
+	Aliases:[]string{"newallocation"},
 	Short: "Creates a new allocation",
 	Long:  `Creates a new allocation`,
 	Args:  cobra.MinimumNArgs(0),

@@ -8,7 +8,8 @@ import (
 )
 
 var removeCuratorCmd = &cobra.Command{
-	Use:   "removecurator",
+	Use:   "remove-curator",
+	Aliases:[]string{"removecurator"},
 	Short: "Removes a curator from an allocation",
 	Long:  "Removes a curator from an allocation",
 	Args:  cobra.MinimumNArgs(0),

@@ -34,7 +34,8 @@ var walletDecryptCmd = &cobra.Command{
 
 // walletinfo used for getting the wallet info
 var walletinfoCmd = &cobra.Command{
-	Use:   "getwallet",
+	Use:   "get-wallet",
+	Aliases: []string {"getwallet"},
 	Short: "Get wallet information",
 	Long:  `Get wallet information`,
 	Args:  cobra.MinimumNArgs(0),
