@@ -20,10 +20,9 @@ import (
 func uploadCostForBlobber(price float64, size int64, data, parity int) (
 	cost common.Balance) {
 
-	var ps = (size + int64(data) - 1) / int64(data)
-	ps = ps * int64(data+parity)
+	totalSizeOccupied := size * int64(data+parity)
 
-	return common.Balance(price * sizeInGB(ps))
+	return common.Balance(price * sizeInGB(totalSizeOccupied))
 }
 
 func uploadCostFor1GB(alloc *sdk.Allocation) (cost common.Balance) {
