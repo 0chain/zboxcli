@@ -9,7 +9,8 @@ import (
 )
 
 var createDirCmd = &cobra.Command{
-	Use:   "createdir",
+	Use:   "create-dir",
+	Aliases: []string {"createdir"},
 	Short: "Create directory",
 	Long:  `Create directory`,
 	Args:  cobra.MinimumNArgs(0),

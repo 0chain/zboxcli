@@ -26,6 +26,7 @@ func checkError(err error) {
 
 var fileRefsCmd = &cobra.Command{
 	Use:   "recent-refs",
+	Aliases: []string{"file-refs"},
 	Short: "get list of recently added refs",
 	Long:  `get list of recently added refs`,
 	Args:  cobra.MinimumNArgs(0),

@@ -8,7 +8,8 @@ import (
 )
 
 var transferAllocationCmd = &cobra.Command{
-	Use:   "transferallocation",
+	Use:   "transfer-allocation",
+	Aliases:[]string{"transferallocation"},
 	Short: "Transfer an allocation between owners",
 	Long:  "Transfer an allocation between owners, only a curator can transfer an allocation",
 	Args:  cobra.MinimumNArgs(0),

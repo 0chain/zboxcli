@@ -29,6 +29,7 @@ func allocShouldNotBeFinalized(allocID string) {
 // finiAllocationCmd used to change allocation size and expiration
 var finiAllocationCmd = &cobra.Command{
 	Use:   "alloc-fini",
+	Aliases: []string{"fini-allocation"},
 	Short: "Finalize an expired allocation",
 	Long: `Finalize an expired allocation by allocation owner or one of
 blobbers of the allocation. It moves all tokens have to be moved between pools
@@ -65,6 +66,7 @@ and empties write pool moving left tokens to client.`,
 // doesn't provides their service in reality
 var cancelAllocationCmd = &cobra.Command{
 	Use:   "alloc-cancel",
+	Aliases: []string{"cancel-allocation"},
 	Short: "Cancel an allocation",
 	Long: `Cancel allocation used to terminate an allocation where, because
 of blobbers, it can't be used. Thus, the blobbers will not receive their

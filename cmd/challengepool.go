@@ -28,6 +28,7 @@ func printChallengePoolInfo(info *sdk.ChallengePoolInfo) {
 // cpInfo information
 var cpInfo = &cobra.Command{
 	Use:   "cp-info",
+	Aliases: []string {"challenge-pool"},
 	Short: "Challenge pool information.",
 	Long:  `Challenge pool information.`,
 	Args:  cobra.MinimumNArgs(0),

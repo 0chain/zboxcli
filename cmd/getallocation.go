@@ -37,6 +37,7 @@ func uploadCostFor1GB(alloc *sdk.Allocation) (cost common.Balance) {
 // getallocationCmd represents the get allocation info command
 var getallocationCmd = &cobra.Command{
 	Use:   "get",
+	Aliases: []string{"get-allocation"},
 	Short: "Gets the allocation info",
 	Long:  `Gets the allocation info`,
 	Args:  cobra.MinimumNArgs(0),
