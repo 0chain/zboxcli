@@ -166,10 +166,20 @@ var newallocationCmd = &cobra.Command{
 			}
 		}
 
+		isImmutable			, _ := flags.GetBool("immutable");
+		thirdPartyExtendable, _ := flags.GetBool("third-party-extendable");
+		forbidUpload        , _ := flags.GetBool("forbid-upload");
+		forbidDelete        , _ := flags.GetBool("forbid-delete");
+		forbidUpdate        , _ := flags.GetBool("forbid-update");
+		forbidMove          , _ := flags.GetBool("forbid-move");
+		forbidCopy	        , _ := flags.GetBool("forbid-copy");
+		forbidRename        , _ := flags.GetBool("forbid-rename");
+
 		var allocationID string
 		if len(owner) == 0 {
 			allocationID, _, _, err = sdk.CreateAllocation(allocationName, *datashards, *parityshards,
-				*size, expireAt, readPrice, writePrice, lock)
+				*size, expireAt, readPrice, writePrice, lock, isImmutable, thirdPartyExtendable, forbidUpload,
+				forbidDelete, forbidUpdate, forbidMove, forbidCopy, forbidRename)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
@@ -185,7 +195,8 @@ var newallocationCmd = &cobra.Command{
 			}
 
 			allocationID, _, _, err = sdk.CreateAllocationForOwner(allocationName, owner, ownerPublicKey, *datashards, *parityshards,
-				*size, expireAt, readPrice, writePrice, lock, blockchain.GetPreferredBlobbers())
+				*size, expireAt, readPrice, writePrice, lock, blockchain.GetPreferredBlobbers(), isImmutable, thirdPartyExtendable, forbidUpload,
+				forbidDelete, forbidUpdate, forbidMove, forbidCopy, forbidRename)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
