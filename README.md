@@ -241,7 +241,14 @@ and `free_storage` parameters.
 | size               | size of space reserved on blobbers                        | 2147483648     | bytes          |
 | usd                | give token value in USD                                   |                | flag         |
 | write_price        | filter blobbers by write price range                      | 0-inf          | range        |
-
+| immutable          | specify if the allocation is immutable                    |  false          | bool
+| third_party_extendable | specify if the allocation can be extended by users other than the owner |  false          | bool
+| forbid_upload      | specify if users cannot upload to this allocation         |false          | bool
+| forbid_delete      | specify if the users cannot delete objects from this allocation | false          | bool
+| forbid_update      | specify if the users cannot update objects in this allocation |false          | bool
+| forbid_move        | specify if the users cannot move objects from this allocation |false          | bool
+| forbid_copy        | specify if the users cannot copy object from this allocation  |false          | bool
+| forbid_rename      | specify if the users cannot rename objects in this allocation |false          | bool
 
 <details>
   <summary>newallocation </summary>
@@ -336,6 +343,13 @@ An increase in blobber count will increment the parity shards.
 | add_blobber |          | add a new blobber to the allocation, required for remove_blobber    | string       |
 | remove_blobber   |      | remove a blobber from the allocation, requires an add_blobber option | string2      |
 `*` only required if free_storage not set.
+| third_party_extendable | specify if the allocation can be extended by users other than the owner |  false          | bool
+| forbid_upload      | specify if users cannot upload to this allocation         |false          | bool
+| forbid_delete      | specify if the users cannot delete objects from this allocation | false          | bool
+| forbid_update      | specify if the users cannot update objects in this allocation |false          | bool
+| forbid_move        | specify if the users cannot move objects from this allocation |false          | bool
+| forbid_copy        | specify if the users cannot copy object from this allocation  |false          | bool
+| forbid_rename      | specify if the users cannot rename objects in this allocation |false          | bool
 
 <details>
   <summary>updateallocation </summary>

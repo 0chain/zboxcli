@@ -84,7 +84,14 @@ var updateAllocationCmd = &cobra.Command{
 			log.Fatal("invalid 'expiry' flag: ", err)
 		}
 
-		setImmutable, _ := cmd.Flags().GetBool("set_immutable")
+		setImmutable		, _ := cmd.Flags().GetBool("set_immutable")
+		thirdPartyExtendable, _ := cmd.Flags().GetBool("third_party_extendable")
+		forbidUpload        , _ := flags.GetBool("forbid_upload");
+		forbidDelete        , _ := flags.GetBool("forbid_delete");
+		forbidUpdate        , _ := flags.GetBool("forbid_update");
+		forbidMove          , _ := flags.GetBool("forbid_move");
+		forbidCopy	        , _ := flags.GetBool("forbid_copy");
+		forbidRename        , _ := flags.GetBool("forbid_rename");
 
 		var allocationName string
 		if flags.Changed("name") {
@@ -104,6 +111,13 @@ var updateAllocationCmd = &cobra.Command{
 			updateTerms,
 			addBlobberId,
 			removeBlobberId,
+			thirdPartyExtendable,
+			forbidUpload,
+			forbidDelete,
+			forbidUpdate,
+			forbidMove,
+			forbidCopy,
+			forbidRename,
 		)
 		if err != nil {
 			log.Fatal("Error updating allocation:", err)
@@ -136,4 +150,11 @@ func init() {
 
 	updateAllocationCmd.Flags().String("name", "", "allocation name")
 
+	updateAllocationCmd.Flags().Bool("third_party_extendable", false, "specify if the allocation can be extended by users other than the owner")
+	updateAllocationCmd.Flags().Bool("forbid_upload", false, "specify if users cannot upload to this allocation")
+	updateAllocationCmd.Flags().Bool("forbid_delete", false, "specify if the users cannot delete objects from this allocation")
+	updateAllocationCmd.Flags().Bool("forbid_update", false, "specify if the users cannot update objects in this allocation")
+	updateAllocationCmd.Flags().Bool("forbid_move", false, "specify if the users cannot move objects from this allocation")
+	updateAllocationCmd.Flags().Bool("forbid_copy", false, "specify if the users cannot copy object from this allocation")
+	updateAllocationCmd.Flags().Bool("forbid_rename", false, "specify if the users cannot rename objects in this allocation")
 }

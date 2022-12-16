@@ -167,13 +167,13 @@ var newallocationCmd = &cobra.Command{
 		}
 
 		isImmutable			, _ := flags.GetBool("immutable");
-		thirdPartyExtendable, _ := flags.GetBool("third-party-extendable");
-		forbidUpload        , _ := flags.GetBool("forbid-upload");
-		forbidDelete        , _ := flags.GetBool("forbid-delete");
-		forbidUpdate        , _ := flags.GetBool("forbid-update");
-		forbidMove          , _ := flags.GetBool("forbid-move");
-		forbidCopy	        , _ := flags.GetBool("forbid-copy");
-		forbidRename        , _ := flags.GetBool("forbid-rename");
+		thirdPartyExtendable, _ := flags.GetBool("third_party_extendable");
+		forbidUpload        , _ := flags.GetBool("forbid_upload");
+		forbidDelete        , _ := flags.GetBool("forbid_delete");
+		forbidUpdate        , _ := flags.GetBool("forbid_update");
+		forbidMove          , _ := flags.GetBool("forbid_move");
+		forbidCopy	        , _ := flags.GetBool("forbid_copy");
+		forbidRename        , _ := flags.GetBool("forbid_rename");
 
 		var allocationID string
 		if len(owner) == 0 {
@@ -267,6 +267,14 @@ func init() {
 
 	newallocationCmd.Flags().String("name", "", "allocation name")
 
+	newallocationCmd.Flags().Bool("immutable", false, "specify if the allocation is immutable")
+	newallocationCmd.Flags().Bool("third_party_extendable", false, "specify if the allocation can be extended by users other than the owner")
+	newallocationCmd.Flags().Bool("forbid_upload", false, "specify if users cannot upload to this allocation")
+	newallocationCmd.Flags().Bool("forbid_delete", false, "specify if the users cannot delete objects from this allocation")
+	newallocationCmd.Flags().Bool("forbid_update", false, "specify if the users cannot update objects in this allocation")
+	newallocationCmd.Flags().Bool("forbid_move", false, "specify if the users cannot move objects from this allocation")
+	newallocationCmd.Flags().Bool("forbid_copy", false, "specify if the users cannot copy object from this allocation")
+	newallocationCmd.Flags().Bool("forbid_rename", false, "specify if the users cannot rename objects in this allocation")
 }
 
 func storeAllocation(allocationID string) {
