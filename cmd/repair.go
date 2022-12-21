@@ -20,12 +20,8 @@ var startRepair = &cobra.Command{
 			PrintError("Error: allocation flag is missing") // If not, we'll let the user know
 			os.Exit(1)                                      // and return
 		}
-		if fflags.Changed("rootpath") == false {
-			PrintError("Error: rootpath flag is missing")
-			os.Exit(1)
-		}
-		if fflags.Changed("repairpath") == false {
-			PrintError("Error: repairpath flag is missing")
+		if fflags.Changed("fileid") == false {
+			PrintError("Error: fileid flag is missing")
 			os.Exit(1)
 		}
 		allocationID := cmd.Flag("allocation").Value.String()
@@ -34,14 +30,14 @@ var startRepair = &cobra.Command{
 			PrintError("Error fetching the allocation.", err)
 			os.Exit(1)
 		}
-		localRootPath := cmd.Flag("rootpath").Value.String()
-		repairPath := cmd.Flag("repairpath").Value.String()
+		localPath := cmd.Flag("localpath").Value.String()
+		fileid, _ := cmd.Flags().GetInt64("fileid")
 
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
 		allocUnderRepair = true
-		err = allocationObj.StartRepair(localRootPath, repairPath, statusBar)
+		err = allocationObj.StartRepair(localPath, fileid, statusBar)
 		if err != nil {
 			allocUnderRepair = false
 			PrintError("Repair failed.", err)
@@ -58,9 +54,8 @@ var startRepair = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(startRepair)
 	startRepair.PersistentFlags().String("allocation", "", "Allocation ID")
-	startRepair.PersistentFlags().String("rootpath", "", "File path for local files ")
-	startRepair.PersistentFlags().String("repairpath", "", "Path to repair")
+	startRepair.PersistentFlags().String("localpath", "", "the localpath of the file to be repaired")
+	startRepair.PersistentFlags().Int64("fileid", 0, "file ID to repair")
 	startRepair.MarkFlagRequired("allocation")
-	startRepair.MarkFlagRequired("rootpath")
-	startRepair.MarkFlagRequired("repairpath")
+	startRepair.MarkFlagRequired("fileid")
 }
