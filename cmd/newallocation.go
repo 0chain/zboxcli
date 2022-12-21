@@ -178,8 +178,15 @@ var newallocationCmd = &cobra.Command{
 		var allocationID string
 		if len(owner) == 0 {
 			allocationID, _, _, err = sdk.CreateAllocation(allocationName, *datashards, *parityshards,
-				*size, expireAt, readPrice, writePrice, lock, isImmutable, thirdPartyExtendable, forbidUpload,
-				forbidDelete, forbidUpdate, forbidMove, forbidCopy, forbidRename)
+				*size, expireAt, readPrice, writePrice, lock, isImmutable, thirdPartyExtendable, &sdk.FileOptionsParameters{
+					ForbidUpload: forbidUpload,
+					ForbidDelete: forbidDelete,
+					ForbidUpdate: forbidUpdate,
+					ForbidMove: forbidMove,
+					ForbidCopy: forbidCopy,
+					ForbidRename: forbidRename,
+				})
+
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
@@ -195,8 +202,15 @@ var newallocationCmd = &cobra.Command{
 			}
 
 			allocationID, _, _, err = sdk.CreateAllocationForOwner(allocationName, owner, ownerPublicKey, *datashards, *parityshards,
-				*size, expireAt, readPrice, writePrice, lock, blockchain.GetPreferredBlobbers(), isImmutable, thirdPartyExtendable, forbidUpload,
-				forbidDelete, forbidUpdate, forbidMove, forbidCopy, forbidRename)
+				*size, expireAt, readPrice, writePrice, lock, blockchain.GetPreferredBlobbers(), isImmutable, thirdPartyExtendable,
+				&sdk.FileOptionsParameters{
+					ForbidUpload: forbidUpload,
+					ForbidDelete: forbidDelete,
+					ForbidUpdate: forbidUpdate,
+					ForbidMove: forbidMove,
+					ForbidCopy: forbidCopy,
+					ForbidRename: forbidRename,
+				})
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}

@@ -92,6 +92,12 @@ var updateAllocationCmd = &cobra.Command{
 		forbidMove          , _ := flags.GetBool("forbid_move");
 		forbidCopy	        , _ := flags.GetBool("forbid_copy");
 		forbidRename        , _ := flags.GetBool("forbid_rename");
+		allowUpload        	, _ := flags.GetBool("allow_upload");
+		allowDelete        	, _ := flags.GetBool("allow_delete");
+		allowUpdate        	, _ := flags.GetBool("allow_update");
+		allowMove          	, _ := flags.GetBool("allow_move");
+		allowCopy	        , _ := flags.GetBool("allow_copy");
+		allowRename        	, _ := flags.GetBool("allow_rename");
 
 		var allocationName string
 		if flags.Changed("name") {
@@ -112,12 +118,20 @@ var updateAllocationCmd = &cobra.Command{
 			addBlobberId,
 			removeBlobberId,
 			thirdPartyExtendable,
-			forbidUpload,
-			forbidDelete,
-			forbidUpdate,
-			forbidMove,
-			forbidCopy,
-			forbidRename,
+			&sdk.FileOptionsParameters{
+				ForbidUpload: forbidUpload,
+				ForbidDelete: forbidDelete,
+				ForbidUpdate: forbidUpdate,
+				ForbidMove: forbidMove,
+				ForbidCopy: forbidCopy,
+				ForbidRename: forbidRename,
+				AllowUpload: allowUpload,
+				AllowDelete: allowDelete,
+				AllowUpdate: allowUpdate,
+				AllowMove: allowMove,
+				AllowCopy: allowCopy,
+				AllowRename: allowRename,
+			},
 		)
 		if err != nil {
 			log.Fatal("Error updating allocation:", err)
@@ -157,4 +171,11 @@ func init() {
 	updateAllocationCmd.Flags().Bool("forbid_move", false, "specify if the users cannot move objects from this allocation")
 	updateAllocationCmd.Flags().Bool("forbid_copy", false, "specify if the users cannot copy object from this allocation")
 	updateAllocationCmd.Flags().Bool("forbid_rename", false, "specify if the users cannot rename objects in this allocation")
+	updateAllocationCmd.Flags().Bool("allow_upload", false, "specify if users can upload to this allocation")
+	updateAllocationCmd.Flags().Bool("allow_delete", false, "specify if the users can delete objects from this allocation")
+	updateAllocationCmd.Flags().Bool("allow_update", false, "specify if the users can update objects in this allocation")
+	updateAllocationCmd.Flags().Bool("allow_move", false, "specify if the users can move objects from this allocation")
+	updateAllocationCmd.Flags().Bool("allow_copy", false, "specify if the users can copy object from this allocation")
+	updateAllocationCmd.Flags().Bool("allow_rename", false, "specify if the users can rename objects in this allocation")
+
 }
