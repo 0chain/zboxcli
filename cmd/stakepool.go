@@ -247,19 +247,10 @@ var spUnlock = &cobra.Command{
 			}
 		}
 
-		unstake, _, err := sdk.StakePoolUnlock(providerType, providerID, zcncore.ConvertToValue(fee))
+		_, _, err = sdk.StakePoolUnlock(providerType, providerID, zcncore.ConvertToValue(fee))
 		// an error
 		if err != nil {
 			log.Fatalf("Failed to unlock tokens in stake pool: %v", err)
-		}
-
-		// can't unlock for now
-		if !unstake {
-			fmt.Println("tokens can't be unlocked due to opened offers")
-			fmt.Printf("the pool marked as releasing, wait and retry to succeed")
-			fmt.Printf("to reduce blobber commitments cancel or finalize allocations")
-			fmt.Println()
-			return
 		}
 
 		// success
