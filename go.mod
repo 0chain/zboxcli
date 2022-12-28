@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/0chain/errors v1.0.3
-	github.com/0chain/gosdk v1.8.11-0.20221221025854-66d50570ffec
+	github.com/0chain/gosdk v1.8.12-0.20221228021245-6d0c492cef59
 	github.com/icza/bitio v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.6.1
@@ -13,6 +13,7 @@ require (
 )
 
 require (
+	github.com/Luzifer/go-openssl/v4 v4.1.0 // indirect
 	github.com/btcsuite/btcd v0.23.4 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.3.2 // indirect
 	github.com/btcsuite/btcd/btcutil v1.1.3 // indirect
