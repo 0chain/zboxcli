@@ -85,7 +85,7 @@ var updateAllocationCmd = &cobra.Command{
 		}
 
 		setImmutable		, _ := cmd.Flags().GetBool("set_immutable")
-		thirdPartyExtendable, _ := cmd.Flags().GetBool("third_party_extendable")
+		setThirdPartyExtendable, _ := cmd.Flags().GetBool("set_third_party_extendable")
 		forbidUpload        , _ := flags.GetBool("forbid_upload");
 		forbidDelete        , _ := flags.GetBool("forbid_delete");
 		forbidUpdate        , _ := flags.GetBool("forbid_update");
@@ -117,7 +117,7 @@ var updateAllocationCmd = &cobra.Command{
 			updateTerms,
 			addBlobberId,
 			removeBlobberId,
-			thirdPartyExtendable,
+			setThirdPartyExtendable,
 			&sdk.FileOptionsParameters{
 				ForbidUpload: forbidUpload,
 				ForbidDelete: forbidDelete,
@@ -164,7 +164,7 @@ func init() {
 
 	updateAllocationCmd.Flags().String("name", "", "allocation name")
 
-	updateAllocationCmd.Flags().Bool("third_party_extendable", false, "specify if the allocation can be extended by users other than the owner")
+	updateAllocationCmd.Flags().Bool("set_third_party_extendable", false, "specify if the allocation can be extended by users other than the owner")
 	updateAllocationCmd.Flags().Bool("forbid_upload", false, "specify if users cannot upload to this allocation")
 	updateAllocationCmd.Flags().Bool("forbid_delete", false, "specify if the users cannot delete objects from this allocation")
 	updateAllocationCmd.Flags().Bool("forbid_update", false, "specify if the users cannot update objects in this allocation")
