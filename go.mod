@@ -13,7 +13,7 @@ require (
 )
 
 require (
-	github.com/0chain/common v0.0.5 // indirect
+	github.com/0chain/common v0.0.6-0.20230127095721-8df4d1d72565 // indirect
 	github.com/Luzifer/go-openssl/v3 v3.1.0 // indirect
 	github.com/btcsuite/btcd v0.23.2 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.2.1 // indirect
