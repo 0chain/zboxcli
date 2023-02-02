@@ -86,18 +86,57 @@ var updateAllocationCmd = &cobra.Command{
 
 		setImmutable		, _ := cmd.Flags().GetBool("set_immutable")
 		setThirdPartyExtendable, _ := cmd.Flags().GetBool("set_third_party_extendable")
-		forbidUpload        , _ := flags.GetBool("forbid_upload");
-		forbidDelete        , _ := flags.GetBool("forbid_delete");
-		forbidUpdate        , _ := flags.GetBool("forbid_update");
-		forbidMove          , _ := flags.GetBool("forbid_move");
-		forbidCopy	        , _ := flags.GetBool("forbid_copy");
-		forbidRename        , _ := flags.GetBool("forbid_rename");
-		allowUpload        	, _ := flags.GetBool("allow_upload");
-		allowDelete        	, _ := flags.GetBool("allow_delete");
-		allowUpdate        	, _ := flags.GetBool("allow_update");
-		allowMove          	, _ := flags.GetBool("allow_move");
-		allowCopy	        , _ := flags.GetBool("allow_copy");
-		allowRename        	, _ := flags.GetBool("allow_rename");
+		
+		// Read the file options flags
+		var fileOptionParams sdk.FileOptionsParameters
+		if flags.Changed("forbid_upload") {
+			forbidUpload, err := flags.GetBool("forbid_upload")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+			fileOptionParams.ForbidUpload.Changed = true
+			fileOptionParams.ForbidUpload.Value   = forbidUpload
+		}
+		if flags.Changed("forbid_delete") {
+			forbidDelete, err := flags.GetBool("forbid_delete")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+			fileOptionParams.ForbidDelete.Changed = true
+			fileOptionParams.ForbidDelete.Value   = forbidDelete
+		}
+		if flags.Changed("forbid_update") {
+			forbidUpdate, err := flags.GetBool("forbid_update")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+			fileOptionParams.ForbidUpdate.Changed = true
+			fileOptionParams.ForbidUpdate.Value   = forbidUpdate
+		}
+		if flags.Changed("forbid_move") {
+			forbidMove, err := flags.GetBool("forbid_move")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+			fileOptionParams.ForbidMove.Changed = true
+			fileOptionParams.ForbidMove.Value   = forbidMove
+		}
+		if flags.Changed("forbid_copy") {
+			forbidCopy, err := flags.GetBool("forbid_copy")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+			fileOptionParams.ForbidCopy.Changed = true
+			fileOptionParams.ForbidCopy.Value   = forbidCopy
+		}
+		if flags.Changed("forbid_rename") {
+			forbidRename, err := flags.GetBool("forbid_rename")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+			fileOptionParams.ForbidRename.Changed = true
+			fileOptionParams.ForbidRename.Value   = forbidRename
+		}
 
 		var allocationName string
 		if flags.Changed("name") {
@@ -118,20 +157,7 @@ var updateAllocationCmd = &cobra.Command{
 			addBlobberId,
 			removeBlobberId,
 			setThirdPartyExtendable,
-			&sdk.FileOptionsParameters{
-				ForbidUpload: forbidUpload,
-				ForbidDelete: forbidDelete,
-				ForbidUpdate: forbidUpdate,
-				ForbidMove: forbidMove,
-				ForbidCopy: forbidCopy,
-				ForbidRename: forbidRename,
-				AllowUpload: allowUpload,
-				AllowDelete: allowDelete,
-				AllowUpdate: allowUpdate,
-				AllowMove: allowMove,
-				AllowCopy: allowCopy,
-				AllowRename: allowRename,
-			},
+			&fileOptionParams,
 		)
 		if err != nil {
 			log.Fatal("Error updating allocation:", err)
@@ -171,11 +197,5 @@ func init() {
 	updateAllocationCmd.Flags().Bool("forbid_move", false, "specify if the users cannot move objects from this allocation")
 	updateAllocationCmd.Flags().Bool("forbid_copy", false, "specify if the users cannot copy object from this allocation")
 	updateAllocationCmd.Flags().Bool("forbid_rename", false, "specify if the users cannot rename objects in this allocation")
-	updateAllocationCmd.Flags().Bool("allow_upload", false, "specify if users can upload to this allocation")
-	updateAllocationCmd.Flags().Bool("allow_delete", false, "specify if the users can delete objects from this allocation")
-	updateAllocationCmd.Flags().Bool("allow_update", false, "specify if the users can update objects in this allocation")
-	updateAllocationCmd.Flags().Bool("allow_move", false, "specify if the users can move objects from this allocation")
-	updateAllocationCmd.Flags().Bool("allow_copy", false, "specify if the users can copy object from this allocation")
-	updateAllocationCmd.Flags().Bool("allow_rename", false, "specify if the users can rename objects in this allocation")
 
 }

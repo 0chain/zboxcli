@@ -168,24 +168,62 @@ var newallocationCmd = &cobra.Command{
 
 		isImmutable			, _ := flags.GetBool("immutable");
 		thirdPartyExtendable, _ := flags.GetBool("third_party_extendable");
-		forbidUpload        , _ := flags.GetBool("forbid_upload");
-		forbidDelete        , _ := flags.GetBool("forbid_delete");
-		forbidUpdate        , _ := flags.GetBool("forbid_update");
-		forbidMove          , _ := flags.GetBool("forbid_move");
-		forbidCopy	        , _ := flags.GetBool("forbid_copy");
-		forbidRename        , _ := flags.GetBool("forbid_rename");
+		
+		// Read the file options flags
+		var fileOptionParams sdk.FileOptionsParameters
+		if flags.Changed("forbid_upload") {
+			forbidUpload, err := flags.GetBool("forbid_upload")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+			fileOptionParams.ForbidUpload.Changed = true
+			fileOptionParams.ForbidUpload.Value   = forbidUpload
+		}
+		if flags.Changed("forbid_delete") {
+			forbidDelete, err := flags.GetBool("forbid_delete")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+			fileOptionParams.ForbidDelete.Changed = true
+			fileOptionParams.ForbidDelete.Value   = forbidDelete
+		}
+		if flags.Changed("forbid_update") {
+			forbidUpdate, err := flags.GetBool("forbid_update")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+			fileOptionParams.ForbidUpdate.Changed = true
+			fileOptionParams.ForbidUpdate.Value   = forbidUpdate
+		}
+		if flags.Changed("forbid_move") {
+			forbidMove, err := flags.GetBool("forbid_move")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+			fileOptionParams.ForbidMove.Changed = true
+			fileOptionParams.ForbidMove.Value   = forbidMove
+		}
+		if flags.Changed("forbid_copy") {
+			forbidCopy, err := flags.GetBool("forbid_copy")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+			fileOptionParams.ForbidCopy.Changed = true
+			fileOptionParams.ForbidCopy.Value   = forbidCopy
+		}
+		if flags.Changed("forbid_rename") {
+			forbidRename, err := flags.GetBool("forbid_rename")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+			fileOptionParams.ForbidRename.Changed = true
+			fileOptionParams.ForbidRename.Value   = forbidRename
+		}
 
 		var allocationID string
 		if len(owner) == 0 {
 			allocationID, _, _, err = sdk.CreateAllocation(allocationName, *datashards, *parityshards,
-				*size, expireAt, readPrice, writePrice, lock, isImmutable, thirdPartyExtendable, &sdk.FileOptionsParameters{
-					ForbidUpload: forbidUpload,
-					ForbidDelete: forbidDelete,
-					ForbidUpdate: forbidUpdate,
-					ForbidMove: forbidMove,
-					ForbidCopy: forbidCopy,
-					ForbidRename: forbidRename,
-				})
+				*size, expireAt, readPrice, writePrice, lock, isImmutable, thirdPartyExtendable, &fileOptionParams)
 
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
@@ -202,15 +240,7 @@ var newallocationCmd = &cobra.Command{
 			}
 
 			allocationID, _, _, err = sdk.CreateAllocationForOwner(allocationName, owner, ownerPublicKey, *datashards, *parityshards,
-				*size, expireAt, readPrice, writePrice, lock, blockchain.GetPreferredBlobbers(), isImmutable, thirdPartyExtendable,
-				&sdk.FileOptionsParameters{
-					ForbidUpload: forbidUpload,
-					ForbidDelete: forbidDelete,
-					ForbidUpdate: forbidUpdate,
-					ForbidMove: forbidMove,
-					ForbidCopy: forbidCopy,
-					ForbidRename: forbidRename,
-				})
+				*size, expireAt, readPrice, writePrice, lock, blockchain.GetPreferredBlobbers(), isImmutable, thirdPartyExtendable, &fileOptionParams)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
