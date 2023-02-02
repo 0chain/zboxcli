@@ -166,9 +166,9 @@ var newallocationCmd = &cobra.Command{
 			}
 		}
 
-		isImmutable			, _ := flags.GetBool("immutable");
-		thirdPartyExtendable, _ := flags.GetBool("third_party_extendable");
-		
+		isImmutable, _ := flags.GetBool("immutable")
+		thirdPartyExtendable, _ := flags.GetBool("third_party_extendable")
+
 		// Read the file options flags
 		var fileOptionParams sdk.FileOptionsParameters
 		if flags.Changed("forbid_upload") {
@@ -177,7 +177,7 @@ var newallocationCmd = &cobra.Command{
 				log.Fatal("invalid forbid_upload: ", err)
 			}
 			fileOptionParams.ForbidUpload.Changed = true
-			fileOptionParams.ForbidUpload.Value   = forbidUpload
+			fileOptionParams.ForbidUpload.Value = forbidUpload
 		}
 		if flags.Changed("forbid_delete") {
 			forbidDelete, err := flags.GetBool("forbid_delete")
@@ -185,7 +185,7 @@ var newallocationCmd = &cobra.Command{
 				log.Fatal("invalid forbid_upload: ", err)
 			}
 			fileOptionParams.ForbidDelete.Changed = true
-			fileOptionParams.ForbidDelete.Value   = forbidDelete
+			fileOptionParams.ForbidDelete.Value = forbidDelete
 		}
 		if flags.Changed("forbid_update") {
 			forbidUpdate, err := flags.GetBool("forbid_update")
@@ -193,7 +193,7 @@ var newallocationCmd = &cobra.Command{
 				log.Fatal("invalid forbid_upload: ", err)
 			}
 			fileOptionParams.ForbidUpdate.Changed = true
-			fileOptionParams.ForbidUpdate.Value   = forbidUpdate
+			fileOptionParams.ForbidUpdate.Value = forbidUpdate
 		}
 		if flags.Changed("forbid_move") {
 			forbidMove, err := flags.GetBool("forbid_move")
@@ -201,7 +201,7 @@ var newallocationCmd = &cobra.Command{
 				log.Fatal("invalid forbid_upload: ", err)
 			}
 			fileOptionParams.ForbidMove.Changed = true
-			fileOptionParams.ForbidMove.Value   = forbidMove
+			fileOptionParams.ForbidMove.Value = forbidMove
 		}
 		if flags.Changed("forbid_copy") {
 			forbidCopy, err := flags.GetBool("forbid_copy")
@@ -209,7 +209,7 @@ var newallocationCmd = &cobra.Command{
 				log.Fatal("invalid forbid_upload: ", err)
 			}
 			fileOptionParams.ForbidCopy.Changed = true
-			fileOptionParams.ForbidCopy.Value   = forbidCopy
+			fileOptionParams.ForbidCopy.Value = forbidCopy
 		}
 		if flags.Changed("forbid_rename") {
 			forbidRename, err := flags.GetBool("forbid_rename")
@@ -217,7 +217,7 @@ var newallocationCmd = &cobra.Command{
 				log.Fatal("invalid forbid_upload: ", err)
 			}
 			fileOptionParams.ForbidRename.Changed = true
-			fileOptionParams.ForbidRename.Value   = forbidRename
+			fileOptionParams.ForbidRename.Value = forbidRename
 		}
 
 		var allocationID string

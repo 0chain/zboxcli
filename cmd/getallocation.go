@@ -89,7 +89,7 @@ var getallocationCmd = &cobra.Command{
 		fmt.Println("  expiration_date:", common.Timestamp(alloc.Expiration).ToTime())
 		fmt.Println("  immutable:      ", alloc.IsImmutable)
 		fmt.Println("  third_party_extendable:      ", alloc.ThirdPartyExtendable)
-		fmt.Printf( "  file_options:      %08b\n", alloc.FileOptions)
+		fmt.Printf("  file_options:      %08b\n", alloc.FileOptions)
 		fmt.Println("  write pool      ", alloc.WritePool)
 		fmt.Println("  blobbers:")
 
