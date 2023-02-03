@@ -84,7 +84,6 @@ var updateAllocationCmd = &cobra.Command{
 			log.Fatal("invalid 'expiry' flag: ", err)
 		}
 
-		setImmutable, _ := cmd.Flags().GetBool("set_immutable")
 		setThirdPartyExtendable, _ := cmd.Flags().GetBool("set_third_party_extendable")
 
 		// Read the file options flags
@@ -152,7 +151,6 @@ var updateAllocationCmd = &cobra.Command{
 			int64(expiry/time.Second),
 			allocID,
 			lock,
-			setImmutable,
 			updateTerms,
 			addBlobberId,
 			removeBlobberId,
@@ -180,7 +178,6 @@ func init() {
 		"adjust allocation size, bytes")
 	updateAllocationCmd.PersistentFlags().Duration("expiry", 0,
 		"adjust storage expiration time, duration")
-	updateAllocationCmd.Flags().Bool("set_immutable", false, "set the allocation's data to be immutable")
 	updateAllocationCmd.Flags().String("free_storage", "",
 		"json file containing marker for free storage")
 	updateAllocationCmd.Flags().Bool("update_terms", false,
