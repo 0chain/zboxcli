@@ -166,7 +166,6 @@ var newallocationCmd = &cobra.Command{
 			}
 		}
 
-		isImmutable, _ := flags.GetBool("immutable")
 		thirdPartyExtendable, _ := flags.GetBool("third_party_extendable")
 
 		// Read the file options flags
@@ -223,7 +222,7 @@ var newallocationCmd = &cobra.Command{
 		var allocationID string
 		if len(owner) == 0 {
 			allocationID, _, _, err = sdk.CreateAllocation(allocationName, *datashards, *parityshards,
-				*size, expireAt, readPrice, writePrice, lock, isImmutable, thirdPartyExtendable, &fileOptionParams)
+				*size, expireAt, readPrice, writePrice, lock, thirdPartyExtendable, &fileOptionParams)
 
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
@@ -240,7 +239,7 @@ var newallocationCmd = &cobra.Command{
 			}
 
 			allocationID, _, _, err = sdk.CreateAllocationForOwner(allocationName, owner, ownerPublicKey, *datashards, *parityshards,
-				*size, expireAt, readPrice, writePrice, lock, blockchain.GetPreferredBlobbers(), isImmutable, thirdPartyExtendable, &fileOptionParams)
+				*size, expireAt, readPrice, writePrice, lock, blockchain.GetPreferredBlobbers(), thirdPartyExtendable, &fileOptionParams)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
@@ -311,7 +310,6 @@ func init() {
 
 	newallocationCmd.Flags().String("name", "", "allocation name")
 
-	newallocationCmd.Flags().Bool("immutable", false, "specify if the allocation is immutable")
 	newallocationCmd.Flags().Bool("third_party_extendable", false, "specify if the allocation can be extended by users other than the owner")
 	newallocationCmd.Flags().Bool("forbid_upload", false, "specify if users cannot upload to this allocation")
 	newallocationCmd.Flags().Bool("forbid_delete", false, "specify if the users cannot delete objects from this allocation")

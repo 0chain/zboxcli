@@ -241,7 +241,7 @@ and `free_storage` parameters.
 | size               | size of space reserved on blobbers                        | 2147483648     | bytes          |
 | usd                | give token value in USD                                   |                | flag         |
 | write_price        | filter blobbers by write price range                      | 0-inf          | range        |
-| immutable          | specify if the allocation is immutable                    |  false          | bool
+false          | bool
 | third_party_extendable | specify if the allocation can be extended by users other than the owner |  false          | bool
 | forbid_upload      | specify if users cannot upload to this allocation         |false          | bool
 | forbid_delete      | specify if the users cannot delete objects from this allocation | false          | bool
