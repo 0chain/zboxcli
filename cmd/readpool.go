@@ -27,8 +27,7 @@ var rpCreate = &cobra.Command{
 
 func printReadPoolInfo(stat *sdk.ReadPool) {
 	fmt.Println()
-	fmt.Println("  		balance :            ", stat.Balance)
-	fmt.Println()
+	fmt.Println("Balance :", stat.Balance)
 }
 
 // rpInfo information
@@ -45,16 +44,28 @@ var rpInfo = &cobra.Command{
 			log.Fatalf("Failed to get read pool info: %v", err)
 		}
 
+		usd, err := zcncore.ConvertTokenToUSD(info.Balance.ToToken())
+		var bt = float64(info.Balance) / 1e10
+		if err != nil {
+			log.Fatalf("Failed to convert token to usd: %v", err)
+		}
+
 		if info.Balance == 0 {
 			fmt.Println("no tokens locked")
 			return
 		}
 
 		if doJSON {
-			util.PrintJSON(info)
+			j := map[string]string{
+				"usd": fmt.Sprintf("%f", usd),
+				"zcn": fmt.Sprintf("%f", bt),
+				"fmt": fmt.Sprintf("%s", info.Balance),
+			}
+			util.PrintJSON(j)
 			return
 		}
-		printReadPoolInfo(info)
+		//printReadPoolInfo(info)
+		fmt.Printf("\nBalance: %v (%.2f USD)\n", info.Balance, usd)
 	},
 }
 
