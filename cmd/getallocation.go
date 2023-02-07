@@ -82,7 +82,6 @@ var getallocationCmd = &cobra.Command{
 		fmt.Println("allocation:")
 		fmt.Println("  id:             ", alloc.ID)
 		fmt.Println("  tx:             ", alloc.Tx, "(latest create/update allocation transaction hash)")
-		fmt.Println("  name:           ", alloc.Name)
 		fmt.Println("  data_shards:    ", alloc.DataShards)
 		fmt.Println("  parity_shards:  ", alloc.ParityShards)
 		fmt.Println("  size:           ", common.Size(alloc.Size))
