@@ -137,16 +137,7 @@ var updateAllocationCmd = &cobra.Command{
 			fileOptionParams.ForbidRename.Value = forbidRename
 		}
 
-		var allocationName string
-		if flags.Changed("name") {
-			allocationName, err = flags.GetString("name")
-			if err != nil {
-				log.Fatal("invalid allocation name: ", err)
-			}
-		}
-
 		txnHash, _, err := sdk.UpdateAllocation(
-			allocationName,
 			size,
 			int64(expiry/time.Second),
 			allocID,

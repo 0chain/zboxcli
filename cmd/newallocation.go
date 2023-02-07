@@ -158,14 +158,6 @@ var newallocationCmd = &cobra.Command{
 			}
 		}
 
-		var allocationName string
-		if flags.Changed("name") {
-			allocationName, err = flags.GetString("name")
-			if err != nil {
-				log.Fatal("invalid allocation name: ", err)
-			}
-		}
-
 		thirdPartyExtendable, _ := flags.GetBool("third_party_extendable")
 
 		// Read the file options flags
@@ -221,9 +213,8 @@ var newallocationCmd = &cobra.Command{
 
 		var allocationID string
 		if len(owner) == 0 {
-			allocationID, _, _, err = sdk.CreateAllocation(allocationName, *datashards, *parityshards,
+			allocationID, _, _, err = sdk.CreateAllocation(*datashards, *parityshards,
 				*size, expireAt, readPrice, writePrice, lock, thirdPartyExtendable, &fileOptionParams)
-
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
@@ -238,7 +229,7 @@ var newallocationCmd = &cobra.Command{
 				}
 			}
 
-			allocationID, _, _, err = sdk.CreateAllocationForOwner(allocationName, owner, ownerPublicKey, *datashards, *parityshards,
+			allocationID, _, _, err = sdk.CreateAllocationForOwner(owner, ownerPublicKey, *datashards, *parityshards,
 				*size, expireAt, readPrice, writePrice, lock, blockchain.GetPreferredBlobbers(), thirdPartyExtendable, &fileOptionParams)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
