@@ -166,10 +166,64 @@ var newallocationCmd = &cobra.Command{
 			}
 		}
 
+		thirdPartyExtendable, _ := flags.GetBool("third_party_extendable")
+
+		// Read the file options flags
+		var fileOptionParams sdk.FileOptionsParameters
+		if flags.Changed("forbid_upload") {
+			forbidUpload, err := flags.GetBool("forbid_upload")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+			fileOptionParams.ForbidUpload.Changed = true
+			fileOptionParams.ForbidUpload.Value = forbidUpload
+		}
+		if flags.Changed("forbid_delete") {
+			forbidDelete, err := flags.GetBool("forbid_delete")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+			fileOptionParams.ForbidDelete.Changed = true
+			fileOptionParams.ForbidDelete.Value = forbidDelete
+		}
+		if flags.Changed("forbid_update") {
+			forbidUpdate, err := flags.GetBool("forbid_update")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+			fileOptionParams.ForbidUpdate.Changed = true
+			fileOptionParams.ForbidUpdate.Value = forbidUpdate
+		}
+		if flags.Changed("forbid_move") {
+			forbidMove, err := flags.GetBool("forbid_move")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+			fileOptionParams.ForbidMove.Changed = true
+			fileOptionParams.ForbidMove.Value = forbidMove
+		}
+		if flags.Changed("forbid_copy") {
+			forbidCopy, err := flags.GetBool("forbid_copy")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+			fileOptionParams.ForbidCopy.Changed = true
+			fileOptionParams.ForbidCopy.Value = forbidCopy
+		}
+		if flags.Changed("forbid_rename") {
+			forbidRename, err := flags.GetBool("forbid_rename")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+			fileOptionParams.ForbidRename.Changed = true
+			fileOptionParams.ForbidRename.Value = forbidRename
+		}
+
 		var allocationID string
 		if len(owner) == 0 {
 			allocationID, _, _, err = sdk.CreateAllocation(allocationName, *datashards, *parityshards,
-				*size, expireAt, readPrice, writePrice, lock)
+				*size, expireAt, readPrice, writePrice, lock, thirdPartyExtendable, &fileOptionParams)
+
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
@@ -185,7 +239,7 @@ var newallocationCmd = &cobra.Command{
 			}
 
 			allocationID, _, _, err = sdk.CreateAllocationForOwner(allocationName, owner, ownerPublicKey, *datashards, *parityshards,
-				*size, expireAt, readPrice, writePrice, lock, blockchain.GetPreferredBlobbers())
+				*size, expireAt, readPrice, writePrice, lock, blockchain.GetPreferredBlobbers(), thirdPartyExtendable, &fileOptionParams)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
@@ -256,6 +310,13 @@ func init() {
 
 	newallocationCmd.Flags().String("name", "", "allocation name")
 
+	newallocationCmd.Flags().Bool("third_party_extendable", false, "specify if the allocation can be extended by users other than the owner")
+	newallocationCmd.Flags().Bool("forbid_upload", false, "specify if users cannot upload to this allocation")
+	newallocationCmd.Flags().Bool("forbid_delete", false, "specify if the users cannot delete objects from this allocation")
+	newallocationCmd.Flags().Bool("forbid_update", false, "specify if the users cannot update objects in this allocation")
+	newallocationCmd.Flags().Bool("forbid_move", false, "specify if the users cannot move objects from this allocation")
+	newallocationCmd.Flags().Bool("forbid_copy", false, "specify if the users cannot copy object from this allocation")
+	newallocationCmd.Flags().Bool("forbid_rename", false, "specify if the users cannot rename objects in this allocation")
 }
 
 func storeAllocation(allocationID string) {
