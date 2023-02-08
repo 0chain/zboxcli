@@ -25,11 +25,6 @@ var rpCreate = &cobra.Command{
 	},
 }
 
-func printReadPoolInfo(stat *sdk.ReadPool) {
-	fmt.Println()
-	fmt.Println("Balance :", stat.Balance)
-}
-
 // rpInfo information
 var rpInfo = &cobra.Command{
 	Use:   "rp-info",
@@ -56,15 +51,15 @@ var rpInfo = &cobra.Command{
 		}
 
 		if doJSON {
-			j := map[string]string{
-				"usd": fmt.Sprintf("%f", usd),
-				"zcn": fmt.Sprintf("%f", bt),
-				"fmt": fmt.Sprintf("%s", info.Balance),
+			kk := map[string]interface{}{
+				"usd": usd,
+				"zcn": bt,
+				"fmt": info.Balance,
 			}
-			util.PrintJSON(j)
+
+			util.PrintJSON(kk)
 			return
 		}
-		//printReadPoolInfo(info)
 		fmt.Printf("\nBalance: %v (%.2f USD)\n", info.Balance, usd)
 	},
 }
