@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
@@ -31,7 +32,7 @@ func printStakePoolInfo(info *sdk.StakePoolInfo) {
 			fmt.Println("  status:           ", dp.Status)
 			fmt.Println("  round_created:    ", dp.RoundCreated)
 			fmt.Println("  unstake:          ", dp.UnStake)
-			fmt.Println("  staked_at:        ", dp.StakedAt.String())
+			fmt.Println("  staked_at:        ", time.Unix(0, dp.StakedAt*int64(time.Second)).String())
 		}
 	}
 	// settings
