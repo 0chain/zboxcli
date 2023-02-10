@@ -28,7 +28,7 @@ var listallocationsCmd = &cobra.Command{
 			util.PrintJSON(allocations)
 			return
 		}
-		header := []string{"ID", "Name", "Size", "Expiration", "Datashards",
+		header := []string{"ID", "Size", "Expiration", "Datashards",
 			"Parityshards", "Finalized", "Canceled", "R. Price", "W. Price"}
 		data := make([][]string, len(allocations))
 		for idx, allocation := range allocations {
@@ -51,7 +51,7 @@ var listallocationsCmd = &cobra.Command{
 			}
 
 			data[idx] = []string{
-				allocation.ID, allocation.Name, size, expStr, d, p,
+				allocation.ID, size, expStr, d, p,
 				strconv.FormatBool(allocation.Finalized),
 				strconv.FormatBool(allocation.Canceled),
 				rp.String(), wp.String(),
