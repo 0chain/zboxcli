@@ -36,7 +36,7 @@ func uploadCostFor1GB(alloc *sdk.Allocation) (cost common.Balance) {
 
 // getallocationCmd represents the get allocation info command
 var getallocationCmd = &cobra.Command{
-	Use:   "get",
+	Use:   "getallocation",
 	Short: "Gets the allocation info",
 	Long:  `Gets the allocation info`,
 	Args:  cobra.MinimumNArgs(0),
@@ -82,12 +82,12 @@ var getallocationCmd = &cobra.Command{
 		fmt.Println("allocation:")
 		fmt.Println("  id:             ", alloc.ID)
 		fmt.Println("  tx:             ", alloc.Tx, "(latest create/update allocation transaction hash)")
-		fmt.Println("  name:           ", alloc.Name)
 		fmt.Println("  data_shards:    ", alloc.DataShards)
 		fmt.Println("  parity_shards:  ", alloc.ParityShards)
 		fmt.Println("  size:           ", common.Size(alloc.Size))
 		fmt.Println("  expiration_date:", common.Timestamp(alloc.Expiration).ToTime())
-		fmt.Println("  immutable:      ", alloc.IsImmutable)
+		fmt.Println("  third_party_extendable:      ", alloc.ThirdPartyExtendable)
+		fmt.Printf("  file_options:      %08b\n", alloc.FileOptions)
 		fmt.Println("  write pool      ", alloc.WritePool)
 		fmt.Println("  blobbers:")
 
