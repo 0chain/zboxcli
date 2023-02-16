@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/0chain/gosdk/core/common"
 	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/zboxcli/util"
@@ -106,13 +107,15 @@ var listAllCmd = &cobra.Command{
 		}
 
 		type fileResp struct {
-			Name         string `json:"name"`
-			Path         string `json:"path"`
-			Type         string `json:"type"`
-			Size         int64  `json:"size"`
-			Hash         string `json:"hash,omitempty"`
-			LookupHash   string `json:"lookup_hash"`
-			EncryptedKey string `json:"encrypted_key,omitempty" `
+			Name         string           `json:"name"`
+			Path         string           `json:"path"`
+			Type         string           `json:"type"`
+			Size         int64            `json:"size"`
+			Hash         string           `json:"hash,omitempty"`
+			LookupHash   string           `json:"lookup_hash"`
+			EncryptedKey string           `json:"encrypted_key,omitempty" `
+			CreatedAt    common.Timestamp `json:"created_at"`
+			UpdatedAt    common.Timestamp `json:"updated_at"`
 		}
 
 		fileResps := make([]fileResp, 0)
@@ -126,6 +129,8 @@ var listAllCmd = &cobra.Command{
 				Hash:         data.Hash,
 				EncryptedKey: data.EncryptedKey,
 				LookupHash:   data.LookupHash,
+				CreatedAt:    common.Timestamp(data.CreatedAt.Unix()),
+				UpdatedAt:    common.Timestamp(data.UpdatedAt.Unix()),
 			}
 			fileResps = append(fileResps, resp)
 		}

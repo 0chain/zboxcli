@@ -49,7 +49,6 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
       - [Stats](#stats)
       - [Repair](#repair)
       - [Add collaborator](#add-collaborator)
-      - [Delete collaborator](#delete-collaborator)
       - [Sign data](#sign-data)
       - [Streaming](#streaming)
         - [How it works:](#how-it-works)
@@ -125,7 +124,6 @@ When you run the `zbox` command in terminal with no arguments, it will list all 
 [copy](#copy)|copy an object(file/folder) to another folder on blobbers
 [cp-info](#challenge-pool-information)|Challenge pool information.
 [delete](#delete)|delete file from blobbers
-[delete-collab](#delete-collaborator)|delete collaborator for a file
 [download](#download)|download file from blobbers
 [get](#get)|Gets the allocation info
 [get-diff](#get-differences)|Get difference of local and allocation root
@@ -241,7 +239,14 @@ and `free_storage` parameters.
 | size               | size of space reserved on blobbers                        | 2147483648     | bytes          |
 | usd                | give token value in USD                                   |                | flag         |
 | write_price        | filter blobbers by write price range                      | 0-inf          | range        |
-
+false          | bool
+| third_party_extendable | specify if the allocation can be extended by users other than the owner |  false          | bool
+| forbid_upload      | specify if users cannot upload to this allocation         |false          | bool
+| forbid_delete      | specify if the users cannot delete objects from this allocation | false          | bool
+| forbid_update      | specify if the users cannot update objects in this allocation |false          | bool
+| forbid_move        | specify if the users cannot move objects from this allocation |false          | bool
+| forbid_copy        | specify if the users cannot copy object from this allocation  |false          | bool
+| forbid_rename      | specify if the users cannot rename objects in this allocation |false          | bool
 
 <details>
   <summary>newallocation </summary>
@@ -330,12 +335,18 @@ An increase in blobber count will increment the parity shards.
 | expiry        |          | adjust storage expiration time                                      | duration     |
 | free_storage  |          | free storage marker file                                            | string       |
 | lock          | yes*     | lock additional tokens in write pool                                | int          |
-| set_immutable |          | sets allocation so that data can no longer be modified              | boolean      |
 | update_terms |          | will update the allocation with the latest blobber terms            | boolean      |
 | size          |          | adjust allocation size                                              | bytes        |
 | add_blobber |          | add a new blobber to the allocation, required for remove_blobber    | string       |
 | remove_blobber   |      | remove a blobber from the allocation, requires an add_blobber option | string2      |
 `*` only required if free_storage not set.
+| third_party_extendable | specify if the allocation can be extended by users other than the owner |  false          | bool
+| forbid_upload      | specify if users cannot upload to this allocation         |false          | bool
+| forbid_delete      | specify if the users cannot delete objects from this allocation | false          | bool
+| forbid_update      | specify if the users cannot update objects in this allocation |false          | bool
+| forbid_move        | specify if the users cannot move objects from this allocation |false          | bool
+| forbid_copy        | specify if the users cannot copy object from this allocation  |false          | bool
+| forbid_rename      | specify if the users cannot rename objects in this allocation |false          | bool
 
 <details>
   <summary>updateallocation </summary>
@@ -1495,36 +1506,6 @@ Collaborator d477d12134c2d7ba5ab71ac8ad37f244224695ef3215be990c3215d531c5a329 ad
 
 You can check all collaborators for a file in metadata json response.
 
-#### Delete collaborator
-
-Use command delete-collab to remove a collaborator for a file
-
-| Parameter  | Required | Description                  | default | Valid values |
-|------------|----------|------------------------------|---------|--------------|
-| allocation | yes      | allocation id                |         | string       |
-| collabid   | yes      | id of collaberator           |         | string       |
-| remotepath | yes      | file on which to collaberate |         | string       |
-
-<details>
-  <summary>delete-collab</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/124505356-3571a900-ddc1-11eb-9dd8-72927cefa790.png)
-
-</details>
-
-Example
-
-```
-./zbox delete-collab --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --remotepath /1.txt --collabid d477d12134c2d7ba5ab71ac8ad37f244224695ef3215be990c3215d531c5a329
-```
-
-Response will be a confirmation that collaborator is removed on all blobbers for the given file.
-
-```
-Collaborator d477d12134c2d7ba5ab71ac8ad37f244224695ef3215be990c3215d531c5a329 removed successfully for the file /1.txt
-```
-
-
 #### Sign data
 
 `sign-data` uses the information from your wallet to sign the input data string
@@ -1776,10 +1757,10 @@ Use `sp-info` to get your stake pool information and settings.
 
 #### Lock tokens into stake pool
 
-Lock creates delegate pool for current client and a given provider (blobber or validator). 
-The tokens locked for the provider stake can be unlocked any time, excluding times 
-when the tokens held by opened offers. These tokens will earn rewards depending on the 
-actions of the linked provider. 
+Lock creates delegate pool for current client and a given provider (blobber or validator).
+The tokens locked for the provider stake can be unlocked any time, excluding times
+when the tokens held by opened offers. These tokens will earn rewards depending on the
+actions of the linked provider.
 
 `sp-lock` returns the id of the new stake pool, this will be needed to reference
 to stake pool later.
