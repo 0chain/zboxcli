@@ -51,16 +51,16 @@ var rpInfo = &cobra.Command{
 		}
 
 		if doJSON {
-			kk := map[string]interface{}{
+			jsonCurrencies := map[string]interface{}{
 				"usd": usd,
 				"zcn": bt,
 				"fmt": info.Balance,
 			}
 
-			util.PrintJSON(kk)
+			util.PrintJSON(jsonCurrencies)
 			return
 		}
-		fmt.Printf("\nBalance: %v (%.2f USD)\n", info.Balance, usd)
+		fmt.Printf("\nRead pool Balance: %v (%.2f USD)\n", info.Balance, usd)
 	},
 }
 
