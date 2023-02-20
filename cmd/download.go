@@ -27,7 +27,7 @@ var downloadCmd = &cobra.Command{
 		remotePath := cmd.Flag("remotepath").Value.String()
 		authTicket := cmd.Flag("authticket").Value.String()
 		lookupHash := cmd.Flag("lookuphash").Value.String()
-		verifyDownload, err := cmd.Flags().GetBool("verifyDownload")
+		verifyDownload, err := cmd.Flags().GetBool("verifydownload")
 		if err != nil {
 			PrintError("Error: ", err)
 			os.Exit(1)
@@ -177,7 +177,7 @@ func init() {
 	downloadCmd.Flags().Int64P("startblock", "s", 0, "pass this option to download from specific block number")
 	downloadCmd.Flags().Int64P("endblock", "e", 0, "pass this option to download till specific block number")
 	downloadCmd.Flags().IntP("blockspermarker", "b", 10, "pass this option to download multiple blocks per marker")
-	downloadCmd.Flags().BoolP("verifydownload", "v", true, "pass this option to verify downloaded blocks")
+	downloadCmd.Flags().BoolP("verifydownload", "v", false, "pass this option to verify downloaded blocks")
 
 	downloadCmd.Flags().Bool("live", false, "start m3u8 downloader,and automatically generate media playlist(m3u8) on --localpath")
 	downloadCmd.Flags().Int("delay", 5, "pass segment duration to generate media playlist(m3u8). only works with --live. default duration is 5s.")
