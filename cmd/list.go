@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -111,6 +112,7 @@ var listAllCmd = &cobra.Command{
 			Path         string           `json:"path"`
 			Type         string           `json:"type"`
 			Size         int64            `json:"size"`
+			ActualSize   int64            `json:"actual_size"`
 			Hash         string           `json:"hash,omitempty"`
 			LookupHash   string           `json:"lookup_hash"`
 			EncryptedKey string           `json:"encrypted_key,omitempty" `
@@ -126,6 +128,7 @@ var listAllCmd = &cobra.Command{
 				Path:         path,
 				Type:         data.Type,
 				Size:         data.Size,
+				ActualSize:   data.ActualSize,
 				Hash:         data.Hash,
 				EncryptedKey: data.EncryptedKey,
 				LookupHash:   data.LookupHash,
@@ -160,7 +163,7 @@ func printListDirResult(outJson bool, ref *sdk.ListResult) {
 		return
 	}
 
-	header := []string{"Type", "Name", "Path", "Size", "Num Blocks", "Lookup Hash", "Is Encrypted"}
+	header := []string{"Type", "Name", "Path", "Size", "Actual Size", "Num Blocks", "Lookup Hash", "Is Encrypted"}
 	data := make([][]string, len(ref.Children))
 	for idx, child := range ref.Children {
 		size := strconv.FormatInt(child.Size, 10)
@@ -180,6 +183,7 @@ func printListDirResult(outJson bool, ref *sdk.ListResult) {
 			child.Name,
 			child.Path,
 			size,
+			fmt.Sprint(child.ActualSize),
 			strconv.FormatInt(child.NumBlocks, 10),
 			child.LookupHash,
 			isEncrypted,
