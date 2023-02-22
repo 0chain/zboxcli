@@ -313,8 +313,8 @@ func init() {
 
 	spUserInfo.PersistentFlags().Bool("json", false, "pass this option to print response as json data")
 	spUserInfo.PersistentFlags().Bool("all", false, "pass this option to get all the pools")
-	spUserInfo.PersistentFlags().Int("limit", 20, "pass this option to get all the pools")
-	spUserInfo.PersistentFlags().Int("offset", 0, "pass this option to get all the pools")
+	spUserInfo.PersistentFlags().Int("limit", 20, "pass this option to limit the number of records returned")
+	spUserInfo.PersistentFlags().Int("offset", 0, "pass this option to skip the number of rows before beginning")
 	spUserInfo.PersistentFlags().String("client_id", "", "pass for given client")
 
 	spLock.PersistentFlags().String("blobber_id", "", "for given blobber")
