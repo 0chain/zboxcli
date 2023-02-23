@@ -55,6 +55,7 @@ var scConfig = &cobra.Command{
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		doJSON, _ := cmd.Flags().GetBool("json")
+
 		var conf, err = sdk.GetStorageSCConfig()
 		if err != nil {
 			log.Fatalf("Failed to get storage SC configurations: %v", err)
@@ -64,7 +65,6 @@ var scConfig = &cobra.Command{
 			return
 		}
 		util.PrintJSON(conf.Fields)
-		// printStorageSCConfig(conf)
 	},
 }
 
@@ -310,7 +310,4 @@ func init() {
 	buf.Int("num_delegates", 0, "update num_delegates, optional")
 	buf.Float64("service_charge", 0.0, "update service_charge, optional")
 	blobberUpdateCmd.MarkFlagRequired("blobber_id")
-
-	scConfig.PersistentFlags().String("allocation", "",
-		"allocation identifier, required")
 }
