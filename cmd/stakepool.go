@@ -2,26 +2,20 @@ package cmd
 
 import (
 	"fmt"
+	"log"
+
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
 	"github.com/0chain/zboxcli/util"
-	"log"
-
 	"github.com/spf13/cobra"
 )
 
 func printStakePoolInfo(info *sdk.StakePoolInfo) {
-	fmt.Println("blobber_id:            ", info.ID)
-	fmt.Println("total stake:           ", info.Balance)
-	fmt.Println("going to unlock, total:", info.UnstakeTotal)
-
-	fmt.Println("capacity:")
-	fmt.Println("  capacity:         ", info.Capacity, "(blobber bid)")
-	fmt.Println("  free:             ", info.Free, "(for current write price)")
-	fmt.Println("  write_price:      ", info.WritePrice, "(blobber write price)")
-	fmt.Println("  offers_total:     ", info.OffersTotal, "(total stake committed to offers)")
-	fmt.Println("  unstake_total:    ", info.UnstakeTotal, "(total stake not available for further commitments)")
-	fmt.Println("  unclaimed rewards:", info.Rewards)
+	fmt.Println("pool id:           ", info.ID)
+	fmt.Println("balance:           ", info.Balance)
+	fmt.Println("total stake:       ", info.StakeTotal)
+	fmt.Println("total unstake:     ", info.UnstakeTotal, "(total stake not available for further commitments)")
+	fmt.Println("unclaimed rewards: ", info.Rewards)
 	if len(info.Delegate) == 0 {
 		fmt.Println("delegate_pools: no delegate pools")
 	} else {
@@ -36,7 +30,7 @@ func printStakePoolInfo(info *sdk.StakePoolInfo) {
 			fmt.Println("  status:           ", dp.Status)
 			fmt.Println("  round_created:    ", dp.RoundCreated)
 			fmt.Println("  unstake:          ", dp.UnStake)
-			fmt.Println("  staked_at:        ", dp.StakedAt.String())
+			fmt.Println("  staked_at:        ", dp.StakedAt.ToTime().String())
 		}
 	}
 	// settings
@@ -64,7 +58,7 @@ func printStakePoolUserInfo(info *sdk.StakePoolUserInfo) {
 			fmt.Println("    status:          ", dp.Status)
 			fmt.Println("    round_created:   ", dp.RoundCreated)
 			fmt.Println("    unstake:         ", dp.UnStake)
-			fmt.Println("    staked_at:       ", dp.StakedAt.String())
+			fmt.Println("    staked_at:       ", dp.StakedAt.ToTime().String())
 		}
 	}
 }
@@ -77,21 +71,34 @@ var spInfo = &cobra.Command{
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		var (
-			flags     = cmd.Flags()
-			blobberID string
-			err       error
+			flags        = cmd.Flags()
+			err          error
+			providerID   string
+			providerType sdk.ProviderType
 		)
 
 		doJSON, _ := cmd.Flags().GetBool("json")
 
 		if flags.Changed("blobber_id") {
-			if blobberID, err = flags.GetString("blobber_id"); err != nil {
-				log.Fatalf("can't get 'blobber_id' flag: %v", err)
+			if providerID, err = flags.GetString("blobber_id"); err != nil {
+				log.Fatalf("Error: cannot get the value of blobber_id")
+			} else {
+				providerType = sdk.ProviderBlobber
+			}
+		} else if flags.Changed("validator_id") {
+			if providerID, err = flags.GetString("validator_id"); err != nil {
+				log.Fatalf("Error: cannot get the value of validator_id")
+			} else {
+				providerType = sdk.ProviderValidator
 			}
 		}
 
+		if providerType == 0 || providerID == "" {
+			log.Fatal("Error: missing flag: one of 'blobber_id' or 'validator_id' is required")
+		}
+
 		var info *sdk.StakePoolInfo
-		if info, err = sdk.GetStakePoolInfo(blobberID); err != nil {
+		if info, err = sdk.GetStakePoolInfo(providerType, providerID); err != nil {
 			log.Fatalf("Failed to get stake pool info: %v", err)
 		}
 		if doJSON {
@@ -112,6 +119,9 @@ var spUserInfo = &cobra.Command{
 
 		var (
 			flags    = cmd.Flags()
+			limit    int
+			offset   int
+			isAll    bool
 			clientID string
 			err      error
 		)
@@ -124,16 +134,55 @@ var spUserInfo = &cobra.Command{
 			}
 		}
 
-		var info *sdk.StakePoolUserInfo
-		if info, err = sdk.GetStakePoolUserInfo(clientID); err != nil {
-			log.Fatalf("Failed to get stake pool info: %v", err)
+		limit, err = flags.GetInt("limit")
+		if err != nil {
+			log.Fatal(err)
 		}
-		if doJSON {
-			util.PrintJSON(info)
-		} else {
-			printStakePoolUserInfo(info)
+
+		offset, err = flags.GetInt("offset")
+		if err != nil {
+			log.Fatal(err)
 		}
+
+		if flags.Changed("all") {
+			isAll, err = flags.GetBool("all")
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
+
+		if !isAll {
+			if _, err := getAndPrintStakePool(clientID, doJSON, offset, limit); err != nil {
+				log.Fatalf("Failed to get stake pool info: %v", err)
+			}
+			return
+		}
+
+		for curOff := offset; ; curOff += limit {
+			l, err := getAndPrintStakePool(clientID, doJSON, curOff, limit)
+			if err != nil {
+				log.Fatalf("Failed to get stake pool info: %v", err)
+			}
+			if l == 0 {
+				return
+			}
+		}
+
 	},
+}
+
+func getAndPrintStakePool(clientID string, doJSON bool, offset, limit int) (int, error) {
+	var info *sdk.StakePoolUserInfo
+	var err error
+	if info, err = sdk.GetStakePoolUserInfo(clientID, offset, limit); err != nil {
+		return 0, err
+	}
+	if doJSON {
+		util.PrintJSON(info)
+	} else {
+		printStakePoolUserInfo(info)
+	}
+	return len(info.Pools), nil
 }
 
 // spLock locks tokens a stake pool lack
@@ -189,13 +238,13 @@ var spLock = &cobra.Command{
 			}
 		}
 
-		var poolID string
-		poolID, _, err = sdk.StakePoolLock(providerType, providerID,
+		var hash string
+		hash, _, err = sdk.StakePoolLock(providerType, providerID,
 			zcncore.ConvertToValue(tokens), zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to lock tokens in stake pool: %v", err)
 		}
-		fmt.Println("tokens locked, pool id:", poolID)
+		fmt.Println("tokens locked, txn hash:", hash)
 	},
 }
 
@@ -209,7 +258,6 @@ var spUnlock = &cobra.Command{
 
 		var (
 			flags        = cmd.Flags()
-			poolID       string
 			providerID   string
 			providerType sdk.ProviderType
 			fee          float64
@@ -234,33 +282,16 @@ var spUnlock = &cobra.Command{
 			log.Fatal("missing flag: one of 'blobber_id' or 'validator_id' is required")
 		}
 
-		if !flags.Changed("pool_id") {
-			log.Fatal("missing required 'pool_id' flag")
-		}
-
-		if poolID, err = flags.GetString("pool_id"); err != nil {
-			log.Fatal("invalid 'pool_id' flag: ", err)
-		}
-
 		if flags.Changed("fee") {
 			if fee, err = flags.GetFloat64("fee"); err != nil {
 				log.Fatal("invalid 'fee' flag: ", err)
 			}
 		}
 
-		unstake, _, err := sdk.StakePoolUnlock(providerType, providerID, poolID, zcncore.ConvertToValue(fee))
+		_, _, err = sdk.StakePoolUnlock(providerType, providerID, zcncore.ConvertToValue(fee))
 		// an error
 		if err != nil {
 			log.Fatalf("Failed to unlock tokens in stake pool: %v", err)
-		}
-
-		// can't unlock for now
-		if !unstake {
-			fmt.Println("tokens can't be unlocked due to opened offers")
-			fmt.Printf("the pool marked as releasing, wait and retry to succeed")
-			fmt.Printf("to reduce blobber commitments cancel or finalize allocations")
-			fmt.Println()
-			return
 		}
 
 		// success
@@ -275,30 +306,26 @@ func init() {
 	rootCmd.AddCommand(spUnlock)
 
 	spInfo.PersistentFlags().String("blobber_id", "",
-		"for given blobber, default is current client")
+		"for given blobber")
+	spInfo.PersistentFlags().String("validator_id", "",
+		"for given validator")
 	spInfo.PersistentFlags().Bool("json", false, "pass this option to print response as json data")
 
 	spUserInfo.PersistentFlags().Bool("json", false, "pass this option to print response as json data")
+	spUserInfo.PersistentFlags().Bool("all", false, "pass this option to get all the pools")
+	spUserInfo.PersistentFlags().Int("limit", 20, "pass this option to limit the number of records returned")
+	spUserInfo.PersistentFlags().Int("offset", 0, "pass this option to skip the number of rows before beginning")
+	spUserInfo.PersistentFlags().String("client_id", "", "pass for given client")
 
-	spLock.PersistentFlags().String("blobber_id", "",
-		"for given blobber")
-	spLock.PersistentFlags().String("validator_id", "",
-		"for given validator")
-	spLock.PersistentFlags().Float64("tokens", 0.0,
-		"tokens to lock, required")
-	spLock.PersistentFlags().Float64("fee", 0.0,
-		"transaction fee, default 0")
+	spLock.PersistentFlags().String("blobber_id", "", "for given blobber")
+	spLock.PersistentFlags().String("validator_id", "", "for given validator")
+	spLock.PersistentFlags().Float64("tokens", 0.0, "tokens to lock, required")
+	spLock.PersistentFlags().Float64("fee", 0.0, "transaction fee, default 0")
 
 	spLock.MarkFlagRequired("tokens")
 
-	spUnlock.PersistentFlags().String("blobber_id", "",
-		"for given blobber")
-	spUnlock.PersistentFlags().String("validator_id", "",
-		"for given validator")
-	spUnlock.PersistentFlags().String("pool_id", "",
-		"pool id to unlock")
-	spUnlock.PersistentFlags().Float64("fee", 0.0,
-		"transaction fee, default 0")
+	spUnlock.PersistentFlags().String("blobber_id", "", "for given blobber")
+	spUnlock.PersistentFlags().String("validator_id", "", "for given validator")
+	spUnlock.PersistentFlags().Float64("fee", 0.0, "transaction fee, default 0")
 	spUnlock.MarkFlagRequired("tokens")
-	spUnlock.MarkFlagRequired("pool_id")
 }

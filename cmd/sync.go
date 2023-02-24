@@ -43,33 +43,6 @@ func filterOperations(lDiff []sdk.FileDiff) (filterDiff []sdk.FileDiff, exclPath
 	return
 }
 
-func commitDiff(lDiff []sdk.FileDiff, allocationObj *sdk.Allocation, fileMetas map[string]*sdk.ConsolidatedFileMeta) {
-	wg := &sync.WaitGroup{}
-	statusBar := &StatusBar{wg: wg}
-	for _, f := range lDiff {
-		switch f.Op {
-		case sdk.Upload:
-			wg.Add(1)
-			commitMetaTxn(f.Path, "Upload", "", "", allocationObj, nil, statusBar)
-		case sdk.Update:
-			wg.Add(1)
-			commitMetaTxn(f.Path, "Update", "", "", allocationObj, nil, statusBar)
-		case sdk.Download:
-			wg.Add(1)
-			commitMetaTxn(f.Path, "Download", "", "", allocationObj, nil, statusBar)
-		case sdk.Delete:
-			fileMeta, ok := fileMetas[f.Path]
-			if !ok {
-				PrintError("Unable to commit metaData for :", f.Path)
-				break
-			}
-			wg.Add(1)
-			commitMetaTxn(f.Path, "Delete", "", "", allocationObj, fileMeta, statusBar)
-		}
-	}
-	statusBar.wg.Wait()
-}
-
 // syncCmd represents sync command
 var syncCmd = &cobra.Command{
 	Use:   "sync",
@@ -120,7 +93,6 @@ var syncCmd = &cobra.Command{
 		filter := []string{".DS_Store", ".git"}
 
 		uploadOnly, _ := cmd.Flags().GetBool("uploadonly")
-		commit, _ := cmd.Flags().GetBool("commit")
 
 		lDiff, err := allocationObj.GetAllocationDiff(localcache, localpath, filter, exclPath)
 		if err != nil {
@@ -220,9 +192,7 @@ var syncCmd = &cobra.Command{
 			}
 		}
 		wg.Wait()
-		if commit {
-			commitDiff(lDiff, allocationObj, fileMetas)
-		}
+
 		fmt.Println("\nSync Complete")
 		saveCache(allocationObj, localcache, exclPath)
 		return
@@ -300,7 +270,6 @@ After sync complete, remote snapshot will be updated to the same file for next u
 	syncCmd.MarkFlagRequired("allocation")
 	syncCmd.MarkFlagRequired("localpath")
 	syncCmd.Flags().Bool("uploadonly", false, "pass this option to only upload/update the files")
-	syncCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction - only works with uploadonly")
 
 	syncCmd.Flags().IntVarP(&syncChunkNumber, "chunknumber", "", 1, "how many chunks should be uploaded in a http request")
 

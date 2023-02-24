@@ -55,6 +55,7 @@ var scConfig = &cobra.Command{
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		doJSON, _ := cmd.Flags().GetBool("json")
+
 		var conf, err = sdk.GetStorageSCConfig()
 		if err != nil {
 			log.Fatalf("Failed to get storage SC configurations: %v", err)
@@ -64,7 +65,6 @@ var scConfig = &cobra.Command{
 			return
 		}
 		util.PrintJSON(conf.Fields)
-		// printStorageSCConfig(conf)
 	},
 }
 
@@ -87,15 +87,6 @@ func printBlobbers(nodes []*sdk.Blobber) {
 	}
 }
 
-func filterActiveBlobbers(blobbers []*sdk.Blobber) (activeBlobbers []*sdk.Blobber) {
-	for i := range blobbers {
-		if blobbers[i].LastHealthCheck.Within(60 * 60) {
-			activeBlobbers = append(activeBlobbers, blobbers[i])
-		}
-	}
-	return
-}
-
 // lsBlobers shows active blobbers
 var lsBlobers = &cobra.Command{
 	Use:   "ls-blobbers",
@@ -106,23 +97,21 @@ var lsBlobers = &cobra.Command{
 		doJSON, _ := cmd.Flags().GetBool("json")
 		doAll, _ := cmd.Flags().GetBool("all")
 
-		var list, err = sdk.GetBlobbers()
-		var defaultList = filterActiveBlobbers(list)
-
+		// set is_active=true to get only active blobbers
+		isActive := true
+		if doAll {
+			isActive = false
+		}
+		var list, err = sdk.GetBlobbers(isActive)
 		if err != nil {
 			log.Fatalf("Failed to get storage SC configurations: %v", err)
 		}
 
-		if doAll {
-			defaultList = list
-		}
-
 		if doJSON {
-			util.PrintJSON(defaultList)
+			util.PrintJSON(list)
 		} else {
-			printBlobbers(defaultList)
+			printBlobbers(list)
 		}
-
 	},
 }
 
@@ -172,6 +161,7 @@ var blobberInfoCmd = &cobra.Command{
 		fmt.Println("is shut down:     ", blob.IsShutDown)
 		fmt.Println("last_health_check:", blob.LastHealthCheck.ToTime())
 		fmt.Println("capacity_used:    ", blob.Allocated)
+		fmt.Println("total_stake:      ", blob.TotalStake)
 		fmt.Println("terms:")
 		fmt.Println("  read_price:        ", blob.Terms.ReadPrice, "/ GB")
 		fmt.Println("  write_price:       ", blob.Terms.WritePrice, "/ GB")
@@ -322,7 +312,4 @@ func init() {
 	buf.Int("num_delegates", 0, "update num_delegates, optional")
 	buf.Float64("service_charge", 0.0, "update service_charge, optional")
 	blobberUpdateCmd.MarkFlagRequired("blobber_id")
-
-	scConfig.PersistentFlags().String("allocation", "",
-		"allocation identifier, required")
 }

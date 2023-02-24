@@ -65,12 +65,7 @@ func Execute() {
 
 func initConfig() {
 
-	var configDir string
-	if cDir != "" {
-		configDir = cDir
-	} else {
-		configDir = util.GetConfigDir()
-	}
+	configDir := util.SetConfigDir(cDir)
 
 	if cfgFile == "" {
 		cfgFile = "config.yaml"

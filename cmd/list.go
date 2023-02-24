@@ -1,10 +1,12 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
 
+	"github.com/0chain/gosdk/core/common"
 	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/zboxcli/util"
@@ -106,22 +108,32 @@ var listAllCmd = &cobra.Command{
 		}
 
 		type fileResp struct {
-			Name string `json:"name"`
-			Path string `json:"path"`
-			Type string `json:"type"`
-			Size int64  `json:"size"`
-			Hash string `json:"hash"`
+			Name         string           `json:"name"`
+			Path         string           `json:"path"`
+			Type         string           `json:"type"`
+			Size         int64            `json:"size"`
+			ActualSize   int64            `json:"actual_size"`
+			Hash         string           `json:"hash,omitempty"`
+			LookupHash   string           `json:"lookup_hash"`
+			EncryptedKey string           `json:"encrypted_key,omitempty" `
+			CreatedAt    common.Timestamp `json:"created_at"`
+			UpdatedAt    common.Timestamp `json:"updated_at"`
 		}
 
 		fileResps := make([]fileResp, 0)
 		for path, data := range ref {
 			paths := strings.SplitAfter(path, "/")
 			var resp = fileResp{
-				Name: paths[len(paths)-1],
-				Path: path,
-				Type: data.Type,
-				Size: data.Size,
-				Hash: data.Hash,
+				Name:         paths[len(paths)-1],
+				Path:         path,
+				Type:         data.Type,
+				Size:         data.Size,
+				ActualSize:   data.ActualSize,
+				Hash:         data.Hash,
+				EncryptedKey: data.EncryptedKey,
+				LookupHash:   data.LookupHash,
+				CreatedAt:    common.Timestamp(data.CreatedAt.Unix()),
+				UpdatedAt:    common.Timestamp(data.UpdatedAt.Unix()),
 			}
 			fileResps = append(fileResps, resp)
 		}
@@ -151,7 +163,7 @@ func printListDirResult(outJson bool, ref *sdk.ListResult) {
 		return
 	}
 
-	header := []string{"Type", "Name", "Path", "Size", "Num Blocks", "Lookup Hash", "Is Encrypted"}
+	header := []string{"Type", "Name", "Path", "Size", "Actual Size", "Num Blocks", "Lookup Hash", "Is Encrypted"}
 	data := make([][]string, len(ref.Children))
 	for idx, child := range ref.Children {
 		size := strconv.FormatInt(child.Size, 10)
@@ -171,6 +183,7 @@ func printListDirResult(outJson bool, ref *sdk.ListResult) {
 			child.Name,
 			child.Path,
 			size,
+			fmt.Sprint(child.ActualSize),
 			strconv.FormatInt(child.NumBlocks, 10),
 			child.LookupHash,
 			isEncrypted,

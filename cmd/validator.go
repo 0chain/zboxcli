@@ -26,6 +26,8 @@ func printValidators(nodes []*sdk.Validator) {
 		fmt.Println("  delegate_wallet:", validator.DelegateWallet)
 		fmt.Println("  min_stake:      ", validator.MinStake)
 		fmt.Println("  max_stake:      ", validator.MaxStake)
+		fmt.Println("  total_stake:    ", validator.StakeTotal)
+		fmt.Println("  total_unstake:  ", validator.UnstakeTotal)
 		fmt.Println("  num_delegates:  ", validator.NumDelegates)
 		fmt.Println("  service_charge: ", validator.ServiceCharge*100, "%")
 	}
