@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
-	"github.com/0chain/gosdk/zcncore"
 	"github.com/spf13/cobra"
 )
 
@@ -17,13 +16,6 @@ var shutDownBlobberCmd = &cobra.Command{
 		var err error
 		flags := cmd.Flags()
 
-		var fee float64
-		if flags.Changed("fee") {
-			if fee, err = flags.GetFloat64("fee"); err != nil {
-				log.Fatal("invalid 'fee' flag: ", err)
-			}
-		}
-
 		if flags.Changed("id") == false {
 			log.Fatal("id is missing")
 		}
@@ -34,7 +26,7 @@ var shutDownBlobberCmd = &cobra.Command{
 			}
 		}
 
-		_, err = sdk.ShutDownBlobber(blobberid, zcncore.ConvertToValue(fee))
+		_, _, err = sdk.ShutdwonProvider(blobberid, sdk.ProviderBlobber)
 		if err != nil {
 			log.Fatal("failed to shut down blobber", err)
 		}

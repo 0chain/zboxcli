@@ -3,8 +3,6 @@ package cmd
 import (
 	"log"
 
-	"github.com/0chain/gosdk/zcncore"
-
 	"github.com/0chain/gosdk/zboxcore/sdk"
 
 	"github.com/spf13/cobra"
@@ -25,20 +23,11 @@ var killBlobberCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal("invalid 'blobber id flag: ", err)
 		}
-
-		var fee float64
-		if flags.Changed("fee") {
-			if fee, err = flags.GetFloat64("fee"); err != nil {
-				log.Fatal("invalid 'fee' flag: ", err)
-			}
-		}
-
-		_, err = sdk.KillBlobber(blobberId, zcncore.ConvertToValue(fee))
+		_, _, err = sdk.KillProvider(blobberId, sdk.ProviderBlobber)
 		if err != nil {
 			log.Fatal("failed to kill blobber "+blobberId, err)
 		}
 		log.Println("killed blobber " + blobberId)
-
 	},
 }
 
