@@ -14,23 +14,11 @@ var shutDownValidatorCmd = &cobra.Command{
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		var err error
-		flags := cmd.Flags()
-
-		if flags.Changed("id") == false {
-			log.Fatal("id is missing")
-		}
-		var validatorid string
-		if flags.Changed("id") {
-			if validatorid, err = flags.GetString("id"); err != nil {
-				log.Fatal("invalid 'validator id': ", err)
-			}
-		}
-
-		_, _, err = sdk.ShutdownProvider(validatorid, sdk.ProviderValidator)
+		_, _, err = sdk.ShutdownProvider(sdk.ProviderValidator)
 		if err != nil {
 			log.Fatal("failed to shut down validator", err)
 		}
-		log.Println("shut down validator " + validatorid)
+		log.Println("shut down validator.")
 
 	},
 }

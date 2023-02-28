@@ -14,23 +14,11 @@ var shutDownBlobberCmd = &cobra.Command{
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		var err error
-		flags := cmd.Flags()
-
-		if flags.Changed("id") == false {
-			log.Fatal("id is missing")
-		}
-		var blobberid string
-		if flags.Changed("id") {
-			if blobberid, err = flags.GetString("id"); err != nil {
-				log.Fatal("invalid 'blobber_id' flag: ", err)
-			}
-		}
-
-		_, _, err = sdk.ShutdownProvider(blobberid, sdk.ProviderBlobber)
+		_, _, err = sdk.ShutdownProvider(sdk.ProviderBlobber)
 		if err != nil {
 			log.Fatal("failed to shut down blobber", err)
 		}
-		log.Println("shut down blobber " + blobberid)
+		log.Println("shut down blobber.")
 
 	},
 }
