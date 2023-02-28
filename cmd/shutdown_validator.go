@@ -8,7 +8,7 @@ import (
 )
 
 var shutDownValidatorCmd = &cobra.Command{
-	Use:   "shut-down-validator",
+	Use:   "shutdown-validator",
 	Short: "deactivate a validator",
 	Long:  "deactivate a validator, it will not be used for any new challenge validations",
 	Args:  cobra.MinimumNArgs(0),
@@ -26,7 +26,7 @@ var shutDownValidatorCmd = &cobra.Command{
 			}
 		}
 
-		_, _, err = sdk.ShutdwonProvider(validatorid, sdk.ProviderValidator)
+		_, _, err = sdk.ShutdownProvider(validatorid, sdk.ProviderValidator)
 		if err != nil {
 			log.Fatal("failed to shut down validator", err)
 		}

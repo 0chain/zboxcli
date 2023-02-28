@@ -8,7 +8,7 @@ import (
 )
 
 var shutDownBlobberCmd = &cobra.Command{
-	Use:   "shut-down-blobber",
+	Use:   "shutdown-blobber",
 	Short: "deactivate a blobber",
 	Long:  "deactivate a blobber, it will not be used for any new allocations",
 	Args:  cobra.MinimumNArgs(0),
@@ -26,7 +26,7 @@ var shutDownBlobberCmd = &cobra.Command{
 			}
 		}
 
-		_, _, err = sdk.ShutdwonProvider(blobberid, sdk.ProviderBlobber)
+		_, _, err = sdk.ShutdownProvider(blobberid, sdk.ProviderBlobber)
 		if err != nil {
 			log.Fatal("failed to shut down blobber", err)
 		}
