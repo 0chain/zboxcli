@@ -291,6 +291,14 @@ var blobberUpdateCmd = &cobra.Command{
 			blob.StakePoolSettings.ServiceCharge = sc
 		}
 
+		if flags.Changed("url") {
+			var url string
+			if url, err = flags.GetString("url"); err != nil {
+				log.Fatal(err)
+			}
+			blob.BaseURL = url
+		}
+
 		if _, _, err = sdk.UpdateBlobberSettings(blob); err != nil {
 			log.Fatal(err)
 		}
