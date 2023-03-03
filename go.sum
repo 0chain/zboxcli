@@ -44,6 +44,8 @@ github.com/0chain/gosdk v1.8.13-0.20230216233127-85357d4c0cb2 h1:2zhxjgLzqksgLdp
 github.com/0chain/gosdk v1.8.13-0.20230216233127-85357d4c0cb2/go.mod h1:tAJVrpK3Uz0+6V1s9juWOrK3jPkzcr/4APqSaZgSFes=
 github.com/0chain/gosdk v1.8.13-0.20230303080929-4492c73a432c h1:S49DY9p0YKr8TBGFvQW/9YhzZS6uHNWRpAUtNjMQ118=
 github.com/0chain/gosdk v1.8.13-0.20230303080929-4492c73a432c/go.mod h1:SQy36TZoLqj0JKmLcgNMhRr4Fm8mE6p4ZbbJ1k40z9Y=
+github.com/0chain/gosdk v1.8.13-0.20230303133439-573306dc91c2 h1:0tjs8vahK2uRL118DW1C/wu6IjGFgni5QSf59G0NSsY=
+github.com/0chain/gosdk v1.8.13-0.20230303133439-573306dc91c2/go.mod h1:SQy36TZoLqj0JKmLcgNMhRr4Fm8mE6p4ZbbJ1k40z9Y=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/Luzifer/go-openssl/v3 v3.1.0 h1:QqKqo6kYXGGUsvtUoCpRZm8lHw+jDfhbzr36gVj+/gw=
