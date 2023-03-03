@@ -127,7 +127,11 @@ var validatorUpdateCmd = &cobra.Command{
 			if minStake, err = flags.GetFloat64("min_stake"); err != nil {
 				log.Fatal(err)
 			}
-			validator.MinStake = common.ToBalance(minStake)
+			stake, err := common.ToBalance(minStake)
+			if err != nil {
+				log.Fatal(err)
+			}
+			validator.MinStake = stake
 		}
 
 		if flags.Changed("max_stake") {
@@ -135,7 +139,11 @@ var validatorUpdateCmd = &cobra.Command{
 			if maxStake, err = flags.GetFloat64("max_stake"); err != nil {
 				log.Fatal(err)
 			}
-			validator.MaxStake = common.ToBalance(maxStake)
+			stake, err := common.ToBalance(maxStake)
+			if err != nil {
+				log.Fatal(err)
+			}
+			validator.MaxStake = stake
 		}
 
 		if flags.Changed("num_delegates") {

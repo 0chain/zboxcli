@@ -36,14 +36,12 @@ cloud.google.com/go/storage v1.8.0/go.mod h1:Wv1Oy7z6Yz3DshWRJFhqM/UCfaWIRTdp0RX
 cloud.google.com/go/storage v1.10.0/go.mod h1:FLPqc6j+Ki4BU591ie1oL6qBQGu2Bl/tZ9ullr3+Kg0=
 cloud.google.com/go/storage v1.14.0/go.mod h1:GrKmX003DSIwi9o29oFT7YDnHYwZoctc3fOKtUw0Xmo=
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
-github.com/0chain/common v0.0.5 h1:E5JM9YjftfFrlMlrKKNuoWJLxmUMrNnm7ERslPbgJm4=
-github.com/0chain/common v0.0.5/go.mod h1:OxV9kVgVzAPgGHHPcS/aUSL2ZxNvKDU6jPoggKMbqns=
+github.com/0chain/common v0.0.6-0.20221123040931-4a3feacdb97c h1:TDqF7VJa7uLLlEsFnxRKwOP8dx/k6DGOTJQ7OvG5ztw=
+github.com/0chain/common v0.0.6-0.20221123040931-4a3feacdb97c/go.mod h1:OxV9kVgVzAPgGHHPcS/aUSL2ZxNvKDU6jPoggKMbqns=
 github.com/0chain/errors v1.0.3 h1:QQZPFxTfnMcRdt32DXbzRQIfGWmBsKoEdszKQDb0rRM=
 github.com/0chain/errors v1.0.3/go.mod h1:xymD6nVgrbgttWwkpSCfLLEJbFO6iHGQwk/yeSuYkIc=
-github.com/0chain/gosdk v1.8.13-0.20230220171519-f72a799b233b h1:693TUxH0vNSsvI5rDG2K4GJEIw/Bxxa6DnyhU2P5EfI=
-github.com/0chain/gosdk v1.8.13-0.20230220171519-f72a799b233b/go.mod h1:tAJVrpK3Uz0+6V1s9juWOrK3jPkzcr/4APqSaZgSFes=
-github.com/0chain/gosdk v1.8.13-0.20230224012135-371be8175369 h1:/yvj3+I0sd+h1408MVGZWfwNSzTdt8D3L8/7SvNJZdY=
-github.com/0chain/gosdk v1.8.13-0.20230224012135-371be8175369/go.mod h1:tAJVrpK3Uz0+6V1s9juWOrK3jPkzcr/4APqSaZgSFes=
+github.com/0chain/gosdk v1.8.13-0.20230302031318-5a3cf9bb1ab9 h1:udAvl4BDcPJZfGLHBu9lIgKaTX0Zp8BR5mkzeeKWf9k=
+github.com/0chain/gosdk v1.8.13-0.20230302031318-5a3cf9bb1ab9/go.mod h1:SQy36TZoLqj0JKmLcgNMhRr4Fm8mE6p4ZbbJ1k40z9Y=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/Luzifer/go-openssl/v3 v3.1.0 h1:QqKqo6kYXGGUsvtUoCpRZm8lHw+jDfhbzr36gVj+/gw=
@@ -277,6 +275,8 @@ github.com/russross/blackfriday/v2 v2.1.0 h1:JIOH55/0cWyOuilr9/qlrm0BSXldqnqwMsf
 github.com/russross/blackfriday/v2 v2.1.0/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/shirou/gopsutil v3.21.11+incompatible h1:+1+c1VGhc88SSonWP6foOcLhvnKlUeu/erjjvaPEYiI=
 github.com/shirou/gopsutil v3.21.11+incompatible/go.mod h1:5b4v6he4MtMOwMlS0TUMTu2PcXUg8+E1lC7eC3UO/RA=
+github.com/shopspring/decimal v1.3.1 h1:2Usl1nmF/WZucqkFZhnfFYxxxu8LG21F6nPQBE5gKV8=
+github.com/shopspring/decimal v1.3.1/go.mod h1:DKyhrW/HYNuLGql+MJL6WCR6knT2jwCFRcu2hWCYk4o=
 github.com/spf13/afero v1.9.2 h1:j49Hj62F0n+DaZ1dDCvhABaPNSGNkt32oRFxI33IEMw=
 github.com/spf13/afero v1.9.2/go.mod h1:iUV7ddyEEZPO5gA3zD4fJt6iStLlL+Lg4m2cihcDf8Y=
 github.com/spf13/cast v1.5.0 h1:rj3WzYc11XZaIZMPKmwP96zkFEnnAmV8s6XbB2aY32w=
