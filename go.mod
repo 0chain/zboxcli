@@ -13,7 +13,7 @@ require (
 )
 
 require (
-	github.com/0chain/common v0.0.5 // indirect
+	github.com/0chain/common v0.0.6-0.20221123040931-4a3feacdb97c // indirect
 	github.com/Luzifer/go-openssl/v3 v3.1.0 // indirect
 	github.com/btcsuite/btcd v0.23.2 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.2.1 // indirect
@@ -42,6 +42,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.0.5 // indirect
 	github.com/rivo/uniseg v0.4.2 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
+	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/spf13/afero v1.9.2 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
@@ -66,4 +67,4 @@ require (
 )
 
 // temporary, for development
-//replace github.com/0chain/gosdk => ../gosdk
+// replace github.com/0chain/gosdk => ../gosdk
