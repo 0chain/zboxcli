@@ -146,7 +146,7 @@ var newallocationCmd = &cobra.Command{
 			if err != nil {
 				log.Fatal("Error fetching cost: ", err)
 			}
-			log.Print("Cost for the given allocation: ", zcncore.ConvertToToken(minCost))
+			log.Print("Cost for the given allocation: ", zcncore.ConvertToToken(minCost), " ZCN")
 
 			return
 		}
@@ -269,10 +269,10 @@ func processFreeStorageFlags(flags *pflag.FlagSet) (uint64, string) {
 
 func init() {
 	rootCmd.AddCommand(newallocationCmd)
-	datashards = newallocationCmd.PersistentFlags().Int("data", 2, "--data 2")
-	parityshards = newallocationCmd.PersistentFlags().Int("parity", 2, "--parity 2")
-	size = newallocationCmd.PersistentFlags().Int64("size", 2147483648, "--size 10000")
-	allocationFileName = newallocationCmd.PersistentFlags().String("allocationFileName", "allocation.txt", "--allocationFileName allocation.txt")
+	datashards = newallocationCmd.PersistentFlags().Int("data", 2, "the number of blobbers to be used as data shards")
+	parityshards = newallocationCmd.PersistentFlags().Int("parity", 2, "the number of blobber to be used as parity shards")
+	size = newallocationCmd.PersistentFlags().Int64("size", 2147483648, "the size of the allocation")
+	allocationFileName = newallocationCmd.PersistentFlags().String("allocationFileName", "allocation.txt", "name of the file in configDir to store the generated allocationID")
 	newallocationCmd.PersistentFlags().
 		Float64("lock", 0.0,
 			"lock write pool with given number of tokens, required")
