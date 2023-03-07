@@ -132,8 +132,8 @@ var listAllCmd = &cobra.Command{
 				Hash:         data.Hash,
 				EncryptedKey: data.EncryptedKey,
 				LookupHash:   data.LookupHash,
-				CreatedAt:    common.Timestamp(data.CreatedAt.Unix()),
-				UpdatedAt:    common.Timestamp(data.UpdatedAt.Unix()),
+				CreatedAt:    common.Timestamp(data.CreatedAt),
+				UpdatedAt:    common.Timestamp(data.UpdatedAt),
 			}
 			fileResps = append(fileResps, resp)
 		}
