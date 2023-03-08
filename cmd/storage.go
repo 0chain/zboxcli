@@ -55,6 +55,7 @@ var scConfig = &cobra.Command{
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		doJSON, _ := cmd.Flags().GetBool("json")
+
 		var conf, err = sdk.GetStorageSCConfig()
 		if err != nil {
 			log.Fatalf("Failed to get storage SC configurations: %v", err)
@@ -64,7 +65,6 @@ var scConfig = &cobra.Command{
 			return
 		}
 		util.PrintJSON(conf.Fields)
-		// printStorageSCConfig(conf)
 	},
 }
 
@@ -213,7 +213,11 @@ var blobberUpdateCmd = &cobra.Command{
 			if rp, err = flags.GetFloat64("read_price"); err != nil {
 				log.Fatal(err)
 			}
-			blob.Terms.ReadPrice = common.ToBalance(rp)
+			readPriceBalance, err := common.ToBalance(rp)
+			if err != nil {
+				log.Fatal(err)
+			}
+			blob.Terms.ReadPrice = readPriceBalance
 		}
 
 		if flags.Changed("write_price") {
@@ -221,7 +225,11 @@ var blobberUpdateCmd = &cobra.Command{
 			if wp, err = flags.GetFloat64("write_price"); err != nil {
 				log.Fatal(err)
 			}
-			blob.Terms.WritePrice = common.ToBalance(wp)
+			writePriceBalance, err := common.ToBalance(wp)
+			if err != nil {
+				log.Fatal(err)
+			}
+			blob.Terms.WritePrice = writePriceBalance
 		}
 
 		if flags.Changed("min_lock_demand") {
@@ -248,7 +256,11 @@ var blobberUpdateCmd = &cobra.Command{
 			if minStake, err = flags.GetFloat64("min_stake"); err != nil {
 				log.Fatal(err)
 			}
-			blob.StakePoolSettings.MinStake = common.ToBalance(minStake)
+			stake, err := common.ToBalance(minStake)
+			if err != nil {
+				log.Fatal(err)
+			}
+			blob.StakePoolSettings.MinStake = stake
 		}
 
 		if flags.Changed("max_stake") {
@@ -256,7 +268,11 @@ var blobberUpdateCmd = &cobra.Command{
 			if maxStake, err = flags.GetFloat64("max_stake"); err != nil {
 				log.Fatal(err)
 			}
-			blob.StakePoolSettings.MaxStake = common.ToBalance(maxStake)
+			stake, err := common.ToBalance(maxStake)
+			if err != nil {
+				log.Fatal(err)
+			}
+			blob.StakePoolSettings.MaxStake = stake
 		}
 
 		if flags.Changed("num_delegates") {
@@ -273,6 +289,14 @@ var blobberUpdateCmd = &cobra.Command{
 				log.Fatal(err)
 			}
 			blob.StakePoolSettings.ServiceCharge = sc
+		}
+
+		if flags.Changed("url") {
+			var url string
+			if url, err = flags.GetString("url"); err != nil {
+				log.Fatal(err)
+			}
+			blob.BaseURL = url
 		}
 
 		if _, _, err = sdk.UpdateBlobberSettings(blob); err != nil {
@@ -310,7 +334,4 @@ func init() {
 	buf.Int("num_delegates", 0, "update num_delegates, optional")
 	buf.Float64("service_charge", 0.0, "update service_charge, optional")
 	blobberUpdateCmd.MarkFlagRequired("blobber_id")
-
-	scConfig.PersistentFlags().String("allocation", "",
-		"allocation identifier, required")
 }

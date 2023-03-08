@@ -89,6 +89,8 @@ jobs:
           zbox_cli_branch: ${{ env.CURRENT_BRANCH }}
           zwallet_cli_branch: staging
           custom_go_sdk_version: staging
+          SUBGRAPH_API_URL: ${{ secrets.SUBGRAPH_API_URL }}
+          TENDERLY_FORK_ID: ${{ secrets.TENDERLY_FORK_ID }}
 
       - name: "Run System tests"
         uses: 0chain/actions/run-system-tests@master
@@ -102,6 +104,7 @@ jobs:
           archive_results: true
           run_flaky_tests: false
           retry_failures: true
+          TENDERLY_FORK_ID: ${{ secrets.TENDERLY_FORK_ID }}
           DEVOPS_CHANNEL_WEBHOOK_URL: ${{ secrets.DEVOPS_CHANNEL_WEBHOOK_URL }}
 
       - name: "Set PR status as ${{ job.status }}"
