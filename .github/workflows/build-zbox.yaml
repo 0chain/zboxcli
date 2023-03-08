@@ -110,7 +110,7 @@ jobs:
           retention-days: 5
   build-macos:
     name: Build-macos
-    runs-on: macos-latest
+    runs-on: macos-runner-binary
     steps:
 
       - name: Setup go 1.18
