@@ -11,8 +11,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/0chain/gosdk/zboxcore/blockchain"
-
 	"github.com/spf13/pflag"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
@@ -53,6 +51,7 @@ var newallocationCmd = &cobra.Command{
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		var flags = cmd.Flags()
+		log.Println("Printing Flags : ", flags)
 		costOnly, _ := cmd.Flags().GetBool("cost")
 
 		if flags.Changed("free_storage") {
@@ -211,10 +210,22 @@ var newallocationCmd = &cobra.Command{
 			fileOptionParams.ForbidRename.Value = forbidRename
 		}
 
+		var preferredBlobbers []string
+
+		if flags.Changed("preferred_blobbers") {
+			preferredBlobbersString, _ := flags.GetString("preferred_blobbers")
+			log.Println("preferred_blobbersString", preferredBlobbersString)
+			if err != nil {
+				log.Fatal("invalid preferred_blobbers: ", err)
+			}
+
+			preferredBlobbers = strings.Split(preferredBlobbersString, ",")
+		}
+
 		var allocationID string
 		if len(owner) == 0 {
 			allocationID, _, _, err = sdk.CreateAllocation(*datashards, *parityshards,
-				*size, expireAt, readPrice, writePrice, lock, thirdPartyExtendable, &fileOptionParams)
+				*size, expireAt, readPrice, writePrice, lock, thirdPartyExtendable, &fileOptionParams, preferredBlobbers)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
@@ -230,7 +241,7 @@ var newallocationCmd = &cobra.Command{
 			}
 
 			allocationID, _, _, err = sdk.CreateAllocationForOwner(owner, ownerPublicKey, *datashards, *parityshards,
-				*size, expireAt, readPrice, writePrice, lock, blockchain.GetPreferredBlobbers(), thirdPartyExtendable, &fileOptionParams)
+				*size, expireAt, readPrice, writePrice, lock, preferredBlobbers, thirdPartyExtendable, &fileOptionParams)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
@@ -308,6 +319,7 @@ func init() {
 	newallocationCmd.Flags().Bool("forbid_move", false, "specify if the users cannot move objects from this allocation")
 	newallocationCmd.Flags().Bool("forbid_copy", false, "specify if the users cannot copy object from this allocation")
 	newallocationCmd.Flags().Bool("forbid_rename", false, "specify if the users cannot rename objects in this allocation")
+	newallocationCmd.Flags().String("preferred_blobbers", "", "comma separated list of preferred blobbers")
 }
 
 func storeAllocation(allocationID string) {
