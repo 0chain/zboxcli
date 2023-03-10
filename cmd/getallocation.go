@@ -82,12 +82,12 @@ var getallocationCmd = &cobra.Command{
 		fmt.Println("allocation:")
 		fmt.Println("  id:             ", alloc.ID)
 		fmt.Println("  tx:             ", alloc.Tx, "(latest create/update allocation transaction hash)")
-		fmt.Println("  name:           ", alloc.Name)
 		fmt.Println("  data_shards:    ", alloc.DataShards)
 		fmt.Println("  parity_shards:  ", alloc.ParityShards)
 		fmt.Println("  size:           ", common.Size(alloc.Size))
 		fmt.Println("  expiration_date:", common.Timestamp(alloc.Expiration).ToTime())
-		fmt.Println("  immutable:      ", alloc.IsImmutable)
+		fmt.Println("  third_party_extendable:      ", alloc.ThirdPartyExtendable)
+		fmt.Printf("  file_options:      %08b\n", alloc.FileOptions)
 		fmt.Println("  write pool      ", alloc.WritePool)
 		fmt.Println("  blobbers:")
 
@@ -173,13 +173,20 @@ func calculateDownloadCost(alloc *sdk.Allocation, fileSize int64, blocksPerMarke
 	var cost float64
 
 	for _, d := range alloc.BlobberDetails {
-		readPrice := d.Terms.ReadPrice.ToToken()
+		readPrice, err := d.Terms.ReadPrice.ToToken()
+		if err != nil {
+			log.Fatalf("failed to convert %v to token, %v", d.Terms.ReadPrice, err)
+		}
 		for i := 0; i < totRMsForEachBlobber; i++ {
 			cost += sizeInGB(int64(chunkSize)*int64(blocksPerMarker)) * float64(readPrice)
 		}
 	}
 
-	return common.ToBalance(cost)
+	balance, err := common.ToBalance(cost)
+	if err != nil {
+		log.Fatalf("failed to convert %v to balance, %v", cost, err)
+	}
+	return balance
 }
 func downloadCost(alloc *sdk.Allocation, meta *sdk.ConsolidatedFileMeta, blocksPerMarker int) {
 	if meta.Type != fileref.FILE {
