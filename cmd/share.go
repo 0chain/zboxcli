@@ -55,12 +55,6 @@ var shareCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		/*
-			if len(fileMeta.EncryptedKey) > 0 && (fflags.Changed("encryptionpublickey") == false) {
-				PrintError("Clientid and/or encryptionpublickey are missing for the encrypted share!")
-				os.Exit(1)
-			}
-		*/
 		var isFile bool
 		for _, v := range statsMap {
 			if v != nil {
