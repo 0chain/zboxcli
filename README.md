@@ -70,11 +70,9 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
       - [Upload cost](#upload-cost)
   - [Troubleshooting](#troubleshooting)
 
-## Installation Guides
+## Installation Instructions
 
-### [How to install on Linux](https://github.com/0chain/zboxcli/wiki/Build-Linux)
-
-### [How to install on Windows](https://github.com/0chain/zboxcli/wiki/Build-Windows)
+### [Build Instructions for Linux Windows Mac](https://github.com/0chain/zboxcli/wiki/Build-Instructions)
 
 ### [Other Platform Builds](https://github.com/0chain/zboxcli/wiki/Alternative-Platform-Builds)
 
@@ -84,7 +82,7 @@ As mentioned in build guides, a ./zcn folder is created to store configuration f
 
 ```
   ---
-  block_worker: https://beta.0chain.net
+  block_worker: https://demo.zus.network
   signature_scheme: bls0chain
   min_submit: 50 # in percentage
   min_confirmation: 50 # in percentage
