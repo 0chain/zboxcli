@@ -20,8 +20,6 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
       - [Update allocation](#update-allocation)
       - [Cancel allocation](#cancel-allocation)
       - [Finalise allocation](#finalise-allocation)
-      - [Add curator](#add-curator)
-      - [Remove curator](#remove-curator)
       - [Transfer allocation ownership](#transfer-allocation-ownership)
       - [List blobbers](#list-blobbers)
       - [Detailed blobber information](#detailed-blobber-information)
@@ -72,11 +70,9 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
       - [Upload cost](#upload-cost)
   - [Troubleshooting](#troubleshooting)
 
-## Installation Guides
+## Installation Instructions
 
-### [How to install on Linux](https://github.com/0chain/zboxcli/wiki/Build-Linux)
-
-### [How to install on Windows](https://github.com/0chain/zboxcli/wiki/Build-Windows)
+### [Build Instructions for Linux Windows Mac](https://github.com/0chain/zboxcli/wiki/Build-Instructions)
 
 ### [Other Platform Builds](https://github.com/0chain/zboxcli/wiki/Alternative-Platform-Builds)
 
@@ -86,7 +82,7 @@ As mentioned in build guides, a ./zcn folder is created to store configuration f
 
 ```
   ---
-  block_worker: https://beta.0chain.net
+  block_worker: https://demo.zus.network
   signature_scheme: bls0chain
   min_submit: 50 # in percentage
   min_confirmation: 50 # in percentage
@@ -110,74 +106,72 @@ Note: This is helpful for the Mac OS users running local cluster and having trou
 
 When you run the `zbox` command in terminal with no arguments, it will list all the available commands and the global flags.
 
-**Command**|**Description**
-:-----:|:-----:
-[add-collab](#add-collaborator)|add collaborator for a file
-[addcurator](#add-curator)|Adds a curator to an allocation
-[alloc-cancel](#cancel-allocation)|Cancel an allocation
-[alloc-fini](#finalise-allocation)|Finalize an expired allocation
-[bl-info](#detailed-blobber-information)|Get blobber info
-[validator-info](#detailed-validator-information)|Get validator info
-[bl-update](#update-blobber-settings)|Update blobber settings by its delegate\_wallet owner
-[validator-update](#update-validator-settings)|Update validator settings by its delegate\_wallet owner
-[collect-reward](#collect-rewards)|transfer reward tokens from a stake pool to your wallet.
-[copy](#copy)|copy an object(file/folder) to another folder on blobbers
-[cp-info](#challenge-pool-information)|Challenge pool information.
-[delete](#delete)|delete file from blobbers
-[download](#download)|download file from blobbers
-[get](#get)|Gets the allocation info
-[get-diff](#get-differences)|Get difference of local and allocation root
-[get-download-cost](#download-cost)|Get downloading cost
-[get-upload-cost](#upload-cost)|Get uploading cost
-[getwallet](#get-wallet)|Get wallet information
-help|Help about any command
-[list](#list)|list files from blobbers
-[list-all](#list-all-allocations)|list all files from blobbers
-[listallocations](#list-owners-allocations)|List allocations for the client
-[ls-blobbers](#list-blobbers)|Show active blobbers in storage SC.
-[meta](#get-metadata)|get meta data of files from blobbers
-[move](#move)|move an object(file/folder) to another folder on blobbers
-[newallocation](#create-new-allocation)|Creates a new allocation
-[register](#register-wallet)|Registers the wallet with the blockchain
-[rename](#rename)|rename an object(file/folder) on blobbers
-[rp-create](#create-read-pool)|Create read pool if missing
-[rp-info](#read-pool-info)|Read pool information.
-[rp-lock](#lock-tokens-into-read-pool)|Lock some tokens in read pool.
-[rp-unlock](#unlock-tokens-from-read-pool)|Unlock some expired tokens in a read pool.
-[sc-config](#storage-sc-configurations)|Show storage SC configuration.
-[share](#share)|share files from blobbers
-[sign-data](#sign-data)|Sign given data
-[sp-info](#stake-pool-info)|Stake pool information.
-[sp-lock](#lock-tokens-into-stake-pool)|Lock tokens lacking in stake pool.
-[sp-unlock](#unlock-tokens-from-stake-pool)|Unlock tokens in st*ake pool.
-[sp-user-info](#stake-pools-info-of-user)|Stake pool information for a user.
-[start-repair](#repair)|start repair file to blobbers
-[stats](#stats)|stats for file from blobbers
-[sync](#sync)|Sync files to/from blobbers
-[transferallocation](#transfer-allocation-ownership)|Transfer an allocation between owners
-[update](#update)|update file to blobbers
-[updateallocation](#update-allocation)|Updates allocation's expiry and size
-[upload](#upload)|upload file to blobbers
-version|Prints version information
-[wp-info](#write-pool-info)|Write pool information.
-[wp-lock](#lock-tokens-into-write-pool)|Lock some tokens in write pool.
-[wp-unlock](#unlock-tokens-from-write-pool)|Unlock some expired tokens in a write pool.
+|                     **Command**                      |                      **Description**                      |
+| :--------------------------------------------------: | :-------------------------------------------------------: |
+|           [add-collab](#add-collaborator)            |                add collaborator for a file                |
+|          [alloc-cancel](#cancel-allocation)          |                   Cancel an allocation                    |
+|          [alloc-fini](#finalise-allocation)          |              Finalize an expired allocation               |
+|       [bl-info](#detailed-blobber-information)       |                     Get blobber info                      |
+|  [validator-info](#detailed-validator-information)   |                    Get validator info                     |
+|        [bl-update](#update-blobber-settings)         |   Update blobber settings by its delegate_wallet owner    |
+|    [validator-update](#update-validator-settings)    |  Update validator settings by its delegate_wallet owner   |
+|          [collect-reward](#collect-rewards)          | transfer reward tokens from a stake pool to your wallet.  |
+|                    [copy](#copy)                     | copy an object(file/folder) to another folder on blobbers |
+|        [cp-info](#challenge-pool-information)        |                Challenge pool information.                |
+|                  [delete](#delete)                   |                 delete file from blobbers                 |
+|                [download](#download)                 |                download file from blobbers                |
+|                     [get](#get)                      |                 Gets the allocation info                  |
+|             [get-diff](#get-differences)             |        Get difference of local and allocation root        |
+|         [get-download-cost](#download-cost)          |                   Get downloading cost                    |
+|           [get-upload-cost](#upload-cost)            |                    Get uploading cost                     |
+|               [getwallet](#get-wallet)               |                  Get wallet information                   |
+|                         help                         |                  Help about any command                   |
+|                    [list](#list)                     |                 list files from blobbers                  |
+|          [list-all](#list-all-allocations)           |               list all files from blobbers                |
+|     [listallocations](#list-owners-allocations)      |              List allocations for the client              |
+|            [ls-blobbers](#list-blobbers)             |            Show active blobbers in storage SC.            |
+|                [meta](#get-metadata)                 |           get meta data of files from blobbers            |
+|                    [move](#move)                     | move an object(file/folder) to another folder on blobbers |
+|       [newallocation](#create-new-allocation)        |                 Creates a new allocation                  |
+|             [register](#register-wallet)             |         Registers the wallet with the blockchain          |
+|                  [rename](#rename)                   |         rename an object(file/folder) on blobbers         |
+|            [rp-create](#create-read-pool)            |                Create read pool if missing                |
+|              [rp-info](#read-pool-info)              |                  Read pool information.                   |
+|        [rp-lock](#lock-tokens-into-read-pool)        |              Lock some tokens in read pool.               |
+|      [rp-unlock](#unlock-tokens-from-read-pool)      |        Unlock some expired tokens in a read pool.         |
+|       [sc-config](#storage-sc-configurations)        |              Show storage SC configuration.               |
+|                   [share](#share)                    |                 share files from blobbers                 |
+|               [sign-data](#sign-data)                |                      Sign given data                      |
+|             [sp-info](#stake-pool-info)              |                  Stake pool information.                  |
+|       [sp-lock](#lock-tokens-into-stake-pool)        |            Lock tokens lacking in stake pool.             |
+|     [sp-unlock](#unlock-tokens-from-stake-pool)      |              Unlock tokens in st\*ake pool.               |
+|      [sp-user-info](#stake-pools-info-of-user)       |            Stake pool information for a user.             |
+|               [start-repair](#repair)                |               start repair file to blobbers               |
+|                   [stats](#stats)                    |               stats for file from blobbers                |
+|                    [sync](#sync)                     |                Sync files to/from blobbers                |
+| [transferallocation](#transfer-allocation-ownership) |           Transfer an allocation between owners           |
+|                  [update](#update)                   |                  update file to blobbers                  |
+|        [updateallocation](#update-allocation)        |           Updates allocation's expiry and size            |
+|                  [upload](#upload)                   |                  upload file to blobbers                  |
+|                       version                        |                Prints version information                 |
+|             [wp-info](#write-pool-info)              |                  Write pool information.                  |
+|       [wp-lock](#lock-tokens-into-write-pool)        |              Lock some tokens in write pool.              |
+|     [wp-unlock](#unlock-tokens-from-write-pool)      |        Unlock some expired tokens in a write pool.        |
 
 ### Global Flags
 
- Global Flags are parameters in zbox that can be used with any command to override the default configuration.zbox supports the following global parameters.
+Global Flags are parameters in zbox that can be used with any command to override the default configuration.zbox supports the following global parameters.
 
-| Flags                      | Description                                                  | Usage                                             |
-| -------------------------- | ------------------------------------------------------------ | ------------------------------------------------- |
-| --config string            | Specify a zbox configuration file (default is [$HOME/.zcn/config.yaml](#zcnconfigyaml)) | zbox [command] --config config1.yaml              |
-| --configDir string         | Specify a zbox configuration directory (default is $HOME/.zcn) | zbox [command] --configDir /$HOME/.zcn2           |
-| -h, --help                 | Gives more information about a particular command.           | zbox [command] --help                             |
-| --network string           | Specify a network file to overwrite the network details(default is [$HOME/.zcn/network.yaml](#zcnnetworkyaml)) | zbox [command] --network network1.yaml            |
-| --verbose                  | Provides additional details as to what the particular command is doing. | zbox [command] --verbose                          |
-| --wallet string            | Specify a wallet file or 2nd wallet (default is $HOME/.zcn/wallet.json) | zbox [command] --wallet wallet2.json              |
-| --wallet_client_id string  | Specify a wallet client id (By default client_id specified in $HOME/.zcn/wallet.json is used) | zbox [command] --wallet_client_id <client_id>     |
-| --wallet_client_key string | Specify a wallet client_key (By default client_key specified in $HOME/.zcn/wallet.json is used) | zbox [command] --wallet_client_key  < client_key> |
-
+| Flags                      | Description                                                                                                    | Usage                                            |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| --config string            | Specify a zbox configuration file (default is [$HOME/.zcn/config.yaml](#zcnconfigyaml))                        | zbox [command] --config config1.yaml             |
+| --configDir string         | Specify a zbox configuration directory (default is $HOME/.zcn)                                                 | zbox [command] --configDir /$HOME/.zcn2          |
+| -h, --help                 | Gives more information about a particular command.                                                             | zbox [command] --help                            |
+| --network string           | Specify a network file to overwrite the network details(default is [$HOME/.zcn/network.yaml](#zcnnetworkyaml)) | zbox [command] --network network1.yaml           |
+| --verbose                  | Provides additional details as to what the particular command is doing.                                        | zbox [command] --verbose                         |
+| --wallet string            | Specify a wallet file or 2nd wallet (default is $HOME/.zcn/wallet.json)                                        | zbox [command] --wallet wallet2.json             |
+| --wallet_client_id string  | Specify a wallet client id (By default client_id specified in $HOME/.zcn/wallet.json is used)                  | zbox [command] --wallet_client_id <client_id>    |
+| --wallet_client_key string | Specify a wallet client_key (By default client_key specified in $HOME/.zcn/wallet.json is used)                | zbox [command] --wallet_client_key < client_key> |
 
 ## Commands
 
@@ -187,6 +181,7 @@ To get a more descriptive view of all the zbox functionalities check zbox cli
 documentation at docs.0chain.net.
 
 ### Creating and Managing Allocations
+
 #### Register wallet
 
 `register` is used when needed to register a given wallet to the blockchain.
@@ -211,42 +206,41 @@ Command `newallocation` reserves hard disk space on the blobbers. Later `upload`
 can be used to save files to the blobber. `newallocation` has three modes triggered
 by the presence or absence of the `cost`
 and `free_storage` parameters.
-* `cost` Converts `newallocation` into a query that returns the cost of the allocation
+
+- `cost` Converts `newallocation` into a query that returns the cost of the allocation
   determined by the remaining parameters.
-* [`free_storage`](#free-storage-allocation) Creates an allocation using a free storage marker. All other
+- [`free_storage`](#free-storage-allocation) Creates an allocation using a free storage marker. All other
   parameters except `cost` will be ignored. The allocation settings will be set
   automatically by `0chain`, from preconfigured values.
-* `otherwise` Creates an allocation applying the settings indicated by the
+- `otherwise` Creates an allocation applying the settings indicated by the
   remaining parameters.
-* Use `owner` if you want to create and fund an allocation for someone else. If
+- Use `owner` if you want to create and fund an allocation for someone else. If
   using this option then you need to provide the new owner's public key. Otherwise,
   the owner defaults to the client.
 
-
-
-| Parameter          | Description                                               | Default        | Valid Values |
-|--------------------|-----------------------------------------------------------|----------------|--------------|
-| allocationFileName | local file to store allocation information                | allocation.txt | file path    |
-| cost               | returns the cost of the allocation, no allocation created |                | flag         |
-| data               | number of data shards, effects upload and download speeds | 2              | int          |
-| expire             | duration to allocation expiration                         | 720h           | duration     |
-| free_storage       | free storage marker file.                                 |                | file path    |
-| owner              | owner's id, use for funding an allocation for another     | | string        |
-| owner_public_key   | public key, use for funding an allocation for another     |              | string     |
-| lock               | lock write pool with given number of tokens               |                | float        |
-| parity             | number of parity shards, effects availability             | 2              | int          |
-| read_price         | filter blobbers by read price range                       | 0-inf          | range        |
-| size               | size of space reserved on blobbers                        | 2147483648     | bytes          |
-| usd                | give token value in USD                                   |                | flag         |
-| write_price        | filter blobbers by write price range                      | 0-inf          | range        |
-false          | bool
-| third_party_extendable | specify if the allocation can be extended by users other than the owner |  false          | bool
-| forbid_upload      | specify if users cannot upload to this allocation         |false          | bool
-| forbid_delete      | specify if the users cannot delete objects from this allocation | false          | bool
-| forbid_update      | specify if the users cannot update objects in this allocation |false          | bool
-| forbid_move        | specify if the users cannot move objects from this allocation |false          | bool
-| forbid_copy        | specify if the users cannot copy object from this allocation  |false          | bool
-| forbid_rename      | specify if the users cannot rename objects in this allocation |false          | bool
+| Parameter              | Description                                                             | Default        | Valid Values |
+| ---------------------- | ----------------------------------------------------------------------- | -------------- | ------------ |
+| allocationFileName     | local file to store allocation information                              | allocation.txt | file path    |
+| cost                   | returns the cost of the allocation, no allocation created               |                | flag         |
+| data                   | number of data shards, effects upload and download speeds               | 2              | int          |
+| expire                 | duration to allocation expiration                                       | 720h           | duration     |
+| free_storage           | free storage marker file.                                               |                | file path    |
+| owner                  | owner's id, use for funding an allocation for another                   |                | string       |
+| owner_public_key       | public key, use for funding an allocation for another                   |                | string       |
+| lock                   | lock write pool with given number of tokens                             |                | float        |
+| parity                 | number of parity shards, effects availability                           | 2              | int          |
+| read_price             | filter blobbers by read price range                                     | 0-inf          | range        |
+| size                   | size of space reserved on blobbers                                      | 2147483648     | bytes        |
+| usd                    | give token value in USD                                                 |                | flag         |
+| write_price            | filter blobbers by write price range                                    | 0-inf          | range        |
+| false                  | bool                                                                    |
+| third_party_extendable | specify if the allocation can be extended by users other than the owner | false          | bool         |
+| forbid_upload          | specify if users cannot upload to this allocation                       | false          | bool         |
+| forbid_delete          | specify if the users cannot delete objects from this allocation         | false          | bool         |
+| forbid_update          | specify if the users cannot update objects in this allocation           | false          | bool         |
+| forbid_move            | specify if the users cannot move objects from this allocation           | false          | bool         |
+| forbid_copy            | specify if the users cannot copy object from this allocation            | false          | bool         |
+| forbid_rename          | specify if the users cannot rename objects in this allocation           | false          | bool         |
 
 <details>
   <summary>newallocation </summary>
@@ -268,6 +262,7 @@ false          | bool
 
 Entities can give free `0chain` storage in the form of markers. A marker takes the
 form of a json file
+
 ```json
 {
   "assigner": "my_corporation",
@@ -277,20 +272,22 @@ form of a json file
   "signature": "9edb86c8710d5e3ee4fde247c638fd6b81af67e7bb3f9d60700aec8e310c1f06"
 }
 ```
-* `assigner` A label for the entity providing the free storage.
-* `recipient` The marker has to be run by the recipient to be valid.
-* `free_tokens` The amount of free tokens. When creating a new allocation the
-   free tokens will be split between the allocation's write pool,
-   and a new read pool; the ratio of this split configured on the blockchain.
-* `timestamp` A unique timestamp. Used to prevent multiple applications of the same marker.
-* `signature` Signed by the assigner, validated using the stored public key on the blockchain.
-All allocation settings, other than `lock`, will be set automatically by 0chain.
+
+- `assigner` A label for the entity providing the free storage.
+- `recipient` The marker has to be run by the recipient to be valid.
+- `free_tokens` The amount of free tokens. When creating a new allocation the
+  free tokens will be split between the allocation's write pool,
+  and a new read pool; the ratio of this split configured on the blockchain.
+- `timestamp` A unique timestamp. Used to prevent multiple applications of the same marker.
+- `signature` Signed by the assigner, validated using the stored public key on the blockchain.
+  All allocation settings, other than `lock`, will be set automatically by 0chain.
   Once created, an allocation funded by a free storage marker becomes identical to
   any other allocation; Its history forgotten.
 
 ```shell
 ./zbox newallocation --free_allocation markers/referal_marker.json
 ```
+
 ```shell
 Allocation created : d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
 ```
@@ -300,10 +297,13 @@ Example
 To create a new allocation with default values,use `newallocation` with a `--lock` flag to add
 some tokens to the write pool .On success a related write pool is created and the allocation
 information is stored under `$HOME/.zcn/allocation.txt`.
+
 ```shell
 ./zbox newallocation --lock 0.5
 ```
+
 To use a free storage marker, you only need to provide the path to the marker file.
+
 ```shell
 ./zbox newallocation --lock 0.5 --free_storage markers/my_marker.json
 ```
@@ -318,9 +318,10 @@ Allocation created : d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4f
 
 `updateallocation` updates allocation settings. It has two modes depending on
 the presence of the `free_storage` field.
-* `free_storage` Uses a free storage marker to fund this allocation update; settings
+
+- `free_storage` Uses a free storage marker to fund this allocation update; settings
   predefined by `0chain`. See [newallocation](#free-storage-allocation) for further details.
-* `otherwise` Update an allocation applying the settings indicated by the
+- `otherwise` Update an allocation applying the settings indicated by the
   remaining parameters.
 
 If not a `free_storage` update, then tokens will come from those locked.
@@ -328,25 +329,25 @@ Further we can add a blobber to the allocation,
 adding a blobber will allow a blobber to be removed.
 An increase in blobber count will increment the parity shards.
 
+| Parameter      | Required | Description                                                          | Valid Values |
+| -------------- | -------- | -------------------------------------------------------------------- | ------------ |
+| allocation     | yes      | allocation id                                                        | string       |
+| expiry         |          | adjust storage expiration time                                       | duration     |
+| free_storage   |          | free storage marker file                                             | string       |
+| lock           | yes\*    | lock additional tokens in write pool                                 | int          |
+| update_terms   |          | will update the allocation with the latest blobber terms             | boolean      |
+| size           |          | adjust allocation size                                               | bytes        |
+| add_blobber    |          | add a new blobber to the allocation, required for remove_blobber     | string       |
+| remove_blobber |          | remove a blobber from the allocation, requires an add_blobber option | string2      |
 
-| Parameter     | Required | Description                                                         | Valid Values |
-|---------------|----------|---------------------------------------------------------------------|--------------|
-| allocation    | yes      | allocation id                                                       | string       |
-| expiry        |          | adjust storage expiration time                                      | duration     |
-| free_storage  |          | free storage marker file                                            | string       |
-| lock          | yes*     | lock additional tokens in write pool                                | int          |
-| update_terms |          | will update the allocation with the latest blobber terms            | boolean      |
-| size          |          | adjust allocation size                                              | bytes        |
-| add_blobber |          | add a new blobber to the allocation, required for remove_blobber    | string       |
-| remove_blobber   |      | remove a blobber from the allocation, requires an add_blobber option | string2      |
 `*` only required if free_storage not set.
-| third_party_extendable | specify if the allocation can be extended by users other than the owner |  false          | bool
-| forbid_upload      | specify if users cannot upload to this allocation         |false          | bool
-| forbid_delete      | specify if the users cannot delete objects from this allocation | false          | bool
-| forbid_update      | specify if the users cannot update objects in this allocation |false          | bool
-| forbid_move        | specify if the users cannot move objects from this allocation |false          | bool
-| forbid_copy        | specify if the users cannot copy object from this allocation  |false          | bool
-| forbid_rename      | specify if the users cannot rename objects in this allocation |false          | bool
+| third_party_extendable | specify if the allocation can be extended by users other than the owner | false | bool
+| forbid_upload | specify if users cannot upload to this allocation |false | bool
+| forbid_delete | specify if the users cannot delete objects from this allocation | false | bool
+| forbid_update | specify if the users cannot update objects in this allocation |false | bool
+| forbid_move | specify if the users cannot move objects from this allocation |false | bool
+| forbid_copy | specify if the users cannot copy object from this allocation |false | bool
+| forbid_rename | specify if the users cannot rename objects in this allocation |false | bool
 
 <details>
   <summary>updateallocation </summary>
@@ -388,7 +389,7 @@ funded from the allocation's write pools.
 Cancelling an allocation can only occur if the amount of failed challenges exceed a preset threshold.
 
 | Parameter  | Required | Description   | Valid Values |
-|------------|----------|---------------|--------------|
+| ---------- | -------- | ------------- | ------------ |
 | allocation | yes      | allocation id | string       |
 
 <details>
@@ -417,7 +418,7 @@ the allocation's owner.
 An allocation can be finalised by the owner or one of the allocation blobbers.
 
 | Parameter  | Required | Description   | Valid Values |
-|------------|----------|---------------|--------------|
+| ---------- | -------- | ------------- | ------------ |
 | allocation | yes      | allocation id | string       |
 
 <details>
@@ -433,68 +434,16 @@ Example
 ./zbox alloc-fini --allocation <allocation_id>
 ```
 
-#### Add curator
-
-`addcurator` adds a curator to an allocation.
-A curator can transfer ownership of an allocation. Each allocation
-maintains a list of these curators.
-
-| Parameter  | Required | Description                           | Valid Values |
-|------------|----------|---------------------------------------|--------------|
-| allocation | yes      | allocation id                         | string       |
-| curator    | yes      | id of new curator to add to allocation | string       |
-
-<details>
-  <summary>addcurator</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/125454687-9de43b37-62ac-45c6-8b1d-a5c883672d56.png)
-
-</details>
-
-```shell
-./zbox addcurator --allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d --curator  e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429
-```
-
-```shell
-e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429 added as a curator to allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
-```
-
-#### Remove curator
-A curator can be removed from an allocation by using the `removecurator` command ,
-
-| Parameter  | Required | Description                           | Valid Values |
-|------------|----------|---------------------------------------|--------------|
-| allocation | yes      | allocation id                         | string       |
-| curator    | yes      | id of new curator to remove for allocation | string       |
-
-
-<details>
-  <summary>removecurator</summary>
-
-![remove curator](https://user-images.githubusercontent.com/65766301/141539075-7c4ff968-a331-4374-9969-63ffabe4866d.png)
-
-</details>
-
-
-Command:
-```
-./zbox removecurator --curator e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429 --allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
-```
-Response:
-```
-e49458a13f8a000b5959d03f8f7b6fa397b578643940ba50d3470c201d333429 removed as a curator to allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
-```
 #### Transfer allocation ownership
 
-`transferallocation` changes the owner of an allocation. Only a curator,
-previously added by an [addcurator](#add-curator) command, or, the current owner of the allocation, can change an
+`transferallocation` changes the owner of an allocation. Only the current owner of the allocation, can change an
 allocation's ownership.
 
 `transferallocation` does not move any funds, only changes the owner,
 and the owner's public key.
 
 | Parameter     | Required | Description             | Valid Values |
-|---------------|----------|-------------------------|--------------|
+| ------------- | -------- | ----------------------- | ------------ |
 | allocation    | yes      | allocatino id           | string       |
 | new_owner     | yes      | id of the new owner     | string       |
 | new_owner_key | yes      | public key of new owner | string       |
@@ -523,7 +472,7 @@ transferred ownership of fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d
 Use `ls-blobbers` command to show active blobbers.
 
 | Parameter | Required | Description                          | Valid Values |
-|-----------|----------|--------------------------------------|--------------|
+| --------- | -------- | ------------------------------------ | ------------ |
 | all       | no       | shows active and non active blobbers | flag         |
 | json      | no       | display result in .json format       | flag         |
 
@@ -561,7 +510,7 @@ Example
 Use `bl-info` command to get detailed blobber information.
 
 | Parameter  | Required | Description                         | default | Valid values |
-|------------|----------|-------------------------------------|---------|--------------|
+| ---------- | -------- | ----------------------------------- | ------- | ------------ |
 | blobber id | yes      | blobber on which to get information |         | string       |
 | json       | no       | print result in json format         | false   | boolean      |
 
@@ -603,10 +552,9 @@ settings:
 
 `list-all` lists al the files stored with an allocation
 
-
-| Parameter               | Required | Description                            | Default | Valid values                            |
-|-------------------------|----------|----------------------------------------|---------|-----------------------------------------|
-| allocation              | yes      | allocation id, sender must be allocation owner                   |         | string                                  |
+| Parameter  | Required | Description                                    | Default | Valid values |
+| ---------- | -------- | ---------------------------------------------- | ------- | ------------ |
+| allocation | yes      | allocation id, sender must be allocation owner |         | string       |
 
 ```shell
 ./zbox list-all --allocation 4ebeb69feeaeb3cd308570321981d61beea55db65cbeba4ba3b75c173c0f141b
@@ -616,9 +564,9 @@ settings:
 
 `listallocations` provides a list of all allocations owned by the user.
 
-| Parameter          | Required | Description                               | default | Valid values |
-|--------------------|----------|-------------------------------------------|---------|--------------|
-| json         | no     | print output in json format |         | boolean       |
+| Parameter | Required | Description                 | default | Valid values |
+| --------- | -------- | --------------------------- | ------- | ------------ |
+| json      | no       | print output in json format |         | boolean      |
 
 <details>
   <summary>listallocations</summary>
@@ -627,8 +575,6 @@ settings:
 
 </details>
 
-
-
 ```shell
 ./zbox listallocations
 ZED | CANCELED | R  PRICE |   W  PRICE
@@ -636,22 +582,21 @@ ZED | CANCELED | R  PRICE |   W  PRICE
   4ebeb69feeaeb3cd308570321981d61beea55db65cbeba4ba3b75c173c0f141b | 104857600 | 2021-07-16 13:34:29 +0100 BST |          1 |            1 | false     | false    |     0.02 | 0.1999999998
 ```
 
-
 #### Update blobber settings
 
 Use `./zbox bl-update ` to update a blobber's configuration settings. This updates the settings
 on the blockchain not the blobber.
 
 | Parameter          | Required | Description                               | default | Valid values |
-|--------------------|----------|-------------------------------------------|---------|--------------|
+| ------------------ | -------- | ----------------------------------------- | ------- | ------------ |
 | blobber_id         | yes      | id of blobber of which to update settings |         | string       |
 | capacity           | no       | update blobber capacity                   |         | int          |
 | max_offer_duration | no       | update max offer duration                 |         | duration     |
 | max_stake          | no       | update maximum stake                      |         | float        |
 | min_lock_demand    | no       | update minimum lock demand                |         | float        |
-| min_stake          | no       | update minimum stake                        |         | float        |
-| num_delegates      | no       | update maximum number of delegates          |         | int          |
-| read_price         | no       | update read price                        |         | float        |
+| min_stake          | no       | update minimum stake                      |         | float        |
+| num_delegates      | no       | update maximum number of delegates        |         | int          |
+| read_price         | no       | update read price                         |         | float        |
 | service_charge     | no       | update service charge                     |         | float        |
 | write_price        | no       | update write price                        |         | float        |
 
@@ -669,25 +614,27 @@ Update blobber read price
 ```
 ./zbox bl-update --blobber_id 0ece681f6b00221c5567865b56040eaab23795a843ed629ce71fb340a5566ba3 --read_price 0.1
 ```
+
 ### Uploading and Managing files
+
 #### Upload
 
 Use `upload` command to upload file(s).
+
 - upload a local file
 - download segment files from remote live feed, and upload them
 - start live streaming from local devices, encode it into segment files with `ffmpeg`, and upload them.
 
 The user must be the owner of the allocation.You can request the file be encrypted before upload, and can send thumbnails with the file.
 
-| Parameter               | Required | Description                                          | Default | Valid values                            |
-|-------------------------|----------|------------------------------------------------------|---------|-----------------------------------------|
-| allocation              | yes      | allocation id, sender must be allocation owner                     |         | string                 |
-| encrypt                 | no       | encrypt file before upload                                         | false   | boolean                |
-| localpath               | yes      | local path of the file to upload                                   |         | file path              |
-| remotepath              | yes      | remote path to upload file to, use to access file later            |         | string                 |
-| thumbnailpath           | no       | local path of thumbnaSil                                           |         | file path              |
-| chunknumber             | no       | how many chunks should be uploaded in a http request               | 1       | int                    |
-
+| Parameter     | Required | Description                                             | Default | Valid values |
+| ------------- | -------- | ------------------------------------------------------- | ------- | ------------ |
+| allocation    | yes      | allocation id, sender must be allocation owner          |         | string       |
+| encrypt       | no       | encrypt file before upload                              | false   | boolean      |
+| localpath     | yes      | local path of the file to upload                        |         | file path    |
+| remotepath    | yes      | remote path to upload file to, use to access file later |         | string       |
+| thumbnailpath | no       | local path of thumbnaSil                                |         | file path    |
+| chunknumber   | no       | how many chunks should be uploaded in a http request    | 1       | int          |
 
 <details>
   <summary>upload</summary>
@@ -734,15 +681,15 @@ Use `stream` to capture video and audio streaming form local devices, and upload
 
 The user must be the owner of the allocation.You can request the file be encrypted before upload, and can send thumbnails with the file.
 
-| Parameter               | Required | Description                                          | Default | Valid values                            |
-|-------------------------|----------|------------------------------------------------------|---------|-----------------------------------------|
-| allocation              | yes      | allocation id, sender must be allocation owner                     |         | string                 |
-| encrypt                 | no       | encrypt file before upload                                         | false   | boolean                |
-| localpath               | yes      | local path of segment files to download, generate and upload       |         | file path              |
-| remotepath              | yes      | remote path to upload file to, use to access file later            |         | string                 |
-| thumbnailpath           | no       | local path of thumbnaSil                                           |         | file path              |
-| chunknumber             | no       | how many chunks should be uploaded in a http request               | 1       | int                    |
-| delay                   | no       | set segment duration to seconds.                                   | 5       | int                    |
+| Parameter     | Required | Description                                                  | Default | Valid values |
+| ------------- | -------- | ------------------------------------------------------------ | ------- | ------------ |
+| allocation    | yes      | allocation id, sender must be allocation owner               |         | string       |
+| encrypt       | no       | encrypt file before upload                                   | false   | boolean      |
+| localpath     | yes      | local path of segment files to download, generate and upload |         | file path    |
+| remotepath    | yes      | remote path to upload file to, use to access file later      |         | string       |
+| thumbnailpath | no       | local path of thumbnaSil                                     |         | file path    |
+| chunknumber   | no       | how many chunks should be uploaded in a http request         | 1       | int          |
+| delay         | no       | set segment duration to seconds.                             | 5       | int          |
 
 <details>
   <summary>stream</summary>
@@ -754,24 +701,24 @@ The user must be the owner of the allocation.You can request the file be encrypt
 #### Feed
 
 Use `feed` command to automatically download segment files from remote live feed with `--downloader-args "-q -f best"`
- - encode them into new segment files with `--delay` and `--ffmpeg-args`, and upload.
- - please use `youtube-dl -F https://www.youtube.com/watch?v=pC5mGB5enkw` to list formats of video (see below).
+
+- encode them into new segment files with `--delay` and `--ffmpeg-args`, and upload.
+- please use `youtube-dl -F https://www.youtube.com/watch?v=pC5mGB5enkw` to list formats of video (see below).
 
 The user must be the owner of the allocation.You can request the file be encrypted before upload, and can send thumbnails with the file.
 
-| Parameter               | Required | Description                                          | Default | Valid values                            |
-|-------------------------|----------|------------------------------------------------------|---------|-----------------------------------------|
-| allocation              | yes      | allocation id, sender must be allocation owner                     |         | string                 |
-| encrypt                 | no       | encrypt file before upload                                         | false   | boolean                |
-| localpath               | yes      | local path of segment files to download, generate and upload       |         | file path              |
-| remotepath              | yes      | remote path to upload file to, use to access file later            |         | string                 |
-| thumbnailpath           | no       | local path of thumbnaSil                                           |         | file path              |
-| chunknumber             | no       | how many chunks should be uploaded in a http request               | 1       | int                    |
-| delay                   | no       | set segment duration to seconds.                                   | 5       | int                    |
-| feed                    | no       | set remote live feed to url.                                       | false   | url                    |
-| downloader-args         | no       | pass args to youtube-dl to download video. default is \"-q -f best\". | -q -f best | [youtube-dl](https://github.com/ytdl-org/youtube-dl/blob/master/README.md#options)|
-| ffmpeg-args             | no       | pass args to ffmpeg to build segments.                             | -loglevel warning   | [ffmpeg](https://www.ffmpeg.org/ffmpeg.html)              |
-
+| Parameter       | Required | Description                                                           | Default           | Valid values                                                                       |
+| --------------- | -------- | --------------------------------------------------------------------- | ----------------- | ---------------------------------------------------------------------------------- |
+| allocation      | yes      | allocation id, sender must be allocation owner                        |                   | string                                                                             |
+| encrypt         | no       | encrypt file before upload                                            | false             | boolean                                                                            |
+| localpath       | yes      | local path of segment files to download, generate and upload          |                   | file path                                                                          |
+| remotepath      | yes      | remote path to upload file to, use to access file later               |                   | string                                                                             |
+| thumbnailpath   | no       | local path of thumbnaSil                                              |                   | file path                                                                          |
+| chunknumber     | no       | how many chunks should be uploaded in a http request                  | 1                 | int                                                                                |
+| delay           | no       | set segment duration to seconds.                                      | 5                 | int                                                                                |
+| feed            | no       | set remote live feed to url.                                          | false             | url                                                                                |
+| downloader-args | no       | pass args to youtube-dl to download video. default is \"-q -f best\". | -q -f best        | [youtube-dl](https://github.com/ytdl-org/youtube-dl/blob/master/README.md#options) |
+| ffmpeg-args     | no       | pass args to ffmpeg to build segments.                                | -loglevel warning | [ffmpeg](https://www.ffmpeg.org/ffmpeg.html)                                       |
 
 <details>
   <summary>feed</summary>
@@ -779,7 +726,6 @@ The user must be the owner of the allocation.You can request the file be encrypt
 ![image](https://github.com/0chain/blobber/wiki/uml/usecase/live_upload_sync.png)
 
 </details>
-
 
 ```
 [youtube] pC5mGB5enkw: Downloading webpage
@@ -817,27 +763,28 @@ format code  extension  resolution note
 #### Download
 
 Use `download` command to download your own or a shared file.
-* `owner` The owner of the allocation can always download files, in this case the owner pays for the download.
-* `collaborator` A collaborator can download files, the owner pays. To add collaborators to an allocation, use
+
+- `owner` The owner of the allocation can always download files, in this case the owner pays for the download.
+- `collaborator` A collaborator can download files, the owner pays. To add collaborators to an allocation, use
   [add-collab](#add-collaborator).
-* `authticket` To download a file using `authticket`, you must have previous be given an auth
+- `authticket` To download a file using `authticket`, you must have previous be given an auth
   ticket using the [share](#share) command. Use rx_pay to indicate who pays, `rx_pay = true` you pay,
   `rx_pay = false` the allocation owner pays.
-Use `startblock` and `endblock` to only download part of the file.
+  Use `startblock` and `endblock` to only download part of the file.
 
-| Parameter       | Required | Description                                                              | Default | Valid values |
-|-----------------|----------|--------------------------------------------------------------------------|---------|--------------|
-| allocation      | yes      | allocation id                                                            |         | string       |
-| authticket      | no       | auth ticked if not owner of the allocation, use share to get auth ticket |         | string       |
-| blockspermarker | no       | download multiple blocks per marker                                      | 10      | int          |
-| endblock        | no       | download until specified block number                                    |         | int          |
-| localpath       | yes      | local path to which to download the file to                              |         | file path    |
-| remotepath      | yes      | remote path to which the file was uploaded                               |         | string       |
-| rx_pay          | no       | `authticket` must be valid, true = sender pays, false = allocation owner pays      | false   | boolean      |
-| startblock      | no       | start download from specified block                                      |         | int          |
-| thumbail        | no       | only download the thumbnail                                              | false   | boolean      |
-| live            | no       | start m3u8 downloader,and automatically generate media playlist(m3u8) on --localpath | false   | boolean |
-| delay           | no       | pass segment duration to generate media playlist(m3u8). only works with --live. default duration is 5s. | 5  | int  |
+| Parameter       | Required | Description                                                                                             | Default | Valid values |
+| --------------- | -------- | ------------------------------------------------------------------------------------------------------- | ------- | ------------ |
+| allocation      | yes      | allocation id                                                                                           |         | string       |
+| authticket      | no       | auth ticked if not owner of the allocation, use share to get auth ticket                                |         | string       |
+| blockspermarker | no       | download multiple blocks per marker                                                                     | 10      | int          |
+| endblock        | no       | download until specified block number                                                                   |         | int          |
+| localpath       | yes      | local path to which to download the file to                                                             |         | file path    |
+| remotepath      | yes      | remote path to which the file was uploaded                                                              |         | string       |
+| rx_pay          | no       | `authticket` must be valid, true = sender pays, false = allocation owner pays                           | false   | boolean      |
+| startblock      | no       | start download from specified block                                                                     |         | int          |
+| thumbail        | no       | only download the thumbnail                                                                             | false   | boolean      |
+| live            | no       | start m3u8 downloader,and automatically generate media playlist(m3u8) on --localpath                    | false   | boolean      |
+| delay           | no       | pass segment duration to generate media playlist(m3u8). only works with --live. default duration is 5s. | 5       | int          |
 
 <details>
   <summary>download</summary>
@@ -870,18 +817,17 @@ Downloaded file will be in the location specified by the `localpath` argument.
 
 Use `update` command to update content of an existing file in the remote path.
 Like [upload](#upload) command. Only the owner of the allocation or a collaborator
-can update a file.  To add collaborators to an allocation, use
+can update a file. To add collaborators to an allocation, use
 [add-collab](#add-collaborator).
 
-| Parameter     | Required | Description                   | Default | Valid values |
-|---------------|----------|-------------------------------|---------|--------------|
-| allocation    | yes      | allocation id                 |         | string       |
-| encrypt       | no       | encrypt file before upload    | false   | boolean      |
-| localpath     | yes      | local file to upload          |         | file path    |
-| remotepath    | yes      | remote file to upload         |         | string       |
-| thumbnailpath | no       | local fumbnail file to upload |         | file path    |
-| chunknumber   | no       | how many chunks should be uploaded in a http request   | 1       | int          |
-
+| Parameter     | Required | Description                                          | Default | Valid values |
+| ------------- | -------- | ---------------------------------------------------- | ------- | ------------ |
+| allocation    | yes      | allocation id                                        |         | string       |
+| encrypt       | no       | encrypt file before upload                           | false   | boolean      |
+| localpath     | yes      | local file to upload                                 |         | file path    |
+| remotepath    | yes      | remote file to upload                                |         | string       |
+| thumbnailpath | no       | local fumbnail file to upload                        |         | file path    |
+| chunknumber   | no       | how many chunks should be uploaded in a http request | 1       | int          |
 
 <details>
   <summary>update</summary>
@@ -896,7 +842,7 @@ Use `delete` command to delete your file on the allocation. Only the owner
 of the application can delete a file.
 
 | Parameter  | Required | Description                   | Default | Valid values |
-|------------|----------|-------------------------------|---------|--------------|
+| ---------- | -------- | ----------------------------- | ------- | ------------ |
 | allocation | yes      | allocation id                 |         | string       |
 | remotepath | yes      | remote path of file to delete |         | string       |
 
@@ -922,30 +868,32 @@ Response:
 File successfully deleted (Can be verified using [list](https://github.com/0chain/zboxcli#List))
 
 #### Share
-![Alt text](documents/share_cli.png?raw=true "Share")
+
+![Alt text](documents/share_cli.png?raw=true 'Share')
 
 Use share command to generate an authtoken that provides authorization to the holder to the specified file on the remotepath.
-* --allocation string Allocation ID
-* --clientid string ClientID of the user to share with. Leave blank for public share
-* --encryptionpublickey string Encryption public key of the client you want to share with (from [getwallet](#Get-wallet) command )
-* --remotepath string Remote path to share
-* --expiration-seconds number The seconds after which the ticket will expire(defaults to number of seconds in 90 days
-if option not provided)
-* --available-after Timelock for private file that makes the file available for download at certain time. 4 input formats are supported: +1h30m, +30, 1647858200 and 2022-03-21 10:21:38
 
-`auth ticket` can be used with  [download](#download), and [list](#list),
+- --allocation string Allocation ID
+- --clientid string ClientID of the user to share with. Leave blank for public share
+- --encryptionpublickey string Encryption public key of the client you want to share with (from [getwallet](#Get-wallet) command )
+- --remotepath string Remote path to share
+- --expiration-seconds number The seconds after which the ticket will expire(defaults to number of seconds in 90 days
+  if option not provided)
+- --available-after Timelock for private file that makes the file available for download at certain time. 4 input formats are supported: +1h30m, +30, 1647858200 and 2022-03-21 10:21:38
+
+`auth ticket` can be used with [download](#download), and [list](#list),
 [meta](#get-metadata) and [get_download_cost](#download-cost), but only for files in
 the pre-defined remote path.
 
-| Parameter           | Required | Description                                                       | Valid values |
-|---------------------|----------|-------------------------------------------------------------------|--------------|
-| allocation          | yes      | allocation id                                                     | string       |
-| clientid            | no       | id of user to share file with, leave blank for public share       | string       |
-| encryptionpublickey | no       | public key of the client to share file with, required if clientId | string       |
-| expiration-seconds  | no       | seconds before `auth ticket` expires                              | int          |
-| remotepath          | yes      | remote path of file to share                                      | string       |
-| revoke              | no       | revoke share for remote path                                      | flag         |
-| available-after     | no       | timelock for private file that makes the file available for download at certain time. 4 input formats are supported: +1h30m, +30, 1647858200 and 2022-03-21 10:21:38. default value is current local time|string  |
+| Parameter           | Required | Description                                                                                                                                                                                               | Valid values |
+| ------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| allocation          | yes      | allocation id                                                                                                                                                                                             | string       |
+| clientid            | no       | id of user to share file with, leave blank for public share                                                                                                                                               | string       |
+| encryptionpublickey | no       | public key of the client to share file with, required if clientId                                                                                                                                         | string       |
+| expiration-seconds  | no       | seconds before `auth ticket` expires                                                                                                                                                                      | int          |
+| remotepath          | yes      | remote path of file to share                                                                                                                                                                              | string       |
+| revoke              | no       | revoke share for remote path                                                                                                                                                                              | flag         |
+| available-after     | no       | timelock for private file that makes the file available for download at certain time. 4 input formats are supported: +1h30m, +30, 1647858200 and 2022-03-21 10:21:38. default value is current local time | string       |
 
 <details>
   <summary>share</summary>
@@ -974,10 +922,9 @@ Auth token decoded
 {"client_id":"","owner_id":"17e119406d8887d028b1414acfe47e8808f5b3f98696998787a2055a7edb97af","allocation_id":"89db0cd296185dd986ba3cb4d0e8149176e16b2db21a0e5c06e10ff0b3f14a77","file_path_hash":"3ca722540e653f7545629f0dc19df6899e2404c428d4b1fe2c4627dd71f7fd64","actual_file_hash":"2bc95a9f8449dd1261f6bd587f67e069e11aa0bb","file_name":"test.pdf","reference_type":"f","expiration":1635849373,"timestamp":1628073373,"re_encryption_key":"","encrypted":false,"signature":"d4b938e14094ffd8ab0709af7d2002e7e0af6e71be4af2dc6e10f1ebfe509319"}
 ```
 
-
 **Encrypted share**
 
-Upload file with *--encrypted* tag.
+Upload file with _--encrypted_ tag.
 
 Get encryptionpublickey first, by calling from user you sharing with:
 
@@ -993,9 +940,9 @@ PUBLIC KEY | CLIENTID | ENCRYPTION PUBLIC KEY
   19cd2396df9b8b77358a1110492ff65cbb5b55cae06b8bd204e0969b2454851ca620ae74aebe9ed641166be3bca056a1855610f6154f4f4435a29565a2111282 | b734ef935e2a02892b2fa31e3488b360ef300d3b0b32c03834cea3a83e2453f0 | 1JuT4AbQnmIaOMTuWn07t98xQRsSqXAxZYfwCI1yQLM=
 ```
 
-You have to pickup *ENCRYPTION PUBLIC KEY*
+You have to pickup _ENCRYPTION PUBLIC KEY_
 
-Use *clientid* of the user to share with. *encryptionpublickey* -  key from command above.
+Use _clientid_ of the user to share with. _encryptionpublickey_ - key from command above.
 
 ![Private File Sharing](https://user-images.githubusercontent.com/65766301/120052575-962ff800-c043-11eb-9cf7-433383d532a3.png)
 
@@ -1019,9 +966,9 @@ Response contains an auth ticket- an encrypted string that can be shared.
 
 **Directory share**
 
-Follow up steps above to get *encryptionpublickey*
+Follow up steps above to get _encryptionpublickey_
 
-Upload multiple files to directory with *zbox upload /folder1/file1.z ...*
+Upload multiple files to directory with _zbox upload /folder1/file1.z ..._
 
 ```
 ./zbox share --allocation 3c0d32560ea18d9d0d76808216a9c634f661979d29ba59cc8dafccb3e5b95341 --remotepath /folder1 --clientid b6de562b57a0b593d0480624f79a55ed46dba544404595bee0273144e01034ae --encryptionpublickey 1JuT4AbQnmIaOMTuWn07t98xQRsSqXAxZYfwCI1yQLM=
@@ -1041,9 +988,9 @@ Decoded
 {"client_id":"b734ef935e2a02892b2fa31e3488b360ef300d3b0b32c03834cea3a83e2453f0","owner_id":"639f271fe511cd1880c2a4d8ea4a4f240faf3365c61b65b425fab5e0231713c3","allocation_id":"937ad69fb20dc111bcfd01de42c792a0c2b441de3d3cf4cdb3f25c21c1ab4b7b","file_path_hash":"ad18f385cb61c813c3144569345f1c4681589c7347bd728692e85f1b7386b69d","actual_file_hash":"","file_name":"folder1","reference_type":"d","expiration":1636288043,"timestamp":1628512043,"re_encryption_key":"","encrypted":true,"signature":"cba6e20690c8fce99bace33b1c0f7849d18bbe17a8926738852260770d37830d"}
 ```
 
-Make sure *"reference_type":"d"* is "d" (directory)
+Make sure _"reference_type":"d"_ is "d" (directory)
 
-Now you able to download files inside this directory with same auth_ticket. To download it just point to excact file location in *--remotepath* param:
+Now you able to download files inside this directory with same auth*ticket. To download it just point to excact file location in *--remotepath\_ param:
 
 ```
 zbox download --allocation 76ad9fa86f9b6685880553588a250586806ba5d7d20fc229d6905998be55d64a --localpath ~/file1.z --authticket $auth --remotepath /folder1/file1.z
@@ -1053,7 +1000,7 @@ This method works for both: encrypted and non-encrypted files.
 
 ##### share-encrypted revoke
 
-This will cancel the share for particular buyer that was performed by the seller using zbox share. *Works only for files with --encrypted tag.*
+This will cancel the share for particular buyer that was performed by the seller using zbox share. _Works only for files with --encrypted tag._
 
 Use clientid of the user that was share the remotepath.
 Required parameters are allocation, remotepath and clientid.
@@ -1073,7 +1020,7 @@ not sent by the allocation's owner. Using an auth ticket requires a `lookuphash`
 contents.
 
 | Parameter  | Required | Description                                                              | default | Valid values |
-|------------|----------|--------------------------------------------------------------------------|---------|--------------|
+| ---------- | -------- | ------------------------------------------------------------------------ | ------- | ------------ |
 | allocation | yes      | allocation id                                                            |         | string       |
 | authticket | no       | auth ticked if not owner of the allocation, use share to get auth ticket |         | sting        |
 | json       | no       | output the response in json format                                       | false   | boolean      |
@@ -1107,7 +1054,7 @@ Use `copy` command to copy file to another folder path in dStorage.
 Only the owner of the allocation can copy an object.
 
 | Parameter  | Required | Description                                       | default | Valid values |
-|------------|----------|---------------------------------------------------|---------|--------------|
+| ---------- | -------- | ------------------------------------------------- | ------- | ------------ |
 | allocation | yes      | allocation id                                     |         | string       |
 | remotepath | yes      | remote path of object to copy                     |         | string       |
 | destpath   | yes      | destination, an existing directory to copy object |         | string       |
@@ -1138,7 +1085,7 @@ Use `move` command to move file to another remote folder path on dStorage.
 Only the owner of the allocation can copy an object.
 
 | Parameter  | Required | Description                                       | default | Valid values |
-|------------|----------|---------------------------------------------------|---------|--------------|
+| ---------- | -------- | ------------------------------------------------- | ------- | ------------ |
 | allocation | yes      | allocation id                                     |         | string       |
 | remotepath | yes      | remote path of object to copy                     |         | string       |
 | destpath   | yes      | destination, an existing directory to copy object |         | string       |
@@ -1169,10 +1116,10 @@ Response:
 Only the allocation's owner can successfully run `sync`.
 
 | Parameter   | Required | Description                                                                                   | default | Valid values |
-|-------------|----------|-----------------------------------------------------------------------------------------------|---------|--------------|
+| ----------- | -------- | --------------------------------------------------------------------------------------------- | ------- | ------------ |
 | allocation  | yes      | allocation id                                                                                 |         | string       |
 | encryptpath | no       | local directory path to be uploaded as encrypted                                              | false   | boolean      |
-| excludepath  | no       | paths to exclude from sync                                                                   |         | string array |
+| excludepath | no       | paths to exclude from sync                                                                    |         | string array |
 | localchache | no       | local chache of remote snapshot. Used for comparsion with remote. After sync will be updated. |         | string       |
 | localpath   | yes      | local directory to which to sync                                                              |         | file path    |
 | uploadonly  | no       | only upload and update files                                                                  | false   | boolean      |
@@ -1214,22 +1161,23 @@ Local cache saved.
 It will sync your localpath with the remote and do all the required CRUD operations.
 
 #### Get differences
- `./zbox get-diff` command returns the differences between the local files specified by `localpath` and the files stored
+
+`./zbox get-diff` command returns the differences between the local files specified by `localpath` and the files stored
 on the root remotepath of the allocation.`localcache` flag can also be specified to use the local cache of remote snapshot created during [Sync](#sync) for file comparison.
 
-
 | Parameter   | Required | Description                                   | default | Valid values |
-|-------------|----------|-----------------------------------------------|---------|--------------|
+| ----------- | -------- | --------------------------------------------- | ------- | ------------ |
 | allocation  | yes      | allocation id                                 |         | string       |
 | excludepath | no       | remote folder paths to exclude during syncing |         | string array |
-| localcache  | no       | local cache of remote snapshot               |         | string       |
-| localpath   | yes      | local directory to sync                        |         | string       |
+| localcache  | no       | local cache of remote snapshot                |         | string       |
+| localpath   | yes      | local directory to sync                       |         | string       |
 
 Example
 
 ```
 ./zbox get-diff --allocation $ALLOC --localpath $local
 ```
+
 Response:
 
 ```
@@ -1245,9 +1193,9 @@ Response:
 Use `getwallet` command to get additional wallet information including Encryption
 Public Key,Client ID which are required for Private File Sharing.
 
-| Parameter  | Required | Description                  | default | Valid values |
-|------------|----------|------------------------------|---------|--------------|
-| json       | no       | print response in json format | false   | boolean      |
+| Parameter | Required | Description                   | default | Valid values |
+| --------- | -------- | ----------------------------- | ------- | ------------ |
+| json      | no       | print response in json format | false   | boolean      |
 
 Example
 
@@ -1270,9 +1218,9 @@ Response will give details for current selected wallet (or wallet file specified
 Use `get` command to get the information about the allocation such as total size , used size, number of challenges
 and challenges passed/failed/open/redeemed.
 
-| Parameter  | Required | Description                  | default | Valid values |
-|------------|----------|------------------------------|---------|--------------|
-| allocation | yes      | allocation id                |         | string       |
+| Parameter  | Required | Description                   | default | Valid values |
+| ---------- | -------- | ----------------------------- | ------- | ------------ |
+| allocation | yes      | allocation id                 |         | string       |
 | json       | no       | print response in json format | false   | boolean      |
 
 <details>
@@ -1325,13 +1273,13 @@ Use [share](#share) to create an auth ticket for someone or [add-collab](#add-co
 to add a user as a collaborator. To indicate the object use `remotepath` or
 `lookuphash` with an auth ticket.
 
-| Parameter  | Required | Description                                                              | default | Valid values |
-|------------|----------|--------------------------------------------------------------------------|---------|--------------|
-| allocation | yes      | allocation id                                                            |         | string       |
-| authticket | no       | auth ticked if not owner of the allocation |         | string       |
-| json       | no       | print result in json format                                              | false   | boolean      |
-| lookuphash | no       | hash of object, use with auth ticket                                     |         | string       |
-| remotepath | no       | remote path of objecte, do not use with authticket                       |         | string       |
+| Parameter  | Required | Description                                        | default | Valid values |
+| ---------- | -------- | -------------------------------------------------- | ------- | ------------ |
+| allocation | yes      | allocation id                                      |         | string       |
+| authticket | no       | auth ticked if not owner of the allocation         |         | string       |
+| json       | no       | print result in json format                        | false   | boolean      |
+| lookuphash | no       | hash of object, use with auth ticket               |         | string       |
+| remotepath | no       | remote path of objecte, do not use with authticket |         | string       |
 
 <details>
   <summary>meta</summary>
@@ -1369,7 +1317,6 @@ TYPE | NAME  |                           LOOKUP HASH                            
   f    | 1.txt | 20dc798b04ebab3015817c85d22aea64a52305bad6f7449acd3828c8d70c76a3 |    4 | application/octet-stream | 03cfd743661f07975fa2f1220c5194cbaff48451
 ```
 
-
 Response will be metadata for the given filepath/lookuphash (if using authTicket)
 
 #### Rename
@@ -1378,7 +1325,7 @@ Response will be metadata for the given filepath/lookuphash (if using authTicket
 allocation's owner can rename a file.
 
 | Parameter  | Required | Description                                       | default | Valid values |
-|------------|----------|---------------------------------------------------|---------|--------------|
+| ---------- | -------- | ------------------------------------------------- | ------- | ------------ |
 | allocation | yes      | allocation id                                     |         | string       |
 | destname   | yes      | new neame of the object                           |         | string       |
 | remotepath | yes      | remote path of object, do not use with authticket |         | string       |
@@ -1408,7 +1355,7 @@ Response:
 Only the owner can get a files stats.
 
 | Parameter  | Required | Description                 | default | Valid values |
-|------------|----------|-----------------------------|---------|--------------|
+| ---------- | -------- | --------------------------- | ------- | ------------ |
 | allocation | yes      | allocation id               |         | string       |
 | json       | no       | print result in json format | false   | boolean      |
 | remotepath | yes      | file of which to get stats  |         | string       |
@@ -1446,7 +1393,7 @@ Use `start-repair` command to repair a file on dStorage.
 \
 
 | Parameter  | Required | Description               | default | Valid values |
-|------------|----------|---------------------------|---------|--------------|
+| ---------- | -------- | ------------------------- | ------- | ------------ |
 | allocation | yes      | allocation id             |         | string       |
 | repairpath | yes      | remote path to repair     |         | string       |
 | rootpath   | yes      | file path for local files |         | string       |
@@ -1457,8 +1404,6 @@ Use `start-repair` command to repair a file on dStorage.
 ![image](https://user-images.githubusercontent.com/6240686/127882066-83d7e641-56a7-4ae1-bbf1-547ca389481c.png)
 
 </details>
-
-
 
 Example
 
@@ -1480,7 +1425,7 @@ Collaborators can perform read actions on the collaboration file, with the owner
 ![collaboration](https://user-images.githubusercontent.com/65766301/120052678-0f2f4f80-c044-11eb-8ca6-1a032659eac3.png)
 
 | Parameter  | Required | Description                  | default | Valid values |
-|------------|----------|------------------------------|---------|--------------|
+| ---------- | -------- | ---------------------------- | ------- | ------------ |
 | allocation | yes      | allocation id                |         | string       |
 | collabid   | yes      | id of collaberator           |         | string       |
 | remotepath | yes      | file on which to collaberate |         | string       |
@@ -1510,17 +1455,16 @@ You can check all collaborators for a file in metadata json response.
 
 `sign-data` uses the information from your wallet to sign the input data string
 
-| Parameter   | Required | Description                                   | default | Valid values |
-|-------------|----------|-----------------------------------------------|---------|--------------|
-| data  | yes      | string to sign                                 |         | string       |
-
+| Parameter | Required | Description    | default | Valid values |
+| --------- | -------- | -------------- | ------- | ------------ |
+| data      | yes      | string to sign |         | string       |
 
 ```shell
 ./zbox sign-data "data to sign"
 Signature : 9432ab2ee602062afaf48c4016b373a65db48a8546a81c09dead40e54966399e
 ```
 
-------
+---
 
 #### Streaming
 
@@ -1537,7 +1481,6 @@ After the arrival of the first chunk, the player starts requesting more chunks f
 The task of downloading files and writing them to buffer using Zbox SDK happens constantly, and If players request random bits of video, they are delivered instantly by a buffer.
 
 In a case, if the player didn't receive chunks (for example, it's still not downloaded), then the player switches to STALE state, and the video stream will pause. During the STALE state, a player tries to make multiple requests for chunks; if didn't receive a response, the video stream stops.
-
 
 ##### Usage
 
@@ -1557,7 +1500,6 @@ Response:
 ```
 
 Here we can see the `audio.mp3` file of size (5993286) bytes having 92 blocks.If we want to download a certain number of blocks for the `audio.mp3` file we can use the `--endblock` or `--startblock` flag with `./zbox download` command. Other flags for download can be viewed using `./zbox download --help`
-
 
 ```
 Flags:
@@ -1588,9 +1530,6 @@ Status completed callback. Type = audio/mpeg. Name = audio.mp3
 
 As we can see, the downloaded file size(393216) is less than the original(2996198), which means zbox has downloaded some blocks of the file.
 
-
-
-
 ### Lock and Unlock Tokens
 
 #### Challenge pool information
@@ -1598,7 +1537,7 @@ As we can see, the downloaded file size(393216) is less than the original(299619
 Use `cp-info` command to get the challenge pool brief information.
 
 | Parameter  | Required | Description                 | default | Valid values |
-|------------|----------|-----------------------------|---------|--------------|
+| ---------- | -------- | --------------------------- | ------- | ------------ |
 | allocation | yes      | allocation id               |         | string       |
 | json       | no       | print result in json format | false   | boolean      |
 
@@ -1624,8 +1563,7 @@ POOL ID: 6dba10422e368813802877a85039d3985d96760ed844092319743fb3a76712d7:challe
   0.0000002796 | 2021-04-17 00:27:23 +0700 +07 | 2021-05-24 00:29:23 +0700 +07 | false
 ```
 
-
- Balance is the current challenge pool balance. Start,Expire time and the finalization are allocations related.
+Balance is the current challenge pool balance. Start,Expire time and the finalization are allocations related.
 
 #### Create read pool
 
@@ -1649,18 +1587,18 @@ invested to your wallet.
 
 You earn rewards for:
 Blobbers
+
 - File space used by allocation owners and associates.
 - A min lock demand for each allocation.
 - Block rewards. Each block a reward gets paid out to blobber stakeholders in the form of a random lottery.
-Validators
+  Validators
 - Payment for validating blobber challenge responses.
 
 The stake pool keeps an account for all stakeholders to maintain accrued rewards.
 These rewards can be accessed using this `collect-reward` command.
 
-
 | Parameter     | Required | Description          | default | Valid values |
-|---------------|----------|----------------------|---------|--------------|
+| ------------- | -------- | -------------------- | ------- | ------------ |
 | provider_type | no       | blobber or validator | blobber | string       |
 
 ```bash
@@ -1671,9 +1609,9 @@ These rewards can be accessed using this `collect-reward` command.
 
 Use `rp-info` to get read pool information.
 
-| Parameter  | Required | Description                 | default | Valid values |
-|------------|----------|-----------------------------|---------|--------------|
-| json       | no       | print result in json format | false   | boolean      |
+| Parameter | Required | Description                 | default | Valid values |
+| --------- | -------- | --------------------------- | ------- | ------------ |
+| json      | no       | print result in json format | false   | boolean      |
 
 <details>
   <summary>rp-info</summary>
@@ -1685,21 +1623,22 @@ Use `rp-info` to get read pool information.
 ```
 ./zbox rp-info
 ```
+
 #### Lock tokens into read pool
 
 Lock some tokens in read pool. ReadPool is not linked to specific allocations anymore.
 Each wallet has a singular, non-expiring, untethered ReadPool. Locked tokens in ReadPool can be unlocked at any time and returned to the original wallet balance.
 
-* If the user does not have a pre-existing read pool, then the smart-contract
+- If the user does not have a pre-existing read pool, then the smart-contract
   creates one.
 
 Locked tokens can be used to pay for read access to file(s) stored with different allocations.
 To use these tokens the user must be the allocation owner, collaborator or have an auth ticket.
 
-| Parameter  | Required | Description            | default | Valid values |
-|------------|----------|------------------------|---------|--------------|
-| fee        |          | transaction fee        | 0       | int          |
-| tokens     | yes      | tokens to lock         |         | int          |
+| Parameter | Required | Description     | default | Valid values |
+| --------- | -------- | --------------- | ------- | ------------ |
+| fee       |          | transaction fee | 0       | int          |
+| tokens    | yes      | tokens to lock  |         | int          |
 
 ```
 ./zbox rp-lock --tokens 1
@@ -1709,9 +1648,9 @@ To use these tokens the user must be the allocation owner, collaborator or have 
 
 Use `rp-unlock` to unlock tokens from `read pool by ownership.
 
-| Parameter | Required | Description          | default | Valid values |
-|-----------|----------|----------------------|---------|--------------|
-| fee       | no       | transaction fee      | 0       | float        |
+| Parameter | Required | Description     | default | Valid values |
+| --------- | -------- | --------------- | ------- | ------------ |
+| fee       | no       | transaction fee | 0       | float        |
 
 Unlocked tokens get returned to the original wallet balance.
 
@@ -1720,7 +1659,7 @@ Unlocked tokens get returned to the original wallet balance.
 Show storage SC configuration.
 
 | Parameter  | Required | Description                 | default | Valid values |
-|------------|----------|-----------------------------|---------|--------------|
+| ---------- | -------- | --------------------------- | ------- | ------------ |
 | allocation | yes      | allocation id               |         | string       |
 | json       | no       | print result in json format | false   | boolean      |
 
@@ -1740,7 +1679,7 @@ Show storage SC configuration.
 Use `sp-info` to get your stake pool information and settings.
 
 | Parameter  | Required | Description                 | default        | Valid values |
-|------------|----------|-----------------------------|----------------|--------------|
+| ---------- | -------- | --------------------------- | -------------- | ------------ |
 | blobber_id |          | id of blobber               | current client | string       |
 | json       | no       | print result in json format | false          | boolean      |
 
@@ -1765,12 +1704,12 @@ actions of the linked provider.
 `sp-lock` returns the id of the new stake pool, this will be needed to reference
 to stake pool later.
 
-| Parameter    | Required | Description     | default    | Valid values |
-|--------------|----------|-----------------|------------|--------------|
-| blobber_id   |          | id of blobber   | n/a        | string       |
-| validator_id |          | id of validator | n/a        | string       |
-| fee          | no       | transaction fee | 0          | float        |
-| tokens       | yes      | tokens to lock  |            | float        |
+| Parameter    | Required | Description     | default | Valid values |
+| ------------ | -------- | --------------- | ------- | ------------ |
+| blobber_id   |          | id of blobber   | n/a     | string       |
+| validator_id |          | id of validator | n/a     | string       |
+| fee          | no       | transaction fee | 0       | float        |
+| tokens       | yes      | tokens to lock  |         | float        |
 
 <details>
   <summary>sp-lock</summary>
@@ -1780,11 +1719,13 @@ to stake pool later.
 </details>
 
 To stake tokens for blobbers:
+
 ```
 ./zbox sp-lock --blobber_id <blobber_id> --tokens 1.0
 ```
 
 To stake tokens for validators:
+
 ```
 ./zbox sp-lock --validator_id <validator_id> --tokens 1.0
 ```
@@ -1796,11 +1737,11 @@ it would leave insufficient funds for opened offers, then `sp-unlock` tags
 the stake pool to be unlocked later. This tag prevents the stake pool affecting
 blobber allocation for any new allocations.
 
-| Parameter    | Required | Description          | default    | Valid values |
-|--------------|----------|----------------------|------------|--------------|
-| blobber_id   |          | id of blobber        | n/a        | string       |
-| validator_id |          | id of validator      | n/a        | string       |
-| fee          | no       | transaction fee      | 0          | float        |
+| Parameter    | Required | Description     | default | Valid values |
+| ------------ | -------- | --------------- | ------- | ------------ |
+| blobber_id   |          | id of blobber   | n/a     | string       |
+| validator_id |          | id of validator | n/a     | string       |
+| fee          | no       | transaction fee | 0       | float        |
 
 <details>
   <summary>sp-unlock</summary>
@@ -1810,11 +1751,13 @@ blobber allocation for any new allocations.
 </details>
 
 To unstake blobber tokens:
+
 ```
 ./zbox sp-unlock --blobber_id <blobber_id>
 ```
 
 To unstake validator tokens:
+
 ```
 ./zbox sp-unlock --validator_id <validator_id> --pool_id <pool_id>
 ```
@@ -1823,10 +1766,9 @@ To unstake validator tokens:
 
 Get information about all stake pools of current user.
 
-| Parameter  | Required | Description                 | default        | Valid values |
-|------------|----------|-----------------------------|----------------|--------------|
-| json       | no       | print result in json format | false          | boolean      |
-
+| Parameter | Required | Description                 | default | Valid values |
+| --------- | -------- | --------------------------- | ------- | ------------ |
+| json      | no       | print result in json format | false   | boolean      |
 
 <details>
   <summary>sp-user-info</summary>
@@ -1844,7 +1786,7 @@ Get information about all stake pools of current user.
 Write pool information. Use allocation id to filter results to a singe allocation.
 
 | Parameter     | Required | Description                 | default | Valid values |
-|---------------|----------|-----------------------------|---------|--------------|
+| ------------- | -------- | --------------------------- | ------- | ------------ |
 | allocation id | no       | allocation id               |         | string       |
 | json          | no       | print result in json format | false   | boolean      |
 
@@ -1855,9 +1797,7 @@ Write pool information. Use allocation id to filter results to a singe allocatio
 
 </details>
 
-
 For all write pools.
-
 
 ```
 ./zbox wp-info
@@ -1873,9 +1813,10 @@ Filtering by allocation.
 
 `wp-lock` can be used to lock tokens in a write pool associated with an allocation.
 All tokens will be divided between allocation blobbers depending on their write price.
-* Uses two different formats, you can either define a specific blobber
+
+- Uses two different formats, you can either define a specific blobber
   to lock all tokens, or spread across all the allocations blobbers automatically.
-* If the user does not have a pre-existing read pool, then the smart-contract
+- If the user does not have a pre-existing read pool, then the smart-contract
   creates one.
 
 Anyone can lock tokens with a write pool attached an allocation. These tokens can
@@ -1884,7 +1825,7 @@ moved into the challenge pool to underwrite blobbers' min lock demands return to
 allocation's owner on closing the allocation.
 
 | Parameter     | Required | Description                       | default | Valid values |
-|---------------|----------|-----------------------------------|---------|--------------|
+| ------------- | -------- | --------------------------------- | ------- | ------------ |
 | allocation id | no       | allocation id                     |         | string       |
 | blobber       | no       | blobber id                        |         | string       |
 | duration      | yes      | duration for which to lock tokens |         | duration     |
@@ -1897,6 +1838,7 @@ allocation's owner on closing the allocation.
 ```shell
 ./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1 --blobber f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25
 ```
+
 ![image](https://user-images.githubusercontent.com/6240686/123988183-b4c93c00-d9bf-11eb-825c-9a5849fedbbf.png)
 
 </details>
@@ -1919,15 +1861,14 @@ each blobber's Terms.ReadPrice.
 ./zbox wp-lock --allocation <allocation_id> --duration 40m --tokens 1
 ```
 
-
 #### Unlock tokens from write pool
 
 `wp-unlock` unlocks an expired write pool.
 An expired write pool, associated with an allocation, can be locked until allocation finalization even if it's expired. It possible in cases where related blobber doesn't give their min lock demands. The finalization will pay the demand and unlock the pool.
 
-| Parameter | Required | Description          | default | Valid values |
-|-----------|----------|----------------------|---------|--------------|
-| fee       | no       | transaction fee      | 0       | float        |
+| Parameter | Required | Description     | default | Valid values |
+| --------- | -------- | --------------- | ------- | ------------ |
+| fee       | no       | transaction fee | 0       | float        |
 
 <details>
   <summary>rp-unlock</summary>
@@ -1943,10 +1884,10 @@ An expired write pool, associated with an allocation, can be locked until alloca
 #### Download cost
 
 `get-download-cost` determines the cost for downloading the remote file from dStorage. The client must be an
-  owner, collaborator, or using an auth ticket to determine the download cost of the file.
+owner, collaborator, or using an auth ticket to determine the download cost of the file.
 
 | Parameter  | Required | Description                               | default | Valid values |
-|------------|----------|-------------------------------------------|---------|--------------|
+| ---------- | -------- | ----------------------------------------- | ------- | ------------ |
 | allocation | yes      | allocation id                             |         | string       |
 | authticket | no       | auth ticket to use if not the owner       |         | string       |
 | lookuphash | no       | hash of remote file, use with auth ticket |         | string       |
@@ -1974,11 +1915,11 @@ Response:
 the allocation expires.
 
 | Parameter  | Required | Description                          | default | Valid values |
-|------------|----------|--------------------------------------|---------|--------------|
+| ---------- | -------- | ------------------------------------ | ------- | ------------ |
 | allocation | yes      | allocation id                        |         | string       |
 | duration   | no       | duration for which to upload file    |         | duration     |
 | end        | no       | upload file until allocation expires | false   | boolean      |
-| localpath   | yes      | local of path to calculate upload    |         | file path    |
+| localpath  | yes      | local of path to calculate upload    |         | file path    |
 
 <details>
   <summary>get-upload-cost</summary>
@@ -1988,10 +1929,13 @@ the allocation expires.
 </details>
 
 Command:
+
 ```
 ./zbox get-upload-cost --allocation <allocation_id> --localpath ./path/file.ext
 ```
+
 Response:
+
 ```
  0.0000000028 tokens / 720h0m0s for 24 B of <remote_path_of_file>
 ```
@@ -2010,4 +1954,4 @@ Response:
 Failed to get read pool info: error requesting read pool info: consensus_failed: consensus failed on sharders
 ```
 
-This can happen if read pool is not yet created for wallet. Read pool is usually created when new wallet is created by `zbox` or `zwallet`. However, if wallet is recovered through `zwallet recoverwallet`, read pool may not have been created. Simply run `zbox rp-create`  to create a read pool.
+This can happen if read pool is not yet created for wallet. Read pool is usually created when new wallet is created by `zbox` or `zwallet`. However, if wallet is recovered through `zwallet recoverwallet`, read pool may not have been created. Simply run `zbox rp-create` to create a read pool.
