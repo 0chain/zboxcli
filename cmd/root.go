@@ -107,7 +107,7 @@ func initConfig() {
 	}
 
 	// is freshly created wallet?
-	var fresh bool
+	// var fresh bool
 
 	wallet := &zcncrypto.Wallet{}
 	if (&walletClientID != nil) && (len(walletClientID) > 0) && (&walletClientKey != nil) && (len(walletClientKey) > 0) {
@@ -122,7 +122,7 @@ func initConfig() {
 			os.Exit(1)
 		}
 		clientWallet = wallet
-		fresh = false
+		// fresh = false
 	} else {
 		var walletFilePath string
 		if &walletFile != nil && len(walletFile) > 0 {
@@ -160,7 +160,7 @@ func initConfig() {
 			defer file.Close()
 			fmt.Fprintf(file, walletJSON)
 
-			fresh = true
+			// fresh = true
 		} else {
 			f, err := os.Open(walletFilePath)
 			if err != nil {
@@ -203,12 +203,12 @@ func initConfig() {
 
 	sdk.SetNumBlockDownloads(10)
 
-	if fresh {
-		fmt.Println("Creating related read pool for storage smart-contract...")
-		if _, _, err = sdk.CreateReadPool(); err != nil {
-			fmt.Printf("Failed to create read pool: %v\n", err)
-			os.Exit(1)
-		}
-		fmt.Println("Read pool created successfully")
-	}
+	// if fresh {
+	// 	fmt.Println("Creating related read pool for storage smart-contract...")
+	// 	if _, _, err = sdk.CreateReadPool(); err != nil {
+	// 		fmt.Printf("Failed to create read pool: %v\n", err)
+	// 		os.Exit(1)
+	// 	}
+	// 	fmt.Println("Read pool created successfully")
+	// }
 }
