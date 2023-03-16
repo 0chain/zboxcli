@@ -9,8 +9,8 @@ import (
 
 var transferAllocationCmd = &cobra.Command{
 	Use:   "transferallocation",
-	Short: "Transfer an allocation between owners",
-	Long:  "Transfer an allocation between owners, only a curator can transfer an allocation",
+	Short: "Transfer an allocation from one account to another",
+	Long:  "Transfer an allocation between accounts, only current owner can transfer the allocation",
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		var err error
@@ -40,7 +40,7 @@ var transferAllocationCmd = &cobra.Command{
 			log.Fatal("invalid 'new_owner_key' flag: ", err)
 		}
 
-		_, _, err = sdk.CuratorTransferAllocation(allocationId, newOwnerId, newOwnerPublicKey)
+		_, _, err = sdk.TransferAllocation(allocationId, newOwnerId, newOwnerPublicKey)
 		if err != nil {
 			log.Fatal("Error transferring allocation:", err)
 		}
