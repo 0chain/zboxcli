@@ -56,7 +56,7 @@ var shareCmd = &cobra.Command{
 
 		var fileName string
 
-		_, fileName = common.Split(remotepath)
+		_, fileName = pathutil.Split(remotepath)
 		refereeClientID := cmd.Flag("clientid").Value.String()
 
 		revoke, _ := cmd.Flags().GetBool("revoke")

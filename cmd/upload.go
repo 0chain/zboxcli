@@ -6,7 +6,6 @@ import (
 	"sync"
 
 	thrown "github.com/0chain/errors"
-	"github.com/0chain/gosdk/core/common"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zboxcore/zboxutil"
 	"github.com/0chain/zboxcli/util"
@@ -168,7 +167,7 @@ func fullPathAndFileNameForUpload(localPath, remotePath string) (string, string,
 	}
 
 	fullRemotePath := zboxutil.GetFullRemotePath(localPath, remotePath)
-	_, fileName := common.Split(fullRemotePath)
+	_, fileName := pathutil.Split(fullRemotePath)
 
 	return fullRemotePath, fileName, nil
 }
