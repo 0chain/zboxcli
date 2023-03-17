@@ -2,11 +2,11 @@ package cmd
 
 import (
 	"os"
-	"path/filepath"
 	"strings"
 	"sync"
 
 	thrown "github.com/0chain/errors"
+	"github.com/0chain/gosdk/core/common"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zboxcore/zboxutil"
 	"github.com/0chain/zboxcli/util"
@@ -168,7 +168,7 @@ func fullPathAndFileNameForUpload(localPath, remotePath string) (string, string,
 	}
 
 	fullRemotePath := zboxutil.GetFullRemotePath(localPath, remotePath)
-	_, fileName := filepath.Split(fullRemotePath)
+	_, fileName := common.Split(fullRemotePath)
 
 	return fullRemotePath, fileName, nil
 }
