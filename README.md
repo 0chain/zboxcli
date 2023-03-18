@@ -5,9 +5,8 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
 ![Storage](https://user-images.githubusercontent.com/65766301/120052450-0ab66700-c043-11eb-91ab-1f7aa69e133a.png)
 
 - [zbox - a CLI for 0Chain dStorage](#zbox---a-cli-for-0chain-dstorage)
-  - [Installation Guides](#installation-guides)
-    - [How to install on Linux](#how-to-install-on-linux)
-    - [How to install on Windows](#how-to-install-on-windows)
+  - [Installation Guides](#installation-instructions)
+    - [Install on Linux Windows Mac](#build-instructions-for-linux-windows-mac)
     - [Other Platform Builds](#other-platform-builds)
     - [Use custom miner/sharder](#use-custom-minersharder)
   - [Running zbox](#running-zbox)
@@ -21,6 +20,7 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
       - [Cancel allocation](#cancel-allocation)
       - [Finalise allocation](#finalise-allocation)
       - [Transfer allocation ownership](#transfer-allocation-ownership)
+      - [Get Allocation Info](#get)
       - [List blobbers](#list-blobbers)
       - [Detailed blobber information](#detailed-blobber-information)
       - [List all files](#list-all-files)
@@ -41,13 +41,14 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
       - [Sync](#sync)
       - [Get differences](#get-differences)
       - [Get wallet](#get-wallet)
-      - [Get](#get)
       - [Get metadata](#get-metadata)
       - [Rename](#rename)
       - [Stats](#stats)
       - [Repair](#repair)
       - [Add collaborator](#add-collaborator)
       - [Sign data](#sign-data)
+      - [Download cost](#download-cost)
+      - [Upload cost](#upload-cost)
       - [Streaming](#streaming)
         - [How it works:](#how-it-works)
         - [Usage](#usage)
@@ -66,8 +67,7 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
       - [Write pool info](#write-pool-info)
       - [Lock tokens into write pool](#lock-tokens-into-write-pool)
       - [Unlock tokens from write pool](#unlock-tokens-from-write-pool)
-      - [Download cost](#download-cost)
-      - [Upload cost](#upload-cost)
+      
   - [Troubleshooting](#troubleshooting)
 
 ## Installation Instructions
@@ -82,7 +82,7 @@ As mentioned in build guides, a ./zcn folder is created to store configuration f
 
 ```
   ---
-  block_worker: https://demo.zus.network
+  block_worker: https://demo.zus.network/dns
   signature_scheme: bls0chain
   min_submit: 50 # in percentage
   min_confirmation: 50 # in percentage
@@ -488,7 +488,7 @@ Example
 ```
 ./zbox ls-blobbers
 - id:                    0ece681f6b00221c5567865b56040eaab23795a843ed629ce71fb340a5566ba3
-  url:                   http://five.devnet-0chain.net:31302
+  url:                   http://demo.zus.network:31302
   used / total capacity: 101.7 GiB / 1000.0 GiB
   terms:
     read_price:          0.01 tok / GB
@@ -496,7 +496,7 @@ Example
     min_lock_demand:     0.1
     max_offer_duration:  744h0m0s
 - id:                    788b1deced159f12d3810c61b4b8d381e80188c470e9798939f2e5036d964ffc
-  url:                   http://five.devnet-0chain.net:31301
+  url:                   http://demo.zus.network:31301
   used / total capacity: 102.7 GiB / 1000.0 GiB
   terms:
     read_price:          0.01 tok / GB
@@ -531,7 +531,7 @@ Response:
 
 ```
 id:                f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25
-url:               http://zerominer.xyz:5051
+url:               http://localhost:5051
 capacity:          1.0 GiB
 last_health_check: 2021-04-08 22:54:50 +0700 +07
 capacity_used:     0 B
@@ -1215,7 +1215,7 @@ Response will give details for current selected wallet (or wallet file specified
 
 #### Get
 
-Use `get` command to get the information about the allocation such as total size , used size, number of challenges
+Use `getallocation` command to get the information about the allocation such as total size , used size, number of challenges
 and challenges passed/failed/open/redeemed.
 
 | Parameter  | Required | Description                   | default | Valid values |
@@ -1233,7 +1233,7 @@ and challenges passed/failed/open/redeemed.
 Example
 
 ```
-./zbox get --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc
+./zbox getallocation --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc
 ```
 
 Response:
@@ -1248,7 +1248,7 @@ allocation:
   expiration_date: 2021-05-24 00:27:23 +0700 +07
   blobbers:
     - blobber_id:       dea18e3f3c308666cb489877b9b2c7e2babf797d8b8c322fa9d074105787a9e9
-      base URL:         http://five.devnet-0chain.net:31304
+      base URL:         http://demo.zus.network:31304
       size:             1.0 GiB
       min_lock_demand:  0.0012333333
       spent:            0.0000244839 (moved to challenge pool or to the blobber)
@@ -1498,7 +1498,6 @@ Response:
   f    | audio.mp3 | /myfiles/audio.mp3 | 5992396 |         92 | 3cea39505cc30fb9f6fc5c6045284188feb14eac8ff3a19577701c4f6d973239 | NO           | owner
 
 ```
-
 Here we can see the `audio.mp3` file of size (5993286) bytes having 92 blocks.If we want to download a certain number of blocks for the `audio.mp3` file we can use the `--endblock` or `--startblock` flag with `./zbox download` command. Other flags for download can be viewed using `./zbox download --help`
 
 ```
@@ -1529,6 +1528,13 @@ Status completed callback. Type = audio/mpeg. Name = audio.mp3
 ```
 
 As we can see, the downloaded file size(393216) is less than the original(2996198), which means zbox has downloaded some blocks of the file.
+
+
+
+
+
+
+
 
 ### Lock and Unlock Tokens
 
