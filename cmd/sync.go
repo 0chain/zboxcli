@@ -2,13 +2,12 @@ package cmd
 
 import (
 	"fmt"
-	"os"
-	"strings"
-	"sync"
-
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
+	"os"
+	"strings"
+	"sync"
 )
 
 func printTable(files []sdk.FileDiff) {
@@ -87,8 +86,8 @@ var syncCmd = &cobra.Command{
 		}
 
 		fileMetas := make(map[string]*sdk.ConsolidatedFileMeta)
-		wg := &sync.WaitGroup{}
-		statusBar := &StatusBar{wg: wg}
+		//wg := &sync.WaitGroup{}
+		//statusBar := &StatusBar{wg: wg}
 		// Create filter
 		filter := []string{".DS_Store", ".git"}
 
@@ -113,58 +112,93 @@ var syncCmd = &cobra.Command{
 			saveCache(allocationObj, localcache, exclPath)
 			return
 		}
+
+		/***
+			START OF FEATURE/IMPROVE-SYNC-COMMAND
+			TODO:
+			  -Compare the new implementation with the old one.
+			  -Do some benchmarks
+		***/
+
+		seqReqs := []sdk.FileDiff{}
+		parallelizedReqs := []sdk.FileDiff{}
+
+		wgParallelized := sync.WaitGroup{}
+		statusBar := &StatusBar{wg: &wgParallelized}
+
 		for _, f := range lDiff {
+			if f.Op == sdk.Download || f.Op == sdk.Upload || f.Op == sdk.Update {
+				parallelizedReqs = append(parallelizedReqs, f)
+			} else {
+				seqReqs = append(seqReqs, f)
+			}
+		}
+
+		//wgParallelized.Add(len(parallelizedReqs))
+		fmt.Printf("\nSIZE OF PARALLELIZED REQS:%d\n", len(parallelizedReqs))
+		wgParallelized.Add(len(parallelizedReqs))
+		for _, f := range parallelizedReqs {
 			localpath = strings.TrimRight(localpath, "/")
 			lPath := localpath + f.Path
+			fmt.Printf("\n\n\nFILE TYPE : %s\n\n\n", f.Path)
+			//wgParallelized.Add(1)
 			switch f.Op {
 			case sdk.Download:
-				wg.Add(1)
-				err = allocationObj.DownloadFile(lPath, f.Path, statusBar)
+				go func(wg *sync.WaitGroup, llpath string, filePath string, status sdk.StatusCallback) {
+					defer wg.Done()
+					var e error
+					e = allocationObj.DownloadFile(llpath, filePath, status)
+					if e != nil {
+						PrintError(e.Error())
+					}
+					fmt.Println("DOWNLOAD OP!!")
+				}(&wgParallelized, lPath, f.Path, statusBar)
 			case sdk.Upload:
-				wg.Add(1)
-
-				encrypt := len(encryptpath) != 0 && strings.Contains(lPath, encryptpath)
-
-				err = startChunkedUpload(cmd, allocationObj, chunkedUploadArgs{
-					localPath:     lPath,
-					thumbnailPath: "",
-					remotePath:    f.Path,
-					encrypt:       encrypt,
-					chunkNumber:   syncChunkNumber,
-					// isUpdate:      false,
-					// isRepair: false,
-				}, statusBar)
-
-				// if len(encryptpath) != 0 && strings.Contains(lPath, encryptpath) {
-				// 	err = allocationObj.EncryptAndUploadFile(lPath, f.Path, attrs, statusBar)
-				// } else {
-				// 	err = allocationObj.UploadFile(lPath, f.Path, attrs, statusBar)
-				// }
-			case sdk.Update:
-				wg.Add(1)
-
-				encrypt := len(encryptpath) != 0 && strings.Contains(lPath, encryptpath)
-
-				err = startChunkedUpload(cmd, allocationObj,
-					chunkedUploadArgs{
-						localPath:     lPath,
+				go func(wg *sync.WaitGroup, llpath string, filePath string, status sdk.StatusCallback) {
+					encrypt := len(encryptpath) != 0 && strings.Contains(llpath, encryptpath)
+					var e error
+					e = startChunkedUpload(cmd, allocationObj, chunkedUploadArgs{
+						localPath:     llpath,
 						thumbnailPath: "",
-						remotePath:    f.Path,
+						remotePath:    filePath,
 						encrypt:       encrypt,
 						chunkNumber:   syncChunkNumber,
-						isUpdate:      true,
-						// isRepair: false,
-					}, statusBar)
+					}, status)
+					if e != nil {
+						PrintError(e.Error())
+					}
+					fmt.Println("UPLOAD OP!!")
+					wg.Done()
+				}(&wgParallelized, lPath, f.Path, statusBar)
+			case sdk.Update:
+				go func(wg *sync.WaitGroup, llpath string, filePath string, status sdk.StatusCallback) {
+					defer wg.Done()
+					encrypt := len(encryptpath) != 0 && strings.Contains(lPath, encryptpath)
+					var e error
+					e = startChunkedUpload(cmd, allocationObj,
+						chunkedUploadArgs{
+							localPath:     llpath,
+							thumbnailPath: "",
+							remotePath:    filePath,
+							encrypt:       encrypt,
+							chunkNumber:   syncChunkNumber,
+							isUpdate:      true,
+						}, status)
+					fmt.Println("UPDATE OP!!")
+					if e != nil {
+						PrintError(e.Error())
+					}
+				}(&wgParallelized, lPath, f.Path, statusBar)
+			}
+		}
 
-				// if len(encryptpath) != 0 && strings.Contains(lPath, encryptpath) {
-				// 	err = allocationObj.EncryptAndUpdateFile(lPath, f.Path,
-				// 		getRemoteFileAttributes(allocationObj, f.Path),
-				// 		statusBar)
-				// } else {
-				// 	err = allocationObj.UpdateFile(lPath, f.Path,
-				// 		getRemoteFileAttributes(allocationObj, f.Path),
-				// 		statusBar)
-				// }
+		wgParallelized.Wait()
+
+		for _, f := range seqReqs {
+			localpath = strings.TrimRight(localpath, "/")
+			lPath := localpath + f.Path
+
+			switch f.Op {
 			case sdk.Delete:
 				fileMeta, err := allocationObj.GetFileMeta(f.Path)
 				if err != nil {
@@ -187,11 +221,92 @@ var syncCmd = &cobra.Command{
 				}
 				continue
 			}
-			if err != nil {
-				PrintError(err.Error())
-			}
 		}
-		wg.Wait()
+
+		/***
+			END OF FEATURE/IMPROVE-SYNC-COMMAND
+		***/
+		/*
+			for _, f := range lDiff {
+				localpath = strings.TrimRight(localpath, "/")
+				lPath := localpath + f.Path
+				switch f.Op {
+				case sdk.Download:
+					wg.Add(1)
+					err = allocationObj.DownloadFile(lPath, f.Path, statusBar)
+				case sdk.Upload:
+					wg.Add(1)
+
+					encrypt := len(encryptpath) != 0 && strings.Contains(lPath, encryptpath)
+
+					err = startChunkedUpload(cmd, allocationObj, chunkedUploadArgs{
+						localPath:     lPath,
+						thumbnailPath: "",
+						remotePath:    f.Path,
+						encrypt:       encrypt,
+						chunkNumber:   syncChunkNumber,
+						// isUpdate:      false,
+						// isRepair: false,
+					}, statusBar)
+
+					// if len(encryptpath) != 0 && strings.Contains(lPath, encryptpath) {
+					// 	err = allocationObj.EncryptAndUploadFile(lPath, f.Path, attrs, statusBar)
+					// } else {
+					// 	err = allocationObj.UploadFile(lPath, f.Path, attrs, statusBar)
+					// }
+				case sdk.Update:
+					wg.Add(1)
+
+					encrypt := len(encryptpath) != 0 && strings.Contains(lPath, encryptpath)
+
+					err = startChunkedUpload(cmd, allocationObj,
+						chunkedUploadArgs{
+							localPath:     lPath,
+							thumbnailPath: "",
+							remotePath:    f.Path,
+							encrypt:       encrypt,
+							chunkNumber:   syncChunkNumber,
+							isUpdate:      true,
+							// isRepair: false,
+						}, statusBar)
+
+					// if len(encryptpath) != 0 && strings.Contains(lPath, encryptpath) {
+					// 	err = allocationObj.EncryptAndUpdateFile(lPath, f.Path,
+					// 		getRemoteFileAttributes(allocationObj, f.Path),
+					// 		statusBar)
+					// } else {
+					// 	err = allocationObj.UpdateFile(lPath, f.Path,
+					// 		getRemoteFileAttributes(allocationObj, f.Path),
+					// 		statusBar)
+					// }
+				case sdk.Delete:
+					fileMeta, err := allocationObj.GetFileMeta(f.Path)
+					if err != nil {
+						PrintError("Error fetching metaData :", err.Error())
+					}
+					fileMetas[f.Path] = fileMeta
+					// TODO: User confirm??
+					fmt.Printf("Deleting remote %s...\n", f.Path)
+					err = allocationObj.DeleteFile(f.Path)
+					if err != nil {
+						PrintError("Error deleting remote file,", err.Error())
+					}
+					continue
+				case sdk.LocalDelete:
+					// TODO: User confirm??
+					fmt.Printf("Deleting local %s...\n", lPath)
+					err = os.RemoveAll(lPath)
+					if err != nil {
+						PrintError("Error deleting local file.", err.Error())
+					}
+					continue
+				}
+				if err != nil {
+					PrintError(err.Error())
+				}
+			}
+			wg.Wait()
+		*/
 
 		fmt.Println("\nSync Complete")
 		saveCache(allocationObj, localcache, exclPath)
