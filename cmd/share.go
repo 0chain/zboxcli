@@ -44,17 +44,6 @@ var shareCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		fileMeta, err := allocationObj.GetFileMeta(remotepath)
-		if err != nil {
-			PrintError("Error in getting the file meta of the object." + err.Error())
-			os.Exit(1)
-		}
-
-		if len(fileMeta.EncryptedKey) > 0 && (fflags.Changed("clientid") == false || fflags.Changed("encryptionpublickey") == false) {
-			PrintError("Clientid and/or encryptionpublickey are missing for the encrypted share!")
-			os.Exit(1)
-		}
-
 		var isFile bool
 		for _, v := range statsMap {
 			if v != nil {
@@ -64,6 +53,20 @@ var shareCmd = &cobra.Command{
 		}
 		if !isFile {
 			refType = fileref.DIRECTORY
+		}
+
+		if isFile {
+			fileMeta, err := allocationObj.GetFileMeta(remotepath)
+			if err != nil {
+				PrintError("Error in getting the file meta of the object." + err.Error())
+				os.Exit(1)
+			}
+
+			if len(fileMeta.EncryptedKey) > 0 && fflags.Changed("encryptionpublickey") == false {
+				PrintError("Clientid and/or encryptionpublickey are missing for the encrypted share!")
+				fmt.Println(fileMeta.EncryptedKey)
+				os.Exit(1)
+			}
 		}
 
 		var fileName string
