@@ -64,7 +64,6 @@ var shareCmd = &cobra.Command{
 
 			if len(fileMeta.EncryptedKey) > 0 && fflags.Changed("encryptionpublickey") == false {
 				PrintError("Clientid and/or encryptionpublickey are missing for the encrypted share!")
-				fmt.Println(fileMeta.EncryptedKey)
 				os.Exit(1)
 			}
 		}
