@@ -79,6 +79,12 @@ var syncCmd = &cobra.Command{
 			exclPath, _ = cmd.Flags().GetStringArray("excludepath")
 		}
 
+		verifyDownload, err := cmd.Flags().GetBool("verifydownload")
+		if err != nil {
+			PrintError("Error: ", err)
+			os.Exit(1)
+		}
+
 		allocationObj, err := sdk.GetAllocation(allocationID)
 		if err != nil {
 			PrintError("Error fetching the allocation", err)
@@ -301,6 +307,8 @@ func init() {
 If file exists, this will be used for comparison with remote.
 After sync complete, remote snapshot will be updated to the same file for next use.`)
 	syncCmd.PersistentFlags().StringArray("excludepath", []string{}, "Remote folder paths exclude to sync")
+	syncCmd.Flags().BoolP("verifydownload", "v", true, "pass this option to verify downloaded blocks")
+
 	syncCmd.MarkFlagRequired("allocation")
 	syncCmd.MarkFlagRequired("localpath")
 	syncCmd.Flags().Bool("uploadonly", false, "pass this option to only upload/update the files")

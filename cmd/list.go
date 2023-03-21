@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/0chain/gosdk/core/common"
 	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/zboxcli/util"
@@ -108,32 +107,18 @@ var listAllCmd = &cobra.Command{
 		}
 
 		type fileResp struct {
-			Name         string           `json:"name"`
-			Path         string           `json:"path"`
-			Type         string           `json:"type"`
-			Size         int64            `json:"size"`
-			ActualSize   int64            `json:"actual_size"`
-			Hash         string           `json:"hash,omitempty"`
-			LookupHash   string           `json:"lookup_hash"`
-			EncryptedKey string           `json:"encrypted_key,omitempty" `
-			CreatedAt    common.Timestamp `json:"created_at"`
-			UpdatedAt    common.Timestamp `json:"updated_at"`
+			sdk.FileInfo
+			Name string `json:"name"`
+			Path string `json:"path"`
 		}
 
 		fileResps := make([]fileResp, 0)
 		for path, data := range ref {
 			paths := strings.SplitAfter(path, "/")
 			var resp = fileResp{
-				Name:         paths[len(paths)-1],
-				Path:         path,
-				Type:         data.Type,
-				Size:         data.Size,
-				ActualSize:   data.ActualSize,
-				Hash:         data.Hash,
-				EncryptedKey: data.EncryptedKey,
-				LookupHash:   data.LookupHash,
-				CreatedAt:    common.Timestamp(data.CreatedAt.Unix()),
-				UpdatedAt:    common.Timestamp(data.UpdatedAt.Unix()),
+				Name:     paths[len(paths)-1],
+				Path:     path,
+				FileInfo: data,
 			}
 			fileResps = append(fileResps, resp)
 		}
