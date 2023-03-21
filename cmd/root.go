@@ -217,11 +217,12 @@ func initConfig() {
 	if err != nil {
 		if strings.Contains(err.Error(), "resource_not_found") {
 			fmt.Println("Creating related read pool for storage smart-contract...")
-			if _, _, err = sdk.CreateReadPool(); err != nil {
+			hash, _, err := sdk.CreateReadPool()
+			if err != nil {
 				fmt.Printf("Failed to create read pool: %v\n", err)
 				os.Exit(1)
 			}
-			fmt.Println("Read pool created successfully")
+			fmt.Println("Read pool created successfully with txn:", hash)
 		}
 	}
 
