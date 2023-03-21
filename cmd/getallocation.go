@@ -109,17 +109,6 @@ var getallocationCmd = &cobra.Command{
 			fmt.Println("        max_offer_duration:       ", d.Terms.MaxOfferDuration)
 		}
 
-		if len(alloc.Curators) < 1 {
-			fmt.Println("  no curators")
-		} else if len(alloc.Curators) == 1 {
-			fmt.Println("  curator: " + alloc.Curators[0])
-		} else {
-			fmt.Println("  curators:")
-			for _, curator := range alloc.Curators {
-				fmt.Println("  ", curator)
-			}
-		}
-
 		fmt.Println("  read_price_range:         ", priceRangeString(alloc.ReadPriceRange), "(requested)")
 		fmt.Println("  write_price_range:        ", priceRangeString(alloc.WritePriceRange), "(requested)")
 		fmt.Println("  challenge_completion_time:", alloc.ChallengeCompletionTime, "(max)")
