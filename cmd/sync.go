@@ -147,13 +147,12 @@ var syncCmd = &cobra.Command{
 			localpath = strings.TrimRight(localpath, "/")
 			lPath := localpath + f.Path
 			fmt.Printf("\n\n\nFILE TYPE : %s\n\n\n", f.Path)
-			//wgParallelized.Add(1)
 			switch f.Op {
 			case sdk.Download:
 				go func(wg *sync.WaitGroup, llpath string, filePath string, status sdk.StatusCallback) {
 					defer wg.Done()
 					var e error
-					e = allocationObj.DownloadFile(llpath, filePath, status)
+					e = allocationObj.DownloadFile(llpath, filePath, verifyDownload, status)
 					if e != nil {
 						PrintError(e.Error())
 					}
@@ -161,6 +160,8 @@ var syncCmd = &cobra.Command{
 				}(&wgParallelized, lPath, f.Path, statusBar)
 			case sdk.Upload:
 				go func(wg *sync.WaitGroup, llpath string, filePath string, status sdk.StatusCallback) {
+					defer wg.Done()
+
 					encrypt := len(encryptpath) != 0 && strings.Contains(llpath, encryptpath)
 					var e error
 					e = startChunkedUpload(cmd, allocationObj, chunkedUploadArgs{
@@ -170,11 +171,11 @@ var syncCmd = &cobra.Command{
 						encrypt:       encrypt,
 						chunkNumber:   syncChunkNumber,
 					}, status)
+
 					if e != nil {
 						PrintError(e.Error())
 					}
-					fmt.Println("UPLOAD OP!!")
-					wg.Done()
+
 				}(&wgParallelized, lPath, f.Path, statusBar)
 			case sdk.Update:
 				go func(wg *sync.WaitGroup, llpath string, filePath string, status sdk.StatusCallback) {
@@ -191,9 +192,11 @@ var syncCmd = &cobra.Command{
 							isUpdate:      true,
 						}, status)
 					fmt.Println("UPDATE OP!!")
+
 					if e != nil {
 						PrintError(e.Error())
 					}
+
 				}(&wgParallelized, lPath, f.Path, statusBar)
 			}
 		}
