@@ -3,10 +3,10 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	"time"
 
 	"github.com/0chain/gosdk/core/common"
+	"github.com/0chain/gosdk/core/pathutil"
 	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
@@ -40,7 +40,7 @@ var shareCmd = &cobra.Command{
 		refType := fileref.FILE
 		statsMap, err := allocationObj.GetFileStats(remotepath)
 		if err != nil {
-			PrintError("Error in getting information about the object." + err.Error())
+			PrintError("Error fetching the file information", err)
 			os.Exit(1)
 		}
 
@@ -55,9 +55,22 @@ var shareCmd = &cobra.Command{
 			refType = fileref.DIRECTORY
 		}
 
+		if isFile {
+			fileMeta, err := allocationObj.GetFileMeta(remotepath)
+			if err != nil {
+				PrintError("Error in getting the file meta of the object." + err.Error())
+				os.Exit(1)
+			}
+
+			if len(fileMeta.EncryptedKey) > 0 && fflags.Changed("encryptionpublickey") == false {
+				PrintError("Clientid and/or encryptionpublickey are missing for the encrypted share!")
+				os.Exit(1)
+			}
+		}
+
 		var fileName string
 
-		_, fileName = filepath.Split(remotepath)
+		_, fileName = pathutil.Split(remotepath)
 		refereeClientID := cmd.Flag("clientid").Value.String()
 
 		revoke, _ := cmd.Flags().GetBool("revoke")
