@@ -299,6 +299,14 @@ var blobberUpdateCmd = &cobra.Command{
 			blob.BaseURL = url
 		}
 
+		if flags.Changed("is_available") {
+			var ia bool
+			if ia, err = flags.GetBool("is_available"); err != nil {
+				log.Fatal(err)
+			}
+			blob.IsAvailable = ia
+		}
+
 		if _, _, err = sdk.UpdateBlobberSettings(blob); err != nil {
 			log.Fatal(err)
 		}
@@ -333,5 +341,6 @@ func init() {
 	buf.Float64("max_stake", 0.0, "update max_stake, optional")
 	buf.Int("num_delegates", 0, "update num_delegates, optional")
 	buf.Float64("service_charge", 0.0, "update service_charge, optional")
+	buf.Bool("is_available", true, "set blobber's availability for new allocations")
 	blobberUpdateCmd.MarkFlagRequired("blobber_id")
 }
