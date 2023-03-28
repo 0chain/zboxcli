@@ -18,6 +18,7 @@ func (s *StatusBar) Started(allocationId, filePath string, op int, totalBytes in
 	s.b = pb.StartNew(totalBytes)
 	s.b.Set(0)
 }
+
 func (s *StatusBar) InProgress(allocationId, filePath string, op int, completedBytes int, data []byte) {
 	s.b.Set(completedBytes)
 }

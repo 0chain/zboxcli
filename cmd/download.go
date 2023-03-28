@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"strings"
 	"sync"
@@ -138,6 +139,7 @@ var downloadCmd = &cobra.Command{
 				os.Exit(1)                                      // and return
 			}
 			allocationID := cmd.Flag("allocation").Value.String()
+			fmt.Println("getting allocation object")
 			allocationObj, err = sdk.GetAllocation(allocationID)
 
 			if err != nil {
@@ -145,25 +147,32 @@ var downloadCmd = &cobra.Command{
 				os.Exit(1)
 			}
 			if thumbnail {
+				fmt.Println("downloading thumbnail")
 				errE = allocationObj.DownloadThumbnail(localPath, remotePath, verifyDownload, statusBar)
 			} else {
 				if startBlock != 0 || endBlock != 0 {
-					errE = allocationObj.DownloadFileByBlock(localPath, remotePath, startBlock, endBlock, numBlocks, verifyDownload, statusBar)
+					fmt.Println("downloading from start to end blocks")
+					// errE = allocationObj.DownloadFileByBlock(localPath, remotePath, startBlock, endBlock, numBlocks, verifyDownload, statusBar)
+					blobberID := "aece9ef20a850a00c5018f09c3bcdc7935b685cc1e7bcd86549325cf6b5dd415"
+					errE = allocationObj.DownloadFromBlobber(blobberID, localPath, remotePath, statusBar)
 				} else {
-					errE = allocationObj.DownloadFile(localPath, remotePath, verifyDownload, statusBar)
+					fmt.Println("downloading from here")
+					blobberID := "aece9ef20a850a00c5018f09c3bcdc7935b685cc1e7bcd86549325cf6b5dd415"
+					errE = allocationObj.DownloadFromBlobber(blobberID, localPath, remotePath, statusBar)
 				}
 			}
 		}
 
-		if errE == nil {
-			wg.Wait()
-		} else {
-			PrintError("Download failed.", errE.Error())
-			os.Exit(1)
-		}
-		if !statusBar.success {
-			os.Exit(1)
-		}
+		fmt.Println(errE)
+		// if errE == nil {
+		// 	wg.Wait()
+		// } else {
+		// 	PrintError("Download failed.", errE.Error())
+		// 	os.Exit(1)
+		// }
+		// if !statusBar.success {
+		// 	os.Exit(1)
+		// }
 
 	},
 }
