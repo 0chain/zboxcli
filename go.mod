@@ -4,13 +4,15 @@ go 1.18
 
 require (
 	github.com/0chain/errors v1.0.3
-	github.com/0chain/gosdk v1.8.16-0.20230326034446-e1da355842e1
+	//github.com/0chain/gosdk v1.8.16-0.20230326034446-e1da355842e1
 	github.com/icza/bitio v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.6.0
 	github.com/spf13/pflag v1.0.5
 	gopkg.in/cheggaaa/pb.v1 v1.0.28
 )
+
+require github.com/0chain/gosdk v1.8.16-0.20230330215949-53f0a871bfce
 
 require (
 	github.com/0chain/common v0.0.6-0.20230127095721-8df4d1d72565 // indirect
@@ -65,4 +67,4 @@ require (
 )
 
 // temporary, for development
-//replace github.com/0chain/gosdk => ../gosdk
+replace github.com/0chain/gosdk => ../gosdk
