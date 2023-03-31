@@ -40,8 +40,6 @@ github.com/0chain/common v0.0.6-0.20221123040931-4a3feacdb97c h1:TDqF7VJa7uLLlEs
 github.com/0chain/common v0.0.6-0.20221123040931-4a3feacdb97c/go.mod h1:OxV9kVgVzAPgGHHPcS/aUSL2ZxNvKDU6jPoggKMbqns=
 github.com/0chain/errors v1.0.3 h1:QQZPFxTfnMcRdt32DXbzRQIfGWmBsKoEdszKQDb0rRM=
 github.com/0chain/errors v1.0.3/go.mod h1:xymD6nVgrbgttWwkpSCfLLEJbFO6iHGQwk/yeSuYkIc=
-github.com/0chain/gosdk v1.8.16-0.20230324193958-e6bb878a8e66 h1:SoWfTtgUxe5d3tCq7HFxvK+N7HU/HQSn3p2IVyK75Cs=
-github.com/0chain/gosdk v1.8.16-0.20230324193958-e6bb878a8e66/go.mod h1:cBm7vTDxG+QvWb3SAnsYaOnLkBhUXc5UmtJn/QfVWKI=
 github.com/0chain/gosdk v1.8.16-0.20230325195051-c6ecfb738897 h1:HOXDdDL33Uy7wsA8TQp0IFIVJndGzB3kscBhMCS3mIY=
 github.com/0chain/gosdk v1.8.16-0.20230325195051-c6ecfb738897/go.mod h1:cBm7vTDxG+QvWb3SAnsYaOnLkBhUXc5UmtJn/QfVWKI=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
