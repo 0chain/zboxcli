@@ -26,8 +26,8 @@ var moveCmd = &cobra.Command{
 		}
 
 		if !fflags.Changed("destpath") {
-			fmt.Println("Error: destpath flag is missing")
-			return
+			PrintError("Error: destpath flag is missing")
+			os.Exit(1)
 		}
 		allocationID := cmd.Flag("allocation").Value.String()
 		allocationObj, err := sdk.GetAllocation(allocationID)
