@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 
+	"github.com/0chain/gosdk/core/pathutil"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
 )
@@ -38,7 +38,7 @@ var renameCmd = &cobra.Command{
 		}
 		remotePath := cmd.Flag("remotepath").Value.String()
 		destName := cmd.Flag("destname").Value.String()
-		oldName := filepath.Base(remotePath)
+		oldName := pathutil.Dir(remotePath)
 		if oldName == destName {
 			fmt.Println(remotePath + " renamed")
 			return
