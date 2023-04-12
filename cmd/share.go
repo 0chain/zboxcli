@@ -3,10 +3,10 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	"time"
 
 	"github.com/0chain/gosdk/core/common"
+	"github.com/0chain/gosdk/core/pathutil"
 	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
@@ -70,7 +70,7 @@ var shareCmd = &cobra.Command{
 
 		var fileName string
 
-		_, fileName = filepath.Split(remotepath)
+		_, fileName = pathutil.Split(remotepath)
 		refereeClientID := cmd.Flag("clientid").Value.String()
 
 		revoke, _ := cmd.Flags().GetBool("revoke")
