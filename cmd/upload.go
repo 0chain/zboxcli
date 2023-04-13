@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"strings"
 	"sync"
@@ -89,6 +90,7 @@ type chunkedUploadArgs struct {
 
 func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, args chunkedUploadArgs, statusBar sdk.StatusCallback) error {
 
+	fmt.Println("inside start chunk upload");
 	fileReader, err := os.Open(args.localPath)
 	if err != nil {
 		return err
@@ -136,6 +138,62 @@ func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, args 
 
 	return chunkedUpload.Start()
 }
+
+// func startMultiChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, argsList []chunkedUploadArgs, statusBar sdk.StatusCallback) error {
+// 	fmt.Println("Starting  multi chunked upload");
+// 	fileMetas := make([]sdk.FileMeta, len(argsList))
+// 	fileReaders := make([]io.Reader, len(argsList))
+// 	for idx, args := range argsList {
+// 		// var fileReader io.Reader;
+// 		fileReader, err := os.Open(args.localPath)
+// 		if err != nil {
+// 			return err
+// 		}
+// 		defer fileReader.Close()
+
+// 		fileInfo, err := fileReader.Stat()
+// 		if err != nil {
+// 			return err
+// 		}
+
+// 		mimeType, err := zboxutil.GetFileContentType(fileReader)
+// 		if err != nil {
+// 			return err
+// 		}
+
+// 		remotePath, fileName, err := fullPathAndFileNameForUpload(args.localPath, args.remotePath)
+// 		if err != nil {
+// 			return err
+// 		}
+
+// 		fileMeta := sdk.FileMeta{
+// 			Path:       args.localPath,
+// 			ActualSize: fileInfo.Size(),
+// 			MimeType:   mimeType,
+// 			RemoteName: fileName,
+// 			RemotePath: remotePath,
+// 		}
+// 		fileMetas[idx] = fileMeta
+// 		fileReaders[idx] = fileReader
+// 	}
+// 	options := []sdk.ChunkedUploadOption{
+// 		sdk.WithThumbnailFile(argsList[0].thumbnailPath),
+// 		sdk.WithEncrypt(argsList[0].encrypt),
+// 		sdk.WithStatusCallback(statusBar),
+// 		sdk.WithChunkNumber(argsList[0].chunkNumber),
+// 	}
+// 	chunkedUploads, err := sdk.CreateMultiFileChunkedUpload2(util.GetHomeDir(), allocationObj,
+// 		fileMetas, fileReaders,
+// 		false, false,
+// 		options...);
+
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	return sdk.StartUpload(chunkedUploads);
+	
+// }
 
 func init() {
 	rootCmd.AddCommand(uploadCmd)
