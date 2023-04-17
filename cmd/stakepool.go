@@ -288,14 +288,13 @@ var spUnlock = &cobra.Command{
 			}
 		}
 
-		_, _, err = sdk.StakePoolUnlock(providerType, providerID, zcncore.ConvertToValue(fee))
-		// an error
+		unlocked, _, err := sdk.StakePoolUnlock(providerType, providerID, zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to unlock tokens in stake pool: %v", err)
 		}
 
 		// success
-		fmt.Println("tokens unlocked, pool deleted")
+		fmt.Printf("tokens unlocked: %d, pool deleted", unlocked)
 	},
 }
 
