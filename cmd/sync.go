@@ -273,11 +273,11 @@ func init() {
 If file exists, this will be used for comparison with remote.
 After sync complete, remote snapshot will be updated to the same file for next use.`)
 	syncCmd.PersistentFlags().StringArray("excludepath", []string{}, "Remote folder paths exclude to sync")
-	syncCmd.Flags().BoolP("verifydownload", "v", true, "pass this option to verify downloaded blocks")
+	syncCmd.Flags().BoolP("verifydownload (boolean)", "v", true, "pass this option to verify downloaded blocks")
 
 	syncCmd.MarkFlagRequired("allocation")
 	syncCmd.MarkFlagRequired("localpath")
-	syncCmd.Flags().Bool("uploadonly", false, "pass this option to only upload/update the files")
+	syncCmd.Flags().Bool("uploadonly (boolean)", false, "pass this option to only upload/update the files")
 
 	syncCmd.Flags().IntVarP(&syncChunkNumber, "chunknumber", "", 1, "how many chunks should be uploaded in a http request")
 

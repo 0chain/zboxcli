@@ -64,5 +64,5 @@ var listallocationsCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(listallocationsCmd)
-	listallocationsCmd.Flags().Bool("json", false, "pass this option to print response as json data")
+	listallocationsCmd.Flags().Bool("json (boolean)", false, "pass this option to print response as json data")
 }

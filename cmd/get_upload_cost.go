@@ -132,7 +132,7 @@ func init() {
 	ucpf.String("allocation", "", "allocation ID, required")
 	ucpf.String("localpath", "", "local file path, required")
 	ucpf.Duration("duration", 0, "expected duration keep uploaded file")
-	ucpf.Bool("end", false, "use the duration until allocation ends")
+	ucpf.Bool("end (boolean)", false, "use the duration until allocation ends")
 	getUploadCostCmd.MarkFlagRequired("allocation")
 	getUploadCostCmd.MarkFlagRequired("localpath")
 

@@ -179,7 +179,7 @@ func init() {
 	rootCmd.AddCommand(lsValidators)
 
 	validatorInfoCmd.Flags().String("validator_id", "", "validator ID, required")
-	validatorInfoCmd.Flags().Bool("json", false,
+	validatorInfoCmd.Flags().Bool("json (boolean)", false,
 		"pass this option to print response as json data")
 	validatorInfoCmd.MarkFlagRequired("validator_id")
 
@@ -191,5 +191,5 @@ func init() {
 	buf.Float64("service_charge", 0.0, "update service_charge, optional")
 	validatorUpdateCmd.MarkFlagRequired("validator_id")
 
-	lsValidators.Flags().Bool("json", false, "pass this flag to get response as json object")
+	lsValidators.Flags().Bool("json (boolean)", false, "pass this flag to get response as json object")
 }

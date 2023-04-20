@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"runtime/debug"
 
-	"github.com/icza/bitio"
 	"github.com/0chain/zboxcli/util"
+	"github.com/icza/bitio"
 	"github.com/spf13/cobra"
 )
 
@@ -24,8 +24,8 @@ var versionCmd = &cobra.Command{
 			j["gosdk"] = getVersion("github.com/0chain/gosdk")
 			util.PrintJSON(j)
 			return
-		}				
-		
+		}
+
 		fmt.Println("Version info:")
 		fmt.Println("\tzbox....: ", VersionStr)
 		fmt.Println("\tgosdk...: ", getVersion("github.com/0chain/gosdk"))
@@ -55,5 +55,5 @@ func getVersion(path string) string {
 
 func init() {
 	rootCmd.AddCommand(versionCmd)
-	versionCmd.Flags().Bool("json", false, "pass this option to print response as json data")
+	versionCmd.Flags().Bool("json (boolean)", false, "pass this option to print response as json data")
 }
