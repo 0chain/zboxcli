@@ -110,6 +110,6 @@ func init() {
 	filemetaCmd.PersistentFlags().String("remotepath", "", "Remote path to list from")
 	filemetaCmd.PersistentFlags().String("authticket", "", "Auth ticket fot the file to download if you dont own it")
 	filemetaCmd.PersistentFlags().String("lookuphash", "", "The remote lookuphash of the object retrieved from the list")
-	filemetaCmd.Flags().Bool("json", false, "pass this option to print response as json data")
+	filemetaCmd.Flags().Bool("json (boolean)", false, "pass this option to print response as json data")
 	filemetaCmd.MarkFlagRequired("allocation")
 }
