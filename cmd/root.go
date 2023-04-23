@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"sync"
 
 	"github.com/0chain/gosdk/core/conf"
 	"github.com/0chain/gosdk/core/logger"
@@ -138,22 +137,13 @@ func initConfig() {
 		}
 
 		if _, err = os.Stat(walletFilePath); os.IsNotExist(err) {
-			wg := &sync.WaitGroup{}
-			statusBar := &ZCNStatus{wg: wg}
-			wg.Add(1)
-			err = zcncore.CreateWallet(statusBar)
-			if err == nil {
-				wg.Wait()
-			} else {
+			wallet, err := zcncore.CreateWalletOffline()
+			if err != nil {
 				fmt.Println(err.Error())
 				os.Exit(1)
 			}
-			if len(statusBar.walletString) == 0 || !statusBar.success {
-				fmt.Println("Error creating the wallet." + statusBar.errMsg)
-				os.Exit(1)
-			}
 			fmt.Println("ZCN wallet created")
-			walletJSON = string(statusBar.walletString)
+			walletJSON = wallet
 			file, err := os.Create(walletFilePath)
 			if err != nil {
 				fmt.Println(err.Error())
@@ -161,7 +151,6 @@ func initConfig() {
 			}
 			defer file.Close()
 			fmt.Fprintf(file, walletJSON)
-
 			//fresh = true
 		} else {
 			f, err := os.Open(walletFilePath)
