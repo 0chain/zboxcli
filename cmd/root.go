@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strings"
 	"sync"
 
 	"github.com/0chain/gosdk/core/conf"
@@ -213,18 +212,18 @@ func initConfig() {
 
 	sdk.SetNumBlockDownloads(10)
 
-	_, err = sdk.GetReadPoolInfo(walletClientID)
-	if err != nil {
-		if strings.Contains(err.Error(), "resource_not_found") {
-			fmt.Println("Creating related read pool for storage smart-contract...")
-			hash, _, err := sdk.CreateReadPool()
-			if err != nil {
-				fmt.Printf("Failed to create read pool: %v\n", err)
-				os.Exit(1)
-			}
-			fmt.Println("Read pool created successfully with txn:", hash)
-		}
-	}
+	//_, err = sdk.GetReadPoolInfo(walletClientID)
+	//if err != nil {
+	//	if strings.Contains(err.Error(), "resource_not_found") {
+	//		fmt.Println("Creating related read pool for storage smart-contract...")
+	//		hash, _, err := sdk.CreateReadPool()
+	//		if err != nil {
+	//			fmt.Printf("Failed to create read pool: %v\n", err)
+	//			os.Exit(1)
+	//		}
+	//		fmt.Println("Read pool created successfully with txn:", hash)
+	//	}
+	//}
 
 	//if fresh {
 	//	fmt.Println("Creating related read pool for storage smart-contract...")
