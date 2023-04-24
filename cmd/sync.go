@@ -7,6 +7,7 @@ import (
 	"sync"
 
 	"github.com/0chain/gosdk/constants"
+	"github.com/0chain/gosdk/zboxcore/logger"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zboxcore/zboxutil"
 	"github.com/0chain/zboxcli/util"
@@ -45,19 +46,21 @@ func filterOperations(lDiff []sdk.FileDiff) (filterDiff []sdk.FileDiff, exclPath
 	return
 }
 
-func startMultiOperation(allocationObj *sdk.Allocation, argsSlice []chunkedUploadArgs, statusBars []StatusBar) error {
+func startMultiUploadUpdate(allocationObj *sdk.Allocation, argsSlice []chunkedUploadArgs) error {
 	totalOperations := len(argsSlice)
 	if totalOperations == 0 {
 		return nil
 	}
 	operationRequests := make([]sdk.OperationRequest, totalOperations)
-
+	wg := &sync.WaitGroup{}
 	for idx, args := range argsSlice {
+		statusBar := &StatusBar{wg: wg}
+		wg.Add(1)
 		fileReader, err := os.Open(args.localPath)
 		if err != nil {
 			return err
 		}
-		// defer fileReader.Close()
+		defer fileReader.Close()
 
 		fileInfo, err := fileReader.Stat()
 		if err != nil {
@@ -81,11 +84,10 @@ func startMultiOperation(allocationObj *sdk.Allocation, argsSlice []chunkedUploa
 			RemoteName: fileName,
 			RemotePath: remotePath,
 		}
-
 		options := []sdk.ChunkedUploadOption{
 			sdk.WithThumbnailFile(args.thumbnailPath),
 			sdk.WithEncrypt(args.encrypt),
-			sdk.WithStatusCallback(&statusBars[idx]),
+			sdk.WithStatusCallback(statusBar),
 			sdk.WithChunkNumber(args.chunkNumber),
 		}
 		operationRequests[idx] = sdk.OperationRequest{
@@ -94,11 +96,19 @@ func startMultiOperation(allocationObj *sdk.Allocation, argsSlice []chunkedUploa
 			OperationType: constants.FileOperationInsert,
 			Opts:          options,
 		}
+		if args.isUpdate {
+			operationRequests[idx].OperationType = constants.FileOperationUpdate
+		}
+		fmt.Println("Status call back is : ", statusBar)
 	}
-	// Directly return from here
+
 	err := allocationObj.DoMultiOperation(operationRequests)
-	// Close the fileReader
-	return err
+	if err != nil {
+		logger.Logger.Error("[update/upload]", err)
+		return err
+	}
+	wg.Wait()
+	return nil
 
 }
 
@@ -179,7 +189,6 @@ var syncCmd = &cobra.Command{
 			return
 		}
 		argsSlice := make([]chunkedUploadArgs, 0)
-		statusBars := make([]StatusBar, 0)
 		for _, f := range lDiff {
 			localpath = strings.TrimRight(localpath, "/")
 			lPath := localpath + f.Path
@@ -192,7 +201,6 @@ var syncCmd = &cobra.Command{
 				}(lPath, f, verifyDownload, statusBar)
 
 			case sdk.Upload:
-				wg.Add(1)
 
 				encrypt := len(encryptpath) != 0 && strings.Contains(lPath, encryptpath)
 				argsSlice = append(argsSlice, chunkedUploadArgs{
@@ -202,10 +210,8 @@ var syncCmd = &cobra.Command{
 					encrypt:       encrypt,
 					chunkNumber:   syncChunkNumber,
 				})
-				statusBars = append(statusBars, StatusBar{wg: wg})
 
 			case sdk.Update:
-				wg.Add(1)
 
 				encrypt := len(encryptpath) != 0 && strings.Contains(lPath, encryptpath)
 				argsSlice = append(argsSlice, chunkedUploadArgs{
@@ -216,8 +222,6 @@ var syncCmd = &cobra.Command{
 					chunkNumber:   syncChunkNumber,
 					isUpdate:      true,
 				})
-
-				statusBars = append(statusBars, StatusBar{wg: wg})
 
 			case sdk.Delete:
 				fileMeta, err := allocationObj.GetFileMeta(f.Path)
@@ -245,13 +249,12 @@ var syncCmd = &cobra.Command{
 				PrintError(err.Error())
 			}
 		}
-		err = startMultiOperation(allocationObj, argsSlice, statusBars)
+		err = startMultiUploadUpdate(allocationObj, argsSlice)
 		if err != nil {
 			PrintError("\nSync Failed", err.Error())
-			return;
+			return
 		}
 		wg.Wait()
-
 		fmt.Println("\nSync Complete")
 		saveCache(allocationObj, localcache, exclPath)
 		return
