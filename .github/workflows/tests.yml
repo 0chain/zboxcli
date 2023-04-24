@@ -23,6 +23,12 @@ jobs:
       - name: Clone Zbox
         uses: actions/checkout@v2
 
+      - name: Install Packages
+        run: |
+          lsb_release -a
+          sudo apt-get update
+          sudo apt-get -y install build-essential nghttp2 libnghttp2-dev libssl-dev
+
       - name: Run Tests
         run: make zboxcli-test
 
@@ -37,6 +43,13 @@ jobs:
 
       - name: Clone 0Box
         uses: actions/checkout@v2
+
+      - name: check software
+        run: |
+          lsb_release -a
+          sudo apt-get update
+          sudo apt-get -y install build-essential nghttp2 libnghttp2-dev libssl-dev
+          gcc --version
 
       - name: Build 0Box
         run: make install
