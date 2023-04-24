@@ -150,8 +150,7 @@ func initConfig() {
 				os.Exit(1)
 			}
 			defer file.Close()
-			fmt.Fprintf(file, walletJSON)
-			//fresh = true
+			fmt.Fprint(file, walletJSON)
 		} else {
 			f, err := os.Open(walletFilePath)
 			if err != nil {
@@ -200,26 +199,4 @@ func initConfig() {
 	}
 
 	sdk.SetNumBlockDownloads(10)
-
-	//_, err = sdk.GetReadPoolInfo(walletClientID)
-	//if err != nil {
-	//	if strings.Contains(err.Error(), "resource_not_found") {
-	//		fmt.Println("Creating related read pool for storage smart-contract...")
-	//		hash, _, err := sdk.CreateReadPool()
-	//		if err != nil {
-	//			fmt.Printf("Failed to create read pool: %v\n", err)
-	//			os.Exit(1)
-	//		}
-	//		fmt.Println("Read pool created successfully with txn:", hash)
-	//	}
-	//}
-
-	//if fresh {
-	//	fmt.Println("Creating related read pool for storage smart-contract...")
-	//	if _, _, err = sdk.CreateReadPool(); err != nil {
-	//		fmt.Printf("Failed to create read pool: %v\n", err)
-	//		os.Exit(1)
-	//	}
-	//	fmt.Println("Read pool created successfully")
-	//}
 }
