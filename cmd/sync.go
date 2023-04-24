@@ -99,7 +99,6 @@ func startMultiUploadUpdate(allocationObj *sdk.Allocation, argsSlice []chunkedUp
 		if args.isUpdate {
 			operationRequests[idx].OperationType = constants.FileOperationUpdate
 		}
-		fmt.Println("Status call back is : ", statusBar)
 	}
 
 	err := allocationObj.DoMultiOperation(operationRequests)
