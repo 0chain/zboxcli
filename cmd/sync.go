@@ -6,7 +6,9 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/0chain/gosdk/constants"
 	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk/zboxcore/zboxutil"
 	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )
@@ -41,6 +43,63 @@ func filterOperations(lDiff []sdk.FileDiff) (filterDiff []sdk.FileDiff, exclPath
 		}
 	}
 	return
+}
+
+func startMultiOperation(allocationObj *sdk.Allocation, argsSlice []chunkedUploadArgs, statusBars []StatusBar) error {
+	totalOperations := len(argsSlice)
+	if totalOperations == 0 {
+		return nil
+	}
+	operationRequests := make([]sdk.OperationRequest, totalOperations)
+
+	for idx, args := range argsSlice {
+		fileReader, err := os.Open(args.localPath)
+		if err != nil {
+			return err
+		}
+		// defer fileReader.Close()
+
+		fileInfo, err := fileReader.Stat()
+		if err != nil {
+			return err
+		}
+
+		mimeType, err := zboxutil.GetFileContentType(fileReader)
+		if err != nil {
+			return err
+		}
+
+		remotePath, fileName, err := fullPathAndFileNameForUpload(args.localPath, args.remotePath)
+		if err != nil {
+			return err
+		}
+
+		fileMeta := sdk.FileMeta{
+			Path:       args.localPath,
+			ActualSize: fileInfo.Size(),
+			MimeType:   mimeType,
+			RemoteName: fileName,
+			RemotePath: remotePath,
+		}
+
+		options := []sdk.ChunkedUploadOption{
+			sdk.WithThumbnailFile(args.thumbnailPath),
+			sdk.WithEncrypt(args.encrypt),
+			sdk.WithStatusCallback(&statusBars[idx]),
+			sdk.WithChunkNumber(args.chunkNumber),
+		}
+		operationRequests[idx] = sdk.OperationRequest{
+			FileMeta:      fileMeta,
+			FileReader:    fileReader,
+			OperationType: constants.FileOperationInsert,
+			Opts:          options,
+		}
+	}
+	// Directly return from here
+	err := allocationObj.DoMultiOperation(operationRequests)
+	// Close the fileReader
+	return err
+
 }
 
 // syncCmd represents sync command
@@ -119,58 +178,47 @@ var syncCmd = &cobra.Command{
 			saveCache(allocationObj, localcache, exclPath)
 			return
 		}
+		argsSlice := make([]chunkedUploadArgs, 0)
+		statusBars := make([]StatusBar, 0)
 		for _, f := range lDiff {
 			localpath = strings.TrimRight(localpath, "/")
 			lPath := localpath + f.Path
 			switch f.Op {
 			case sdk.Download:
 				wg.Add(1)
-				err = allocationObj.DownloadFile(lPath, f.Path, verifyDownload, statusBar)
+
+				go func(lPath string, f sdk.FileDiff, verifyDownload bool, statusBar *StatusBar) {
+					err = allocationObj.DownloadFile(lPath, f.Path, verifyDownload, statusBar)
+				}(lPath, f, verifyDownload, statusBar)
+
 			case sdk.Upload:
 				wg.Add(1)
 
 				encrypt := len(encryptpath) != 0 && strings.Contains(lPath, encryptpath)
-
-				err = startChunkedUpload(cmd, allocationObj, chunkedUploadArgs{
+				argsSlice = append(argsSlice, chunkedUploadArgs{
 					localPath:     lPath,
 					thumbnailPath: "",
 					remotePath:    f.Path,
 					encrypt:       encrypt,
 					chunkNumber:   syncChunkNumber,
-					// isUpdate:      false,
-					// isRepair: false,
-				}, statusBar)
+				})
+				statusBars = append(statusBars, StatusBar{wg: wg})
 
-				// if len(encryptpath) != 0 && strings.Contains(lPath, encryptpath) {
-				// 	err = allocationObj.EncryptAndUploadFile(lPath, f.Path, attrs, statusBar)
-				// } else {
-				// 	err = allocationObj.UploadFile(lPath, f.Path, attrs, statusBar)
-				// }
 			case sdk.Update:
 				wg.Add(1)
 
 				encrypt := len(encryptpath) != 0 && strings.Contains(lPath, encryptpath)
+				argsSlice = append(argsSlice, chunkedUploadArgs{
+					localPath:     lPath,
+					thumbnailPath: "",
+					remotePath:    f.Path,
+					encrypt:       encrypt,
+					chunkNumber:   syncChunkNumber,
+					isUpdate:      true,
+				})
 
-				err = startChunkedUpload(cmd, allocationObj,
-					chunkedUploadArgs{
-						localPath:     lPath,
-						thumbnailPath: "",
-						remotePath:    f.Path,
-						encrypt:       encrypt,
-						chunkNumber:   syncChunkNumber,
-						isUpdate:      true,
-						// isRepair: false,
-					}, statusBar)
+				statusBars = append(statusBars, StatusBar{wg: wg})
 
-				// if len(encryptpath) != 0 && strings.Contains(lPath, encryptpath) {
-				// 	err = allocationObj.EncryptAndUpdateFile(lPath, f.Path,
-				// 		getRemoteFileAttributes(allocationObj, f.Path),
-				// 		statusBar)
-				// } else {
-				// 	err = allocationObj.UpdateFile(lPath, f.Path,
-				// 		getRemoteFileAttributes(allocationObj, f.Path),
-				// 		statusBar)
-				// }
 			case sdk.Delete:
 				fileMeta, err := allocationObj.GetFileMeta(f.Path)
 				if err != nil {
@@ -196,6 +244,11 @@ var syncCmd = &cobra.Command{
 			if err != nil {
 				PrintError(err.Error())
 			}
+		}
+		err = startMultiOperation(allocationObj, argsSlice, statusBars)
+		if err != nil {
+			PrintError("\nSync Failed", err.Error())
+			return;
 		}
 		wg.Wait()
 

@@ -127,7 +127,7 @@ func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, args 
 
 	chunkedUpload, err := sdk.CreateChunkedUpload(util.GetHomeDir(), allocationObj,
 		fileMeta, fileReader,
-		args.isUpdate, args.isRepair,
+		args.isUpdate, args.isRepair, zboxutil.NewConnectionId(),
 		options...)
 
 	if err != nil {
