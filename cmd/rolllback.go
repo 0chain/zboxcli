@@ -35,6 +35,6 @@ var rollbackCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(rollbackCmd)
-	uploadCmd.PersistentFlags().String("allocation", "", "Allocation ID")
-	_ = uploadCmd.MarkFlagRequired("allocation")
+	rollbackCmd.PersistentFlags().String("allocation", "", "Allocation ID")
+	_ = rollbackCmd.MarkFlagRequired("allocation")
 }
