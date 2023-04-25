@@ -120,6 +120,11 @@ var newallocationCmd = &cobra.Command{
 				log.Fatal("invalid read_price value: ", err)
 			}
 			readPrice = pr
+		} else {
+			readPrice, err = sdk.GetReadPriceRange()
+			if err != nil {
+				log.Fatal("invalid read_price value: ", err)
+			}
 		}
 
 		if flags.Changed("write_price") {
@@ -132,6 +137,11 @@ var newallocationCmd = &cobra.Command{
 				log.Fatal("invalid write_price value: ", err)
 			}
 			writePrice = pr
+		} else {
+			writePrice, err = sdk.GetWritePriceRange()
+			if err != nil {
+				log.Fatal("invalid write_price value: ", err)
+			}
 		}
 
 		var expire time.Duration
@@ -142,7 +152,7 @@ var newallocationCmd = &cobra.Command{
 		var expireAt = time.Now().Add(expire).Unix()
 
 		if costOnly {
-			minCost, err := sdk.GetAllocationMinLock(*datashards, *parityshards, *size, expireAt, readPrice, writePrice)
+			minCost, err := sdk.GetAllocationMinLock(*datashards, *parityshards, *size, expire.Milliseconds(), readPrice, writePrice)
 			if err != nil {
 				log.Fatal("Error fetching cost: ", err)
 			}
