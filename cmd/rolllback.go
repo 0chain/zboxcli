@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"os"
+	"log"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
@@ -17,27 +17,24 @@ var rollbackCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags()
 		if !fflags.Changed("allocation") {
-			PrintError("Error: allocation flag is missing")
-			os.Exit(1)
+			log.Fatal("Error: allocation flag is missing")
 		}
 		allocationID := cmd.Flag("allocation").Value.String()
 		allocationObj, err := sdk.GetAllocation(allocationID)
 		if err != nil {
-			PrintError("Error fetching the allocation.", err)
-			os.Exit(1)
+			log.Fatal("Error fetching the allocation.", err)
 		}
 
 		_, err = allocationObj.GetCurrentVersion()
 		if err != nil {
-			PrintError("Error rolling back", err)
-			os.Exit(1)
+			log.Fatal("Error rolling back", err)
 		}
-
+		log.Println("Rollback successful")
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(rollbackCmd)
 	uploadCmd.PersistentFlags().String("allocation", "", "Allocation ID")
-	uploadCmd.MarkFlagRequired("allocation")
+	_ = uploadCmd.MarkFlagRequired("allocation")
 }
