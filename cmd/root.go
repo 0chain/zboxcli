@@ -46,6 +46,9 @@ var rootCmd = &cobra.Command{
 var clientWallet *zcncrypto.Wallet
 
 func init() {
+
+	InstallDeps()
+
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is config.yaml)")
 	rootCmd.PersistentFlags().StringVar(&networkFile, "network", "", "network file to overwrite the network details (if required, default is network.yaml)")
