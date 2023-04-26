@@ -47,7 +47,7 @@ var clientWallet *zcncrypto.Wallet
 
 func init() {
 
-	InstallDeps()
+	InstallDLLs()
 
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is config.yaml)")
