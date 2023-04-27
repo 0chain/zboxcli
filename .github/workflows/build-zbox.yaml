@@ -14,16 +14,18 @@ jobs:
 #     runs-on: ubuntu-latest
     runs-on: [self-hosted, build]
     steps:
+      - name: Install deps
+        run: |
+          sudo apt update
+          sudo apt -y install build-essential nghttp2 libnghttp2-dev libssl-dev
 
-      - name: Setup go 1.18
+      - name: Setup go
         uses: actions/setup-go@v2
         with:
           go-version: '1.18' # The Go version to download (if necessary) and use.
 
       - name: Checkout
         uses: actions/checkout@v2
-
-        
       
       - name: Set GITHUB_ENV
         run: |
