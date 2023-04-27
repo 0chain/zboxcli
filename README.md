@@ -13,7 +13,6 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
     - [Global Flags](#global-flags)
   - [Commands](#commands)
     - [Creating and Managing Allocations](#creating-and-managing-allocations)
-      - [Register wallet](#register-wallet)
       - [Create new allocation](#create-new-allocation)
         - [Free storage allocation](#free-storage-allocation)
       - [Update allocation](#update-allocation)
@@ -133,7 +132,6 @@ When you run the `zbox` command in terminal with no arguments, it will list all 
 |                [meta](#get-metadata)                 |           get meta data of files from blobbers            |
 |                    [move](#move)                     | move an object(file/folder) to another folder on blobbers |
 |       [newallocation](#create-new-allocation)        |                 Creates a new allocation                  |
-|             [register](#register-wallet)             |         Registers the wallet with the blockchain          |
 |                  [rename](#rename)                   |         rename an object(file/folder) on blobbers         |
 |            [rp-create](#create-read-pool)            |                Create read pool if missing                |
 |              [rp-info](#read-pool-info)              |                  Read pool information.                   |
@@ -181,24 +179,6 @@ To get a more descriptive view of all the zbox functionalities check zbox cli
 documentation at docs.0chain.net.
 
 ### Creating and Managing Allocations
-
-#### Register wallet
-
-`register` is used when needed to register a given wallet to the blockchain.
-This could be because the blockchain network has been reset and you wished to register
-the wallet at `~/.zcn/wallet.json`.
-
-Sample command
-
-```sh
-./zbox register
-```
-
-Sample output
-
-```
-Wallet registered
-```
 
 #### Create new allocation
 
