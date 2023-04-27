@@ -6,8 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strings"
-	"sync"
 
 	"github.com/0chain/gosdk/core/conf"
 	"github.com/0chain/gosdk/core/logger"
@@ -142,31 +140,20 @@ func initConfig() {
 		}
 
 		if _, err = os.Stat(walletFilePath); os.IsNotExist(err) {
-			wg := &sync.WaitGroup{}
-			statusBar := &ZCNStatus{wg: wg}
-			wg.Add(1)
-			err = zcncore.CreateWallet(statusBar)
-			if err == nil {
-				wg.Wait()
-			} else {
+			wallet, err := zcncore.CreateWalletOffline()
+			if err != nil {
 				fmt.Println(err.Error())
 				os.Exit(1)
 			}
-			if len(statusBar.walletString) == 0 || !statusBar.success {
-				fmt.Println("Error creating the wallet." + statusBar.errMsg)
-				os.Exit(1)
-			}
 			fmt.Println("ZCN wallet created")
-			walletJSON = string(statusBar.walletString)
+			walletJSON = wallet
 			file, err := os.Create(walletFilePath)
 			if err != nil {
 				fmt.Println(err.Error())
 				os.Exit(1)
 			}
 			defer file.Close()
-			fmt.Fprintf(file, walletJSON)
-
-			//fresh = true
+			fmt.Fprint(file, walletJSON)
 		} else {
 			f, err := os.Open(walletFilePath)
 			if err != nil {
@@ -215,26 +202,4 @@ func initConfig() {
 	}
 
 	sdk.SetNumBlockDownloads(10)
-
-	_, err = sdk.GetReadPoolInfo(walletClientID)
-	if err != nil {
-		if strings.Contains(err.Error(), "resource_not_found") {
-			fmt.Println("Creating related read pool for storage smart-contract...")
-			hash, _, err := sdk.CreateReadPool()
-			if err != nil {
-				fmt.Printf("Failed to create read pool: %v\n", err)
-				os.Exit(1)
-			}
-			fmt.Println("Read pool created successfully with txn:", hash)
-		}
-	}
-
-	//if fresh {
-	//	fmt.Println("Creating related read pool for storage smart-contract...")
-	//	if _, _, err = sdk.CreateReadPool(); err != nil {
-	//		fmt.Printf("Failed to create read pool: %v\n", err)
-	//		os.Exit(1)
-	//	}
-	//	fmt.Println("Read pool created successfully")
-	//}
 }
