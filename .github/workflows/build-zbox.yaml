@@ -14,11 +14,10 @@ jobs:
 #     runs-on: ubuntu-latest
     runs-on: [self-hosted, build]
     steps:
-
       - name: Install deps
         run: |
-          apt update
-          apt install make -y
+          sudo apt update
+          sudo apt -y install build-essential nghttp2 libnghttp2-dev libssl-dev
 
       - name: Setup go
         uses: actions/setup-go@v2
@@ -27,8 +26,6 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v2
-
-        
       
       - name: Set GITHUB_ENV
         run: |
