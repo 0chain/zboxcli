@@ -8,7 +8,7 @@ on:
   
 jobs:
   s3Backup:
-    runs-on: docker-builds
+    runs-on: arc-runner
     steps:
       - uses: actions/checkout@v1
       
