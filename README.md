@@ -18,7 +18,6 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
       - [Update allocation](#update-allocation)
       - [Cancel allocation](#cancel-allocation)
       - [Finalise allocation](#finalise-allocation)
-      - [Transfer allocation ownership](#transfer-allocation-ownership)
       - [Get Allocation Info](#get)
       - [List blobbers](#list-blobbers)
       - [Detailed blobber information](#detailed-blobber-information)
@@ -44,7 +43,6 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
       - [Rename](#rename)
       - [Stats](#stats)
       - [Repair](#repair)
-      - [Add collaborator](#add-collaborator)
       - [Sign data](#sign-data)
       - [Download cost](#download-cost)
       - [Upload cost](#upload-cost)
@@ -106,9 +104,8 @@ Note: This is helpful for the Mac OS users running local cluster and having trou
 When you run the `zbox` command in terminal with no arguments, it will list all the available commands and the global flags.
 
 |                     **Command**                      |                      **Description**                      |
-| :--------------------------------------------------: | :-------------------------------------------------------: |
-|           [add-collab](#add-collaborator)            |                add collaborator for a file                |
-|          [alloc-cancel](#cancel-allocation)          |                   Cancel an allocation                    |
+| :--------------------------------------------------: | :-------------------------------------------------------: |                       
+|  [alloc-cancel](#cancel-allocation)                  |                   Cancel an allocation                    |
 |          [alloc-fini](#finalise-allocation)          |              Finalize an expired allocation               |
 |       [bl-info](#detailed-blobber-information)       |                     Get blobber info                      |
 |  [validator-info](#detailed-validator-information)   |                    Get validator info                     |
@@ -147,7 +144,6 @@ When you run the `zbox` command in terminal with no arguments, it will list all 
 |               [start-repair](#repair)                |               start repair file to blobbers               |
 |                   [stats](#stats)                    |               stats for file from blobbers                |
 |                    [sync](#sync)                     |                Sync files to/from blobbers                |
-| [transferallocation](#transfer-allocation-ownership) |           Transfer an allocation between owners           |
 |                  [update](#update)                   |                  update file to blobbers                  |
 |        [updateallocation](#update-allocation)        |           Updates allocation's expiry and size            |
 |                  [upload](#upload)                   |                  upload file to blobbers                  |
@@ -413,40 +409,6 @@ Example
 ```
 ./zbox alloc-fini --allocation <allocation_id>
 ```
-
-#### Transfer allocation ownership
-
-`transferallocation` changes the owner of an allocation. Only the current owner of the allocation, can change an
-allocation's ownership.
-
-`transferallocation` does not move any funds, only changes the owner,
-and the owner's public key.
-
-| Parameter     | Required | Description             | Valid Values |
-| ------------- | -------- | ----------------------- | ------------ |
-| allocation    | yes      | allocatino id           | string       |
-| new_owner     | yes      | id of the new owner     | string       |
-| new_owner_key | yes      | public key of new owner | string       |
-
-<details>
-  <summary>transferallocation</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/125456952-115b5468-c4f8-4564-8160-86f8164c5ce6.png)
-
-</details>
-
-```shell
-./zbox trnasferallocation --allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d \
-    --new_owner 8b87739cd6c966c150a8a6e7b327435d4a581d9d9cc1d86a88c8a13ae1ad7a96
-    --new_owner_key a2df94e69954e51999f768aeca40bf0678e168fa9eb21ee5c82c32a9c25fb71fe9a340b726456d6e557f92854975ef04270291cdc1853e56000b0a6b48312d13
-```
-
-Output
-
-```shell
-transferred ownership of fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d to 8b87739cd6c966c150a8a6e7b327435d4a581d9d9cc1d86a88c8a13ae1ad7a96
-```
-
 #### List blobbers
 
 Use `ls-blobbers` command to show active blobbers.
@@ -1396,40 +1358,6 @@ Response:
 ```
 Repair file completed, Total files repaired:  0
 ```
-
-#### Add collaborator
-
-Use `add-collab` command to add a collaborator for a file on dStorage.
-Collaborators can perform read actions on the collaboration file, with the owner paying.
-
-![collaboration](https://user-images.githubusercontent.com/65766301/120052678-0f2f4f80-c044-11eb-8ca6-1a032659eac3.png)
-
-| Parameter  | Required | Description                  | default | Valid values |
-| ---------- | -------- | ---------------------------- | ------- | ------------ |
-| allocation | yes      | allocation id                |         | string       |
-| collabid   | yes      | id of collaberator           |         | string       |
-| remotepath | yes      | file on which to collaberate |         | string       |
-
-<details>
-  <summary>add-collab</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/124504210-e9be0000-ddbe-11eb-819c-e74c8bf340dd.png)
-
-</details>
-
-Example
-
-```
-./zbox add-collab --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --remotepath /1.txt --collabid d477d12134c2d7ba5ab71ac8ad37f244224695ef3215be990c3215d531c5a329
-```
-
-Response will be a confirmation that collaborator is added on all blobbers for the given file .
-
-```
-Collaborator d477d12134c2d7ba5ab71ac8ad37f244224695ef3215be990c3215d531c5a329 added successfully for the file /1.txt
-```
-
-You can check all collaborators for a file in metadata json response.
 
 #### Sign data
 
