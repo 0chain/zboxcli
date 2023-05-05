@@ -16,6 +16,7 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
       - [Create new allocation](#create-new-allocation)
         - [Free storage allocation](#free-storage-allocation)
       - [Update allocation](#update-allocation)
+      - [Forbid allocation](#forbid-allocation)
       - [Cancel allocation](#cancel-allocation)
       - [Finalise allocation](#finalise-allocation)
       - [Transfer allocation ownership](#transfer-allocation-ownership)
@@ -126,7 +127,7 @@ When you run the `zbox` command in terminal with no arguments, it will list all 
 |               [getwallet](#get-wallet)               |                  Get wallet information                   |
 |                         help                         |                  Help about any command                   |
 |                    [list](#list)                     |                 list files from blobbers                  |
-|          [list-all](#list-all-allocations)           |               list all files from blobbers                |
+|          [list-all](#list-all-files)                 |               list all files from blobbers                |
 |     [listallocations](#list-owners-allocations)      |              List allocations for the client              |
 |            [ls-blobbers](#list-blobbers)             |            Show active blobbers in storage SC.            |
 |                [meta](#get-metadata)                 |           get meta data of files from blobbers            |
@@ -151,7 +152,7 @@ When you run the `zbox` command in terminal with no arguments, it will list all 
 |                  [update](#update)                   |                  update file to blobbers                  |
 |        [updateallocation](#update-allocation)        |           Updates allocation's expiry and size            |
 |                  [upload](#upload)                   |                  upload file to blobbers                  |
-|                       version                        |                Prints version information                 |
+|                  [version](#get-version)             |                Prints version information                 |
 |             [wp-info](#write-pool-info)              |                  Write pool information.                  |
 |       [wp-lock](#lock-tokens-into-write-pool)        |              Lock some tokens in write pool.              |
 |     [wp-unlock](#unlock-tokens-from-write-pool)      |        Unlock some expired tokens in a write pool.        |
@@ -357,8 +358,35 @@ Output:
 Allocation updated with txId : fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
 ```
 
-You can see more txn details using above txID in block explorer [here](https://beta.0chain.net/).
+#### Forbid Allocation
 
+There are various operations which you can forbid on an allocation. Forbid flag works with [update allocation](#update-allocation) command. Check its working first.
+Here are the operations:
+
+| Parameter       | Description                                                  |
+| --------------- | ------------------------------------------------------------ |
+| --forbid_copy   | specify if the users cannot copy object from this allocation |
+| --forbid_update | specify if the users cannot update objects in this allocation |
+| --forbid_delete | specify if the users cannot delete objects from this allocation |
+| --forbid_move   | specify if the users cannot move objects from this allocation |
+| --forbid_rename | specify if the users cannot rename objects in this allocation |
+| --forbid_upload | specify if users cannot upload to this allocation            |
+
+
+Here is a sample command for --forbid_upload .Other parameters can be done the same way.
+
+```
+./zbox updateallocation --allocation $ALLOC --forbid_upload
+```
+Sample Response :
+```
+Allocation Updated with txID : b84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
+```
+To test functionality try uploading file to allocation. You should get the following response :
+```
+Upload failed. this options for this file is not permitted for this allocation: 
+file_option_not_permitted.
+```
 #### Cancel allocation
 
 `alloc-cancel` immediately return all remaining tokens from challenge pool back to the
@@ -530,7 +558,7 @@ settings:
 
 #### List all files
 
-`list-all` lists al the files stored with an allocation
+`list-all` lists all the files stored with an allocation
 
 | Parameter  | Required | Description                                    | Default | Valid values |
 | ---------- | -------- | ---------------------------------------------- | ------- | ------------ |
@@ -594,6 +622,26 @@ Update blobber read price
 ```
 ./zbox bl-update --blobber_id 0ece681f6b00221c5567865b56040eaab23795a843ed629ce71fb340a5566ba3 --read_price 0.1
 ```
+
+Get Version
+
+The version of Zbox and Gosdk can be fetched using the ./zbox version command.
+
+```
+./zbox version
+```
+Sample Response:
+
+```
+zbox....:  v1.4.3
+gosdk...:  v1.8.14
+```
+
+
+
+
+
+
 
 ### Uploading and Managing files
 
