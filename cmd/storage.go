@@ -324,13 +324,13 @@ func init() {
 	rootCmd.AddCommand(blobberInfoCmd)
 	rootCmd.AddCommand(blobberUpdateCmd)
 
-	scConfig.Flags().Bool("json", false, "pass this option to print response as json data")
-	lsBlobers.Flags().Bool("json", false, "pass this option to print response as json data")
-	lsBlobers.Flags().Bool("all", false, "shows active and non active list of blobbers on ls-blobbers")
+	scConfig.Flags().Bool("json", false, "<type:bool> pass this option to print response as json data")
+	lsBlobers.Flags().Bool("json", false, "<type:bool> pass this option to print response as json data")
+	lsBlobers.Flags().Bool("all", false, "<type:bool> shows active and non active list of blobbers on ls-blobbers")
 
 	blobberInfoCmd.Flags().String("blobber_id", "", "blobber ID, required")
 	blobberInfoCmd.Flags().Bool("json", false,
-		"pass this option to print response as json data")
+		"<type:bool> pass this option to print response as json data")
 	blobberInfoCmd.MarkFlagRequired("blobber_id")
 
 	buf := blobberUpdateCmd.Flags()
@@ -344,6 +344,6 @@ func init() {
 	buf.Float64("max_stake", 0.0, "update max_stake, optional")
 	buf.Int("num_delegates", 0, "update num_delegates, optional")
 	buf.Float64("service_charge", 0.0, "update service_charge, optional")
-	buf.Bool("is_available", true, "set blobber's availability for new allocations")
+	buf.Bool("is_available", true, "<type:bool> set blobber's availability for new allocations")
 	blobberUpdateCmd.MarkFlagRequired("blobber_id")
 }

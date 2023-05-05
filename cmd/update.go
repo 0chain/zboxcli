@@ -79,7 +79,7 @@ func init() {
 	updateCmd.PersistentFlags().String("remotepath", "", "Remote path to upload")
 	updateCmd.PersistentFlags().String("localpath", "", "Local path of file to upload")
 	updateCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
-	updateCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
+	updateCmd.Flags().Bool("encrypt", false, "<type:bool> pass this option to encrypt and upload the file")
 
 	updateCmd.Flags().IntVarP(&updateChunkNumber, "chunknumber", "", 1, "how many chunks should be uploaded in a http request")
 

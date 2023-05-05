@@ -116,7 +116,7 @@ func init() {
 	streamCmd.PersistentFlags().String("localpath", "", "Local path of file to upload")
 	streamCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
 	streamCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
-	streamCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
+	streamCmd.Flags().Bool("encrypt", false, "<type:bool> pass this option to encrypt and upload the file")
 
 	streamCmd.Flags().IntVarP(&streamChunkNumber, "chunknumber", "", 1, "how many chunks should be uploaded in a http request")
 

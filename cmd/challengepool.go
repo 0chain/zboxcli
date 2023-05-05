@@ -66,5 +66,5 @@ func init() {
 
 	cpInfo.PersistentFlags().String("allocation", "",
 		"allocation identifier, required")
-	cpInfo.Flags().Bool("json", false, "pass this option to print response as json data")
+	cpInfo.Flags().Bool("json", false, "<type:bool> pass this option to print response as json data")
 }

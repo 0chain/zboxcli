@@ -128,7 +128,7 @@ func init() {
 	shareCmd.PersistentFlags().String("encryptionpublickey", "", "Encryption public key of the client you want to share with. Can be retrieved by the getwallet command")
 	shareCmd.PersistentFlags().Int64("expiration-seconds", 0, "Authticket will expire when the seconds specified have elapsed after the instant of its creation")
 	shareCmd.PersistentFlags().String("available-after", "", "Timelock for private file that makes the file available for download at certain time. 4 input formats are supported: +1h30m, +30, 1647858200 and 2022-03-21 10:21:38. Default value is current local time.")
-	shareCmd.PersistentFlags().Bool("revoke", false, "Revoke share for remotepath")
+	shareCmd.PersistentFlags().Bool("revoke", false, "<type:bool> Revoke share for remotepath")
 	shareCmd.MarkFlagRequired("allocation")
 	shareCmd.MarkFlagRequired("remotepath")
 }
