@@ -611,6 +611,7 @@ The user must be the owner of the allocation.You can request the file be encrypt
 | ------------- | -------- | ------------------------------------------------------- | ------- | ------------ |
 | allocation    | yes      | allocation id, sender must be allocation owner          |         | string       |
 | encrypt       | no       | encrypt file before upload                              | false   | boolean      |
+| web-streaming | no       | transcode file before upload to fragmented mp4          | false   | boolean      |
 | localpath     | yes      | local path of the file to upload                        |         | file path    |
 | remotepath    | yes      | remote path to upload file to, use to access file later |         | string       |
 | thumbnailpath | no       | local path of thumbnaSil                                |         | file path    |
@@ -653,6 +654,22 @@ Response:
 ```
 12390 / 12390 [================================================================================] 100.00% 3s
 Status completed callback. Type = application/octet-stream. Name = sensitivedata.txt
+```
+
+**Upload file with web-streaming**
+
+Use upload command with optional web-streaming parameter to upload a video file in fragmented
+mp4 format to support streaming from browser.
+
+```
+./zbox upload --web-streaming --localpath <absolute path to file>/samplevideo.mov --remotepath /myfile/ --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
+```
+
+Response:
+
+```
+15691733 / 15691733 [=====================================================================================] 100.00% 32s
+Status completed callback. Type = video/fmp4. Name = raw.samplevideo.mp4
 ```
 
 #### Stream
