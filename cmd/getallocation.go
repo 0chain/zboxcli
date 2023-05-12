@@ -133,6 +133,6 @@ func init() {
 	getallocationCmd.PersistentFlags().String("allocation", "", "Allocation ID")
 	getallocationCmd.PersistentFlags().Int("blocks-per-marker", 10, "blocks signed per Read Marker")
 	getallocationCmd.MarkFlagRequired("allocation")
-	getallocationCmd.Flags().Bool("json", false, "<type:bool> pass this option to print response as json data")
+	getallocationCmd.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
 
 }

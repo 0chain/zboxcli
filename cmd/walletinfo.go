@@ -86,7 +86,7 @@ var signCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(walletinfoCmd)
-	walletinfoCmd.Flags().Bool("json", false, "<type:bool> pass this option to print response as json data")
+	walletinfoCmd.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
 
 	rootCmd.AddCommand(signCmd)
 	signCmd.Flags().String("data", "", "give data for signing, Default will be clientID")

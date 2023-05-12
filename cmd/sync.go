@@ -277,7 +277,7 @@ After sync complete, remote snapshot will be updated to the same file for next u
 
 	syncCmd.MarkFlagRequired("allocation")
 	syncCmd.MarkFlagRequired("localpath")
-	syncCmd.Flags().Bool("uploadonly", false, "<type:bool> pass this option to only upload/update the files")
+	syncCmd.Flags().Bool("uploadonly", false, "(default false) pass this option to only upload/update the files")
 
 	syncCmd.Flags().IntVarP(&syncChunkNumber, "chunknumber", "", 1, "how many chunks should be uploaded in a http request")
 

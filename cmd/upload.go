@@ -149,8 +149,8 @@ func init() {
 	uploadCmd.PersistentFlags().String("localpath", "", "Local path of file to upload")
 	uploadCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
 	uploadCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
-	uploadCmd.Flags().Bool("encrypt", false, "<type:bool> pass this option to encrypt and upload the file")
-	uploadCmd.Flags().Bool("web-streaming", false, "<type:bool> pass this option to enable web streaming support")
+	uploadCmd.Flags().Bool("encrypt", false, "(default false) pass this option to encrypt and upload the file")
+	uploadCmd.Flags().Bool("web-streaming", false, "(default false) pass this option to enable web streaming support")
 	uploadCmd.Flags().IntVarP(&uploadChunkNumber, "chunknumber", "", 1, "how many chunks should be uploaded in a http request")
 
 	uploadCmd.MarkFlagRequired("allocation")

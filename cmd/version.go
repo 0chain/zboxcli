@@ -55,5 +55,5 @@ func getVersion(path string) string {
 
 func init() {
 	rootCmd.AddCommand(versionCmd)
-	versionCmd.Flags().Bool("json", false, "<type:bool> pass this option to print response as json data")
+	versionCmd.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
 }
