@@ -68,9 +68,13 @@ var scConfig = &cobra.Command{
 	},
 }
 
-func printBlobbers(nodes []*sdk.Blobber) {
+func printBlobbers(nodes []*sdk.Blobber, isActive bool) {
 	if len(nodes) == 0 {
-		fmt.Println("no blobbers registered yet")
+		if isActive {
+			fmt.Println("no active blobbers")
+		} else {
+			fmt.Println("no blobbers registered yet")
+		}
 		return
 	}
 	for _, val := range nodes {
@@ -110,7 +114,7 @@ var lsBlobers = &cobra.Command{
 		if doJSON {
 			util.PrintJSON(list)
 		} else {
-			printBlobbers(list)
+			printBlobbers(list, isActive)
 		}
 	},
 }
