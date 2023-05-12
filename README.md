@@ -13,7 +13,6 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
     - [Global Flags](#global-flags)
   - [Commands](#commands)
     - [Creating and Managing Allocations](#creating-and-managing-allocations)
-      - [Register wallet](#register-wallet)
       - [Create new allocation](#create-new-allocation)
         - [Free storage allocation](#free-storage-allocation)
       - [Update allocation](#update-allocation)
@@ -133,7 +132,6 @@ When you run the `zbox` command in terminal with no arguments, it will list all 
 |                [meta](#get-metadata)                 |           get meta data of files from blobbers            |
 |                    [move](#move)                     | move an object(file/folder) to another folder on blobbers |
 |       [newallocation](#create-new-allocation)        |                 Creates a new allocation                  |
-|             [register](#register-wallet)             |         Registers the wallet with the blockchain          |
 |                  [rename](#rename)                   |         rename an object(file/folder) on blobbers         |
 |            [rp-create](#create-read-pool)            |                Create read pool if missing                |
 |              [rp-info](#read-pool-info)              |                  Read pool information.                   |
@@ -181,24 +179,6 @@ To get a more descriptive view of all the zbox functionalities check zbox cli
 documentation at docs.0chain.net.
 
 ### Creating and Managing Allocations
-
-#### Register wallet
-
-`register` is used when needed to register a given wallet to the blockchain.
-This could be because the blockchain network has been reset and you wished to register
-the wallet at `~/.zcn/wallet.json`.
-
-Sample command
-
-```sh
-./zbox register
-```
-
-Sample output
-
-```
-Wallet registered
-```
 
 #### Create new allocation
 
@@ -631,6 +611,7 @@ The user must be the owner of the allocation.You can request the file be encrypt
 | ------------- | -------- | ------------------------------------------------------- | ------- | ------------ |
 | allocation    | yes      | allocation id, sender must be allocation owner          |         | string       |
 | encrypt       | no       | encrypt file before upload                              | false   | boolean      |
+| web-streaming | no       | transcode file before upload to fragmented mp4          | false   | boolean      |
 | localpath     | yes      | local path of the file to upload                        |         | file path    |
 | remotepath    | yes      | remote path to upload file to, use to access file later |         | string       |
 | thumbnailpath | no       | local path of thumbnaSil                                |         | file path    |
@@ -673,6 +654,22 @@ Response:
 ```
 12390 / 12390 [================================================================================] 100.00% 3s
 Status completed callback. Type = application/octet-stream. Name = sensitivedata.txt
+```
+
+**Upload file with web-streaming**
+
+Use upload command with optional web-streaming parameter to upload a video file in fragmented
+mp4 format to support streaming from browser.
+
+```
+./zbox upload --web-streaming --localpath <absolute path to file>/samplevideo.mov --remotepath /myfile/ --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
+```
+
+Response:
+
+```
+15691733 / 15691733 [=====================================================================================] 100.00% 32s
+Status completed callback. Type = video/fmp4. Name = raw.samplevideo.mp4
 ```
 
 #### Stream

@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"sync"
 
 	"github.com/0chain/gosdk/core/conf"
 	"github.com/0chain/gosdk/core/logger"
@@ -29,6 +28,7 @@ var walletClientID string
 var walletClientKey string
 var cDir string
 var nonce int64
+var txFee float64
 var bSilent bool
 var allocUnderRepair bool
 
@@ -44,6 +44,9 @@ var rootCmd = &cobra.Command{
 var clientWallet *zcncrypto.Wallet
 
 func init() {
+
+	InstallDLLs()
+
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is config.yaml)")
 	rootCmd.PersistentFlags().StringVar(&networkFile, "network", "", "network file to overwrite the network details (if required, default is network.yaml)")
@@ -53,6 +56,7 @@ func init() {
 	rootCmd.PersistentFlags().Int64Var(&nonce, "withNonce", 0, "nonce that will be used in transaction (default is 0)")
 	rootCmd.PersistentFlags().StringVar(&cDir, "configDir", "", "configuration directory (default is $HOME/.zcn)")
 	rootCmd.PersistentFlags().BoolVar(&bSilent, "silent", false, "Do not show interactive sdk logs (shown by default)")
+	rootCmd.PersistentFlags().Float64Var(&txFee, "fee", 0, "transaction fee for the given transaction (if unset, it will be set to blockchain min fee)")
 }
 
 func Execute() {
@@ -107,7 +111,7 @@ func initConfig() {
 	}
 
 	// is freshly created wallet?
-	var fresh bool
+	//var fresh bool
 
 	wallet := &zcncrypto.Wallet{}
 	if (&walletClientID != nil) && (len(walletClientID) > 0) && (&walletClientKey != nil) && (len(walletClientKey) > 0) {
@@ -122,7 +126,7 @@ func initConfig() {
 			os.Exit(1)
 		}
 		clientWallet = wallet
-		fresh = false
+		//fresh = false
 	} else {
 		var walletFilePath string
 		if &walletFile != nil && len(walletFile) > 0 {
@@ -136,31 +140,20 @@ func initConfig() {
 		}
 
 		if _, err = os.Stat(walletFilePath); os.IsNotExist(err) {
-			wg := &sync.WaitGroup{}
-			statusBar := &ZCNStatus{wg: wg}
-			wg.Add(1)
-			err = zcncore.CreateWallet(statusBar)
-			if err == nil {
-				wg.Wait()
-			} else {
+			wallet, err := zcncore.CreateWalletOffline()
+			if err != nil {
 				fmt.Println(err.Error())
 				os.Exit(1)
 			}
-			if len(statusBar.walletString) == 0 || !statusBar.success {
-				fmt.Println("Error creating the wallet." + statusBar.errMsg)
-				os.Exit(1)
-			}
 			fmt.Println("ZCN wallet created")
-			walletJSON = string(statusBar.walletString)
+			walletJSON = wallet
 			file, err := os.Create(walletFilePath)
 			if err != nil {
 				fmt.Println(err.Error())
 				os.Exit(1)
 			}
 			defer file.Close()
-			fmt.Fprintf(file, walletJSON)
-
-			fresh = true
+			fmt.Fprint(file, walletJSON)
 		} else {
 			f, err := os.Open(walletFilePath)
 			if err != nil {
@@ -185,8 +178,15 @@ func initConfig() {
 	}
 
 	//init the storage sdk with the known miners, sharders and client wallet info
-	err = sdk.InitStorageSDK(walletJSON, cfg.BlockWorker, cfg.ChainID, cfg.SignatureScheme, cfg.PreferredBlobbers, nonce)
-	if err != nil {
+	if err = sdk.InitStorageSDK(
+		walletJSON,
+		cfg.BlockWorker,
+		cfg.ChainID,
+		cfg.SignatureScheme,
+		cfg.PreferredBlobbers,
+		nonce,
+		zcncore.ConvertToValue(txFee),
+	); err != nil {
 		fmt.Println("Error in sdk init", err)
 		os.Exit(1)
 	}
@@ -202,13 +202,4 @@ func initConfig() {
 	}
 
 	sdk.SetNumBlockDownloads(10)
-
-	if fresh {
-		fmt.Println("Creating related read pool for storage smart-contract...")
-		if _, _, err = sdk.CreateReadPool(); err != nil {
-			fmt.Printf("Failed to create read pool: %v\n", err)
-			os.Exit(1)
-		}
-		fmt.Println("Read pool created successfully")
-	}
 }

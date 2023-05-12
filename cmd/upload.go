@@ -48,6 +48,7 @@ var uploadCmd = &cobra.Command{
 		localPath := cmd.Flag("localpath").Value.String()
 		thumbnailPath := cmd.Flag("thumbnailpath").Value.String()
 		encrypt, _ := cmd.Flags().GetBool("encrypt")
+		webStreaming, _ := cmd.Flags().GetBool("web-streaming")
 
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
@@ -62,6 +63,7 @@ var uploadCmd = &cobra.Command{
 				thumbnailPath: thumbnailPath,
 				remotePath:    remotePath,
 				encrypt:       encrypt,
+				webStreaming:  webStreaming,
 				chunkNumber:   uploadChunkNumber,
 				// isUpdate:      false,
 				// isRepair:      false,
@@ -81,10 +83,11 @@ type chunkedUploadArgs struct {
 	remotePath    string
 	thumbnailPath string
 
-	encrypt     bool
-	chunkNumber int
-	isUpdate    bool
-	isRepair    bool
+	encrypt      bool
+	webStreaming bool
+	chunkNumber  int
+	isUpdate     bool
+	isRepair     bool
 }
 
 func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, args chunkedUploadArgs, statusBar sdk.StatusCallback) error {
@@ -101,6 +104,7 @@ func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, args 
 	}
 
 	mimeType, err := zboxutil.GetFileContentType(fileReader)
+
 	if err != nil {
 		return err
 	}
@@ -127,7 +131,8 @@ func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, args 
 
 	chunkedUpload, err := sdk.CreateChunkedUpload(util.GetHomeDir(), allocationObj,
 		fileMeta, fileReader,
-		args.isUpdate, args.isRepair,
+		args.isUpdate, args.isRepair, args.webStreaming,
+		zboxutil.NewConnectionId(),
 		options...)
 
 	if err != nil {
@@ -146,7 +151,7 @@ func init() {
 	uploadCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
 	uploadCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
 	uploadCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
-
+	uploadCmd.Flags().Bool("web-streaming", false, "pass this option to enable web streaming support")
 	uploadCmd.Flags().IntVarP(&uploadChunkNumber, "chunknumber", "", 1, "how many chunks should be uploaded in a http request")
 
 	uploadCmd.MarkFlagRequired("allocation")

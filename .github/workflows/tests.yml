@@ -23,6 +23,12 @@ jobs:
       - name: Clone Zbox
         uses: actions/checkout@v2
 
+      - name: Install Packages
+        run: |
+          lsb_release -a
+          sudo apt-get update
+          sudo apt-get -y install build-essential nghttp2 libnghttp2-dev libssl-dev
+
       - name: Run Tests
         run: make zboxcli-test
 
@@ -37,6 +43,13 @@ jobs:
 
       - name: Clone 0Box
         uses: actions/checkout@v2
+
+      - name: check software
+        run: |
+          lsb_release -a
+          sudo apt-get update
+          sudo apt-get -y install build-essential nghttp2 libnghttp2-dev libssl-dev
+          gcc --version
 
       - name: Build 0Box
         run: make install
@@ -91,6 +104,8 @@ jobs:
           custom_go_sdk_version: staging
           SUBGRAPH_API_URL: ${{ secrets.SUBGRAPH_API_URL }}
           TENDERLY_FORK_ID: ${{ secrets.TENDERLY_FORK_ID }}
+          graphnode_network: ${{ secrets.GRAPHNODE_NETWORK }}
+          graphnode_ethereum_node_url: https://rpc.tenderly.co/fork/${{ secrets.TENDERLY_FORK_ID }}
 
       - name: "Run System tests"
         uses: 0chain/actions/run-system-tests@master
