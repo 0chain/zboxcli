@@ -12,7 +12,7 @@ on:
         default: 'staging'
         required: true
       miner_sharder_branch:
-        description: 'miner branch to deploy'
+        description: 'miner/sharder branch to deploy'
         default: 'staging'
         required: true
       blobber_branch:
