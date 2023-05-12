@@ -104,6 +104,6 @@ func init() {
 	fileRefsCmd.PersistentFlags().Uint("page", 0, "Page to get refs from")
 	fileRefsCmd.PersistentFlags().Duration("in", 0, "Recent refs in this duration")
 	fileRefsCmd.PersistentFlags().Uint("page_limit", 0, "Number of refs to return in the page")
-	fileRefsCmd.Flags().Bool("json", false, "pass this option to print response as json data")
+	fileRefsCmd.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
 	fileRefsCmd.MarkFlagRequired("allocation")
 }
