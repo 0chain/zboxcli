@@ -139,32 +139,50 @@ var updateAllocationCmd = &cobra.Command{
 			fileOptionParams.ForbidRename.Value = forbidRename
 		}
 
-		allocationObj, err := sdk.GetAllocation(allocID)
-		if err != nil {
-			log.Fatal("Error updating allocation:couldnt_find_allocation: Couldn't find the allocation required for update")
-		}
+		if addBlobberId != "" {
+			allocationObj, err := sdk.GetAllocation(allocID)
+			if err != nil {
+				log.Fatal("Error updating allocation:couldnt_find_allocation: Couldn't find the allocation required for update")
+			}
 
-		wg := &sync.WaitGroup{}
-		statusBar := &StatusBar{wg: wg}
-		wg.Add(1)
-		if txnHash, err := allocationObj.UpdateWithRepair(
-			size,
-			int64(expiry/time.Second),
-			lock,
-			updateTerms,
-			addBlobberId,
-			removeBlobberId,
-			setThirdPartyExtendable,
-			&fileOptionParams,
-			statusBar,
-		); err != nil {
-			log.Fatal("Error updating allocation:", err)
+			wg := &sync.WaitGroup{}
+			statusBar := &StatusBar{wg: wg}
+			wg.Add(1)
+			if txnHash, err := allocationObj.UpdateWithRepair(
+				size,
+				int64(expiry/time.Second),
+				lock,
+				updateTerms,
+				addBlobberId,
+				removeBlobberId,
+				setThirdPartyExtendable,
+				&fileOptionParams,
+				statusBar,
+			); err != nil {
+				log.Fatal("Error updating allocation:", err)
+			} else {
+				log.Println("Allocation updated with txId : " + txnHash)
+			}
+			wg.Wait()
+			if !statusBar.success {
+				os.Exit(1)
+			}
 		} else {
+			txnHash, _, err := sdk.UpdateAllocation(
+				size,
+				int64(expiry/time.Second),
+				allocID,
+				lock,
+				updateTerms,
+				addBlobberId,
+				removeBlobberId,
+				setThirdPartyExtendable,
+				&fileOptionParams,
+			)
+			if err != nil {
+				log.Fatal("Error updating allocation:", err)
+			}
 			log.Println("Allocation updated with txId : " + txnHash)
-		}
-		wg.Wait()
-		if !statusBar.success {
-			os.Exit(1)
 		}
 	},
 }
