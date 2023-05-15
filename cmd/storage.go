@@ -73,17 +73,18 @@ func printBlobbers(nodes []*sdk.Blobber) {
 		fmt.Println("no blobbers registered yet")
 		return
 	}
-	for _, val := range nodes {
-		fmt.Println("- id:                   ", val.ID)
-		fmt.Println("  url:                  ", val.BaseURL)
-		fmt.Println("  allocated / total capacity:", val.Allocated.String(), "/",
-			val.Capacity.String())
-		fmt.Println("  last_health_check:	 ", val.LastHealthCheck.ToTime())
+	for _, blobber := range nodes {
+		fmt.Println("- id:                   ", blobber.ID)
+		fmt.Println("  url:                  ", blobber.BaseURL)
+		fmt.Println("  allocated / total capacity:", blobber.Allocated.String(), "/",
+			blobber.Capacity.String())
+		fmt.Println("  last_health_check:	 ", blobber.LastHealthCheck.ToTime())
 		fmt.Println("  terms:")
-		fmt.Println("    read_price:         ", val.Terms.ReadPrice.String(), "/ GB")
-		fmt.Println("    write_price:        ", val.Terms.WritePrice.String(), "/ GB / time_unit")
-		fmt.Println("    min_lock_demand:    ", val.Terms.MinLockDemand)
-		fmt.Println("    max_offer_duration: ", val.Terms.MaxOfferDuration.String())
+		fmt.Println("    read_price:         ", blobber.Terms.ReadPrice.String(), "/ GB")
+		fmt.Println("    write_price:        ", blobber.Terms.WritePrice.String(), "/ GB / time_unit")
+		fmt.Println("    min_lock_demand:    ", blobber.Terms.MinLockDemand)
+		fmt.Println("    max_offer_duration: ", blobber.Terms.MaxOfferDuration.String())
+		fmt.Println("  total_unstake:  ", blobber.UnstakeTotal)
 	}
 }
 
