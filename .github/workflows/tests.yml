@@ -51,7 +51,7 @@ jobs:
           sudo apt -y install build-essential nghttp2 libnghttp2-dev libssl-dev containerd docker.io
 
       - name: Build zbox
-        run: docker run -v $PWD:/app -w /app golang:1.20.4 sh -c "make install"
+        run: docker run -v $PWD:/app -w /app golang:1.18 sh -c "make install"
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v2

@@ -37,7 +37,7 @@ jobs:
           fi
 
       - name: Install
-        run: docker run -v $PWD:/app -w /app golang:1.20.4 sh -c "make install"
+        run: docker run -v $PWD:/app -w /app golang:1.18 sh -c "make install"
 
       - name: Zip release
         run: tar -czvf zbox-linux.tar.gz ./zbox
