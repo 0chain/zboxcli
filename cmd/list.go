@@ -134,7 +134,7 @@ func init() {
 	listCmd.PersistentFlags().String("remotepath", "", "Remote path to list from")
 	listCmd.PersistentFlags().String("authticket", "", "Auth ticket fot the file to download if you dont own it")
 	listCmd.PersistentFlags().String("lookuphash", "", "The remote lookuphash of the object retrieved from the list")
-	listCmd.Flags().Bool("json", false, "pass this option to print response as json data")
+	listCmd.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
 	listCmd.MarkFlagRequired("allocation")
 
 	rootCmd.AddCommand(listAllCmd)
