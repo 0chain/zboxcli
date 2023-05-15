@@ -66,5 +66,5 @@ func init() {
 	statsCmd.PersistentFlags().String("remotepath", "", "Remote path to list from")
 	statsCmd.MarkFlagRequired("allocation")
 	statsCmd.MarkFlagRequired("remotepath")
-	statsCmd.Flags().Bool("json", false, "pass this option to print response as json data")
+	statsCmd.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
 }
