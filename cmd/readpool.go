@@ -144,7 +144,7 @@ func init() {
 	rootCmd.AddCommand(rpLock)
 	rootCmd.AddCommand(rpUnlock)
 
-	rpInfo.Flags().Bool("json", false, "pass this option to print response as json data")
+	rpInfo.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
 
 	rpLock.PersistentFlags().Float64("tokens", 0.0,
 		"lock tokens number, required")
