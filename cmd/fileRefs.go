@@ -53,7 +53,7 @@ var fileRefsCmd = &cobra.Command{
 		alloc, err := sdk.GetAllocation(allocID)
 		checkError(err)
 
-		d := time.Now().Unix() - int64(in.Seconds())
+		d := time.Now().UnixMilli() - int64(in.Milliseconds())
 		result, err := alloc.GetRecentlyAddedRefs(int(page), d, int(pageLimit))
 		checkError(err)
 
@@ -81,7 +81,7 @@ var fileRefsCmd = &cobra.Command{
 			}
 
 			var createdAt string
-			t := time.Unix(int64(ref.CreatedAt), 0)
+			t := time.UnixMilli(int64(ref.CreatedAt))
 			createdAt = t.Local().Format(Layout)
 			data[i] = []string{
 				ref.Type,

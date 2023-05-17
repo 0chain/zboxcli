@@ -149,7 +149,7 @@ var newallocationCmd = &cobra.Command{
 			log.Fatal("invalid 'expire' flag: ", err)
 		}
 
-		var expireAt = time.Now().Add(expire).Unix()
+		var expireAt = time.Now().Add(expire).UnixMilli()
 
 		if costOnly {
 			minCost, err := sdk.GetAllocationMinLock(*datashards, *parityshards, *size, expire.Milliseconds(), readPrice, writePrice)

@@ -36,7 +36,7 @@ var listallocationsCmd = &cobra.Command{
 			expStr := strconv.FormatInt(allocation.Expiration, 10)
 			exp, err := strconv.ParseInt(expStr, 10, 64)
 			if err == nil {
-				tm := time.Unix(exp, 0)
+				tm := time.UnixMilli(exp)
 				expStr = tm.String()
 			}
 			d := strconv.FormatInt(int64(allocation.DataShards), 10)

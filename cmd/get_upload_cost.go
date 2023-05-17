@@ -73,7 +73,7 @@ var getUploadCostCmd = &cobra.Command{
 
 		// until allocation ends
 		if end {
-			var expiry = time.Unix(alloc.Expiration, 0)
+			var expiry = time.UnixMilli(alloc.Expiration)
 			duration = time.Until(expiry)
 		}
 
