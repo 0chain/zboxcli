@@ -5,7 +5,7 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  push: 
+  push:
     branches:
       - master
       - staging
@@ -47,12 +47,18 @@ jobs:
       - name: check software
         run: |
           lsb_release -a
-          sudo apt-get update
-          sudo apt-get -y install build-essential nghttp2 libnghttp2-dev libssl-dev
-          gcc --version
+          sudo apt update
+          sudo apt -y install build-essential nghttp2 libnghttp2-dev libssl-dev containerd docker.io
 
-      - name: Build 0Box
-        run: make install
+      - name: Build zbox
+        run: docker run -v $PWD:/app -w /app golang:1.18 sh -c "make install"
+
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: zbox-linux
+          path: zbox
+          retention-days: 5
 
   system-tests:
     if: github.event_name != 'workflow_dispatch'
