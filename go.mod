@@ -14,6 +14,7 @@ require (
 
 require (
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	github.com/0chain/common v0.0.6-0.20230127095721-8df4d1d72565 // indirect
 	github.com/Luzifer/go-openssl/v3 v3.1.0 // indirect
 	github.com/btcsuite/btcd v0.23.4 // indirect
@@ -21,6 +22,8 @@ require (
 	github.com/btcsuite/btcd/btcutil v1.1.3 // indirect
 	github.com/btcsuite/btcd/chaincfg/chainhash v1.0.2 // indirect
 =======
+=======
+>>>>>>> Stashed changes
 	github.com/0chain/common v0.0.5 // indirect
 	github.com/Luzifer/go-openssl/v3 v3.1.0 // indirect
 	github.com/btcsuite/btcd v0.23.2 // indirect
@@ -81,4 +84,7 @@ require (
 
 // temporary, for development
 replace github.com/0chain/gosdk => ../gosdk
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
