@@ -311,13 +311,13 @@ func init() {
 
 	newallocationCmd.Flags().String("name", "", "allocation name")
 
-	newallocationCmd.Flags().Bool("third_party_extendable", false, "specify if the allocation can be extended by users other than the owner")
-	newallocationCmd.Flags().Bool("forbid_upload", false, "specify if users cannot upload to this allocation")
-	newallocationCmd.Flags().Bool("forbid_delete", false, "specify if the users cannot delete objects from this allocation")
-	newallocationCmd.Flags().Bool("forbid_update", false, "specify if the users cannot update objects in this allocation")
-	newallocationCmd.Flags().Bool("forbid_move", false, "specify if the users cannot move objects from this allocation")
-	newallocationCmd.Flags().Bool("forbid_copy", false, "specify if the users cannot copy object from this allocation")
-	newallocationCmd.Flags().Bool("forbid_rename", false, "specify if the users cannot rename objects in this allocation")
+	newallocationCmd.Flags().Bool("third_party_extendable", false, "(default false) specify if the allocation can be extended by users other than the owner")
+	newallocationCmd.Flags().Bool("forbid_upload", false, "(default false) specify if users cannot upload to this allocation")
+	newallocationCmd.Flags().Bool("forbid_delete", false, "(default false) specify if the users cannot delete objects from this allocation")
+	newallocationCmd.Flags().Bool("forbid_update", false, "(default false) specify if the users cannot update objects in this allocation")
+	newallocationCmd.Flags().Bool("forbid_move", false, "(default false) specify if the users cannot move objects from this allocation")
+	newallocationCmd.Flags().Bool("forbid_copy", false, "(default false) specify if the users cannot copy object from this allocation")
+	newallocationCmd.Flags().Bool("forbid_rename", false, "(default false) specify if the users cannot rename objects in this allocation")
 }
 
 func storeAllocation(allocationID string) {

@@ -14,7 +14,6 @@ func printStakePoolInfo(info *sdk.StakePoolInfo) {
 	fmt.Println("pool id:           ", info.ID)
 	fmt.Println("balance:           ", info.Balance)
 	fmt.Println("total stake:       ", info.StakeTotal)
-	fmt.Println("total unstake:     ", info.UnstakeTotal, "(total stake not available for further commitments)")
 	fmt.Println("unclaimed rewards: ", info.Rewards)
 	if len(info.Delegate) == 0 {
 		fmt.Println("delegate_pools: no delegate pools")
@@ -308,10 +307,10 @@ func init() {
 		"for given blobber")
 	spInfo.PersistentFlags().String("validator_id", "",
 		"for given validator")
-	spInfo.PersistentFlags().Bool("json", false, "pass this option to print response as json data")
+	spInfo.PersistentFlags().Bool("json", false, "(default false) pass this option to print response as json data")
 
-	spUserInfo.PersistentFlags().Bool("json", false, "pass this option to print response as json data")
-	spUserInfo.PersistentFlags().Bool("all", false, "pass this option to get all the pools")
+	spUserInfo.PersistentFlags().Bool("json", false, "(default false) pass this option to print response as json data")
+	spUserInfo.PersistentFlags().Bool("all", false, "(default false) pass this option to get all the pools")
 	spUserInfo.PersistentFlags().Int("limit", 20, "pass this option to limit the number of records returned")
 	spUserInfo.PersistentFlags().Int("offset", 0, "pass this option to skip the number of rows before beginning")
 	spUserInfo.PersistentFlags().String("client_id", "", "pass for given client")
