@@ -133,9 +133,9 @@ var downloadCmd = &cobra.Command{
 				}
 			}
 		} else if len(remotePath) > 0 {
-			if fflags.Changed("allocation") == false { // check if the flag "path" is set
-				PrintError("Error: allocation flag is missing") // If not, we'll let the user know
-				os.Exit(1)                                      // and return
+			if !fflags.Changed("allocation") {
+				PrintError("Error: allocation flag is missing")
+				os.Exit(1)
 			}
 			allocationID := cmd.Flag("allocation").Value.String()
 			allocationObj, err = sdk.GetAllocation(allocationID)
@@ -144,8 +144,16 @@ var downloadCmd = &cobra.Command{
 				PrintError("Error fetching the allocation", err)
 				os.Exit(1)
 			}
+
+			var blobberID string
+			if fflags.Changed("blobber_id") {
+				blobberID = cmd.Flag("blobber_id").Value.String()
+			}
+
 			if thumbnail {
 				errE = allocationObj.DownloadThumbnail(localPath, remotePath, verifyDownload, statusBar)
+			} else if blobberID != "" {
+				errE = allocationObj.DownloadFromBlobber(blobberID, localPath, remotePath, statusBar)
 			} else {
 				if startBlock != 0 || endBlock != 0 {
 					errE = allocationObj.DownloadFileByBlock(localPath, remotePath, startBlock, endBlock, numBlocks, verifyDownload, statusBar)
@@ -173,6 +181,7 @@ func init() {
 	downloadCmd.PersistentFlags().String("allocation", "", "Allocation ID")
 	downloadCmd.PersistentFlags().String("remotepath", "", "Remote path to download")
 	downloadCmd.PersistentFlags().String("localpath", "", "Local path of file to download")
+	downloadCmd.PersistentFlags().String("blobber_id", "", "to download the data shard present in that blobber")
 	downloadCmd.PersistentFlags().String("authticket", "", "Auth ticket fot the file to download if you dont own it")
 	downloadCmd.PersistentFlags().String("lookuphash", "", "The remote lookuphash of the object retrieved from the list")
 	downloadCmd.Flags().BoolP("thumbnail", "t", false, "(default false) pass this option to download only the thumbnail")
