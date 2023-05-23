@@ -27,7 +27,6 @@ func printValidators(nodes []*sdk.Validator) {
 		fmt.Println("  min_stake:      ", validator.MinStake)
 		fmt.Println("  max_stake:      ", validator.MaxStake)
 		fmt.Println("  total_stake:    ", validator.StakeTotal)
-		fmt.Println("  total_unstake:  ", validator.UnstakeTotal)
 		fmt.Println("  num_delegates:  ", validator.NumDelegates)
 		fmt.Println("  service_charge: ", validator.ServiceCharge*100, "%")
 	}
@@ -180,7 +179,7 @@ func init() {
 
 	validatorInfoCmd.Flags().String("validator_id", "", "validator ID, required")
 	validatorInfoCmd.Flags().Bool("json", false,
-		"pass this option to print response as json data")
+		"(default false) pass this option to print response as json data")
 	validatorInfoCmd.MarkFlagRequired("validator_id")
 
 	buf := validatorUpdateCmd.Flags()
@@ -191,5 +190,5 @@ func init() {
 	buf.Float64("service_charge", 0.0, "update service_charge, optional")
 	validatorUpdateCmd.MarkFlagRequired("validator_id")
 
-	lsValidators.Flags().Bool("json", false, "pass this flag to get response as json object")
+	lsValidators.Flags().Bool("json", false, "(default false) pass this flag to get response as json object")
 }
