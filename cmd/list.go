@@ -100,7 +100,7 @@ var listAllCmd = &cobra.Command{
 			PrintError("Error fetching the allocation", err)
 			os.Exit(1)
 		}
-		ref, err := allocationObj.GetRemoteFileMap(nil)
+		ref, err := allocationObj.GetRemoteFileMap(nil, "/")
 		if err != nil {
 			PrintError(err.Error())
 			os.Exit(1)
