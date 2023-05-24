@@ -6,8 +6,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/0chain/gosdk/constants"
 	"github.com/0chain/errors"
+	"github.com/0chain/gosdk/constants"
 	"github.com/0chain/gosdk/zboxcore/logger"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zboxcore/zboxutil"
