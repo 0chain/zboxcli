@@ -368,7 +368,7 @@ func getFullRemotePath(localPath string, remotePath string) (string, error) {
 	if !isAbsolutePathAndDirectory(remotePath) {
 		return "", errors.New("invalid_path", "Remote path should be absolute, and path of directory")
 	}
-	localPath, _ = strings.CutPrefix(localPath, "/")
+	localPath = strings.TrimLeft(localPath, "/")
 	fullRemotePath := remotePath + localPath
 	return fullRemotePath, nil
 }
