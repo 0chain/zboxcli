@@ -1,6 +1,6 @@
 # zbox - a CLI for 0Chain dStorage
 
-zbox is a command line interface (CLI) tool to understand the capabilities of 0Chain dStorage and prototype your app. The utility is built using 0Chain's goSDK library written in Go. Check out a [video](https://youtu.be/TPrkRjdaHrY) on how to use the CLI to create an allocation (storage volume) and upload, download, update, delete, and share files and folders on the 0Chain dStorage platform.
+zbox is a command line interface (CLI) tool to understand the capabilities of 0Chain dStorage and prototype your app. The utility is built using 0Chain's goSDK library written in Go. 
 
 ![Storage](https://user-images.githubusercontent.com/65766301/120052450-0ab66700-c043-11eb-91ab-1f7aa69e133a.png)
 
@@ -13,7 +13,6 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
     - [Global Flags](#global-flags)
   - [Commands](#commands)
     - [Creating and Managing Allocations](#creating-and-managing-allocations)
-      - [Register wallet](#register-wallet)
       - [Create new allocation](#create-new-allocation)
         - [Free storage allocation](#free-storage-allocation)
       - [Update allocation](#update-allocation)
@@ -26,6 +25,11 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
       - [List all files](#list-all-files)
       - [List owner's allocations](#list-owners-allocations)
       - [Update blobber settings](#update-blobber-settings)
+      - [List all Validators](#list-all-validators)
+      - [Get Validator Configuration](#get-validator-configuration)
+      - [Kill Blobber](#kill-blobber)
+      - [Kill Validator](#kill-validator)
+
     - [Uploading and Managing files](#uploading-and-managing-files)
       - [Upload](#upload)
       - [Stream](#stream)
@@ -104,60 +108,86 @@ Note: This is helpful for the Mac OS users running local cluster and having trou
 
 ## Running zbox
 
-When you run the `zbox` command in terminal with no arguments, it will list all the available commands and the global flags.
+When you run the `./zbox` command in terminal with no arguments, it will list all the available commands and the global flags.For working of specific command check [commands](#commands) section. 
 
-|                     **Command**                      |                      **Description**                      |
-| :--------------------------------------------------: | :-------------------------------------------------------: |
-|           [add-collab](#add-collaborator)            |                add collaborator for a file                |
-|          [alloc-cancel](#cancel-allocation)          |                   Cancel an allocation                    |
-|          [alloc-fini](#finalise-allocation)          |              Finalize an expired allocation               |
-|       [bl-info](#detailed-blobber-information)       |                     Get blobber info                      |
-|  [validator-info](#detailed-validator-information)   |                    Get validator info                     |
-|        [bl-update](#update-blobber-settings)         |   Update blobber settings by its delegate_wallet owner    |
-|    [validator-update](#update-validator-settings)    |  Update validator settings by its delegate_wallet owner   |
-|          [collect-reward](#collect-rewards)          | transfer reward tokens from a stake pool to your wallet.  |
-|                    [copy](#copy)                     | copy an object(file/folder) to another folder on blobbers |
-|        [cp-info](#challenge-pool-information)        |                Challenge pool information.                |
-|                  [delete](#delete)                   |                 delete file from blobbers                 |
-|                [download](#download)                 |                download file from blobbers                |
-|                     [get](#get)                      |                 Gets the allocation info                  |
-|             [get-diff](#get-differences)             |        Get difference of local and allocation root        |
-|         [get-download-cost](#download-cost)          |                   Get downloading cost                    |
-|           [get-upload-cost](#upload-cost)            |                    Get uploading cost                     |
-|               [getwallet](#get-wallet)               |                  Get wallet information                   |
-|                         help                         |                  Help about any command                   |
-|                    [list](#list)                     |                 list files from blobbers                  |
-|          [list-all](#list-all-allocations)           |               list all files from blobbers                |
-|     [listallocations](#list-owners-allocations)      |              List allocations for the client              |
-|            [ls-blobbers](#list-blobbers)             |            Show active blobbers in storage SC.            |
-|                [meta](#get-metadata)                 |           get meta data of files from blobbers            |
-|                    [move](#move)                     | move an object(file/folder) to another folder on blobbers |
-|       [newallocation](#create-new-allocation)        |                 Creates a new allocation                  |
-|             [register](#register-wallet)             |         Registers the wallet with the blockchain          |
-|                  [rename](#rename)                   |         rename an object(file/folder) on blobbers         |
-|            [rp-create](#create-read-pool)            |                Create read pool if missing                |
-|              [rp-info](#read-pool-info)              |                  Read pool information.                   |
-|        [rp-lock](#lock-tokens-into-read-pool)        |              Lock some tokens in read pool.               |
-|      [rp-unlock](#unlock-tokens-from-read-pool)      |        Unlock some expired tokens in a read pool.         |
-|       [sc-config](#storage-sc-configurations)        |              Show storage SC configuration.               |
-|                   [share](#share)                    |                 share files from blobbers                 |
-|               [sign-data](#sign-data)                |                      Sign given data                      |
-|             [sp-info](#stake-pool-info)              |                  Stake pool information.                  |
-|       [sp-lock](#lock-tokens-into-stake-pool)        |            Lock tokens lacking in stake pool.             |
-|     [sp-unlock](#unlock-tokens-from-stake-pool)      |              Unlock tokens in st\*ake pool.               |
-|      [sp-user-info](#stake-pools-info-of-user)       |            Stake pool information for a user.             |
-|               [start-repair](#repair)                |               start repair file to blobbers               |
-|                   [stats](#stats)                    |               stats for file from blobbers                |
-|                    [sync](#sync)                     |                Sync files to/from blobbers                |
-| [transferallocation](#transfer-allocation-ownership) |           Transfer an allocation between owners           |
-|                  [update](#update)                   |                  update file to blobbers                  |
-|        [updateallocation](#update-allocation)        |           Updates allocation's expiry and size            |
-|                  [upload](#upload)                   |                  upload file to blobbers                  |
-|                       version                        |                Prints version information                 |
-|             [wp-info](#write-pool-info)              |                  Write pool information.                  |
-|       [wp-lock](#lock-tokens-into-write-pool)        |              Lock some tokens in write pool.              |
-|     [wp-unlock](#unlock-tokens-from-write-pool)      |        Unlock some expired tokens in a write pool.        |
+```
+Usage:
+  zbox [command]
 
+Available Commands:
+  add                Adds free storage assigner
+  alloc-cancel       Cancel an allocation
+  alloc-fini         Finalize an expired allocation
+  bl-info            Get blobber info
+  bl-update          Update blobber settings by its delegate_wallet owner
+  collect-reward     Collect accrued rewards for a stake pool.
+  completion         Generate the autocompletion script for the specified shell
+  copy               copy an object(file/folder) to another folder on blobbers
+  cp-info            Challenge pool information.
+  createdir          Create directory
+  decrypt            Decrypt text with passphrase
+  delete             delete file from blobbers
+  download           download file from blobbers
+  feed               download segment files from remote live feed, and upload
+  get-diff           Get difference of local and allocation root
+  get-download-cost  Get downloading cost
+  get-mpt            Directly view blockchain data
+  get-upload-cost    Get uploading cost
+  getallocation      Gets the allocation info
+  getwallet          Get wallet information
+  help               Help about any command
+  kill-blobber       punitively deactivate a blobber
+  kill-validator     punitively deactivate a validator
+  list               list files from blobbers
+  list-all           list all files from blobbers
+  listallocations    List allocations for the client
+  ls-blobbers        Show active blobbers in storage SC.
+  ls-validators      Show active Validators.
+  meta               get meta data of files from blobbers
+  move               move an object(file/folder) to another folder on blobbers
+  newallocation      Creates a new allocation
+  recent-refs        get list of recently added refs
+  rename             rename an object(file/folder) on blobbers
+  rp-create          Create read pool if missing
+  rp-info            Read pool information.
+  rp-lock            Lock some tokens in read pool.
+  rp-unlock          Unlock some expired tokens in a read pool.
+  sc-config          Show storage SC configuration.
+  share              share files from blobbers
+  shutdown-blobber   deactivate a blobber
+  shutdown-validator deactivate a validator
+  sign-data          Sign given data
+  sp-info            Stake pool information.
+  sp-lock            Lock tokens lacking in stake pool.
+  sp-unlock          Unlock tokens in stake pool.
+  sp-user-info       Stake pool information for a user.
+  start-repair       start repair file to blobbers
+  stats              stats for file from blobbers
+  stream             capture video and audio streaming form local devices, and upload
+  sync               Sync files to/from blobbers
+  transferallocation Transfer an allocation from one account to another
+  update             update file to blobbers
+  updateallocation   Updates allocation's expiry and size
+  upload             upload file to blobbers
+  validator-info     Get validator info
+  validator-update   Update validator settings by its delegate_wallet owner
+  version            Prints version information
+  wp-lock            Lock some tokens in write pool.
+  wp-unlock          Unlock some expired tokens in a write pool.
+
+Flags:
+      --config string              config file (default is config.yaml)
+      --configDir string           configuration directory (default is $HOME/.zcn)
+      --fee float                  transaction fee for the given transaction (if unset, it will be set to blockchain min fee)
+  -h, --help                       help for zbox
+      --network string             network file to overwrite the network details (if required, default is network.yaml)
+      --silent                     Do not show interactive sdk logs (shown by default)
+      --wallet string              wallet file (default is wallet.json)
+      --wallet_client_id string    wallet client_id
+      --wallet_client_key string   wallet client_key
+      --withNonce int              nonce that will be used in transaction (default is 0)
+
+```
 ### Global Flags
 
 Global Flags are parameters in zbox that can be used with any command to override the default configuration.zbox supports the following global parameters.
@@ -181,24 +211,6 @@ To get a more descriptive view of all the zbox functionalities check zbox cli
 documentation at docs.0chain.net.
 
 ### Creating and Managing Allocations
-
-#### Register wallet
-
-`register` is used when needed to register a given wallet to the blockchain.
-This could be because the blockchain network has been reset and you wished to register
-the wallet at `~/.zcn/wallet.json`.
-
-Sample command
-
-```sh
-./zbox register
-```
-
-Sample output
-
-```
-Wallet registered
-```
 
 #### Create new allocation
 
@@ -615,6 +627,103 @@ Update blobber read price
 ./zbox bl-update --blobber_id 0ece681f6b00221c5567865b56040eaab23795a843ed629ce71fb340a5566ba3 --read_price 0.1
 ```
 
+#### List All Validators
+
+List all active validators on the network
+
+Command:
+```
+./zbox ls-validators
+```
+Response :
+```
+id:                b9f4f244e2e483548795e42dad0c5b5bb8f5c25d70cadeafc202ce6011b7ff8c
+url:               https://demo.zus.network/validator03/
+settings:
+  delegate_wallet: 9c693cb14f29917968d6e8c909ebbea3425b4c1bc64b6732cadc2a1869f49be9
+  min_stake:       1.000 ZCN
+  max_stake:       100.000 ZCN
+  num_delegates:   50
+  service_charge:  30 %
+id:                c025fad27d3daa6fbe6a10ef38f1075dc5a6386760951816ece953391ff9804b
+url:               https://demo.zus.network/validator02/
+settings:
+  delegate_wallet: 9c693cb14f29917968d6e8c909ebbea3425b4c1bc64b6732cadc2a1869f49be9
+  min_stake:       1.000 ZCN
+  max_stake:       100.000 ZCN
+  num_delegates:   50
+  service_charge:  30 %
+```
+
+#### Get Validator Configuration
+
+`./zbox validator-info` command is used to get a particular validator configuration . Here are the parameters for the command . 
+
+| Parameter          | Required | Description                               
+| ------------------ | -------- | ----------------------------------------- 
+| --validator_id     | yes      | id of validator whose configuration has to be fetched          
+| --json             | optional | Print Response as json data                            
+| --help             | no       | Provide information about the command                          
+
+Sample Command :
+```
+./zbox validator-info --validator_id f82ab34a98406b8757f11513361752bab9cb679a5cb130b81
+```
+Sample Response :  
+```
+id:                f82ab34a98406b8757f11513361752bab9cb679a5cb130b81a4e86cec50eefc3
+url:               https://demo2.zus.network/validator01
+last_health_check:  2023-05-12 20:09:15 +0530 IST
+is killed:         false
+is shut down:      false
+settings:
+  delegate_wallet: 9c693cb14f29917968d6e8c909ebbea3425b4c1bc64b6732cadc2a1869f49be9
+  min_stake:       0 SAS
+  max_stake:       0 SAS
+  total_stake:     200000000000
+  total_unstake:   0
+  num_delegates:   50
+  service_charge:  10 %
+```
+#### Kill Blobber
+`./zbox kill-blobber` command deactivates a blobber to avoid storage of data . Required parameters are :
+
+| Parameter          | Required | Description                               
+| ------------------ | -------- | ----------------------------------------- 
+| --blobber_id       | yes      | Blobber Id to kill a specific blobber.Can be retrieved using [List blobbers](#list-blobbers).    
+| --json             | optional | Print Response as json data                            
+| --help             | no       | Provide information about the command 
+ 
+ Sample Command :
+```
+./zbox kill-blobber --id $BLOBBER_ID --wallet $CHAIN_OWNER_WALLET
+```
+Note : Kill Blobber command should be evoked from chain owner wallet only
+
+Sample Response :  
+```
+killed blobber $BLOBBER_ID
+```
+ 
+#### Kill Validator
+
+`./zbox kill-validator` command deactivates a specific validator available on the network. Required parameters are : 
+
+| Parameter          | Required | Description                               
+| ------------------ | -------- | ----------------------------------------- 
+| --validator_id     | yes      | Validator Id to kill a specific blobber.Can be retrieved using [List all Validators](#list-all-validators).    
+| --json             | optional | Print Response as json data                            
+| --help             | no       | Provide information about the command 
+
+
+Sample Command :
+```
+./zbox kill-validator --id $VALIDATOR_ID --wallet $CHAIN_OWNER_WALLET
+```
+Sample Response :
+```
+killed validator, id: $VALIDATOR_ID
+```
 ### Uploading and Managing files
 
 #### Upload
@@ -631,6 +740,7 @@ The user must be the owner of the allocation.You can request the file be encrypt
 | ------------- | -------- | ------------------------------------------------------- | ------- | ------------ |
 | allocation    | yes      | allocation id, sender must be allocation owner          |         | string       |
 | encrypt       | no       | encrypt file before upload                              | false   | boolean      |
+| web-streaming | no       | transcode file before upload to fragmented mp4          | false   | boolean      |
 | localpath     | yes      | local path of the file to upload                        |         | file path    |
 | remotepath    | yes      | remote path to upload file to, use to access file later |         | string       |
 | thumbnailpath | no       | local path of thumbnaSil                                |         | file path    |
@@ -673,6 +783,22 @@ Response:
 ```
 12390 / 12390 [================================================================================] 100.00% 3s
 Status completed callback. Type = application/octet-stream. Name = sensitivedata.txt
+```
+
+**Upload file with web-streaming**
+
+Use upload command with optional web-streaming parameter to upload a video file in fragmented
+mp4 format to support streaming from browser.
+
+```
+./zbox upload --web-streaming --localpath <absolute path to file>/samplevideo.mov --remotepath /myfile/ --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
+```
+
+Response:
+
+```
+15691733 / 15691733 [=====================================================================================] 100.00% 32s
+Status completed callback. Type = video/fmp4. Name = raw.samplevideo.mp4
 ```
 
 #### Stream

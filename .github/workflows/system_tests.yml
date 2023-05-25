@@ -11,12 +11,8 @@ on:
         description: '0wallet CLI branch which the tests will use'
         default: 'staging'
         required: true
-      miner_branch:
-        description: 'miner branch to deploy'
-        default: 'staging'
-        required: true
-      sharder_branch:
-        description: 'sharder branch to deploy'
+      miner_sharder_branch:
+        description: 'miner/sharder branch to deploy'
         default: 'staging'
         required: true
       blobber_branch:
@@ -35,6 +31,10 @@ on:
         description: 'gosdk branch to deploy'
         default: 'staging'
         required: true
+      run_smoke_tests:
+        description: 'Run subset of system tests (smoke tests) for faster feedback (NOT FOR PRS POINTED TO STAGING)'
+        default: 'false'
+        required: false
       test_file_filter:
         description: 'Comma separated list of test files to run (eg. zwalletcli_register_wallet_test.go, zwalletcli_send_and_balance_test.go). If supplied, the PR will NOT be notified of the test result'
         default: ''
@@ -48,8 +48,8 @@ jobs:
     uses: 0chain/actions/.github/workflows/manual_system_tests.yml@master
     with:
       system_tests_branch: ${{ github.event.inputs.system_tests_branch }}
-      miner_branch: ${{ github.event.inputs.miner_branch }}
-      sharder_branch: ${{ github.event.inputs.sharder_branch }}
+      miner_branch: ${{ github.event.inputs.miner_sharder_branch }}
+      sharder_branch: ${{ github.event.inputs.miner_sharder_branch }}
       zbox_cli_branch: ${{ github.ref_name }}
       zwallet_cli_branch: ${{ github.event.inputs.zwallet_cli_branch }}
       blobber_branch: ${{ github.event.inputs.blobber_branch }}
@@ -57,11 +57,9 @@ jobs:
       zbox_branch: ${{ github.event.inputs.zbox_branch }}
       zdns_branch: staging
       gosdk_branch: ${{ github.event.inputs.gosdk_branch }}
-      zblock_branch: staging
-      explorer_branch: staging
-      zsearch_branch: staging
       test_file_filter: ${{ github.event.inputs.test_file_filter }}
       skip_tests: ${{ github.event.inputs.skip_tests }}
+      run_smoke_tests: ${{ github.event.inputs.run_smoke_tests }}
     secrets:
       SVC_ACCOUNT_SECRET: ${{ secrets.SVC_ACCOUNT_SECRET }}
       DEV1KC: ${{ secrets.DEV1KC }}
@@ -76,3 +74,7 @@ jobs:
       SUBGRAPH_API_URL: ${{ secrets.SUBGRAPH_API_URL }}
       TENDERLY_FORK_ID: ${{ secrets.TENDERLY_FORK_ID }}
       DEVOPS_CHANNEL_WEBHOOK_URL: ${{ secrets.DEVOPS_CHANNEL_WEBHOOK_URL }}
+      GRAPHNODE_NETWORK: ${{ secrets.GRAPHNODE_NETWORK }}
+      GRAPHNODE_ETHEREUM_NODE_URL: https://rpc.tenderly.co/fork/${{ secrets.TENDERLY_FORK_ID }}
+      S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
+      S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}

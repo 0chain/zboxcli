@@ -120,6 +120,11 @@ var newallocationCmd = &cobra.Command{
 				log.Fatal("invalid read_price value: ", err)
 			}
 			readPrice = pr
+		} else {
+			readPrice, err = sdk.GetReadPriceRange()
+			if err != nil {
+				log.Fatal("invalid read_price value: ", err)
+			}
 		}
 
 		if flags.Changed("write_price") {
@@ -132,6 +137,11 @@ var newallocationCmd = &cobra.Command{
 				log.Fatal("invalid write_price value: ", err)
 			}
 			writePrice = pr
+		} else {
+			writePrice, err = sdk.GetWritePriceRange()
+			if err != nil {
+				log.Fatal("invalid write_price value: ", err)
+			}
 		}
 
 		var expire time.Duration
@@ -142,7 +152,7 @@ var newallocationCmd = &cobra.Command{
 		var expireAt = time.Now().Add(expire).Unix()
 
 		if costOnly {
-			minCost, err := sdk.GetAllocationMinLock(*datashards, *parityshards, *size, expireAt, readPrice, writePrice)
+			minCost, err := sdk.GetAllocationMinLock(*datashards, *parityshards, *size, expire.Milliseconds(), readPrice, writePrice)
 			if err != nil {
 				log.Fatal("Error fetching cost: ", err)
 			}
@@ -301,13 +311,13 @@ func init() {
 
 	newallocationCmd.Flags().String("name", "", "allocation name")
 
-	newallocationCmd.Flags().Bool("third_party_extendable", false, "specify if the allocation can be extended by users other than the owner")
-	newallocationCmd.Flags().Bool("forbid_upload", false, "specify if users cannot upload to this allocation")
-	newallocationCmd.Flags().Bool("forbid_delete", false, "specify if the users cannot delete objects from this allocation")
-	newallocationCmd.Flags().Bool("forbid_update", false, "specify if the users cannot update objects in this allocation")
-	newallocationCmd.Flags().Bool("forbid_move", false, "specify if the users cannot move objects from this allocation")
-	newallocationCmd.Flags().Bool("forbid_copy", false, "specify if the users cannot copy object from this allocation")
-	newallocationCmd.Flags().Bool("forbid_rename", false, "specify if the users cannot rename objects in this allocation")
+	newallocationCmd.Flags().Bool("third_party_extendable", false, "(default false) specify if the allocation can be extended by users other than the owner")
+	newallocationCmd.Flags().Bool("forbid_upload", false, "(default false) specify if users cannot upload to this allocation")
+	newallocationCmd.Flags().Bool("forbid_delete", false, "(default false) specify if the users cannot delete objects from this allocation")
+	newallocationCmd.Flags().Bool("forbid_update", false, "(default false) specify if the users cannot update objects in this allocation")
+	newallocationCmd.Flags().Bool("forbid_move", false, "(default false) specify if the users cannot move objects from this allocation")
+	newallocationCmd.Flags().Bool("forbid_copy", false, "(default false) specify if the users cannot copy object from this allocation")
+	newallocationCmd.Flags().Bool("forbid_rename", false, "(default false) specify if the users cannot rename objects in this allocation")
 }
 
 func storeAllocation(allocationID string) {

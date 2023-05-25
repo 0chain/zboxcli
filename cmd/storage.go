@@ -68,9 +68,13 @@ var scConfig = &cobra.Command{
 	},
 }
 
-func printBlobbers(nodes []*sdk.Blobber) {
+func printBlobbers(nodes []*sdk.Blobber, isActive bool) {
 	if len(nodes) == 0 {
-		fmt.Println("no blobbers registered yet")
+		if isActive {
+			fmt.Println("no active blobbers")
+		} else {
+			fmt.Println("no blobbers registered yet")
+		}
 		return
 	}
 	for _, val := range nodes {
@@ -110,7 +114,7 @@ var lsBlobers = &cobra.Command{
 		if doJSON {
 			util.PrintJSON(list)
 		} else {
-			printBlobbers(list)
+			printBlobbers(list, isActive)
 		}
 	},
 }
@@ -162,6 +166,7 @@ var blobberInfoCmd = &cobra.Command{
 		fmt.Println("last_health_check:", blob.LastHealthCheck.ToTime())
 		fmt.Println("capacity_used:    ", blob.Allocated)
 		fmt.Println("total_stake:      ", blob.TotalStake)
+		fmt.Println("is_available:     ", blob.IsAvailable)
 		fmt.Println("terms:")
 		fmt.Println("  read_price:        ", blob.Terms.ReadPrice, "/ GB")
 		fmt.Println("  write_price:       ", blob.Terms.WritePrice, "/ GB")
@@ -301,6 +306,14 @@ var blobberUpdateCmd = &cobra.Command{
 			blob.BaseURL = url
 		}
 
+		if flags.Changed("is_available") {
+			var ia bool
+			if ia, err = flags.GetBool("is_available"); err != nil {
+				log.Fatal(err)
+			}
+			blob.IsAvailable = ia
+		}
+
 		if _, _, err = sdk.UpdateBlobberSettings(blob); err != nil {
 			log.Fatal(err)
 		}
@@ -315,13 +328,13 @@ func init() {
 	rootCmd.AddCommand(blobberInfoCmd)
 	rootCmd.AddCommand(blobberUpdateCmd)
 
-	scConfig.Flags().Bool("json", false, "pass this option to print response as json data")
-	lsBlobers.Flags().Bool("json", false, "pass this option to print response as json data")
-	lsBlobers.Flags().Bool("all", false, "shows active and non active list of blobbers on ls-blobbers")
+	scConfig.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
+	lsBlobers.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
+	lsBlobers.Flags().Bool("all", false, "(default false) shows active and non active list of blobbers on ls-blobbers")
 
 	blobberInfoCmd.Flags().String("blobber_id", "", "blobber ID, required")
 	blobberInfoCmd.Flags().Bool("json", false,
-		"pass this option to print response as json data")
+		"(default false) pass this option to print response as json data")
 	blobberInfoCmd.MarkFlagRequired("blobber_id")
 
 	buf := blobberUpdateCmd.Flags()
@@ -335,5 +348,6 @@ func init() {
 	buf.Float64("max_stake", 0.0, "update max_stake, optional")
 	buf.Int("num_delegates", 0, "update num_delegates, optional")
 	buf.Float64("service_charge", 0.0, "update service_charge, optional")
+	buf.Bool("is_available", true, "(default false) set blobber's availability for new allocations")
 	blobberUpdateCmd.MarkFlagRequired("blobber_id")
 }
