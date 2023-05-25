@@ -12,8 +12,8 @@ import (
 // updateAllocationCmd used to change allocation size and expiration
 var updateAllocationCmd = &cobra.Command{
 	Use:   "updateallocation",
-	Short: "Updates allocation's expiry and size",
-	Long:  `Updates allocation's expiry and size`,
+	Short: "Updates allocation's size and renew",
+	Long:  `Updates allocation's size and renew`,
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		var flags = cmd.Flags()
@@ -79,10 +79,7 @@ var updateAllocationCmd = &cobra.Command{
 			log.Fatal("invalid 'size' flag: ", err)
 		}
 
-		expiry, err := flags.GetDuration("expiry")
-		if err != nil {
-			log.Fatal("invalid 'expiry' flag: ", err)
-		}
+		var expiry time.Duration
 
 		setThirdPartyExtendable, _ := cmd.Flags().GetBool("set_third_party_extendable")
 
@@ -136,6 +133,18 @@ var updateAllocationCmd = &cobra.Command{
 			fileOptionParams.ForbidRename.Changed = true
 			fileOptionParams.ForbidRename.Value = forbidRename
 		}
+		if flags.Changed("renew") {
+			conf, err := sdk.GetStorageSCConfig()
+			if err != nil {
+				log.Fatalf("Failed to get storage SC configurations: %v", err)
+			}
+			timeUnit := conf.Fields["time_unit"].(string)
+
+			expiry, err = time.ParseDuration(timeUnit)
+			if err != nil {
+				log.Fatal("failed to parse duration", err)
+			}
+		}
 
 		txnHash, _, err := sdk.UpdateAllocation(
 			size,
@@ -167,8 +176,6 @@ func init() {
 		"lock write pool with given number of tokens, required")
 	updateAllocationCmd.PersistentFlags().Int64("size", 0,
 		"adjust allocation size, bytes")
-	updateAllocationCmd.PersistentFlags().Duration("expiry", 0,
-		"adjust storage expiration time, duration")
 	updateAllocationCmd.Flags().String("free_storage", "",
 		"json file containing marker for free storage")
 	updateAllocationCmd.Flags().Bool("update_terms", false,
@@ -180,6 +187,8 @@ func init() {
 
 	updateAllocationCmd.Flags().Bool("set_third_party_extendable", false, "(default false) specify if the allocation can be extended by users other than the owner")
 	updateAllocationCmd.Flags().Bool("forbid_upload", false, "(default false) specify if users cannot upload to this allocation")
+	updateAllocationCmd.Flags().Bool("renew", false,
+		"extends allocation by time_unit configured in sc-config")
 	updateAllocationCmd.Flags().Bool("forbid_delete", false, "(default false) specify if the users cannot delete objects from this allocation")
 	updateAllocationCmd.Flags().Bool("forbid_update", false, "(default false) specify if the users cannot update objects in this allocation")
 	updateAllocationCmd.Flags().Bool("forbid_move", false, "(default false) specify if the users cannot move objects from this allocation")
