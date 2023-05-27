@@ -148,6 +148,7 @@ var updateAllocationCmd = &cobra.Command{
 			wg := &sync.WaitGroup{}
 			statusBar := &StatusBar{wg: wg}
 			wg.Add(1)
+			allocUnderRepair = true
 			if txnHash, err := allocationObj.UpdateWithRepair(
 				size,
 				int64(expiry/time.Second),
@@ -159,6 +160,7 @@ var updateAllocationCmd = &cobra.Command{
 				&fileOptionParams,
 				statusBar,
 			); err != nil {
+				allocUnderRepair = false
 				log.Fatal("Error updating allocation:", err)
 			} else {
 				log.Println("Allocation updated with txId : " + txnHash)
