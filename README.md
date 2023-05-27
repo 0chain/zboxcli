@@ -16,9 +16,9 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
       - [Create new allocation](#create-new-allocation)
         - [Free storage allocation](#free-storage-allocation)
       - [Update allocation](#update-allocation)
+      - [Forbid allocation](#forbid-allocation)
       - [Cancel allocation](#cancel-allocation)
       - [Finalise allocation](#finalise-allocation)
-      - [Transfer allocation ownership](#transfer-allocation-ownership)
       - [Get Allocation Info](#get)
       - [List blobbers](#list-blobbers)
       - [Detailed blobber information](#detailed-blobber-information)
@@ -49,7 +49,6 @@ zbox is a command line interface (CLI) tool to understand the capabilities of 0C
       - [Rename](#rename)
       - [Stats](#stats)
       - [Repair](#repair)
-      - [Add collaborator](#add-collaborator)
       - [Sign data](#sign-data)
       - [Download cost](#download-cost)
       - [Upload cost](#upload-cost)
@@ -186,8 +185,8 @@ Flags:
       --wallet_client_id string    wallet client_id
       --wallet_client_key string   wallet client_key
       --withNonce int              nonce that will be used in transaction (default is 0)
-
 ```
+
 ### Global Flags
 
 Global Flags are parameters in zbox that can be used with any command to override the default configuration.zbox supports the following global parameters.
@@ -389,8 +388,35 @@ Output:
 Allocation updated with txId : fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
 ```
 
-You can see more txn details using above txID in block explorer [here](https://beta.0chain.net/).
+#### Forbid Allocation
 
+There are various operations which you can forbid on an allocation. Forbid flag works with [update allocation](#update-allocation) command. Check its working first.
+Here are the operations:
+
+| Parameter       | Description                                                  |
+| --------------- | ------------------------------------------------------------ |
+| --forbid_copy   | specify if the users cannot copy object from this allocation |
+| --forbid_update | specify if the users cannot update objects in this allocation |
+| --forbid_delete | specify if the users cannot delete objects from this allocation |
+| --forbid_move   | specify if the users cannot move objects from this allocation |
+| --forbid_rename | specify if the users cannot rename objects in this allocation |
+| --forbid_upload | specify if users cannot upload to this allocation            |
+
+
+Here is a sample command for --forbid_upload .Other parameters can be done the same way.
+
+```
+./zbox updateallocation --allocation $ALLOC --forbid_upload
+```
+Sample Response :
+```
+Allocation Updated with txID : b84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
+```
+To test functionality try uploading file to allocation. You should get the following response :
+```
+Upload failed. this options for this file is not permitted for this allocation: 
+file_option_not_permitted.
+```
 #### Cancel allocation
 
 `alloc-cancel` immediately return all remaining tokens from challenge pool back to the
@@ -445,40 +471,6 @@ Example
 ```
 ./zbox alloc-fini --allocation <allocation_id>
 ```
-
-#### Transfer allocation ownership
-
-`transferallocation` changes the owner of an allocation. Only the current owner of the allocation, can change an
-allocation's ownership.
-
-`transferallocation` does not move any funds, only changes the owner,
-and the owner's public key.
-
-| Parameter     | Required | Description             | Valid Values |
-| ------------- | -------- | ----------------------- | ------------ |
-| allocation    | yes      | allocatino id           | string       |
-| new_owner     | yes      | id of the new owner     | string       |
-| new_owner_key | yes      | public key of new owner | string       |
-
-<details>
-  <summary>transferallocation</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/125456952-115b5468-c4f8-4564-8160-86f8164c5ce6.png)
-
-</details>
-
-```shell
-./zbox trnasferallocation --allocation fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d \
-    --new_owner 8b87739cd6c966c150a8a6e7b327435d4a581d9d9cc1d86a88c8a13ae1ad7a96
-    --new_owner_key a2df94e69954e51999f768aeca40bf0678e168fa9eb21ee5c82c32a9c25fb71fe9a340b726456d6e557f92854975ef04270291cdc1853e56000b0a6b48312d13
-```
-
-Output
-
-```shell
-transferred ownership of fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d to 8b87739cd6c966c150a8a6e7b327435d4a581d9d9cc1d86a88c8a13ae1ad7a96
-```
-
 #### List blobbers
 
 Use `ls-blobbers` command to show active blobbers.
@@ -562,7 +554,7 @@ settings:
 
 #### List all files
 
-`list-all` lists al the files stored with an allocation
+`list-all` lists all the files stored with an allocation
 
 | Parameter  | Required | Description                                    | Default | Valid values |
 | ---------- | -------- | ---------------------------------------------- | ------- | ------------ |
@@ -625,6 +617,20 @@ Update blobber read price
 
 ```
 ./zbox bl-update --blobber_id 0ece681f6b00221c5567865b56040eaab23795a843ed629ce71fb340a5566ba3 --read_price 0.1
+```
+
+Get Version
+
+The version of Zbox and Gosdk can be fetched using the ./zbox version command.
+
+```
+./zbox version
+```
+Sample Response:
+
+```
+zbox....:  v1.4.3
+gosdk...:  v1.8.14
 ```
 
 #### List All Validators
@@ -1542,40 +1548,6 @@ Response:
 ```
 Repair file completed, Total files repaired:  0
 ```
-
-#### Add collaborator
-
-Use `add-collab` command to add a collaborator for a file on dStorage.
-Collaborators can perform read actions on the collaboration file, with the owner paying.
-
-![collaboration](https://user-images.githubusercontent.com/65766301/120052678-0f2f4f80-c044-11eb-8ca6-1a032659eac3.png)
-
-| Parameter  | Required | Description                  | default | Valid values |
-| ---------- | -------- | ---------------------------- | ------- | ------------ |
-| allocation | yes      | allocation id                |         | string       |
-| collabid   | yes      | id of collaberator           |         | string       |
-| remotepath | yes      | file on which to collaberate |         | string       |
-
-<details>
-  <summary>add-collab</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/124504210-e9be0000-ddbe-11eb-819c-e74c8bf340dd.png)
-
-</details>
-
-Example
-
-```
-./zbox add-collab --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --remotepath /1.txt --collabid d477d12134c2d7ba5ab71ac8ad37f244224695ef3215be990c3215d531c5a329
-```
-
-Response will be a confirmation that collaborator is added on all blobbers for the given file .
-
-```
-Collaborator d477d12134c2d7ba5ab71ac8ad37f244224695ef3215be990c3215d531c5a329 added successfully for the file /1.txt
-```
-
-You can check all collaborators for a file in metadata json response.
 
 #### Sign data
 

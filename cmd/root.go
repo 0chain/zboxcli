@@ -38,7 +38,7 @@ var rootCmd = &cobra.Command{
 	Use:   "zbox",
 	Short: "zbox is a decentralized storage application written on the 0Chain platform",
 	Long: `zbox is a decentralized storage application written on the 0Chain platform.
-			Complete documentation is available at https://docs.0chain.net/0chain/`,
+			Complete documentation is available at https://docs.zus.network/guides/zbox-cli`,
 }
 
 var clientWallet *zcncrypto.Wallet
