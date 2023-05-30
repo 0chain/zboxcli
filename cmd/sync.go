@@ -47,6 +47,38 @@ func filterOperations(lDiff []sdk.FileDiff) (filterDiff []sdk.FileDiff, exclPath
 	return
 }
 
+func isEmptyUploadOrUpdate(operation string, localPath string) bool {
+
+	if operation != sdk.Update && operation != sdk.Upload {
+		return false
+	}
+	localPath = strings.TrimRight(localPath, "/")
+	fileReader, err := os.Open(localPath)
+	if err != nil {
+		return false
+	}
+	defer fileReader.Close()
+
+	fileInfo, err := fileReader.Stat()
+	if err != nil {
+		return false
+	}
+	if fileInfo.Size() == 0 {
+		return true
+	}
+	return false
+}
+
+func filterEmptyFiles(localPath string, lDiff []sdk.FileDiff) (filterDiff []sdk.FileDiff) {
+	localPath = strings.TrimRight(localPath, "/")
+	for _, f := range lDiff {
+		if !isEmptyUploadOrUpdate(f.Op, localPath+f.Path) {
+			filterDiff = append(filterDiff, f)
+		}
+	}
+	return
+}
+
 func startMultiUploadUpdate(allocationObj *sdk.Allocation, argsSlice []chunkedUploadArgs) error {
 	totalOperations := len(argsSlice)
 	if totalOperations == 0 {
@@ -184,6 +216,8 @@ var syncCmd = &cobra.Command{
 			lDiff, otherPaths = filterOperations(lDiff)
 			exclPath = append(exclPath, otherPaths...)
 		}
+
+		lDiff = filterEmptyFiles(localpath, lDiff)
 
 		if len(lDiff) > 0 {
 			printTable(lDiff)
