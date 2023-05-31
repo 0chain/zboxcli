@@ -20,14 +20,14 @@ jobs:
     name: Build-linux
     runs-on: [self-hosted, build]
 
-    - name: Install deps
-        run: |
-          sudo apt update
-          sudo apt -y install build-essential nghttp2 libnghttp2-dev libssl-dev containerd docker.io
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+
+    - name: Install deps
+      run: |
+          sudo apt update
+          sudo apt -y install build-essential nghttp2 libnghttp2-dev libssl-dev containerd docker.io
 
     - name: Install
       run: docker run -v $PWD:/app -w /app golang:1.20 sh -c "make install"
