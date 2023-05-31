@@ -15,10 +15,10 @@ jobs:
   unit-test:
     runs-on: [self-hosted, build]
     steps:
-      - name: Setup go 1.18
+      - name: Setup go 1.20
         uses: actions/setup-go@v2
         with:
-          go-version: '1.18'
+          go-version: '1.20'
 
       - name: Clone Zbox
         uses: actions/checkout@v2
@@ -36,10 +36,10 @@ jobs:
     runs-on: [self-hosted, build]
     needs: unit-test
     steps:
-      - name: Setup go 1.18
+      - name: Setup go 1.20
         uses: actions/setup-go@v2
         with:
-          go-version: '1.18'
+          go-version: '1.20'
 
       - name: Clone 0Box
         uses: actions/checkout@v2
@@ -51,7 +51,7 @@ jobs:
           sudo apt -y install build-essential nghttp2 libnghttp2-dev libssl-dev containerd docker.io
 
       - name: Build zbox
-        run: docker run -v $PWD:/app -w /app golang:1.18 sh -c "make install"
+        run: make install
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v2
