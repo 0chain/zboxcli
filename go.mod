@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/0chain/errors v1.0.3
-	github.com/0chain/gosdk v1.8.17-0.20230531033037-1518d48fc1e3
+	github.com/0chain/gosdk v1.8.17-0.20230601002348-0ca1e8ca3445
 	github.com/icza/bitio v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.6.0
@@ -69,7 +69,7 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/herumi/bls-go-binary => github.com/cnlangzi/bls-go-binary v1.30.6
+replace github.com/herumi/bls-go-binary => github.com/cnlangzi/bls-go-binary v1.30.7
 
 // temporary, for development
 // replace github.com/0chain/gosdk => ../gosdk
