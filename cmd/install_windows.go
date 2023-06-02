@@ -45,9 +45,12 @@ func InstallDLLs() {
 func downloadDLL(f, link string) error {
 	transport := http.DefaultTransport
 
-	proxyUrl, _ := url.Parse(os.Getenv("HTTP_PROXY"))
-	if proxyUrl != nil {
-		transport = &http.Transport{Proxy: http.ProxyURL(proxyUrl)}
+	httpProxy := os.Getenv("HTTP_PROXY")
+	if len(httpProxy) > 0 {
+		proxyUrl, err := url.Parse(os.Getenv("HTTP_PROXY"))
+		if proxyUrl != nil && err == nil {
+			transport = &http.Transport{Proxy: http.ProxyURL(proxyUrl)}
+		}
 	}
 
 	// create a new HTTP client
