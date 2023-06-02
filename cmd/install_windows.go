@@ -41,16 +41,26 @@ func InstallDLLs() {
 
 }
 
-func downloadDLL(f, url string) error {
+func downloadDLL(f, link string) error {
 
 	// create a new HTTP client
-	client := &http.Client{}
+	client := &http.Client{
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			req.URL.Opaque = req.URL.Path
+			return nil
+		},
+	}
 
 	// create a new GET request
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", link, nil)
 	if err != nil {
 		return err
 	}
+
+	req.Header.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7")
+	req.Header.Add("Accept-Encoding", "gzip, deflate, br")
+	req.Header.Add("Accept-Language", "en-US,en;q=0.9,zh;q=0.8,zh-CN;q=0.7,zh-TW;q=0.6")
+	req.Header.Add("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36")
 
 	// send the request and get the response
 	resp, err := client.Do(req)
@@ -58,23 +68,6 @@ func downloadDLL(f, url string) error {
 		return err
 	}
 	defer resp.Body.Close()
-
-	// check if the response was a redirect
-	if resp.StatusCode >= 300 && resp.StatusCode <= 399 {
-		redirectUrl, err := resp.Location()
-		if err != nil {
-
-			return err
-		}
-
-		// create a new GET request to follow the redirect
-		req.URL = redirectUrl
-		resp, err = client.Do(req)
-		if err != nil {
-			return err
-		}
-		defer resp.Body.Close()
-	}
 
 	// Create the file
 	out, err := os.Create(f)
