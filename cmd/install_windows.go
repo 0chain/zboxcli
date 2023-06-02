@@ -42,9 +42,16 @@ func InstallDLLs() {
 }
 
 func downloadDLL(f, link string) error {
+	transport := http.DefaultTransport
+
+	proxyUrl, _ := url.Parse(os.Getenv("HTTP_PROXY"))
+	if proxyUrl != nil {
+		transport = &http.Transport{Proxy: http.ProxyURL(proxyUrl)}
+	}
 
 	// create a new HTTP client
 	client := &http.Client{
+		Transport: transport,
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			req.URL.Opaque = req.URL.Path
 			return nil
