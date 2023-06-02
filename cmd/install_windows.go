@@ -23,7 +23,7 @@ func InstallDLLs() {
 		}
 	}
 
-	libgcc_s_seh := filepath.Join(pwd, "libgcc_s_seh-1")
+	libgcc_s_seh := filepath.Join(pwd, "libgcc_s_seh-1.dll")
 	if _, err := os.Stat(libgcc_s_seh); errors.Is(err, os.ErrNotExist) {
 		err = downloadDLL(libgcc_s_seh, "https://github.com/0chain/blobber/wiki/windows/libgcc_s_seh-1.dll")
 		if err != nil {
