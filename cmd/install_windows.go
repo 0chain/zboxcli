@@ -43,12 +43,38 @@ func InstallDLLs() {
 
 func downloadDLL(f, url string) error {
 
-	// Get the data
-	resp, err := http.Get(url)
+	// create a new HTTP client
+	client := &http.Client{}
+
+	// create a new GET request
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return err
+	}
+
+	// send the request and get the response
+	resp, err := client.Do(req)
 	if err != nil {
 		return err
 	}
 	defer resp.Body.Close()
+
+	// check if the response was a redirect
+	if resp.StatusCode >= 300 && resp.StatusCode <= 399 {
+		redirectUrl, err := resp.Location()
+		if err != nil {
+
+			return err
+		}
+
+		// create a new GET request to follow the redirect
+		req.URL = redirectUrl
+		resp, err = client.Do(req)
+		if err != nil {
+			return err
+		}
+		defer resp.Body.Close()
+	}
 
 	// Create the file
 	out, err := os.Create(f)
