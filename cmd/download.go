@@ -145,10 +145,10 @@ var downloadCmd = &cobra.Command{
 				os.Exit(1)
 			}
 			if thumbnail {
-				errE = allocationObj.DownloadThumbnail(localPath, remotePath, verifyDownload, statusBar)
+				errE = allocationObj.DownloadThumbnail(localPath, remotePath, verifyDownload, statusBar, true)
 			} else {
 				if startBlock != 0 || endBlock != 0 {
-					errE = allocationObj.DownloadFileByBlock(localPath, remotePath, startBlock, endBlock, numBlocks, verifyDownload, statusBar)
+					errE = allocationObj.DownloadFileByBlock(localPath, remotePath, startBlock, endBlock, numBlocks, verifyDownload, statusBar, true)
 				} else {
 					errE = allocationObj.DownloadFile(localPath, remotePath, verifyDownload, statusBar)
 				}
