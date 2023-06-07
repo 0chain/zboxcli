@@ -150,7 +150,7 @@ var downloadCmd = &cobra.Command{
 				if startBlock != 0 || endBlock != 0 {
 					errE = allocationObj.DownloadFileByBlock(localPath, remotePath, startBlock, endBlock, numBlocks, verifyDownload, statusBar, true)
 				} else {
-					errE = allocationObj.DownloadFile(localPath, remotePath, verifyDownload, statusBar)
+					errE = allocationObj.DownloadFile(localPath, remotePath, verifyDownload, statusBar, true)
 				}
 			}
 		}
