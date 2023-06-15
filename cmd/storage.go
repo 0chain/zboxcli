@@ -306,12 +306,12 @@ var blobberUpdateCmd = &cobra.Command{
 			blob.BaseURL = url
 		}
 
-		if flags.Changed("is_available") {
+		if flags.Changed("not_available") {
 			var ia bool
-			if ia, err = flags.GetBool("is_available"); err != nil {
+			if ia, err = flags.GetBool("not_available"); err != nil {
 				log.Fatal(err)
 			}
-			blob.IsAvailable = ia
+			blob.NotAvailable = ia
 		}
 
 		if _, _, err = sdk.UpdateBlobberSettings(blob); err != nil {
