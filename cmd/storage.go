@@ -86,7 +86,6 @@ func printBlobbers(nodes []*sdk.Blobber, isActive bool) {
 		fmt.Println("  terms:")
 		fmt.Println("    read_price:         ", val.Terms.ReadPrice.String(), "/ GB")
 		fmt.Println("    write_price:        ", val.Terms.WritePrice.String(), "/ GB / time_unit")
-		fmt.Println("    min_lock_demand:    ", val.Terms.MinLockDemand)
 		fmt.Println("    max_offer_duration: ", val.Terms.MaxOfferDuration.String())
 	}
 }
@@ -170,7 +169,6 @@ var blobberInfoCmd = &cobra.Command{
 		fmt.Println("terms:")
 		fmt.Println("  read_price:        ", blob.Terms.ReadPrice, "/ GB")
 		fmt.Println("  write_price:       ", blob.Terms.WritePrice, "/ GB")
-		fmt.Println("  min_lock_demand:   ", blob.Terms.MinLockDemand*100.0, "%")
 		fmt.Println("  max_offer_duration:", blob.Terms.MaxOfferDuration)
 		fmt.Println("settings:")
 		fmt.Println("  delegate_wallet:", blob.StakePoolSettings.DelegateWallet)
@@ -237,17 +235,6 @@ var blobberUpdateCmd = &cobra.Command{
 				log.Fatal(err)
 			}
 			blob.Terms.WritePrice = writePriceBalance
-		}
-
-		if flags.Changed("min_lock_demand") {
-			var mld float64
-			if mld, err = flags.GetFloat64("min_lock_demand"); err != nil {
-				log.Fatal(err)
-			}
-			if mld < 0 || mld > 1 {
-				log.Fatal("invalid min_lock_demand: out of [0; 1) range")
-			}
-			blob.Terms.MinLockDemand = mld
 		}
 
 		if flags.Changed("max_offer_duration") {
@@ -342,7 +329,6 @@ func init() {
 	buf.Int64("capacity", 0, "update blobber capacity bid, optional")
 	buf.Float64("read_price", 0.0, "update read_price, optional")
 	buf.Float64("write_price", 0.0, "update write_price, optional")
-	buf.Float64("min_lock_demand", 0.0, "update min_lock_demand, optional")
 	buf.Duration("max_offer_duration", 0*time.Second, "update max_offer_duration, optional")
 	buf.Float64("min_stake", 0.0, "update min_stake, optional")
 	buf.Float64("max_stake", 0.0, "update max_stake, optional")

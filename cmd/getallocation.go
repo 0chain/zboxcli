@@ -71,7 +71,7 @@ var getallocationCmd = &cobra.Command{
 		fmt.Printf("  file_options:      %08b\n", alloc.FileOptions)
 		fmt.Println("  write pool      ", alloc.WritePool)
 		fmt.Println("  blobbers:")
-
+		fmt.Println("  min_lock_demand:", d.MinLockDemand*100, "%")
 		for _, d := range alloc.BlobberDetails {
 			fmt.Println("    - blobber_id:      ", d.BlobberID)
 			fmt.Println("      base URL:        ", getBaseURL(d.BlobberID, alloc.Blobbers))
