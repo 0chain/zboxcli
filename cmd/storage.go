@@ -166,7 +166,7 @@ var blobberInfoCmd = &cobra.Command{
 		fmt.Println("last_health_check:", blob.LastHealthCheck.ToTime())
 		fmt.Println("capacity_used:    ", blob.Allocated)
 		fmt.Println("total_stake:      ", blob.TotalStake)
-		fmt.Println("is_available:     ", blob.IsAvailable)
+		fmt.Println("not_available:     ", blob.NotAvailable)
 		fmt.Println("terms:")
 		fmt.Println("  read_price:        ", blob.Terms.ReadPrice, "/ GB")
 		fmt.Println("  write_price:       ", blob.Terms.WritePrice, "/ GB")
@@ -348,6 +348,6 @@ func init() {
 	buf.Float64("max_stake", 0.0, "update max_stake, optional")
 	buf.Int("num_delegates", 0, "update num_delegates, optional")
 	buf.Float64("service_charge", 0.0, "update service_charge, optional")
-	buf.Bool("is_available", true, "(default false) set blobber's availability for new allocations")
+	buf.Bool("not_available", true, "(default false) set blobber's availability for new allocations")
 	blobberUpdateCmd.MarkFlagRequired("blobber_id")
 }
