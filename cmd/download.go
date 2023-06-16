@@ -121,15 +121,15 @@ var downloadCmd = &cobra.Command{
 
 			if thumbnail {
 				errE = allocationObj.DownloadThumbnailFromAuthTicket(localPath,
-					authTicket, lookupHash, fileName, verifyDownload, statusBar)
+					authTicket, lookupHash, fileName, verifyDownload, statusBar, true)
 			} else {
 				if startBlock != 0 || endBlock != 0 {
 					errE = allocationObj.DownloadFromAuthTicketByBlocks(
 						localPath, authTicket, startBlock, endBlock, numBlocks,
-						lookupHash, fileName, verifyDownload, statusBar)
+						lookupHash, fileName, verifyDownload, statusBar, true)
 				} else {
 					errE = allocationObj.DownloadFromAuthTicket(localPath,
-						authTicket, lookupHash, fileName, verifyDownload, statusBar)
+						authTicket, lookupHash, fileName, verifyDownload, statusBar, true)
 				}
 			}
 		} else if len(remotePath) > 0 {
@@ -145,12 +145,12 @@ var downloadCmd = &cobra.Command{
 				os.Exit(1)
 			}
 			if thumbnail {
-				errE = allocationObj.DownloadThumbnail(localPath, remotePath, verifyDownload, statusBar)
+				errE = allocationObj.DownloadThumbnail(localPath, remotePath, verifyDownload, statusBar, true)
 			} else {
 				if startBlock != 0 || endBlock != 0 {
-					errE = allocationObj.DownloadFileByBlock(localPath, remotePath, startBlock, endBlock, numBlocks, verifyDownload, statusBar)
+					errE = allocationObj.DownloadFileByBlock(localPath, remotePath, startBlock, endBlock, numBlocks, verifyDownload, statusBar, true)
 				} else {
-					errE = allocationObj.DownloadFile(localPath, remotePath, verifyDownload, statusBar)
+					errE = allocationObj.DownloadFile(localPath, remotePath, verifyDownload, statusBar, true)
 				}
 			}
 		}
