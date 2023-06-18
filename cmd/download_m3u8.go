@@ -182,7 +182,7 @@ func (d *M3u8Downloader) download(item MediaItem) (string, error) {
 		return "", err
 	}
 
-	err = downloader.Start(statusBar)
+	err = downloader.Start(statusBar, true)
 
 	if err != nil {
 		return "", err

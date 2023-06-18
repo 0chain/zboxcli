@@ -121,21 +121,21 @@ var downloadCmd = &cobra.Command{
 
 			if thumbnail {
 				errE = allocationObj.DownloadThumbnailFromAuthTicket(localPath,
-					authTicket, lookupHash, fileName, verifyDownload, statusBar)
+					authTicket, lookupHash, fileName, verifyDownload, statusBar, true)
 			} else {
 				if startBlock != 0 || endBlock != 0 {
 					errE = allocationObj.DownloadFromAuthTicketByBlocks(
 						localPath, authTicket, startBlock, endBlock, numBlocks,
-						lookupHash, fileName, verifyDownload, statusBar)
+						lookupHash, fileName, verifyDownload, statusBar, true)
 				} else {
 					errE = allocationObj.DownloadFromAuthTicket(localPath,
-						authTicket, lookupHash, fileName, verifyDownload, statusBar)
+						authTicket, lookupHash, fileName, verifyDownload, statusBar, true)
 				}
 			}
 		} else if len(remotePath) > 0 {
-			if !fflags.Changed("allocation") {
-				PrintError("Error: allocation flag is missing")
-				os.Exit(1)
+			if fflags.Changed("allocation") == false { // check if the flag "path" is set
+				PrintError("Error: allocation flag is missing") // If not, we'll let the user know
+				os.Exit(1)                                      // and return
 			}
 			allocationID := cmd.Flag("allocation").Value.String()
 			allocationObj, err = sdk.GetAllocation(allocationID)
@@ -151,14 +151,14 @@ var downloadCmd = &cobra.Command{
 			}
 
 			if thumbnail {
-				errE = allocationObj.DownloadThumbnail(localPath, remotePath, verifyDownload, statusBar)
+				errE = allocationObj.DownloadThumbnail(localPath, remotePath, verifyDownload, statusBar, true)
 			} else if blobberID != "" {
 				errE = allocationObj.DownloadFromBlobber(blobberID, localPath, remotePath, statusBar)
 			} else {
 				if startBlock != 0 || endBlock != 0 {
-					errE = allocationObj.DownloadFileByBlock(localPath, remotePath, startBlock, endBlock, numBlocks, verifyDownload, statusBar)
+					errE = allocationObj.DownloadFileByBlock(localPath, remotePath, startBlock, endBlock, numBlocks, verifyDownload, statusBar, true)
 				} else {
-					errE = allocationObj.DownloadFile(localPath, remotePath, verifyDownload, statusBar)
+					errE = allocationObj.DownloadFile(localPath, remotePath, verifyDownload, statusBar, true)
 				}
 			}
 		}
