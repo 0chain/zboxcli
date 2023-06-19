@@ -29,7 +29,7 @@ require (
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/h2non/filetype v1.1.3 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/herumi/bls-go-binary v1.30.4 // indirect
+	github.com/herumi/bls-go-binary v1.31.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.4 // indirect
 	github.com/klauspost/reedsolomon v1.11.7 // indirect
@@ -68,8 +68,6 @@ require (
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-replace github.com/herumi/bls-go-binary => github.com/cnlangzi/bls-go-binary v1.30.7
 
 // temporary, for development
 // replace github.com/0chain/gosdk => ../gosdk
