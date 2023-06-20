@@ -48,6 +48,6 @@ jobs:
           aws-region: us-east-2
           
       - name: Backup to s3
-        if: steps.get_info.outputs.GIT_COMMIT_DATE == steps.get_info.outputs.YESTERDAY_DATE
+        # if: steps.get_info.outputs.GIT_COMMIT_DATE == steps.get_info.outputs.YESTERDAY_DATE
         run: |
           aws s3 cp zboxcli.zip s3://${{ secrets.MIRROR_TARGET }}/zboxcli.zip
