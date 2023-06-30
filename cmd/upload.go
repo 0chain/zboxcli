@@ -29,7 +29,7 @@ var uploadCmd = &cobra.Command{
 			PrintError("Error: allocation flag is missing") // If not, we'll let the user know
 			os.Exit(1)                                      // and return
 		}
-		if !fflags.Changed("remotepath") {
+		if !fflags.Changed("multiuploadjson") && !fflags.Changed("remotepath") {
 			PrintError("Error: remotepath flag is missing")
 			os.Exit(1)
 		}
