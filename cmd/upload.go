@@ -64,7 +64,7 @@ var uploadCmd = &cobra.Command{
 		}
 
 		if multiuploadJSON != "" {
-			err = multiUpload(allocationObj, "~/Downloads", multiuploadJSON, statusBar)
+			err = multiUpload(allocationObj, localPath, multiuploadJSON, statusBar)
 		} else {
 			wg.Add(1)
 			err = startChunkedUpload(cmd, allocationObj,
