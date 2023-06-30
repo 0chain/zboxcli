@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"os"
 	"strings"
 	"sync"
@@ -44,6 +45,12 @@ var uploadCmd = &cobra.Command{
 			PrintError("Error fetching the allocation.", err)
 			os.Exit(1)
 		}
+
+		var multiuploadJSON string
+		if fflags.Changed("multiuploadjson") {
+			multiuploadJSON = cmd.Flag("multiuploadjson").Value.String()
+		}
+
 		remotePath := cmd.Flag("remotepath").Value.String()
 		localPath := cmd.Flag("localpath").Value.String()
 		thumbnailPath := cmd.Flag("thumbnailpath").Value.String()
@@ -52,22 +59,27 @@ var uploadCmd = &cobra.Command{
 
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
-		wg.Add(1)
 		if strings.HasPrefix(remotePath, "/Encrypted") {
 			encrypt = true
 		}
 
-		if err := startChunkedUpload(cmd, allocationObj,
-			chunkedUploadArgs{
-				localPath:     localPath,
-				thumbnailPath: thumbnailPath,
-				remotePath:    remotePath,
-				encrypt:       encrypt,
-				webStreaming:  webStreaming,
-				chunkNumber:   uploadChunkNumber,
-				// isUpdate:      false,
-				// isRepair:      false,
-			}, statusBar); err != nil {
+		if multiuploadJSON != "" {
+			err = multiUpload(allocationObj, "~/Downloads", multiuploadJSON, statusBar)
+		} else {
+			wg.Add(1)
+			err = startChunkedUpload(cmd, allocationObj,
+				chunkedUploadArgs{
+					localPath:     localPath,
+					thumbnailPath: thumbnailPath,
+					remotePath:    remotePath,
+					encrypt:       encrypt,
+					webStreaming:  webStreaming,
+					chunkNumber:   uploadChunkNumber,
+					// isUpdate:      false,
+					// isRepair:      false,
+				}, statusBar)
+		}
+		if err != nil {
 			PrintError("Upload failed.", err.Error())
 			os.Exit(1)
 		}
@@ -91,7 +103,6 @@ type chunkedUploadArgs struct {
 }
 
 func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, args chunkedUploadArgs, statusBar sdk.StatusCallback) error {
-
 	fileReader, err := os.Open(args.localPath)
 	if err != nil {
 		return err
@@ -104,7 +115,6 @@ func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, args 
 	}
 
 	mimeType, err := zboxutil.GetFileContentType(fileReader)
-
 	if err != nil {
 		return err
 	}
@@ -142,6 +152,51 @@ func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, args 
 	return chunkedUpload.Start()
 }
 
+type MultiUploadOption struct {
+	FilePath      string `json:"filePath,omitempty"`
+	FileName      string `json:"fileName,omitempty"`
+	RemotePath    string `json:"remotePath,omitempty"`
+	ThumbnailPath string `json:"thumbnailPath,omitempty"`
+	Encrypt       bool   `json:"encrypt,omitempty"`
+	ChunkNumber   int    `json:"chunkNumber,omitempty"`
+}
+
+func multiUpload(allocationObj *sdk.Allocation, workdir, jsonMultiUploadOptions string, statusBar *StatusBar) error {
+	file, err := os.Open(jsonMultiUploadOptions)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	decoder := json.NewDecoder(file)
+
+	var options []MultiUploadOption
+
+	err = decoder.Decode(&options)
+	if err != nil {
+		return err
+	}
+
+	totalUploads := len(options)
+	filePaths := make([]string, totalUploads)
+	fileNames := make([]string, totalUploads)
+	remotePaths := make([]string, totalUploads)
+	thumbnailPaths := make([]string, totalUploads)
+	chunkNumbers := make([]int, totalUploads)
+	encrypts := make([]bool, totalUploads)
+	for idx, option := range options {
+		statusBar.wg.Add(1)
+		filePaths[idx] = option.FilePath
+		fileNames[idx] = option.FileName
+		thumbnailPaths[idx] = option.ThumbnailPath
+		remotePaths[idx] = option.RemotePath
+		chunkNumbers[idx] = option.ChunkNumber
+
+	}
+
+	return allocationObj.StartMultiUpload(workdir, filePaths, fileNames, thumbnailPaths, encrypts, chunkNumbers, remotePaths, false, statusBar)
+}
+
 func init() {
 	rootCmd.AddCommand(uploadCmd)
 
@@ -149,6 +204,7 @@ func init() {
 	uploadCmd.PersistentFlags().String("remotepath", "", "Remote path to upload")
 	uploadCmd.PersistentFlags().String("localpath", "", "Local path of file to upload")
 	uploadCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
+	uploadCmd.PersistentFlags().String("multiuploadjson", "", "A JSON file containing multiupload options")
 	uploadCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
 	uploadCmd.Flags().Bool("encrypt", false, "(default false) pass this option to encrypt and upload the file")
 	uploadCmd.Flags().Bool("web-streaming", false, "(default false) pass this option to enable web streaming support")
