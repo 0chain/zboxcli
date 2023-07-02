@@ -12,41 +12,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// TODO: @Piers: update print logic sc-config; using datastructure might make sense instead of
-// InputMap because some fields have specific type (like Balance) which includes formatting logic
-
-// func printStorageSCConfig(conf *sdk.StorageSCConfig) {
-// 	fmt.Println("min_alloc_size:               ", conf.MinAllocSize)
-// 	fmt.Println("min_alloc_duration:           ", conf.MinAllocDuration)
-// 	fmt.Println("max_challenge_completion_time:", conf.MaxChallengeCompletionTime)
-// 	fmt.Println("min_offer_duration:           ", conf.MinOfferDuration)
-// 	fmt.Println("min_blobber_capacity:         ", conf.MinBlobberCapacity)
-// 	fmt.Println("max_delegates:                ", conf.MaxDelegates)
-// 	fmt.Println("max_charge:                   ", conf.MaxCharge*100, "%")
-// 	fmt.Println("readpool:")
-// 	fmt.Println("  min_lock:", conf.ReadPool.MinLock)
-// 	fmt.Println("  min_lock_period:", conf.ReadPool.MinLockPeriod)
-// 	fmt.Println("  max_lock_period:", conf.ReadPool.MaxLockPeriod)
-// 	fmt.Println("writepool:")
-// 	fmt.Println("  min_lock:", conf.WritePool.MinLock)
-// 	fmt.Println("  min_lock_period:", conf.WritePool.MinLockPeriod)
-// 	fmt.Println("  max_lock_period:", conf.WritePool.MaxLockPeriod)
-// 	fmt.Println("stakepool:")
-// 	fmt.Println("  min_lock:", conf.StakePool.MinLock)
-// 	fmt.Println("  interest_rate:", conf.StakePool.InterestRate)
-// 	fmt.Println("  interest_interval:", conf.StakePool.InterestInterval)
-// 	fmt.Println("validator_reward:                    ", conf.ValidatorReward)
-// 	fmt.Println("blobber_slash:                       ", conf.BlobberSlash)
-// 	fmt.Println("max_read_price:                      ", conf.MaxReadPrice, "/ GB")
-// 	fmt.Println("max_write_price:                     ", conf.MaxWritePrice, "/ GB / time_unit")
-// 	fmt.Println("time_unit:                           ", conf.TimeUnit)
-// 	fmt.Println("failed_challenges_to_cancel:         ", conf.FailedChallengesToCancel)
-// 	fmt.Println("failed_challenges_to_revoke_min_lock:", conf.FailedChallengesToRevokeMinLock)
-// 	fmt.Println("challenge_enabled:                   ", conf.ChallengeEnabled)
-// 	fmt.Println("max_challenges_per_generation:       ", conf.MaxChallengesPerGeneration)
-// 	fmt.Println("challenge_rate_per_mb_min:           ", conf.ChallengeGenerationRate)
-// }
-
 // scConfig shows SC configurations
 var scConfig = &cobra.Command{
 	Use:   "sc-config",
@@ -86,7 +51,6 @@ func printBlobbers(nodes []*sdk.Blobber, isActive bool) {
 		fmt.Println("  terms:")
 		fmt.Println("    read_price:         ", val.Terms.ReadPrice.String(), "/ GB")
 		fmt.Println("    write_price:        ", val.Terms.WritePrice.String(), "/ GB / time_unit")
-		fmt.Println("    min_lock_demand:    ", val.Terms.MinLockDemand)
 		fmt.Println("    max_offer_duration: ", val.Terms.MaxOfferDuration.String())
 	}
 }
@@ -166,11 +130,10 @@ var blobberInfoCmd = &cobra.Command{
 		fmt.Println("last_health_check:", blob.LastHealthCheck.ToTime())
 		fmt.Println("capacity_used:    ", blob.Allocated)
 		fmt.Println("total_stake:      ", blob.TotalStake)
-		fmt.Println("is_available:     ", blob.IsAvailable)
+		fmt.Println("not_available:     ", blob.NotAvailable)
 		fmt.Println("terms:")
 		fmt.Println("  read_price:        ", blob.Terms.ReadPrice, "/ GB")
 		fmt.Println("  write_price:       ", blob.Terms.WritePrice, "/ GB")
-		fmt.Println("  min_lock_demand:   ", blob.Terms.MinLockDemand*100.0, "%")
 		fmt.Println("  max_offer_duration:", blob.Terms.MaxOfferDuration)
 		fmt.Println("settings:")
 		fmt.Println("  delegate_wallet:", blob.StakePoolSettings.DelegateWallet)
@@ -239,17 +202,6 @@ var blobberUpdateCmd = &cobra.Command{
 			blob.Terms.WritePrice = writePriceBalance
 		}
 
-		if flags.Changed("min_lock_demand") {
-			var mld float64
-			if mld, err = flags.GetFloat64("min_lock_demand"); err != nil {
-				log.Fatal(err)
-			}
-			if mld < 0 || mld > 1 {
-				log.Fatal("invalid min_lock_demand: out of [0; 1) range")
-			}
-			blob.Terms.MinLockDemand = mld
-		}
-
 		if flags.Changed("max_offer_duration") {
 			var mod time.Duration
 			if mod, err = flags.GetDuration("max_offer_duration"); err != nil {
@@ -306,12 +258,12 @@ var blobberUpdateCmd = &cobra.Command{
 			blob.BaseURL = url
 		}
 
-		if flags.Changed("is_available") {
+		if flags.Changed("not_available") {
 			var ia bool
-			if ia, err = flags.GetBool("is_available"); err != nil {
+			if ia, err = flags.GetBool("not_available"); err != nil {
 				log.Fatal(err)
 			}
-			blob.IsAvailable = ia
+			blob.NotAvailable = ia
 		}
 
 		if _, _, err = sdk.UpdateBlobberSettings(blob); err != nil {
@@ -342,12 +294,11 @@ func init() {
 	buf.Int64("capacity", 0, "update blobber capacity bid, optional")
 	buf.Float64("read_price", 0.0, "update read_price, optional")
 	buf.Float64("write_price", 0.0, "update write_price, optional")
-	buf.Float64("min_lock_demand", 0.0, "update min_lock_demand, optional")
 	buf.Duration("max_offer_duration", 0*time.Second, "update max_offer_duration, optional")
 	buf.Float64("min_stake", 0.0, "update min_stake, optional")
 	buf.Float64("max_stake", 0.0, "update max_stake, optional")
 	buf.Int("num_delegates", 0, "update num_delegates, optional")
 	buf.Float64("service_charge", 0.0, "update service_charge, optional")
-	buf.Bool("is_available", true, "(default false) set blobber's availability for new allocations")
+	buf.Bool("not_available", true, "(default false) set blobber's availability for new allocations")
 	blobberUpdateCmd.MarkFlagRequired("blobber_id")
 }
