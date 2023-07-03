@@ -53,6 +53,7 @@ func (s *StatusBar) Error(allocationID string, filePath string, op int, err erro
 func (s *StatusBar) RepairCompleted(filesRepaired int) {
 	defer s.wg.Done()
 	allocUnderRepair = false
+	s.success = true
 	fmt.Println("Repair file completed, Total files repaired: ", filesRepaired)
 }
 
