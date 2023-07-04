@@ -1,0 +1,17 @@
+[
+  {
+    "remotePath": "/raw.file_example_MP4_1920_18MG.mp4",
+    "localPath": "./a.mp4",
+    "downloadOp": 1
+  },
+  {
+    "remotePath": "/a.mp4",
+    "localPath": "./b.mp4",
+    "downloadOp": 1
+  },
+  {
+    "remotePath": "/raw.file_example_MP4_1920_18MG.mp4",
+    "localPath": "./c.mp4",
+    "downloadOp": 1
+  }
+]
