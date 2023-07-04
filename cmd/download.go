@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"strings"
 	"sync"
@@ -171,7 +172,7 @@ var downloadCmd = &cobra.Command{
 				os.Exit(1)
 			}
 
-			errE = MultiDownload(allocationObj, multiuploadJSON, statusBar)
+			errE = MultiDownload(allocationObj, multiuploadJSON)
 		}
 
 		if errE == nil {
@@ -195,8 +196,10 @@ type MultiDownloadOption struct {
 	RemoteLookupHash string `json:"remoteLookupHash,omitempty"` //Required only for file download with auth ticket
 }
 
-func MultiDownload(a *sdk.Allocation, jsonMultiDownloadOptions string, statusBar *StatusBar) error {
+func MultiDownload(a *sdk.Allocation, jsonMultiDownloadOptions string) error {
 	var options []MultiDownloadOption
+	var wg sync.WaitGroup
+	statusBar := &StatusBar{wg: &wg}
 	file, err := os.Open(jsonMultiDownloadOptions)
 	if err != nil {
 		return err
@@ -209,19 +212,23 @@ func MultiDownload(a *sdk.Allocation, jsonMultiDownloadOptions string, statusBar
 	if err != nil {
 		return err
 	}
-
+	lastOp := len(options) - 1
 	for i := 0; i <= len(options)-1; i++ {
+		wg.Add(1)
 		if options[i].DownloadOp == 1 {
-			err = a.DownloadFile(options[i].LocalPath, options[i].RemotePath, true, statusBar, true)
+			err = a.DownloadFile(options[i].LocalPath, options[i].RemotePath, true, statusBar, i == lastOp)
 		} else {
-			err = a.DownloadThumbnail(options[i].LocalPath, options[i].RemotePath, true, statusBar, true)
+			err = a.DownloadThumbnail(options[i].LocalPath, options[i].RemotePath, false, statusBar, i == lastOp)
 		}
 		if err != nil {
 			return err
 		}
 	}
-
-	return err
+	wg.Wait()
+	if !statusBar.success {
+		return fmt.Errorf("download failed")
+	}
+	return nil
 }
 
 func init() {
