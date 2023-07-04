@@ -71,7 +71,7 @@ var getallocationCmd = &cobra.Command{
 		fmt.Printf("  file_options:      %08b\n", alloc.FileOptions)
 		fmt.Println("  write pool      ", alloc.WritePool)
 		fmt.Println("  blobbers:")
-
+		fmt.Println("  min_lock_demand:", alloc.MinLockDemand*100, "%")
 		for _, d := range alloc.BlobberDetails {
 			fmt.Println("    - blobber_id:      ", d.BlobberID)
 			fmt.Println("      base URL:        ", getBaseURL(d.BlobberID, alloc.Blobbers))
@@ -86,7 +86,7 @@ var getallocationCmd = &cobra.Command{
 			fmt.Println("      terms: (allocation related terms)")
 			fmt.Println("        read_price:               ", d.Terms.ReadPrice, "/ GB (by 64KB chunks)")
 			fmt.Println("        write_price:              ", d.Terms.WritePrice, "/ GB")
-			fmt.Println("        min_lock_demand:          ", d.Terms.MinLockDemand*100, "%")
+			fmt.Println("        min_lock_demand:          ", d.MinLockDemand*100, "%")
 			fmt.Println("        max_offer_duration:       ", d.Terms.MaxOfferDuration)
 		}
 
