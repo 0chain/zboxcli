@@ -125,7 +125,7 @@ func init() {
 	feedCmd.PersistentFlags().String("localpath", "", "Local path of file to upload")
 	feedCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
 	feedCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
-	feedCmd.Flags().Bool("encrypt", false, "pass this option to encrypt and upload the file")
+	feedCmd.Flags().Bool("encrypt", false, "(default false) pass this option to encrypt and upload the file")
 
 	feedCmd.Flags().IntVarP(&feedChunkNumber, "chunknumber", "", 1, "how many chunks should be uploaded in a http request")
 

@@ -121,15 +121,15 @@ var downloadCmd = &cobra.Command{
 
 			if thumbnail {
 				errE = allocationObj.DownloadThumbnailFromAuthTicket(localPath,
-					authTicket, lookupHash, fileName, verifyDownload, statusBar)
+					authTicket, lookupHash, fileName, verifyDownload, statusBar, true)
 			} else {
 				if startBlock != 0 || endBlock != 0 {
 					errE = allocationObj.DownloadFromAuthTicketByBlocks(
 						localPath, authTicket, startBlock, endBlock, numBlocks,
-						lookupHash, fileName, verifyDownload, statusBar)
+						lookupHash, fileName, verifyDownload, statusBar, true)
 				} else {
 					errE = allocationObj.DownloadFromAuthTicket(localPath,
-						authTicket, lookupHash, fileName, verifyDownload, statusBar)
+						authTicket, lookupHash, fileName, verifyDownload, statusBar, true)
 				}
 			}
 		} else if len(remotePath) > 0 {
@@ -145,12 +145,12 @@ var downloadCmd = &cobra.Command{
 				os.Exit(1)
 			}
 			if thumbnail {
-				errE = allocationObj.DownloadThumbnail(localPath, remotePath, verifyDownload, statusBar)
+				errE = allocationObj.DownloadThumbnail(localPath, remotePath, verifyDownload, statusBar, true)
 			} else {
 				if startBlock != 0 || endBlock != 0 {
-					errE = allocationObj.DownloadFileByBlock(localPath, remotePath, startBlock, endBlock, numBlocks, verifyDownload, statusBar)
+					errE = allocationObj.DownloadFileByBlock(localPath, remotePath, startBlock, endBlock, numBlocks, verifyDownload, statusBar, true)
 				} else {
-					errE = allocationObj.DownloadFile(localPath, remotePath, verifyDownload, statusBar)
+					errE = allocationObj.DownloadFile(localPath, remotePath, verifyDownload, statusBar, true)
 				}
 			}
 		}
@@ -175,15 +175,15 @@ func init() {
 	downloadCmd.PersistentFlags().String("localpath", "", "Local path of file to download")
 	downloadCmd.PersistentFlags().String("authticket", "", "Auth ticket fot the file to download if you dont own it")
 	downloadCmd.PersistentFlags().String("lookuphash", "", "The remote lookuphash of the object retrieved from the list")
-	downloadCmd.Flags().BoolP("thumbnail", "t", false, "pass this option to download only the thumbnail")
+	downloadCmd.Flags().BoolP("thumbnail", "t", false, "(default false) pass this option to download only the thumbnail")
 
 	downloadCmd.Flags().Int64P("startblock", "s", 1,
 		"Pass this option to download from specific block number. It should not be less than 1")
 	downloadCmd.Flags().Int64P("endblock", "e", 0, "pass this option to download till specific block number")
 	downloadCmd.Flags().IntP("blockspermarker", "b", 10, "pass this option to download multiple blocks per marker")
-	downloadCmd.Flags().BoolP("verifydownload", "v", false, "pass this option to verify downloaded blocks")
+	downloadCmd.Flags().BoolP("verifydownload", "v", false, "(default false) pass this option to verify downloaded blocks")
 
-	downloadCmd.Flags().Bool("live", false, "start m3u8 downloader,and automatically generate media playlist(m3u8) on --localpath")
+	downloadCmd.Flags().Bool("live", false, "(default false) start m3u8 downloader,and automatically generate media playlist(m3u8) on --localpath")
 	downloadCmd.Flags().Int("delay", 5, "pass segment duration to generate media playlist(m3u8). only works with --live. default duration is 5s.")
 
 	downloadCmd.MarkFlagRequired("allocation")

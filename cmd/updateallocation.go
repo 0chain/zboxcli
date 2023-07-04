@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"log"
+	"os"
+	"sync"
 	"time"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
@@ -137,21 +139,53 @@ var updateAllocationCmd = &cobra.Command{
 			fileOptionParams.ForbidRename.Value = forbidRename
 		}
 
-		txnHash, _, err := sdk.UpdateAllocation(
-			size,
-			int64(expiry/time.Second),
-			allocID,
-			lock,
-			updateTerms,
-			addBlobberId,
-			removeBlobberId,
-			setThirdPartyExtendable,
-			&fileOptionParams,
-		)
-		if err != nil {
-			log.Fatal("Error updating allocation:", err)
+		if addBlobberId != "" {
+			allocationObj, err := sdk.GetAllocation(allocID)
+			if err != nil {
+				log.Fatal("Error updating allocation:couldnt_find_allocation: Couldn't find the allocation required for update")
+			}
+
+			wg := &sync.WaitGroup{}
+			statusBar := &StatusBar{wg: wg}
+			wg.Add(1)
+			allocUnderRepair = true
+			if txnHash, err := allocationObj.UpdateWithRepair(
+				size,
+				int64(expiry/time.Second),
+				lock,
+				updateTerms,
+				addBlobberId,
+				removeBlobberId,
+				setThirdPartyExtendable,
+				&fileOptionParams,
+				statusBar,
+			); err != nil {
+				allocUnderRepair = false
+				log.Fatal("Error updating allocation:", err)
+			} else {
+				log.Println("Allocation updated with txId : " + txnHash)
+			}
+			wg.Wait()
+			if !statusBar.success {
+				os.Exit(1)
+			}
+		} else {
+			txnHash, _, err := sdk.UpdateAllocation(
+				size,
+				int64(expiry/time.Second),
+				allocID,
+				lock,
+				updateTerms,
+				addBlobberId,
+				removeBlobberId,
+				setThirdPartyExtendable,
+				&fileOptionParams,
+			)
+			if err != nil {
+				log.Fatal("Error updating allocation:", err)
+			}
+			log.Println("Allocation updated with txId : " + txnHash)
 		}
-		log.Println("Allocation updated with txId : " + txnHash)
 	},
 }
 
@@ -172,18 +206,18 @@ func init() {
 	updateAllocationCmd.Flags().String("free_storage", "",
 		"json file containing marker for free storage")
 	updateAllocationCmd.Flags().Bool("update_terms", false,
-		"update blobber terms")
+		"(default false) update blobber terms")
 
 	updateAllocationCmd.MarkFlagRequired("allocation")
 
 	updateAllocationCmd.Flags().String("name", "", "allocation name")
 
-	updateAllocationCmd.Flags().Bool("set_third_party_extendable", false, "specify if the allocation can be extended by users other than the owner")
-	updateAllocationCmd.Flags().Bool("forbid_upload", false, "specify if users cannot upload to this allocation")
-	updateAllocationCmd.Flags().Bool("forbid_delete", false, "specify if the users cannot delete objects from this allocation")
-	updateAllocationCmd.Flags().Bool("forbid_update", false, "specify if the users cannot update objects in this allocation")
-	updateAllocationCmd.Flags().Bool("forbid_move", false, "specify if the users cannot move objects from this allocation")
-	updateAllocationCmd.Flags().Bool("forbid_copy", false, "specify if the users cannot copy object from this allocation")
-	updateAllocationCmd.Flags().Bool("forbid_rename", false, "specify if the users cannot rename objects in this allocation")
+	updateAllocationCmd.Flags().Bool("set_third_party_extendable", false, "(default false) specify if the allocation can be extended by users other than the owner")
+	updateAllocationCmd.Flags().Bool("forbid_upload", false, "(default false) specify if users cannot upload to this allocation")
+	updateAllocationCmd.Flags().Bool("forbid_delete", false, "(default false) specify if the users cannot delete objects from this allocation")
+	updateAllocationCmd.Flags().Bool("forbid_update", false, "(default false) specify if the users cannot update objects in this allocation")
+	updateAllocationCmd.Flags().Bool("forbid_move", false, "(default false) specify if the users cannot move objects from this allocation")
+	updateAllocationCmd.Flags().Bool("forbid_copy", false, "(default false) specify if the users cannot copy object from this allocation")
+	updateAllocationCmd.Flags().Bool("forbid_rename", false, "(default false) specify if the users cannot rename objects in this allocation")
 
 }
