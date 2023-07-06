@@ -119,11 +119,14 @@ var validatorUpdateCmd = &cobra.Command{
 			log.Fatal("error in 'validator_id' flag: ", err)
 		}
 
-		var validator *sdk.Validator
-		if validator, err = sdk.GetValidator(validatorID); err != nil {
+		// If validator with ID does not exist, throw.
+		var existingValidator *sdk.Validator
+		if existingValidator, err = sdk.GetValidator(validatorID); err != nil {
 			log.Fatal(err)
 		}
 
+		var updateValidator *sdk.UpdateValidator
+		updateValidator.ID = existingValidator.ID
 		if flags.Changed("min_stake") {
 			var minStake float64
 			if minStake, err = flags.GetFloat64("min_stake"); err != nil {
@@ -133,7 +136,7 @@ var validatorUpdateCmd = &cobra.Command{
 			if err != nil {
 				log.Fatal(err)
 			}
-			validator.MinStake = stake
+			updateValidator.MinStake = &stake
 		}
 
 		if flags.Changed("max_stake") {
@@ -145,7 +148,7 @@ var validatorUpdateCmd = &cobra.Command{
 			if err != nil {
 				log.Fatal(err)
 			}
-			validator.MaxStake = stake
+			updateValidator.MaxStake = &stake
 		}
 
 		if flags.Changed("num_delegates") {
@@ -153,7 +156,7 @@ var validatorUpdateCmd = &cobra.Command{
 			if nd, err = flags.GetInt("num_delegates"); err != nil {
 				log.Fatal(err)
 			}
-			validator.NumDelegates = nd
+			updateValidator.NumDelegates = &nd
 		}
 
 		if flags.Changed("service_charge") {
@@ -161,10 +164,10 @@ var validatorUpdateCmd = &cobra.Command{
 			if sc, err = flags.GetFloat64("service_charge"); err != nil {
 				log.Fatal(err)
 			}
-			validator.ServiceCharge = sc
+			updateValidator.ServiceCharge = &sc
 		}
 
-		if _, _, err = sdk.UpdateValidatorSettings(validator); err != nil {
+		if _, _, err = sdk.UpdateValidatorSettings(updateValidator); err != nil {
 			log.Fatal(err)
 		}
 
