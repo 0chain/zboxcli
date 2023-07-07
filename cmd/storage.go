@@ -171,7 +171,7 @@ var blobberUpdateCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		var updateBlobber *sdk.UpdateBlobber
+		updateBlobber := new(sdk.UpdateBlobber)
 		updateBlobber.ID = existingBlobber.ID
 		if flags.Changed("capacity") {
 			var capacity int64

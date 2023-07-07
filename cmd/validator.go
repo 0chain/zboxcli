@@ -125,7 +125,7 @@ var validatorUpdateCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		var updateValidator *sdk.UpdateValidator
+		updateValidator := new(sdk.UpdateValidator)
 		updateValidator.ID = existingValidator.ID
 		if flags.Changed("min_stake") {
 			var minStake float64
