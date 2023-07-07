@@ -186,7 +186,7 @@ func multiUpload(allocationObj *sdk.Allocation, workdir, jsonMultiUploadOptions 
 		thumbnailPaths[idx] = option.ThumbnailPath
 		remotePaths[idx] = option.RemotePath
 		chunkNumbers[idx] = option.ChunkNumber
-
+		encrypts[idx] = option.Encrypt
 	}
 
 	return allocationObj.StartMultiUpload(workdir, filePaths, fileNames, thumbnailPaths, encrypts, chunkNumbers, remotePaths, false, statusBar)
