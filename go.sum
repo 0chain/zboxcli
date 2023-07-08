@@ -40,10 +40,6 @@ github.com/0chain/common v0.0.6-0.20230127095721-8df4d1d72565 h1:z+DtCR8mBsjPnEs
 github.com/0chain/common v0.0.6-0.20230127095721-8df4d1d72565/go.mod h1:UyDC8Qyl5z9lGkCnf9RHJPMektnFX8XtCJZHXCCVj8E=
 github.com/0chain/errors v1.0.3 h1:QQZPFxTfnMcRdt32DXbzRQIfGWmBsKoEdszKQDb0rRM=
 github.com/0chain/errors v1.0.3/go.mod h1:xymD6nVgrbgttWwkpSCfLLEJbFO6iHGQwk/yeSuYkIc=
-github.com/0chain/gosdk v1.8.17-0.20230705214540-fa1c88522a26 h1:jiwTtpPFydSRrZ5nf+i7fHiJXHgzGEa43W6V0aJN6Vk=
-github.com/0chain/gosdk v1.8.17-0.20230705214540-fa1c88522a26/go.mod h1:GgqNjoHBO0JN9TcpDAC28/VE2VsZi4MDr4qGdzfWV+I=
-github.com/0chain/gosdk v1.8.17-0.20230706115733-ba6c0182e8c3 h1:LKBGXX/2IyefaW7sCv+SOGOGXhQROYUE0dhaFX1Wak8=
-github.com/0chain/gosdk v1.8.17-0.20230706115733-ba6c0182e8c3/go.mod h1:GgqNjoHBO0JN9TcpDAC28/VE2VsZi4MDr4qGdzfWV+I=
 github.com/0chain/gosdk v1.8.17-0.20230708121407-bed81c8a3e8c h1:JtbStp/1y+FD0GlWGaMVdaYwAiZa0hy5cG7jBLTjqXU=
 github.com/0chain/gosdk v1.8.17-0.20230708121407-bed81c8a3e8c/go.mod h1:GgqNjoHBO0JN9TcpDAC28/VE2VsZi4MDr4qGdzfWV+I=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
