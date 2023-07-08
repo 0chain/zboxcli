@@ -184,6 +184,7 @@ var blobberUpdateCmd = &cobra.Command{
 		}
 
 		terms := &sdk.UpdateTerms{}
+		var termsChanged bool
 		if flags.Changed("read_price") {
 			var rp float64
 			if rp, err = flags.GetFloat64("read_price"); err != nil {
@@ -194,6 +195,7 @@ var blobberUpdateCmd = &cobra.Command{
 				log.Fatal(err)
 			}
 			terms.ReadPrice = &readPriceBalance
+			termsChanged = true
 		}
 
 		if flags.Changed("write_price") {
@@ -206,6 +208,7 @@ var blobberUpdateCmd = &cobra.Command{
 				log.Fatal(err)
 			}
 			terms.WritePrice = &writePriceBalance
+			termsChanged = true
 		}
 
 		if flags.Changed("max_offer_duration") {
@@ -217,6 +220,7 @@ var blobberUpdateCmd = &cobra.Command{
 		}
 
 		stakePoolSettings := &blockchain.UpdateStakePoolSettings{}
+		var stakePoolSettingChanged bool
 		if flags.Changed("min_stake") {
 			var minStake float64
 			if minStake, err = flags.GetFloat64("min_stake"); err != nil {
@@ -227,6 +231,7 @@ var blobberUpdateCmd = &cobra.Command{
 				log.Fatal(err)
 			}
 			stakePoolSettings.MinStake = &stake
+			stakePoolSettingChanged = true
 		}
 
 		if flags.Changed("max_stake") {
@@ -239,6 +244,7 @@ var blobberUpdateCmd = &cobra.Command{
 				log.Fatal(err)
 			}
 			stakePoolSettings.MaxStake = &stake
+			stakePoolSettingChanged = true
 		}
 
 		if flags.Changed("num_delegates") {
@@ -247,6 +253,7 @@ var blobberUpdateCmd = &cobra.Command{
 				log.Fatal(err)
 			}
 			stakePoolSettings.NumDelegates = &nd
+			stakePoolSettingChanged = true
 		}
 
 		if flags.Changed("service_charge") {
@@ -255,6 +262,7 @@ var blobberUpdateCmd = &cobra.Command{
 				log.Fatal(err)
 			}
 			stakePoolSettings.ServiceCharge = &sc
+			stakePoolSettingChanged = true
 		}
 
 		if flags.Changed("url") {
@@ -273,8 +281,14 @@ var blobberUpdateCmd = &cobra.Command{
 			updateBlobber.NotAvailable = &ia
 		}
 
-		updateBlobber.Terms = terms
-		updateBlobber.StakePoolSettings = stakePoolSettings
+		if termsChanged {
+			updateBlobber.Terms = terms
+		}
+
+		if stakePoolSettingChanged {
+			updateBlobber.StakePoolSettings = stakePoolSettings
+		}
+
 		if _, _, err = sdk.UpdateBlobberSettings(updateBlobber); err != nil {
 			log.Fatal(err)
 		}
