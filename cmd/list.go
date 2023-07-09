@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -148,13 +147,13 @@ func printListDirResult(outJson bool, ref *sdk.ListResult) {
 		return
 	}
 
-	header := []string{"Type", "Name", "Path", "Size", "Actual Size", "Num Blocks", "Lookup Hash", "Is Encrypted"}
+	header := []string{"Type", "Name", "Path", "Size", "Num Blocks", "Actual Size", "Actual Num Blocks", "Lookup Hash", "Is Encrypted"}
 	data := make([][]string, len(ref.Children))
 	for idx, child := range ref.Children {
 		size := strconv.FormatInt(child.Size, 10)
-		if child.Type == fileref.DIRECTORY {
-			size = ""
-		}
+		numBlocks := strconv.FormatInt(child.NumBlocks, 10)
+		actualSize := strconv.FormatInt(child.ActualSize, 10)
+		actualNumBlocks := strconv.FormatInt(child.ActualNumBlocks, 10)
 		isEncrypted := ""
 		if child.Type == fileref.FILE {
 			if len(child.EncryptionKey) > 0 {
@@ -168,8 +167,9 @@ func printListDirResult(outJson bool, ref *sdk.ListResult) {
 			child.Name,
 			child.Path,
 			size,
-			fmt.Sprint(child.ActualSize),
-			strconv.FormatInt(child.NumBlocks, 10),
+			numBlocks,
+			actualSize,
+			actualNumBlocks,
 			child.LookupHash,
 			isEncrypted,
 		}
