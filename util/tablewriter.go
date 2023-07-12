@@ -6,7 +6,7 @@ import (
 	"github.com/olekukonko/tablewriter"
 )
 
-//WriteTable - Writes string data as a table
+// WriteTable - Writes string data as a table
 func WriteTable(writer io.Writer, header []string, footer []string, data [][]string) {
 	table := tablewriter.NewWriter(writer)
 	table.SetHeader(header)
