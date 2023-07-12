@@ -149,6 +149,7 @@ var updateAllocationCmd = &cobra.Command{
 			allocUnderRepair = true
 			if txnHash, err := allocationObj.UpdateWithRepair(
 				size,
+				extend,
 				lock,
 				updateTerms,
 				addBlobberId,
@@ -169,6 +170,7 @@ var updateAllocationCmd = &cobra.Command{
 		} else {
 			txnHash, _, err := sdk.UpdateAllocation(
 				size,
+				extend,
 				allocID,
 				lock,
 				updateTerms,
@@ -197,6 +199,8 @@ func init() {
 		"lock write pool with given number of tokens, required")
 	updateAllocationCmd.PersistentFlags().Int64("size", 0,
 		"adjust allocation size, bytes")
+	updateAllocationCmd.PersistentFlags().Bool("extend", false,
+		"(default false) adjust storage expiration time, duration")
 	updateAllocationCmd.Flags().String("free_storage", "",
 		"json file containing marker for free storage")
 	updateAllocationCmd.Flags().Bool("update_terms", false,
