@@ -243,8 +243,9 @@ var newallocationCmd = &cobra.Command{
 					Min: uint64(writePrice.Min),
 					Max: uint64(writePrice.Max),
 				},
-				Lock:       uint64(lock),
-				BlobberIds: preferred_blobbers,
+				Lock:              uint64(lock),
+				BlobberIds:        preferred_blobbers,
+				FileOptionsParams: &fileOptionParams,
 			}
 			allocationID, _, _, err = sdk.CreateAllocationWith(options)
 			if err != nil {
