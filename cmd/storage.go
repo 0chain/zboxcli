@@ -166,13 +166,12 @@ var blobberUpdateCmd = &cobra.Command{
 			log.Fatal("error in 'blobber_id' flag: ", err)
 		}
 
-		var existingBlobber *sdk.Blobber
-		if existingBlobber, err = sdk.GetBlobber(blobberID); err != nil {
+		if _, err = sdk.GetBlobber(blobberID); err != nil {
 			log.Fatal(err)
 		}
 
 		updateBlobber := new(sdk.UpdateBlobber)
-		updateBlobber.ID = existingBlobber.ID
+		updateBlobber.ID = common.Key(blobberID)
 		if flags.Changed("capacity") {
 			var capacity int64
 			if capacity, err = flags.GetInt64("capacity"); err != nil {

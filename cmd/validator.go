@@ -120,13 +120,12 @@ var validatorUpdateCmd = &cobra.Command{
 		}
 
 		// If validator with ID does not exist, throw.
-		var existingValidator *sdk.Validator
-		if existingValidator, err = sdk.GetValidator(validatorID); err != nil {
+		if _, err = sdk.GetValidator(validatorID); err != nil {
 			log.Fatal(err)
 		}
 
 		updateValidator := new(sdk.UpdateValidator)
-		updateValidator.ID = existingValidator.ID
+		updateValidator.ID = common.Key(validatorID)
 		if flags.Changed("min_stake") {
 			var minStake float64
 			if minStake, err = flags.GetFloat64("min_stake"); err != nil {
