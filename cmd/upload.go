@@ -29,13 +29,8 @@ var uploadCmd = &cobra.Command{
 			PrintError("Error: allocation flag is missing") // If not, we'll let the user know
 			os.Exit(1)                                      // and return
 		}
-		if !fflags.Changed("multiuploadjson") && !fflags.Changed("remotepath") {
-			PrintError("Error: remotepath flag is missing")
-			os.Exit(1)
-		}
-
-		if !fflags.Changed("localpath") {
-			PrintError("Error: localpath flag is missing")
+		if !(fflags.Changed("multiuploadjson") || (fflags.Changed("remotepath") && fflags.Changed("localpath"))) {
+			PrintError("Error: multiuploadjson or remotepath/localpath flag is missing")
 			os.Exit(1)
 		}
 
@@ -191,7 +186,7 @@ func multiUpload(allocationObj *sdk.Allocation, workdir, jsonMultiUploadOptions 
 		thumbnailPaths[idx] = option.ThumbnailPath
 		remotePaths[idx] = option.RemotePath
 		chunkNumbers[idx] = option.ChunkNumber
-
+		encrypts[idx] = option.Encrypt
 	}
 
 	return allocationObj.StartMultiUpload(workdir, filePaths, fileNames, thumbnailPaths, encrypts, chunkNumbers, remotePaths, false, statusBar)

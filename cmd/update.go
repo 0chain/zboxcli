@@ -76,12 +76,12 @@ var updateChunkNumber int
 func init() {
 	rootCmd.AddCommand(updateCmd)
 	updateCmd.PersistentFlags().String("allocation", "", "Allocation ID")
-	updateCmd.PersistentFlags().String("remotepath", "", "Remote path to upload")
-	updateCmd.PersistentFlags().String("localpath", "", "Local path of file to upload")
-	updateCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
-	updateCmd.Flags().Bool("encrypt", false, "(default false) pass this option to encrypt and upload the file")
+	updateCmd.PersistentFlags().String("remotepath", "", "Remote path of file to update")
+	updateCmd.PersistentFlags().String("localpath", "", "Local path of file to update")
+	updateCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to update")
+	updateCmd.Flags().Bool("encrypt", false, "(default false) pass this option to encrypt and update the file")
 
-	updateCmd.Flags().IntVarP(&updateChunkNumber, "chunknumber", "", 1, "how many chunks should be uploaded in a http request")
+	updateCmd.Flags().IntVarP(&updateChunkNumber, "chunknumber", "", 1, "how many chunks should be updated in a http request")
 
 	updateCmd.MarkFlagRequired("allocation")
 	updateCmd.MarkFlagRequired("localpath")

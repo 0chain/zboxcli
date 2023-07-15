@@ -84,9 +84,9 @@ var downloadCmd = &cobra.Command{
 		var errE error
 		var allocationObj *sdk.Allocation
 
-		var multiuploadJSON string
+		var multidownloadJSON string
 		if fflags.Changed("multidownloadjson") {
-			multiuploadJSON = cmd.Flag("multidownloadjson").Value.String()
+			multidownloadJSON = cmd.Flag("multidownloadjson").Value.String()
 		}
 
 		if len(authTicket) > 0 {
@@ -167,7 +167,7 @@ var downloadCmd = &cobra.Command{
 					errE = allocationObj.DownloadFile(localPath, remotePath, verifyDownload, statusBar, true)
 				}
 			}
-		} else if len(multiuploadJSON) > 0 {
+		} else if len(multidownloadJSON) > 0 {
 			if fflags.Changed("allocation") == false { // check if the flag "path" is set
 				PrintError("Error: allocation flag is missing") // If not, we'll let the user know
 				os.Exit(1)                                      // and return
@@ -179,7 +179,7 @@ var downloadCmd = &cobra.Command{
 				os.Exit(1)
 			}
 
-			errE = MultiDownload(allocationObj, multiuploadJSON, statusBar)
+			errE = MultiDownload(allocationObj, multidownloadJSON, statusBar)
 		}
 
 		if errE == nil {
@@ -223,11 +223,15 @@ func MultiDownload(a *sdk.Allocation, jsonMultiDownloadOptions string, statusBar
 		return err
 	}
 
+	lastOp := len(options) - 1
 	for i := 0; i <= len(options)-1; i++ {
+		if i > 0 {
+			statusBar.wg.Add(1)
+		}
 		if options[i].DownloadOp == 1 {
-			err = a.DownloadFile(options[i].LocalPath, options[i].RemotePath, true, statusBar, true)
+			err = a.DownloadFile(options[i].LocalPath, options[i].RemotePath, true, statusBar, i == lastOp)
 		} else {
-			err = a.DownloadThumbnail(options[i].LocalPath, options[i].RemotePath, true, statusBar, true)
+			err = a.DownloadThumbnail(options[i].LocalPath, options[i].RemotePath, false, statusBar, i == lastOp)
 		}
 		if err != nil {
 			return err
