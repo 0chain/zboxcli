@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"os"
 	"strings"
 	"sync"
@@ -19,7 +20,7 @@ var downloadCmd = &cobra.Command{
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags() // fflags is a *flag.FlagSet
-		if !(fflags.Changed("remotepath") || fflags.Changed("authticket")) {
+		if !(fflags.Changed("remotepath") || fflags.Changed("authticket") || fflags.Changed("multidownloadjson")) {
 			PrintError("Error: remotepath / authticket flag is missing")
 			os.Exit(1)
 		}
@@ -83,6 +84,11 @@ var downloadCmd = &cobra.Command{
 		var errE error
 		var allocationObj *sdk.Allocation
 
+		var multidownloadJSON string
+		if fflags.Changed("multidownloadjson") {
+			multidownloadJSON = cmd.Flag("multidownloadjson").Value.String()
+		}
+
 		if len(authTicket) > 0 {
 			at, err := sdk.InitAuthTicket(authTicket).Unmarshall()
 
@@ -144,8 +150,16 @@ var downloadCmd = &cobra.Command{
 				PrintError("Error fetching the allocation", err)
 				os.Exit(1)
 			}
+
+			var blobberID string
+			if fflags.Changed("blobber_id") {
+				blobberID = cmd.Flag("blobber_id").Value.String()
+			}
+
 			if thumbnail {
 				errE = allocationObj.DownloadThumbnail(localPath, remotePath, verifyDownload, statusBar, true)
+			} else if blobberID != "" {
+				errE = allocationObj.DownloadFromBlobber(blobberID, localPath, remotePath, statusBar)
 			} else {
 				if startBlock != 0 || endBlock != 0 {
 					errE = allocationObj.DownloadFileByBlock(localPath, remotePath, startBlock, endBlock, numBlocks, verifyDownload, statusBar, true)
@@ -153,6 +167,19 @@ var downloadCmd = &cobra.Command{
 					errE = allocationObj.DownloadFile(localPath, remotePath, verifyDownload, statusBar, true)
 				}
 			}
+		} else if len(multidownloadJSON) > 0 {
+			if fflags.Changed("allocation") == false { // check if the flag "path" is set
+				PrintError("Error: allocation flag is missing") // If not, we'll let the user know
+				os.Exit(1)                                      // and return
+			}
+			allocationID := cmd.Flag("allocation").Value.String()
+			allocationObj, err = sdk.GetAllocation(allocationID)
+			if err != nil {
+				PrintError("Error: getting allocation", err)
+				os.Exit(1)
+			}
+
+			errE = MultiDownload(allocationObj, multidownloadJSON, statusBar)
 		}
 
 		if errE == nil {
@@ -162,10 +189,56 @@ var downloadCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		if !statusBar.success {
-			os.Exit(1)
+			// status bar always returns failure when downloading from sigle blobber. Hence returning the zero exit status
+			if fflags.Changed("blobber_id") {
+				os.Exit(0)
+			} else {
+				os.Exit(1)
+			}
 		}
 
 	},
+}
+
+type MultiDownloadOption struct {
+	RemotePath       string `json:"remotePath"`
+	LocalPath        string `json:"localPath"`
+	DownloadOp       int    `json:"downloadOp"`
+	RemoteFileName   string `json:"remoteFileName,omitempty"`   //Required only for file download with auth ticket
+	RemoteLookupHash string `json:"remoteLookupHash,omitempty"` //Required only for file download with auth ticket
+}
+
+func MultiDownload(a *sdk.Allocation, jsonMultiDownloadOptions string, statusBar *StatusBar) error {
+	var options []MultiDownloadOption
+	file, err := os.Open(jsonMultiDownloadOptions)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	decoder := json.NewDecoder(file)
+
+	err = decoder.Decode(&options)
+	if err != nil {
+		return err
+	}
+
+	lastOp := len(options) - 1
+	for i := 0; i <= len(options)-1; i++ {
+		if i > 0 {
+			statusBar.wg.Add(1)
+		}
+		if options[i].DownloadOp == 1 {
+			err = a.DownloadFile(options[i].LocalPath, options[i].RemotePath, true, statusBar, i == lastOp)
+		} else {
+			err = a.DownloadThumbnail(options[i].LocalPath, options[i].RemotePath, false, statusBar, i == lastOp)
+		}
+		if err != nil {
+			return err
+		}
+	}
+
+	return err
 }
 
 func init() {
@@ -173,8 +246,10 @@ func init() {
 	downloadCmd.PersistentFlags().String("allocation", "", "Allocation ID")
 	downloadCmd.PersistentFlags().String("remotepath", "", "Remote path to download")
 	downloadCmd.PersistentFlags().String("localpath", "", "Local path of file to download")
+	downloadCmd.PersistentFlags().String("blobber_id", "", "to download the data shard present in that blobber")
 	downloadCmd.PersistentFlags().String("authticket", "", "Auth ticket fot the file to download if you dont own it")
 	downloadCmd.PersistentFlags().String("lookuphash", "", "The remote lookuphash of the object retrieved from the list")
+	downloadCmd.PersistentFlags().String("multidownloadjson", "", "A JSON file containing multi download options")
 	downloadCmd.Flags().BoolP("thumbnail", "t", false, "(default false) pass this option to download only the thumbnail")
 
 	downloadCmd.Flags().Int64P("startblock", "s", 1,

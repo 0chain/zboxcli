@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/0chain/gosdk/zboxcore/blockchain"
 	"log"
 	"time"
 
@@ -165,19 +166,24 @@ var blobberUpdateCmd = &cobra.Command{
 			log.Fatal("error in 'blobber_id' flag: ", err)
 		}
 
-		var blob *sdk.Blobber
-		if blob, err = sdk.GetBlobber(blobberID); err != nil {
+		if _, err = sdk.GetBlobber(blobberID); err != nil {
 			log.Fatal(err)
 		}
 
+		updateBlobber := new(sdk.UpdateBlobber)
+		updateBlobber.ID = common.Key(blobberID)
 		if flags.Changed("capacity") {
 			var capacity int64
 			if capacity, err = flags.GetInt64("capacity"); err != nil {
 				log.Fatal(err)
 			}
-			blob.Capacity = common.Size(capacity)
+
+			changedCapacity := common.Size(capacity)
+			updateBlobber.Capacity = &changedCapacity
 		}
 
+		terms := &sdk.UpdateTerms{}
+		var termsChanged bool
 		if flags.Changed("read_price") {
 			var rp float64
 			if rp, err = flags.GetFloat64("read_price"); err != nil {
@@ -187,7 +193,8 @@ var blobberUpdateCmd = &cobra.Command{
 			if err != nil {
 				log.Fatal(err)
 			}
-			blob.Terms.ReadPrice = readPriceBalance
+			terms.ReadPrice = &readPriceBalance
+			termsChanged = true
 		}
 
 		if flags.Changed("write_price") {
@@ -199,7 +206,8 @@ var blobberUpdateCmd = &cobra.Command{
 			if err != nil {
 				log.Fatal(err)
 			}
-			blob.Terms.WritePrice = writePriceBalance
+			terms.WritePrice = &writePriceBalance
+			termsChanged = true
 		}
 
 		if flags.Changed("max_offer_duration") {
@@ -207,9 +215,11 @@ var blobberUpdateCmd = &cobra.Command{
 			if mod, err = flags.GetDuration("max_offer_duration"); err != nil {
 				log.Fatal(err)
 			}
-			blob.Terms.MaxOfferDuration = mod
+			terms.MaxOfferDuration = &mod
 		}
 
+		stakePoolSettings := &blockchain.UpdateStakePoolSettings{}
+		var stakePoolSettingChanged bool
 		if flags.Changed("min_stake") {
 			var minStake float64
 			if minStake, err = flags.GetFloat64("min_stake"); err != nil {
@@ -219,7 +229,8 @@ var blobberUpdateCmd = &cobra.Command{
 			if err != nil {
 				log.Fatal(err)
 			}
-			blob.StakePoolSettings.MinStake = stake
+			stakePoolSettings.MinStake = &stake
+			stakePoolSettingChanged = true
 		}
 
 		if flags.Changed("max_stake") {
@@ -231,7 +242,8 @@ var blobberUpdateCmd = &cobra.Command{
 			if err != nil {
 				log.Fatal(err)
 			}
-			blob.StakePoolSettings.MaxStake = stake
+			stakePoolSettings.MaxStake = &stake
+			stakePoolSettingChanged = true
 		}
 
 		if flags.Changed("num_delegates") {
@@ -239,7 +251,8 @@ var blobberUpdateCmd = &cobra.Command{
 			if nd, err = flags.GetInt("num_delegates"); err != nil {
 				log.Fatal(err)
 			}
-			blob.StakePoolSettings.NumDelegates = nd
+			stakePoolSettings.NumDelegates = &nd
+			stakePoolSettingChanged = true
 		}
 
 		if flags.Changed("service_charge") {
@@ -247,7 +260,8 @@ var blobberUpdateCmd = &cobra.Command{
 			if sc, err = flags.GetFloat64("service_charge"); err != nil {
 				log.Fatal(err)
 			}
-			blob.StakePoolSettings.ServiceCharge = sc
+			stakePoolSettings.ServiceCharge = &sc
+			stakePoolSettingChanged = true
 		}
 
 		if flags.Changed("url") {
@@ -255,7 +269,7 @@ var blobberUpdateCmd = &cobra.Command{
 			if url, err = flags.GetString("url"); err != nil {
 				log.Fatal(err)
 			}
-			blob.BaseURL = url
+			updateBlobber.BaseURL = &url
 		}
 
 		if flags.Changed("not_available") {
@@ -263,14 +277,21 @@ var blobberUpdateCmd = &cobra.Command{
 			if ia, err = flags.GetBool("not_available"); err != nil {
 				log.Fatal(err)
 			}
-			blob.NotAvailable = ia
+			updateBlobber.NotAvailable = &ia
 		}
 
-		if _, _, err = sdk.UpdateBlobberSettings(blob); err != nil {
+		if termsChanged {
+			updateBlobber.Terms = terms
+		}
+
+		if stakePoolSettingChanged {
+			updateBlobber.StakePoolSettings = stakePoolSettings
+		}
+
+		if _, _, err = sdk.UpdateBlobberSettings(updateBlobber); err != nil {
 			log.Fatal(err)
 		}
 		fmt.Println("blobber settings updated successfully")
-
 	},
 }
 
