@@ -1,14 +1,12 @@
 package cmd
 
 import (
-	"log"
-	"os"
-	"sync"
-	"time"
-
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
 	"github.com/spf13/cobra"
+	"log"
+	"os"
+	"sync"
 )
 
 // updateAllocationCmd used to change allocation size and expiration
@@ -81,9 +79,9 @@ var updateAllocationCmd = &cobra.Command{
 			log.Fatal("invalid 'size' flag: ", err)
 		}
 
-		expiry, err := flags.GetDuration("expiry")
+		extend, err := flags.GetBool("extend")
 		if err != nil {
-			log.Fatal("invalid 'expiry' flag: ", err)
+			log.Fatal("invalid 'extend' flag: ", err)
 		}
 
 		setThirdPartyExtendable, _ := cmd.Flags().GetBool("set_third_party_extendable")
@@ -151,7 +149,7 @@ var updateAllocationCmd = &cobra.Command{
 			allocUnderRepair = true
 			if txnHash, err := allocationObj.UpdateWithRepair(
 				size,
-				int64(expiry/time.Second),
+				extend,
 				lock,
 				updateTerms,
 				addBlobberId,
@@ -172,7 +170,7 @@ var updateAllocationCmd = &cobra.Command{
 		} else {
 			txnHash, _, err := sdk.UpdateAllocation(
 				size,
-				int64(expiry/time.Second),
+				extend,
 				allocID,
 				lock,
 				updateTerms,
@@ -201,8 +199,8 @@ func init() {
 		"lock write pool with given number of tokens, required")
 	updateAllocationCmd.PersistentFlags().Int64("size", 0,
 		"adjust allocation size, bytes")
-	updateAllocationCmd.PersistentFlags().Duration("expiry", 0,
-		"adjust storage expiration time, duration")
+	updateAllocationCmd.PersistentFlags().Bool("extend", false,
+		"(default false) adjust storage expiration time, duration")
 	updateAllocationCmd.Flags().String("free_storage", "",
 		"json file containing marker for free storage")
 	updateAllocationCmd.Flags().Bool("update_terms", false,
