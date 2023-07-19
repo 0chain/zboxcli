@@ -9,7 +9,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/spf13/pflag"
 
@@ -151,24 +150,8 @@ var newallocationCmd = &cobra.Command{
 			}
 		}
 
-		config, err := sdk.GetStorageSCConfig()
-		if err != nil {
-			log.Fatal("Error fetching config: ", err)
-		}
-		t := config.Fields["time_unit"]
-		timeunitStr, ok := t.(string)
-		if !ok {
-			log.Fatal("bad time_unit type")
-		}
-		timeunit, err := time.ParseDuration(timeunitStr)
-		if err != nil {
-			log.Fatal("bad time_unit value")
-		}
-
-		expire := timeunit
-
 		if costOnly {
-			minCost, err := sdk.GetAllocationMinLock(*datashards, *parityshards, *size, expire.Milliseconds(), readPrice, writePrice)
+			minCost, err := sdk.GetAllocationMinLock(*datashards, *parityshards, *size, readPrice, writePrice)
 			if err != nil {
 				log.Fatal("Error fetching cost: ", err)
 			}
