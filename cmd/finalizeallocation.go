@@ -85,7 +85,7 @@ allocation flow.`,
 
 		txnHash, _, err := sdk.CancelAllocation(allocID)
 		if err != nil {
-			log.Fatal("Error creating allocation:", err)
+			log.Fatal("Error canceling allocation:", err)
 		}
 		log.Println("Allocation canceled with txId : " + txnHash)
 	},

@@ -11,8 +11,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/0chain/gosdk/zboxcore/blockchain"
-
 	"github.com/spf13/pflag"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
@@ -25,6 +23,7 @@ var (
 	datashards, parityshards *int
 	size                     *int64
 	allocationFileName       *string
+	preferred_blobbers       []string
 )
 
 func getPriceRange(val string) (pr sdk.PriceRange, err error) {
@@ -109,6 +108,14 @@ var newallocationCmd = &cobra.Command{
 			readPrice  = sdk.PriceRange{Min: 0, Max: maxPrice}
 			writePrice = sdk.PriceRange{Min: 0, Max: maxPrice}
 		)
+
+		if flags.Changed("preferred_blobbers") {
+			b, err := flags.GetString("preferred_blobbers")
+			if err != nil {
+				log.Fatal("invalid read_price value: ", err)
+			}
+			preferred_blobbers = strings.Split(b, ",")
+		}
 
 		if flags.Changed("read_price") {
 			rps, err := flags.GetString("read_price")
@@ -223,8 +230,25 @@ var newallocationCmd = &cobra.Command{
 
 		var allocationID string
 		if len(owner) == 0 {
-			allocationID, _, _, err = sdk.CreateAllocation(*datashards, *parityshards,
-				*size, expireAt, readPrice, writePrice, lock, thirdPartyExtendable, &fileOptionParams)
+			options := sdk.CreateAllocationOptions{
+				DataShards:   *datashards,
+				ParityShards: *parityshards,
+				Size:         *size,
+				Expiry:       expireAt,
+				ReadPrice: sdk.PriceRange{
+					Min: uint64(readPrice.Min),
+					Max: uint64(readPrice.Max),
+				},
+				WritePrice: sdk.PriceRange{
+					Min: uint64(writePrice.Min),
+					Max: uint64(writePrice.Max),
+				},
+				Lock:                 uint64(lock),
+				BlobberIds:           preferred_blobbers,
+				FileOptionsParams:    &fileOptionParams,
+				ThirdPartyExtendable: thirdPartyExtendable,
+			}
+			allocationID, _, _, err = sdk.CreateAllocationWith(options)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
@@ -240,7 +264,7 @@ var newallocationCmd = &cobra.Command{
 			}
 
 			allocationID, _, _, err = sdk.CreateAllocationForOwner(owner, ownerPublicKey, *datashards, *parityshards,
-				*size, expireAt, readPrice, writePrice, lock, blockchain.GetPreferredBlobbers(), thirdPartyExtendable, &fileOptionParams)
+				*size, expireAt, readPrice, writePrice, lock, preferred_blobbers, thirdPartyExtendable, &fileOptionParams)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
@@ -281,7 +305,7 @@ func init() {
 	rootCmd.AddCommand(newallocationCmd)
 	datashards = newallocationCmd.PersistentFlags().Int("data", 2, "the number of blobbers to be used as data shards")
 	parityshards = newallocationCmd.PersistentFlags().Int("parity", 2, "the number of blobber to be used as parity shards")
-	size = newallocationCmd.PersistentFlags().Int64("size", 2147483648, "the size of the allocation")
+	size = newallocationCmd.PersistentFlags().Int64("size", 2*GB, "the size of the allocation")
 	allocationFileName = newallocationCmd.PersistentFlags().String("allocationFileName", "allocation.txt", "name of the file in configDir to store the generated allocationID")
 	newallocationCmd.PersistentFlags().
 		Float64("lock", 0.0,
@@ -310,6 +334,7 @@ func init() {
 		"public key of owner, user when creating an allocation for somone else")
 
 	newallocationCmd.Flags().String("name", "", "allocation name")
+	newallocationCmd.Flags().String("preferred_blobbers", "", "coma seperated list of preferred blobbers")
 
 	newallocationCmd.Flags().Bool("third_party_extendable", false, "(default false) specify if the allocation can be extended by users other than the owner")
 	newallocationCmd.Flags().Bool("forbid_upload", false, "(default false) specify if users cannot upload to this allocation")
@@ -332,5 +357,4 @@ func storeAllocation(allocationID string) {
 	defer file.Close()
 	//Only one allocation ID per file.
 	fmt.Fprint(file, allocationID)
-
 }

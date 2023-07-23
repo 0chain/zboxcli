@@ -240,7 +240,7 @@ var syncCmd = &cobra.Command{
 				wg.Add(1)
 
 				go func(lPath string, f sdk.FileDiff, verifyDownload bool, statusBar *StatusBar) {
-					err = allocationObj.DownloadFile(lPath, f.Path, verifyDownload, statusBar)
+					err = allocationObj.DownloadFile(lPath, f.Path, verifyDownload, statusBar, true)
 				}(lPath, f, verifyDownload, statusBar)
 
 			case sdk.Upload:
