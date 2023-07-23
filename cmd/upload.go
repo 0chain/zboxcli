@@ -154,6 +154,7 @@ type MultiUploadOption struct {
 	ThumbnailPath string `json:"thumbnailPath,omitempty"`
 	Encrypt       bool   `json:"encrypt,omitempty"`
 	ChunkNumber   int    `json:"chunkNumber,omitempty"`
+	IsUpdate      bool   `json:"isUpdate,omitempty"`
 }
 
 func multiUpload(allocationObj *sdk.Allocation, workdir, jsonMultiUploadOptions string, statusBar *StatusBar) error {
@@ -179,6 +180,7 @@ func multiUpload(allocationObj *sdk.Allocation, workdir, jsonMultiUploadOptions 
 	thumbnailPaths := make([]string, totalUploads)
 	chunkNumbers := make([]int, totalUploads)
 	encrypts := make([]bool, totalUploads)
+	isUpdates := make([]bool, totalUploads)
 	for idx, option := range options {
 		statusBar.wg.Add(1)
 		filePaths[idx] = option.FilePath
@@ -187,9 +189,10 @@ func multiUpload(allocationObj *sdk.Allocation, workdir, jsonMultiUploadOptions 
 		remotePaths[idx] = option.RemotePath
 		chunkNumbers[idx] = option.ChunkNumber
 		encrypts[idx] = option.Encrypt
+		isUpdates[idx] = option.IsUpdate
 	}
 
-	return allocationObj.StartMultiUpload(workdir, filePaths, fileNames, thumbnailPaths, encrypts, chunkNumbers, remotePaths, false, statusBar)
+	return allocationObj.StartMultiUpload(workdir, filePaths, fileNames, thumbnailPaths, encrypts, chunkNumbers, remotePaths, isUpdates, statusBar)
 }
 
 func init() {
