@@ -9,7 +9,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/spf13/pflag"
 
@@ -151,15 +150,8 @@ var newallocationCmd = &cobra.Command{
 			}
 		}
 
-		var expire time.Duration
-		if expire, err = flags.GetDuration("expire"); err != nil {
-			log.Fatal("invalid 'expire' flag: ", err)
-		}
-
-		var expireAt = time.Now().Add(expire).Unix()
-
 		if costOnly {
-			minCost, err := sdk.GetAllocationMinLock(*datashards, *parityshards, *size, expire.Milliseconds(), readPrice, writePrice)
+			minCost, err := sdk.GetAllocationMinLock(*datashards, *parityshards, *size, readPrice, writePrice)
 			if err != nil {
 				log.Fatal("Error fetching cost: ", err)
 			}
@@ -234,7 +226,6 @@ var newallocationCmd = &cobra.Command{
 				DataShards:   *datashards,
 				ParityShards: *parityshards,
 				Size:         *size,
-				Expiry:       expireAt,
 				ReadPrice: sdk.PriceRange{
 					Min: uint64(readPrice.Min),
 					Max: uint64(readPrice.Max),
@@ -264,7 +255,7 @@ var newallocationCmd = &cobra.Command{
 			}
 
 			allocationID, _, _, err = sdk.CreateAllocationForOwner(owner, ownerPublicKey, *datashards, *parityshards,
-				*size, expireAt, readPrice, writePrice, lock, preferred_blobbers, thirdPartyExtendable, &fileOptionParams)
+				*size, readPrice, writePrice, lock, preferred_blobbers, thirdPartyExtendable, &fileOptionParams)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
@@ -316,8 +307,6 @@ func init() {
 	newallocationCmd.PersistentFlags().
 		String("write_price", "",
 			"select blobbers by provided write price range, use form 1.5-2.5, default is [0; inf)")
-	newallocationCmd.PersistentFlags().
-		Duration("expire", 720*time.Hour, "duration to allocation expiration")
 
 	newallocationCmd.Flags().
 		Bool("usd", false,
