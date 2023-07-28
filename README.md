@@ -1,7 +1,6 @@
 # zbox - a CLI for Züs dStorage
 
 zbox is a command line interface (CLI) tool to understand the capabilities of Züs dStorage and prototype your app. The utility is built using Züs [GoSDK](https://github.com/0chain/gosdk) . 
-
 ![Storage](https://user-images.githubusercontent.com/65766301/120052450-0ab66700-c043-11eb-91ab-1f7aa69e133a.png)
 
 - [zbox - a CLI for Züs dStorage](#zbox---a-cli-for-züs-dstorage)
@@ -10,14 +9,16 @@ zbox is a command line interface (CLI) tool to understand the capabilities of Z�
     - [Install on Linux Windows Mac](#build-instructions-for-linux-windows-mac)
     - [Other Platform Builds](#other-platform-builds)
     - [Use custom miner/sharder](#use-custom-minersharder)
-  - [Running zbox](#running-zbox)
-    - [Global Flags](#global-flags)
+    - [Running zbox](#running-zbox)
+  - [Global Flags](#global-flags)
   - [Commands](#commands)
     - [Creating and Managing Allocations](#creating-and-managing-allocations)
       - [Create new allocation](#create-new-allocation)
         - [Free storage allocation](#free-storage-allocation)
       - [Update allocation](#update-allocation)
-      - [Forbid allocation](#forbid-allocation)
+        - [Forbid allocation](#forbid-allocation)
+        - [Add Blobber](#add-blobber)
+        - [Replace Blobber](#replace-blobber)
       - [Cancel allocation](#cancel-allocation)
       - [Finalise allocation](#finalise-allocation)
       - [Get Allocation Info](#get)
@@ -33,9 +34,14 @@ zbox is a command line interface (CLI) tool to understand the capabilities of Z�
 
     - [Uploading and Managing files](#uploading-and-managing-files)
       - [Upload](#upload)
+        - [Upload file with no encryption](#upload-file-with-no-encryption)
+        - [Upload file with encryption](#upload-file-with-encryption)
+        - [Upload file with web streaming](#upload-file-with-web-streaming)
+        - [Mutli Upload](#multi-upload)
       - [Stream](#stream)
       - [Feed](#feed)
       - [Download](#download)
+        - [Mutli Download](#multi-download)
       - [Update](#update)
       - [Delete](#delete)
       - [Share](#share)
@@ -404,7 +410,7 @@ Output:
 Allocation updated with txId : fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
 ```
 
-#### Forbid Allocation
+##### Forbid Allocation
 
 There are various operations which you can forbid on an allocation. Forbid flag works with [update allocation](#update-allocation) command. Check its working first.
 Here are the operations:
@@ -417,7 +423,6 @@ Here are the operations:
 | --forbid_move   | specify if the users cannot move objects from this allocation |
 | --forbid_rename | specify if the users cannot rename objects in this allocation |
 | --forbid_upload | specify if users cannot upload to this allocation            |
-
 
 Here is a sample command for --forbid_upload .Other parameters can be done the same way.
 
@@ -433,6 +438,56 @@ To test functionality try uploading file to allocation. You should get the follo
 Upload failed. this options for this file is not permitted for this allocation: 
 file_option_not_permitted.
 ```
+##### Add Blobber
+
+Use `add_blobber` flag with [update allocation](#update-allocation) command to add blobber to allocation.
+
+Here are the necessary parameters for adding blobber.
+
+| Parameter     | Description                                                 | Valid Values |
+| ------------- | ----------------------------------------------------------- | ------------ |
+| --allocation  | Provide Allocation ID for adding blobber to allocation      | string       |
+| --add_blobber | Provide Blobber ID to add. Can be fetched using [List blobbers](#list-blobbers). | string       |
+
+Sample Command:
+
+```
+./zbox updateallocation --allocation $ALLOC --add_blobber 98f14362f075caf467653044cf046eb9e8a5dfee88dc8b78cad1891748245003
+```
+
+Sample Response:
+
+```
+Allocation updated with txId : d853a82907453d37ed978b9fc1a55663be99bb351d18cca31068c0dc95566edd
+```
+
+**Note:** Files will automatically be uploaded,splitted and stored on added blobber. 
+**Note:** An allocation is already hosted on a set of blobbers. To find a blobber that is available to add you should exclude the current set of blobbers hosting your allocation by checking them via [Get Allocation Info](#get)command.
+
+##### Replace Blobber
+
+Use `add_blobber` and `remove_blobber` flag with [update allocation](#update-allocation) command to replace a blobber hosting an allocation .
+
+| Parameter        | Description                                                  | Valid Values |
+| ---------------- | ------------------------------------------------------------ | ------------ |
+| --allocation     | Provide Allocation ID for replacing blobber                  | string       |
+| --add_blobber    | Provide new Blobber ID . Can be fetched using [List blobbers](#list-blobbers). | string       |
+| --remove_blobber | Provide ID for the blobber which has to remove               | string       |
+
+Sample Command:
+
+```
+./zbox updateallocation --allocation $ALLOC --add_blobber 8d19a8fd7147279d1dfdadd7e3ceecaf91c63ad940dae78731e7a64b104441a6 --remove_blobber 06166f3dfd72a90cd0b51f4bd7520d4434552fc72880039b1ee1e8fe4b3cd7ea
+```
+
+Sample Response:
+
+```
+allocation updated successfully
+```
+**Note:**To find a blobber that can be replaced you should check the current set of blobbers hosting your allocation with [Get Allocation Info](#get)command.
+
+
 #### Cancel allocation
 
 `alloc-cancel` immediately return all remaining tokens from challenge pool back to the
@@ -775,9 +830,9 @@ The user must be the owner of the allocation.You can request the file be encrypt
 
 </details>
 
-Example
 
-**Upload file with no encryption**
+
+#####Upload file with no encryption
 
 ```
 ./zbox upload --localpath /absolute-path-to-local-file/hello.txt --remotepath /myfiles/hello.txt --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
@@ -790,7 +845,7 @@ Response:
 Status completed callback. Type = application/octet-stream. Name = hello.txt
 ```
 
-**Upload file with encryption**
+#####Upload file with encryption
 
 Use upload command with optional encrypt parameter to upload a file in encrypted
 format. This can be downloaded as normal from same wallet/allocation or utilize
@@ -807,7 +862,7 @@ Response:
 Status completed callback. Type = application/octet-stream. Name = sensitivedata.txt
 ```
 
-**Upload file with web-streaming**
+#####Upload file with web-streaming
 
 Use upload command with optional web-streaming parameter to upload a video file in fragmented
 mp4 format to support streaming from browser.
@@ -822,7 +877,50 @@ Response:
 15691733 / 15691733 [=====================================================================================] 100.00% 32s
 Status completed callback. Type = video/fmp4. Name = raw.samplevideo.mp4
 ```
+##### Multi Upload 
 
+Use `./zbox upload ` to upload multiple files to allocation at once via json file.
+
+Here are the parameters for multi-upload:
+
+| Parameter         | Description                                                | Valid Values |
+| ----------------- | ---------------------------------------------------------- | ------------ |
+| --allocation      | Provide Allocation ID for uploading multiple files         | string       |
+| --multiuploadjson | Path to  JSON file containing details for files to upload. | string       |
+
+Here is a sample json file for Multi Upload:
+
+```
+[
+  {
+    "remotePath": "/raw.file_example_MP4_1920_18MG.mp4",
+    "localPath": "./a.mp4",
+    "downloadOp": 1
+  },
+  {
+    "remotePath": "/a.mp4",
+    "localPath": "./b.mp4",
+    "downloadOp": 1
+  },
+  {
+    "remotePath": "/raw.file_example_MP4_1920_18MG.mp4",
+    "localPath": "./c.mp4",
+    "downloadOp": 1
+  }
+]
+```
+
+`remotepath`: Remote path to upload file to on Allocation.
+
+`localpath`: Local path of the file to upload
+
+`downloadOp`: Can pass two values 1 or 2. 1 is for downloading the actual file, 2 is for downloading the thumbnail only.
+
+Sample Command:
+
+```
+./zbox upload --allocation $alloc --multiuploadjson ./multi-upload.json
+```
 #### Stream
 
 Use `stream` to capture video and audio streaming form local devices, and upload
@@ -960,6 +1058,53 @@ Note: You can download by using only 1 on the below combination:
 - `--authticket`
 
 Downloaded file will be in the location specified by the `localpath` argument.
+
+##### Multi Download
+
+Use `./zbox download ` to download multiple files to local system at once via json file.
+
+Here are the parameters for multi-download:
+
+| Parameter           | Description                                                  | Valid Values |
+| ------------------- | ------------------------------------------------------------ | ------------ |
+| --allocation        | Provide Allocation ID for downloading multiple files from allocation | string       |
+| --multidownloadjson | Path to  JSON file containing details for files to download. | string       |
+
+Here is a sample json file for multi download:
+
+```
+[
+  {
+    "remotePath": "/raw.file_example_MP4_1920_18MG.mp4",
+    "localPath": "./a.mp4",
+    "downloadOp": 1
+  },
+  {
+    "remotePath": "/a.mp4",
+    "localPath": "./b.mp4",
+    "downloadOp": 1
+  },
+  {
+    "remotePath": "/raw.file_example_MP4_1920_18MG.mp4",
+    "localPath": "./c.mp4",
+    "downloadOp": 1
+  }
+]
+```
+`remotepath`: Remote path of downloaded file.
+
+`localpath`: Local path where file has to be downloaded.
+
+`downloadOp`: Can pass two values 1 or 2. 1 is for downloading the actual file, 2 is for downloading the thumbnail only.
+
+Sample Command:
+
+```
+zbox download --multidownloadjson ./multi-download.json --allocation $ALLOC
+```
+
+
+
 
 #### Update
 
