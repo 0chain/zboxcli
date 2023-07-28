@@ -2,7 +2,7 @@
 
 zbox is a command line interface (CLI) tool to understand the capabilities of Züs dStorage and prototype your app. The utility is built using Züs [GoSDK](https://github.com/0chain/gosdk) . 
 
-![Storage](https://user-images.githubusercontent.com/65766301/120052450-0ab66700-c043-11eb-91ab-1f7aa69e133a.png)
+![zboxcli architecture diagram](https://github.com/0chain/zboxcli/assets/65766301/5aeadfaf-e259-4524-bf31-1d1a2f39c563)
 
 - [zbox - a CLI for Züs dStorage](#zbox---a-cli-for-züs-dstorage)
   - [Züs Overview](#züs-overview)
