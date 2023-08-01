@@ -37,11 +37,11 @@ zbox is a command line interface (CLI) tool to understand the capabilities of ZÃ
         - [Upload file with no encryption](#upload-file-with-no-encryption)
         - [Upload file with encryption](#upload-file-with-encryption)
         - [Upload file with web streaming](#upload-file-with-web-streaming)
-        - [Mutli Upload](#multi-upload)
+        - [Multi Upload](#multi-upload)
       - [Stream](#stream)
       - [Feed](#feed)
       - [Download](#download)
-        - [Mutli Download](#multi-download)
+        - [Multi Download](#multi-download)
       - [Update](#update)
       - [Delete](#delete)
       - [Share](#share)
@@ -440,7 +440,7 @@ file_option_not_permitted.
 ```
 ##### Add Blobber
 
-Use `add_blobber` flag with [update allocation](#update-allocation) command to add blobber to allocation.
+Use `add_blobber` flag with [update allocation](#update-allocation) command to add blobber to allocation.The new blobber will be added as a parity blobber.For more details [check how a file is stored on blobbers](https://docs.zus.network/concepts/store).
 
 Here are the necessary parameters for adding blobber.
 
@@ -465,6 +465,8 @@ Allocation updated with txId : d853a82907453d37ed978b9fc1a55663be99bb351d18cca31
 **Note:** An allocation is already hosted on a set of blobbers. To find a blobber that is available to add you should exclude the current set of blobbers hosting your allocation by checking them via [Get Allocation Info](#get)command.
 
 ##### Replace Blobber
+
+Sometimes, a blobber might be mallfunctioning or faulty or the blobber might be slow becuase its far from your geolocation, in such cases you might have to replace the blobber with a new one.
 
 Use `add_blobber` and `remove_blobber` flag with [update allocation](#update-allocation) command to replace a blobber hosting an allocation .
 
