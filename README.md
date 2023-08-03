@@ -219,7 +219,7 @@ Global Flags are parameters in zbox that can be used with any command to overrid
 | --configDir string         | Specify a zbox configuration directory (default is $HOME/.zcn)                                                 | zbox [command] --configDir /$HOME/.zcn2          |
 | -h, --help                 | Gives more information about a particular command.                                                             | zbox [command] --help                            |
 | --network string           | Specify a network file to overwrite the network details(default is [$HOME/.zcn/network.yaml](#zcnnetworkyaml)) | zbox [command] --network network1.yaml           |
-| --verbose                  | Provides additional details as to what the particular command is doing.                                        | zbox [command] --verbose                         |
+| --verbose                  | Provides additional details as to what the particular command is doing.                                        | zbox [command] --silent                         |
 | --wallet string            | Specify a wallet file or 2nd wallet (default is $HOME/.zcn/wallet.json)                                        | zbox [command] --wallet wallet2.json             |
 | --wallet_client_id string  | Specify a wallet client id (By default client_id specified in $HOME/.zcn/wallet.json is used)                  | zbox [command] --wallet_client_id <client_id>    |
 | --wallet_client_key string | Specify a wallet client_key (By default client_key specified in $HOME/.zcn/wallet.json is used)                | zbox [command] --wallet_client_key < client_key> |
