@@ -953,28 +953,6 @@ Use `feed` command to automatically download segment files from remote live feed
 - encode them into new segment files with `--delay` and `--ffmpeg-args`, and upload.
 - please use `youtube-dl -F https://www.youtube.com/watch?v=pC5mGB5enkw` to list formats of video (see below).
 
-The user must be the owner of the allocation.You can request the file be encrypted before upload, and can send thumbnails with the file.
-
-| Parameter       | Required | Description                                                           | Default           | Valid values                                                                       |
-| --------------- | -------- | --------------------------------------------------------------------- | ----------------- | ---------------------------------------------------------------------------------- |
-| allocation      | yes      | allocation id, sender must be allocation owner                        |                   | string                                                                             |
-| encrypt         | no       | encrypt file before upload                                            | false             | boolean                                                                            |
-| localpath       | yes      | local path of segment files to download, generate and upload          |                   | file path                                                                          |
-| remotepath      | yes      | remote path to upload file to, use to access file later               |                   | string                                                                             |
-| thumbnailpath   | no       | local path of thumbnaSil                                              |                   | file path                                                                          |
-| chunknumber     | no       | how many chunks should be uploaded in a http request                  | 1                 | int                                                                                |
-| delay           | no       | set segment duration to seconds.                                      | 5                 | int                                                                                |
-| feed            | no       | set remote live feed to url.                                          | false             | url                                                                                |
-| downloader-args | no       | pass args to youtube-dl to download video. default is \"-q -f best\". | -q -f best        | [youtube-dl](https://github.com/ytdl-org/youtube-dl/blob/master/README.md#options) |
-| ffmpeg-args     | no       | pass args to ffmpeg to build segments.                                | -loglevel warning | [ffmpeg](https://www.ffmpeg.org/ffmpeg.html)                                       |
-
-<details>
-  <summary>feed</summary>
-
-![image](https://github.com/0chain/blobber/wiki/uml/usecase/live_upload_sync.png)
-
-</details>
-
 ```
 [youtube] pC5mGB5enkw: Downloading webpage
 [info] Available formats for pC5mGB5enkw:
@@ -1003,9 +981,32 @@ format code  extension  resolution note
 
 `--downloader-args "-f 22"` dowloads video with `22           mp4        1280x676   720p 2117k , avc1.64001F, 30fps, mp4a.40.2 (44100Hz) (best)`
 
+The user must be the owner of the allocation.You can request the file to be encrypted before upload, and can send thumbnails with the file.
+
+| Parameter       | Required | Description                                                           | Default           | Valid values                                                                       |
+| --------------- | -------- | --------------------------------------------------------------------- | ----------------- | ---------------------------------------------------------------------------------- |
+| allocation      | yes      | allocation id, sender must be allocation owner                        |                   | string                                                                             |
+| encrypt         | no       | encrypt file before upload                                            | false             | boolean                                                                            |
+| localpath       | yes      | local path of segment files to download, generate and upload          |                   | file path                                                                          |
+| remotepath      | yes      | remote path to upload file to, use to access file later               |                   | string                                                                             |
+| thumbnailpath   | no       | local path of thumbnaSil                                              |                   | file path                                                                          |
+| chunknumber     | no       | how many chunks should be uploaded in a http request                  | 1                 | int                                                                                |
+| delay           | no       | set segment duration to seconds.                                      | 5                 | int                                                                                |
+| feed            | no       | set remote live feed to url.                                          | false             | url                                                                                |
+| downloader-args | no       | pass args to youtube-dl to download video. default is \"-q -f best\". | -q -f best        | [youtube-dl](https://github.com/ytdl-org/youtube-dl/blob/master/README.md#options) |
+| ffmpeg-args     | no       | pass args to ffmpeg to build segments.                                | -loglevel warning | [ffmpeg](https://www.ffmpeg.org/ffmpeg.html)                                       |
+
+<details>
+  <summary>feed</summary>
+
+![image](https://github.com/0chain/blobber/wiki/uml/usecase/live_upload_sync.png)
+
+</details>
+
+Example
+
 ```
 ./zbox feed --localpath <absolute path to file>/tvshow.m3u8 --remotepath /videos/tvsho --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac  --delay 10 --downloader-args "-f 22" --feed https://www.youtube.com/watch?v=pC5mGB5enkw
-
 ```
 
 #### Download
@@ -1104,9 +1105,6 @@ Sample Command:
 ```
 zbox download --multidownloadjson ./multi-download.json --allocation $ALLOC
 ```
-
-
-
 
 #### Update
 
@@ -1789,13 +1787,6 @@ Status completed callback. Type = audio/mpeg. Name = audio.mp3
 ```
 
 As we can see, the downloaded file size(393216) is less than the original(2996198), which means zbox has downloaded some blocks of the file.
-
-
-
-
-
-
-
 
 ### Lock and Unlock Tokens
 
