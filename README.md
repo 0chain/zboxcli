@@ -461,14 +461,14 @@ Sample Response:
 Allocation updated with txId : d853a82907453d37ed978b9fc1a55663be99bb351d18cca31068c0dc95566edd
 ```
 
-**Note:** Files will automatically be uploaded,splitted and stored on added blobber. 
+**Note:** Files will automatically be uploaded,splitted, and stored on added blobber. 
 **Note:** An allocation is already hosted on a set of blobbers. To find a blobber that is available to add you should exclude the current set of blobbers hosting your allocation by checking them via [Get Allocation Info](#get)command.
 
 ##### Replace Blobber
 
-Sometimes, a blobber might be mallfunctioning or faulty or the blobber might be slow becuase its far from your geolocation, in such cases you might have to replace the blobber with a new one.
+Sometimes, a blobber might be malfunctioning or faulty or the blobber might be slow because it is far from your geolocation, in such cases, you might have to replace the blobber with a new one.
 
-Use `add_blobber` and `remove_blobber` flag with [update allocation](#update-allocation) command to replace a blobber hosting an allocation .
+Use `add_blobber` and `remove_blobber` flag with [update allocation](#update-allocation) command to replace a blobber hosting an allocation.
 
 | Parameter        | Description                                                  | Valid Values |
 | ---------------- | ------------------------------------------------------------ | ------------ |
