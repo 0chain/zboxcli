@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/0chain/gosdk/constants"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
 )
@@ -38,7 +39,13 @@ var moveCmd = &cobra.Command{
 		remotePath := cmd.Flag("remotepath").Value.String()
 		destPath := cmd.Flag("destpath").Value.String()
 
-		err = allocationObj.MoveObject(remotePath, destPath)
+		err = allocationObj.DoMultiOperation([]sdk.OperationRequest{
+			{
+				OperationType: constants.FileOperationMove,
+				RemotePath:    remotePath,
+				DestPath:      destPath,
+			},
+		})
 		if err != nil {
 			PrintError("Error performing CopyObject", err)
 			os.Exit(1)

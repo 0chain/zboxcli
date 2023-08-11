@@ -61,7 +61,7 @@ var uploadCmd = &cobra.Command{
 		if multiuploadJSON != "" {
 			err = multiUpload(allocationObj, localPath, multiuploadJSON, statusBar)
 		} else {
-			err = singleUpload(allocationObj, localPath, remotePath, thumbnailPath, encrypt, webStreaming, uploadChunkNumber, statusBar)
+			err = singleUpload(allocationObj, localPath, remotePath, thumbnailPath, encrypt, webStreaming, false, uploadChunkNumber, statusBar)
 		}
 		if err != nil {
 			PrintError("Upload failed.", err.Error())
@@ -143,6 +143,7 @@ type MultiUploadOption struct {
 	ThumbnailPath string `json:"thumbnailPath,omitempty"`
 	Encrypt       bool   `json:"encrypt,omitempty"`
 	ChunkNumber   int    `json:"chunkNumber,omitempty"`
+	IsUpdate      bool   `json:"isUpdate,omitempty"`
 }
 
 func multiUpload(allocationObj *sdk.Allocation, workdir, jsonMultiUploadOptions string, statusBar *StatusBar) error {
@@ -164,7 +165,7 @@ func multiUpload(allocationObj *sdk.Allocation, workdir, jsonMultiUploadOptions 
 	return multiUploadWithOptions(allocationObj, workdir, options, statusBar)
 }
 
-func singleUpload(allocationObj *sdk.Allocation, localPath, remotePath, thumbnailPath string, encrypt, webStreaming bool, chunkNumber int, statusBar *StatusBar) error {
+func singleUpload(allocationObj *sdk.Allocation, localPath, remotePath, thumbnailPath string, encrypt, webStreaming, isUpdate bool, chunkNumber int, statusBar *StatusBar) error {
 	remotePath, fileName, err := fullPathAndFileNameForUpload(localPath, remotePath)
 	if err != nil {
 		return err

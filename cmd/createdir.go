@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/0chain/gosdk/constants"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
 )
@@ -32,11 +33,12 @@ var createDirCmd = &cobra.Command{
 		}
 		dirname := cmd.Flag("dirname").Value.String()
 
-		if err != nil {
-			PrintError("CreateDir failed: ", err)
-			os.Exit(1)
-		}
-		err = allocationObj.CreateDir(dirname)
+		err = allocationObj.DoMultiOperation([]sdk.OperationRequest{
+			{
+				OperationType: constants.FileOperationCreateDir,
+				RemotePath:    dirname,
+			},
+		})
 
 		if err != nil {
 			PrintError("CreateDir failed: ", err)

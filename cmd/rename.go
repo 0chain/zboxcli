@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/0chain/gosdk/constants"
 	"github.com/0chain/gosdk/core/pathutil"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
@@ -16,17 +17,17 @@ var renameCmd = &cobra.Command{
 	Long:  `rename an object on blobbers`,
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		fflags := cmd.Flags()                      // fflags is a *flag.FlagSet
-		if fflags.Changed("allocation") == false { // check if the flag "path" is set
+		fflags := cmd.Flags()              // fflags is a *flag.FlagSet
+		if !fflags.Changed("allocation") { // check if the flag "path" is set
 			PrintError("Error: allocation flag is missing") // If not, we'll let the user know
 			os.Exit(1)                                      // and os.Exit(1)
 		}
-		if fflags.Changed("remotepath") == false {
+		if !fflags.Changed("remotepath") {
 			PrintError("Error: remotepath flag is missing")
 			os.Exit(1)
 		}
 
-		if fflags.Changed("destname") == false {
+		if !fflags.Changed("destname") {
 			PrintError("Error: destname flag is missing")
 			os.Exit(1)
 		}
@@ -44,7 +45,13 @@ var renameCmd = &cobra.Command{
 			return
 		}
 
-		err = allocationObj.RenameObject(remotePath, destName)
+		err = allocationObj.DoMultiOperation([]sdk.OperationRequest{
+			{
+				OperationType: constants.FileOperationRename,
+				RemotePath:    remotePath,
+				DestName:      destName,
+			},
+		})
 		if err != nil {
 			PrintError(err.Error())
 			os.Exit(1)
