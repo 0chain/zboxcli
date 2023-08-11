@@ -61,18 +61,7 @@ var uploadCmd = &cobra.Command{
 		if multiuploadJSON != "" {
 			err = multiUpload(allocationObj, localPath, multiuploadJSON, statusBar)
 		} else {
-			wg.Add(1)
-			err = startChunkedUpload(cmd, allocationObj,
-				chunkedUploadArgs{
-					localPath:     localPath,
-					thumbnailPath: thumbnailPath,
-					remotePath:    remotePath,
-					encrypt:       encrypt,
-					webStreaming:  webStreaming,
-					chunkNumber:   uploadChunkNumber,
-					// isUpdate:      false,
-					// isRepair:      false,
-				}, statusBar)
+			err = singleUpload(allocationObj, localPath, remotePath, thumbnailPath, encrypt, webStreaming, uploadChunkNumber, statusBar)
 		}
 		if err != nil {
 			PrintError("Upload failed.", err.Error())
@@ -172,6 +161,31 @@ func multiUpload(allocationObj *sdk.Allocation, workdir, jsonMultiUploadOptions 
 		return err
 	}
 
+	return multiUploadWithOptions(allocationObj, workdir, options, statusBar)
+}
+
+func singleUpload(allocationObj *sdk.Allocation, localPath, remotePath, thumbnailPath string, encrypt, webStreaming bool, chunkNumber int, statusBar *StatusBar) error {
+	remotePath, fileName, err := fullPathAndFileNameForUpload(localPath, remotePath)
+	if err != nil {
+		return err
+	}
+	options := []MultiUploadOption{
+		{
+			FilePath:      localPath,
+			FileName:      fileName,
+			RemotePath:    remotePath,
+			ThumbnailPath: thumbnailPath,
+			Encrypt:       encrypt,
+			ChunkNumber:   chunkNumber,
+		},
+	}
+
+	workdir := util.GetHomeDir()
+
+	return multiUploadWithOptions(allocationObj, workdir, options, statusBar)
+}
+
+func multiUploadWithOptions(allocationObj *sdk.Allocation, workdir string, options []MultiUploadOption, statusBar *StatusBar) error {
 	totalUploads := len(options)
 	filePaths := make([]string, totalUploads)
 	fileNames := make([]string, totalUploads)
