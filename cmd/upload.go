@@ -179,6 +179,7 @@ func singleUpload(allocationObj *sdk.Allocation, localPath, remotePath, thumbnai
 			ThumbnailPath: thumbnailPath,
 			Encrypt:       encrypt,
 			ChunkNumber:   chunkNumber,
+			IsUpdate:      isUpdate,
 		},
 	}
 
