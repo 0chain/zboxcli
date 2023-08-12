@@ -196,6 +196,7 @@ func multiUploadWithOptions(allocationObj *sdk.Allocation, workdir string, optio
 	thumbnailPaths := make([]string, totalUploads)
 	chunkNumbers := make([]int, totalUploads)
 	encrypts := make([]bool, totalUploads)
+	isUpdates := make([]bool, totalUploads)
 	for idx, option := range options {
 		statusBar.wg.Add(1)
 		filePaths[idx] = option.FilePath
@@ -204,9 +205,10 @@ func multiUploadWithOptions(allocationObj *sdk.Allocation, workdir string, optio
 		remotePaths[idx] = option.RemotePath
 		chunkNumbers[idx] = option.ChunkNumber
 		encrypts[idx] = option.Encrypt
+
 	}
 
-	return allocationObj.StartMultiUpload(workdir, filePaths, fileNames, thumbnailPaths, encrypts, chunkNumbers, remotePaths, false, statusBar)
+	return allocationObj.StartMultiUpload(workdir, filePaths, fileNames, thumbnailPaths, encrypts, chunkNumbers, remotePaths, isUpdates[0], statusBar)
 }
 
 func init() {
