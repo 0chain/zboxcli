@@ -18,7 +18,6 @@ on:
 jobs:
   analyze:
     name: Analyze
-#     runs-on: ubuntu-latest
     runs-on: [self-hosted, build]
     permissions:
       actions: read
