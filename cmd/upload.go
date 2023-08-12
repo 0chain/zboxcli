@@ -166,10 +166,11 @@ func multiUpload(allocationObj *sdk.Allocation, workdir, jsonMultiUploadOptions 
 }
 
 func singleUpload(allocationObj *sdk.Allocation, localPath, remotePath, thumbnailPath string, encrypt, webStreaming, isUpdate bool, chunkNumber int, statusBar *StatusBar) error {
-	remotePath, fileName, err := fullPathAndFileNameForUpload(localPath, remotePath)
+	fullRemotePath, fileName, err := fullPathAndFileNameForUpload(localPath, remotePath)
 	if err != nil {
 		return err
 	}
+	remotePath = pathutil.Dir(fullRemotePath) + "/"
 	options := []MultiUploadOption{
 		{
 			FilePath:      localPath,
