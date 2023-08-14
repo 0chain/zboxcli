@@ -86,7 +86,7 @@ type chunkedUploadArgs struct {
 	isRepair     bool
 }
 
-func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, args chunkedUploadArgs, statusBar sdk.StatusCallback) error {
+func startChunkedUpload(allocationObj *sdk.Allocation, args chunkedUploadArgs, statusBar sdk.StatusCallback) error {
 	fileReader, err := os.Open(args.localPath)
 	if err != nil {
 		return err
@@ -171,6 +171,19 @@ func singleUpload(allocationObj *sdk.Allocation, localPath, remotePath, thumbnai
 		return err
 	}
 	remotePath = pathutil.Dir(fullRemotePath) + "/"
+	if webStreaming {
+		statusBar.wg.Add(1)
+		return startChunkedUpload(allocationObj,
+			chunkedUploadArgs{
+				localPath:     localPath,
+				thumbnailPath: thumbnailPath,
+				remotePath:    remotePath,
+				encrypt:       encrypt,
+				webStreaming:  webStreaming,
+				chunkNumber:   uploadChunkNumber,
+				isUpdate:      false,
+			}, statusBar)
+	}
 	options := []MultiUploadOption{
 		{
 			FilePath:      localPath,
