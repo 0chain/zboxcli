@@ -53,7 +53,7 @@ var renameCmd = &cobra.Command{
 			},
 		})
 		if err != nil {
-			PrintError(err.Error())
+			PrintError("Error performing RenameObject", err)
 			os.Exit(1)
 		}
 		fmt.Println(remotePath + " renamed")
