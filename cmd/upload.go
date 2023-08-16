@@ -64,7 +64,7 @@ var uploadCmd = &cobra.Command{
 			err = singleUpload(allocationObj, localPath, remotePath, thumbnailPath, encrypt, webStreaming, false, uploadChunkNumber, statusBar)
 		}
 		if err != nil {
-			PrintError("Upload failed.", err.Error())
+			PrintError("Upload failed.", err)
 			os.Exit(1)
 		}
 		wg.Wait()
