@@ -34,6 +34,7 @@ zbox is a command line interface (CLI) tool to understand the capabilities of ZÃ
     - [Uploading and Managing files](#uploading-and-managing-files)
       - [Upload](#upload)
       - [Stream](#stream)
+      - [Live Streaming](#live-streaming)
       - [Feed](#feed)
       - [Download](#download)
       - [Update](#update)
@@ -807,10 +808,11 @@ Response:
 Status completed callback. Type = application/octet-stream. Name = sensitivedata.txt
 ```
 
-**Upload file with web-streaming**
+#### Stream
 
-Use upload command with optional web-streaming parameter to upload a video file in fragmented
-mp4 format to support streaming from browser.
+Use the [upload](https://github.com/0chain/zboxcli#upload) command with an optional web-streaming parameter to upload a video file in fragmented mp4 format. fmp4 file format can be easily played on a standard video player on mobile, desktop, and web.
+
+Sample Command:
 
 ```
 ./zbox upload --web-streaming --localpath <absolute path to file>/samplevideo.mov --remotepath /myfile/ --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
@@ -823,11 +825,11 @@ Response:
 Status completed callback. Type = video/fmp4. Name = raw.samplevideo.mp4
 ```
 
-#### Stream
+#### Live Streaming
 
-Use `stream` to capture video and audio streaming form local devices, and upload
+Use `stream` to capture video and audio streaming from local devices, and upload
 
-The user must be the owner of the allocation.You can request the file be encrypted before upload, and can send thumbnails with the file.
+The user must be the owner of the allocation. You can request the file be encrypted before upload and can send thumbnails with the file.
 
 | Parameter     | Required | Description                                                  | Default | Valid values |
 | ------------- | -------- | ------------------------------------------------------------ | ------- | ------------ |
