@@ -41,7 +41,7 @@ var createDirCmd = &cobra.Command{
 		})
 
 		if err != nil {
-			PrintError("CreateDir failed: ", err)
+			PrintError("Directory creation failed.", err)
 			os.Exit(1)
 		}
 

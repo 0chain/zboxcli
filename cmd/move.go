@@ -47,7 +47,7 @@ var moveCmd = &cobra.Command{
 			},
 		})
 		if err != nil {
-			PrintError("Error performing MoveObject", err)
+			PrintError("Move failed.", err)
 			os.Exit(1)
 		}
 

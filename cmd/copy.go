@@ -49,7 +49,7 @@ var copyCmd = &cobra.Command{
 			},
 		})
 		if err != nil {
-			PrintError("Error performing CopyObject", err)
+			PrintError("Copy failed.", err)
 			os.Exit(1)
 		}
 
