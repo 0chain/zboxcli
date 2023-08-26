@@ -16,11 +16,11 @@ var updateCmd = &cobra.Command{
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags()
-		if fflags.Changed("allocation") == false {
+		if !fflags.Changed("allocation") {
 			PrintError("Error: allocation flag is missing")
 			os.Exit(1)
 		}
-		if fflags.Changed("remotepath") == false {
+		if !fflags.Changed("remotepath") {
 			PrintError("Error: remotepath flag is missing")
 			os.Exit(1)
 		}
