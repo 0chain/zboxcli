@@ -1,16 +1,20 @@
 [
-    {
-      "remotePath": "/dir2",
-      "filePath": "/Users/manohar/Downloads/file.txt",
-      "thumbnailPath": "",
-      "fileName": "file.txt",
-      "encrypt": false
-    },
-    {
-      "remotePath": "/dir3",
-      "filePath": "/Users/manohar/Downloads/file.txt",
-      "thumbnailPath": "",
-      "fileName": "file.txt",
-      "encrypt": false
-    }
+  {
+    "remotePath": "/dir2",
+    "filePath": "/Users/manohar/Downloads/file.txt",
+    "thumbnailPath": "",
+    "fileName": "file.txt",
+    "encrypt": false,
+    "isUpdate": false,
+    "isWebstreaming": false
+  },
+  {
+    "remotePath": "/dir3",
+    "filePath": "/Users/manohar/Downloads/file.txt",
+    "thumbnailPath": "",
+    "fileName": "file.txt",
+    "encrypt": false,
+    "isUpdate": false,
+    "isWebstreaming": false
+  }
 ]

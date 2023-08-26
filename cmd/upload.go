@@ -148,13 +148,14 @@ func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, args 
 }
 
 type MultiUploadOption struct {
-	FilePath      string `json:"filePath,omitempty"`
-	FileName      string `json:"fileName,omitempty"`
-	RemotePath    string `json:"remotePath,omitempty"`
-	ThumbnailPath string `json:"thumbnailPath,omitempty"`
-	Encrypt       bool   `json:"encrypt,omitempty"`
-	ChunkNumber   int    `json:"chunkNumber,omitempty"`
-	IsUpdate      bool   `json:"isUpdate,omitempty"`
+	FilePath       string `json:"filePath,omitempty"`
+	FileName       string `json:"fileName,omitempty"`
+	RemotePath     string `json:"remotePath,omitempty"`
+	ThumbnailPath  string `json:"thumbnailPath,omitempty"`
+	Encrypt        bool   `json:"encrypt,omitempty"`
+	ChunkNumber    int    `json:"chunkNumber,omitempty"`
+	IsUpdate       bool   `json:"isUpdate,omitempty"`
+	IsWebstreaming bool   `json:"isWebstreaming,omitempty"`
 }
 
 func multiUpload(allocationObj *sdk.Allocation, workdir, jsonMultiUploadOptions string, statusBar *StatusBar) error {
@@ -181,6 +182,7 @@ func multiUpload(allocationObj *sdk.Allocation, workdir, jsonMultiUploadOptions 
 	chunkNumbers := make([]int, totalUploads)
 	encrypts := make([]bool, totalUploads)
 	isUpdates := make([]bool, totalUploads)
+	isWebstreaming := make([]bool, totalUploads)
 	for idx, option := range options {
 		statusBar.wg.Add(1)
 		filePaths[idx] = option.FilePath
@@ -190,9 +192,10 @@ func multiUpload(allocationObj *sdk.Allocation, workdir, jsonMultiUploadOptions 
 		chunkNumbers[idx] = option.ChunkNumber
 		encrypts[idx] = option.Encrypt
 		isUpdates[idx] = option.IsUpdate
+		isWebstreaming[idx] = option.IsWebstreaming
 	}
 
-	return allocationObj.StartMultiUpload(workdir, filePaths, fileNames, thumbnailPaths, encrypts, chunkNumbers, remotePaths, isUpdates, statusBar)
+	return allocationObj.StartMultiUpload(workdir, filePaths, fileNames, thumbnailPaths, encrypts, chunkNumbers, remotePaths, isUpdates, isWebstreaming, statusBar)
 }
 
 func init() {
