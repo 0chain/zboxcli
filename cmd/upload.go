@@ -61,21 +61,10 @@ var uploadCmd = &cobra.Command{
 		if multiuploadJSON != "" {
 			err = multiUpload(allocationObj, localPath, multiuploadJSON, statusBar)
 		} else {
-			wg.Add(1)
-			err = startChunkedUpload(cmd, allocationObj,
-				chunkedUploadArgs{
-					localPath:     localPath,
-					thumbnailPath: thumbnailPath,
-					remotePath:    remotePath,
-					encrypt:       encrypt,
-					webStreaming:  webStreaming,
-					chunkNumber:   uploadChunkNumber,
-					// isUpdate:      false,
-					// isRepair:      false,
-				}, statusBar)
+			err = singleUpload(allocationObj, localPath, remotePath, thumbnailPath, encrypt, webStreaming, false, uploadChunkNumber, statusBar)
 		}
 		if err != nil {
-			PrintError("Upload failed.", err.Error())
+			PrintError("Upload failed.", err)
 			os.Exit(1)
 		}
 		wg.Wait()
@@ -97,7 +86,7 @@ type chunkedUploadArgs struct {
 	isRepair     bool
 }
 
-func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, args chunkedUploadArgs, statusBar sdk.StatusCallback) error {
+func startChunkedUpload(allocationObj *sdk.Allocation, args chunkedUploadArgs, statusBar sdk.StatusCallback) error {
 	fileReader, err := os.Open(args.localPath)
 	if err != nil {
 		return err
@@ -174,6 +163,34 @@ func multiUpload(allocationObj *sdk.Allocation, workdir, jsonMultiUploadOptions 
 		return err
 	}
 
+	return multiUploadWithOptions(allocationObj, workdir, options, statusBar)
+}
+
+func singleUpload(allocationObj *sdk.Allocation, localPath, remotePath, thumbnailPath string, encrypt, isWebstreaming, isUpdate bool, chunkNumber int, statusBar *StatusBar) error {
+	fullRemotePath, fileName, err := fullPathAndFileNameForUpload(localPath, remotePath)
+	if err != nil {
+		return err
+	}
+	remotePath = pathutil.Dir(fullRemotePath) + "/"
+	options := []MultiUploadOption{
+		{
+			FilePath:       localPath,
+			FileName:       fileName,
+			RemotePath:     remotePath,
+			ThumbnailPath:  thumbnailPath,
+			Encrypt:        encrypt,
+			ChunkNumber:    chunkNumber,
+			IsUpdate:       isUpdate,
+			IsWebstreaming: isWebstreaming,
+		},
+	}
+
+	workdir := util.GetHomeDir()
+
+	return multiUploadWithOptions(allocationObj, workdir, options, statusBar)
+}
+
+func multiUploadWithOptions(allocationObj *sdk.Allocation, workdir string, options []MultiUploadOption, statusBar *StatusBar) error {
 	totalUploads := len(options)
 	filePaths := make([]string, totalUploads)
 	fileNames := make([]string, totalUploads)
