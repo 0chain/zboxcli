@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/0chain/gosdk/constants"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
 )
@@ -15,12 +16,12 @@ var deleteCmd = &cobra.Command{
 	Long:  `delete file from blobbers`,
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		fflags := cmd.Flags()                      // fflags is a *flag.FlagSet
-		if fflags.Changed("allocation") == false { // check if the flag "path" is set
+		fflags := cmd.Flags()              // fflags is a *flag.FlagSet
+		if !fflags.Changed("allocation") { // check if the flag "path" is set
 			PrintError("Error: allocation flag is missing") // If not, we'll let the user know
 			os.Exit(1)                                      // and return
 		}
-		if fflags.Changed("remotepath") == false {
+		if !fflags.Changed("remotepath") {
 			PrintError("Error: remotepath flag is missing")
 			os.Exit(1)
 		}
@@ -33,7 +34,12 @@ var deleteCmd = &cobra.Command{
 		}
 		remotePath := cmd.Flag("remotepath").Value.String()
 
-		err = allocationObj.DeleteFile(remotePath)
+		err = allocationObj.DoMultiOperation([]sdk.OperationRequest{
+			{
+				OperationType: constants.FileOperationDelete,
+				RemotePath:    remotePath,
+			},
+		})
 		if err != nil {
 			PrintError("Delete failed.", err.Error())
 			os.Exit(1)
