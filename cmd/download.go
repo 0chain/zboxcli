@@ -139,7 +139,7 @@ var downloadCmd = &cobra.Command{
 				}
 			}
 		} else if len(remotePath) > 0 {
-			if fflags.Changed("allocation") == false { // check if the flag "path" is set
+			if !fflags.Changed("allocation") { // check if the flag "path" is set
 				PrintError("Error: allocation flag is missing") // If not, we'll let the user know
 				os.Exit(1)                                      // and return
 			}
@@ -168,7 +168,7 @@ var downloadCmd = &cobra.Command{
 				}
 			}
 		} else if len(multidownloadJSON) > 0 {
-			if fflags.Changed("allocation") == false { // check if the flag "path" is set
+			if !fflags.Changed("allocation") { // check if the flag "path" is set
 				PrintError("Error: allocation flag is missing") // If not, we'll let the user know
 				os.Exit(1)                                      // and return
 			}
