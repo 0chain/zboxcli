@@ -61,21 +61,10 @@ var uploadCmd = &cobra.Command{
 		if multiuploadJSON != "" {
 			err = multiUpload(allocationObj, localPath, multiuploadJSON, statusBar)
 		} else {
-			wg.Add(1)
-			err = startChunkedUpload(cmd, allocationObj,
-				chunkedUploadArgs{
-					localPath:     localPath,
-					thumbnailPath: thumbnailPath,
-					remotePath:    remotePath,
-					encrypt:       encrypt,
-					webStreaming:  webStreaming,
-					chunkNumber:   uploadChunkNumber,
-					// isUpdate:      false,
-					// isRepair:      false,
-				}, statusBar)
+			err = singleUpload(allocationObj, localPath, remotePath, thumbnailPath, encrypt, webStreaming, false, uploadChunkNumber, statusBar)
 		}
 		if err != nil {
-			PrintError("Upload failed.", err.Error())
+			PrintError("Upload failed.", err)
 			os.Exit(1)
 		}
 		wg.Wait()
@@ -97,7 +86,7 @@ type chunkedUploadArgs struct {
 	isRepair     bool
 }
 
-func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, args chunkedUploadArgs, statusBar sdk.StatusCallback) error {
+func startChunkedUpload(allocationObj *sdk.Allocation, args chunkedUploadArgs, statusBar sdk.StatusCallback) error {
 	fileReader, err := os.Open(args.localPath)
 	if err != nil {
 		return err
@@ -148,12 +137,14 @@ func startChunkedUpload(cmd *cobra.Command, allocationObj *sdk.Allocation, args 
 }
 
 type MultiUploadOption struct {
-	FilePath      string `json:"filePath,omitempty"`
-	FileName      string `json:"fileName,omitempty"`
-	RemotePath    string `json:"remotePath,omitempty"`
-	ThumbnailPath string `json:"thumbnailPath,omitempty"`
-	Encrypt       bool   `json:"encrypt,omitempty"`
-	ChunkNumber   int    `json:"chunkNumber,omitempty"`
+	FilePath       string `json:"filePath,omitempty"`
+	FileName       string `json:"fileName,omitempty"`
+	RemotePath     string `json:"remotePath,omitempty"`
+	ThumbnailPath  string `json:"thumbnailPath,omitempty"`
+	Encrypt        bool   `json:"encrypt,omitempty"`
+	ChunkNumber    int    `json:"chunkNumber,omitempty"`
+	IsUpdate       bool   `json:"isUpdate,omitempty"`
+	IsWebstreaming bool   `json:"isWebstreaming,omitempty"`
 }
 
 func multiUpload(allocationObj *sdk.Allocation, workdir, jsonMultiUploadOptions string, statusBar *StatusBar) error {
@@ -172,6 +163,34 @@ func multiUpload(allocationObj *sdk.Allocation, workdir, jsonMultiUploadOptions 
 		return err
 	}
 
+	return multiUploadWithOptions(allocationObj, workdir, options, statusBar)
+}
+
+func singleUpload(allocationObj *sdk.Allocation, localPath, remotePath, thumbnailPath string, encrypt, isWebstreaming, isUpdate bool, chunkNumber int, statusBar *StatusBar) error {
+	fullRemotePath, fileName, err := fullPathAndFileNameForUpload(localPath, remotePath)
+	if err != nil {
+		return err
+	}
+	remotePath = pathutil.Dir(fullRemotePath) + "/"
+	options := []MultiUploadOption{
+		{
+			FilePath:       localPath,
+			FileName:       fileName,
+			RemotePath:     remotePath,
+			ThumbnailPath:  thumbnailPath,
+			Encrypt:        encrypt,
+			ChunkNumber:    chunkNumber,
+			IsUpdate:       isUpdate,
+			IsWebstreaming: isWebstreaming,
+		},
+	}
+
+	workdir := util.GetHomeDir()
+
+	return multiUploadWithOptions(allocationObj, workdir, options, statusBar)
+}
+
+func multiUploadWithOptions(allocationObj *sdk.Allocation, workdir string, options []MultiUploadOption, statusBar *StatusBar) error {
 	totalUploads := len(options)
 	filePaths := make([]string, totalUploads)
 	fileNames := make([]string, totalUploads)
@@ -179,6 +198,8 @@ func multiUpload(allocationObj *sdk.Allocation, workdir, jsonMultiUploadOptions 
 	thumbnailPaths := make([]string, totalUploads)
 	chunkNumbers := make([]int, totalUploads)
 	encrypts := make([]bool, totalUploads)
+	isUpdates := make([]bool, totalUploads)
+	isWebstreaming := make([]bool, totalUploads)
 	for idx, option := range options {
 		statusBar.wg.Add(1)
 		filePaths[idx] = option.FilePath
@@ -187,9 +208,11 @@ func multiUpload(allocationObj *sdk.Allocation, workdir, jsonMultiUploadOptions 
 		remotePaths[idx] = option.RemotePath
 		chunkNumbers[idx] = option.ChunkNumber
 		encrypts[idx] = option.Encrypt
+		isUpdates[idx] = option.IsUpdate
+		isWebstreaming[idx] = option.IsWebstreaming
 	}
 
-	return allocationObj.StartMultiUpload(workdir, filePaths, fileNames, thumbnailPaths, encrypts, chunkNumbers, remotePaths, false, statusBar)
+	return allocationObj.StartMultiUpload(workdir, filePaths, fileNames, thumbnailPaths, encrypts, chunkNumbers, remotePaths, isUpdates, isWebstreaming, statusBar)
 }
 
 func init() {
