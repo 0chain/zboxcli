@@ -415,7 +415,7 @@ Allocation updated with txId : fb84185dae620bbba8386286726f1efcd20d2516bcf1a4482
 ```
 ##### Forbid Allocation
 
-There are various operations which you can forbid on an allocation. Forbid flag works with [update allocation](#update-allocation) command. Check its working before proceeding.
+There are various operations which you can forbid on an allocation. Forbid flag works with [update allocation](#update-allocation) command.
 Here are the operations:
 
 | Parameter       | Description                                                  |
@@ -441,7 +441,7 @@ To test functionality try uploading file to allocation. You should get the follo
 Upload failed. this options for this file is not permitted for this allocation: 
 file_option_not_permitted.
 ```
-To Unforbid an operation after forbiding:
+To Unforbid an operation after forbidding:
 ```
 Sample Command:
 
@@ -775,7 +775,7 @@ settings:
   service_charge:  10 %
 ```
 #### Kill Blobber
-`./zbox kill-blobber` command deactivates a blobber to avoid storage of data. Required parameters are :
+`./zbox kill-blobber` command deactivates a blobber to avoid storage of data. Required parameters are:
 
 | Parameter          | Required | Description                               
 | ------------------ | -------- | ----------------------------------------- 
