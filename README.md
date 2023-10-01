@@ -1,13 +1,13 @@
 # zbox - a CLI for Züs dStorage
 
-zbox is a command line interface (CLI) tool to understand the capabilities of Züs dStorage and prototype your app. The utility is built using Züs [GoSDK](https://github.com/0chain/gosdk) . 
+zbox is a command line interface (CLI) tool to understand the capabilities of Züs dStorage and prototype your app. The utility is built using Züs [GoSDK](https://github.com/0chain/gosdk) .
 
 ![zboxcli architecture diagram](https://github.com/0chain/zboxcli/assets/65766301/5aeadfaf-e259-4524-bf31-1d1a2f39c563)
 
 - [zbox - a CLI for Züs dStorage](#zbox---a-cli-for-züs-dstorage)
   - [Züs Overview](#züs-overview)
-  - [Installation Guides](#installation-instructions)
-    - [Install on Linux Windows Mac](#build-instructions-for-linux-windows-mac)
+  - [Installation Instructions](#installation-instructions)
+    - [Build Instructions for Linux Windows Mac](#build-instructions-for-linux-windows-mac)
     - [Other Platform Builds](#other-platform-builds)
     - [Use custom miner/sharder](#use-custom-minersharder)
   - [Running zbox](#running-zbox)
@@ -17,22 +17,19 @@ zbox is a command line interface (CLI) tool to understand the capabilities of Z�
       - [Create new allocation](#create-new-allocation)
         - [Free storage allocation](#free-storage-allocation)
       - [Update allocation](#update-allocation)
-      - [Forbid allocation](#forbid-allocation)
+      - [Forbid Allocation](#forbid-allocation)
       - [Cancel allocation](#cancel-allocation)
       - [Finalise allocation](#finalise-allocation)
-      - [Get Allocation Info](#get)
       - [List blobbers](#list-blobbers)
       - [Detailed blobber information](#detailed-blobber-information)
       - [List all files](#list-all-files)
       - [List owner's allocations](#list-owners-allocations)
       - [Update blobber settings](#update-blobber-settings)
-      - [Update Validator settings](#update-validator-settings)
-      - [Get Version](#get-version)
-      - [List all Validators](#list-all-validators)
+    - [Update Validator Settings](#update-validator-settings)
+      - [List All Validators](#list-all-validators)
       - [Get Validator Configuration](#get-validator-configuration)
       - [Kill Blobber](#kill-blobber)
       - [Kill Validator](#kill-validator)
-
     - [Uploading and Managing files](#uploading-and-managing-files)
       - [Upload](#upload)
       - [Create Directory](#create-directory)
@@ -49,16 +46,15 @@ zbox is a command line interface (CLI) tool to understand the capabilities of Z�
       - [Sync](#sync)
       - [Get differences](#get-differences)
       - [Get wallet](#get-wallet)
+      - [Get](#get)
       - [Get metadata](#get-metadata)
       - [Rename](#rename)
       - [Stats](#stats)
       - [Repair](#repair)
       - [Rollback](#rollback)
       - [Sign data](#sign-data)
-      - [Download cost](#download-cost)
-      - [Upload cost](#upload-cost)
       - [Streaming](#streaming)
-        - [How it works](#how-it-works)
+        - [How it works:](#how-it-works)
         - [Usage](#usage)
     - [Lock and Unlock Tokens](#lock-and-unlock-tokens)
       - [Challenge pool information](#challenge-pool-information)
@@ -75,7 +71,8 @@ zbox is a command line interface (CLI) tool to understand the capabilities of Z�
       - [Write pool info](#write-pool-info)
       - [Lock tokens into write pool](#lock-tokens-into-write-pool)
       - [Unlock tokens from write pool](#unlock-tokens-from-write-pool)
-      
+      - [Download cost](#download-cost)
+      - [Upload cost](#upload-cost)
   - [Troubleshooting](#troubleshooting)
 
 ## Züs Overview
@@ -127,7 +124,7 @@ Note: This is helpful for the Mac OS users running local cluster and having trou
 
 ## Running zbox
 
-When you run the `./zbox` command in terminal with no arguments, it will list all the available commands and the global flags.For working of specific command check [commands](#commands) section. 
+When you run the `./zbox` command in terminal with no arguments, it will list all the available commands and the global flags.For working of specific command check [commands](#commands) section.
 
 ```
 Usage:
@@ -438,12 +435,12 @@ Allocation Updated with txID : b84185dae620bbba8386286726f1efcd20d2516bcf1a44821
 ```
 To test functionality try uploading file to allocation. You should get the following response :
 ```
-Upload failed. this options for this file is not permitted for this allocation: 
+Upload failed. this options for this file is not permitted for this allocation:
 file_option_not_permitted.
 ```
-To Unforbid an operation after forbiding: 
+To Unforbid an operation after forbiding:
 
-Sample Command: 
+Sample Command:
 ```
 ./zbox updateallocation --allocation $ALLOC --forbid_upload false
 ```
@@ -650,7 +647,7 @@ Update blobber read price
 ```
 ### Update Validator Settings
 
-Use `./zbox validator-update ` to update a validator's configuration settings. 
+Use `./zbox validator-update ` to update a validator's configuration settings.
 
 | Parameter      | Required | Description                                 | default | Valid values |
 | -------------- | -------- | ------------------------------------------- | ------- | ------------ |
@@ -711,19 +708,19 @@ settings:
 
 #### Get Validator Configuration
 
-`./zbox validator-info` command is used to get a particular validator configuration . Here are the parameters for the command . 
+`./zbox validator-info` command is used to get a particular validator configuration . Here are the parameters for the command .
 
-| Parameter          | Required | Description                               
-| ------------------ | -------- | ----------------------------------------- 
-| --validator_id     | yes      | id of validator whose configuration has to be fetched          
-| --json             | optional | Print Response as json data                            
-| --help             | no       | Provide information about the command                          
+| Parameter          | Required | Description
+| ------------------ | -------- | -----------------------------------------
+| --validator_id     | yes      | id of validator whose configuration has to be fetched
+| --json             | optional | Print Response as json data
+| --help             | no       | Provide information about the command
 
 Sample Command :
 ```
 ./zbox validator-info --validator_id f82ab34a98406b8757f11513361752bab9cb679a5cb130b81
 ```
-Sample Response :  
+Sample Response :
 ```
 id:                f82ab34a98406b8757f11513361752bab9cb679a5cb130b81a4e86cec50eefc3
 url:               https://demo2.zus.network/validator01
@@ -742,32 +739,32 @@ settings:
 #### Kill Blobber
 `./zbox kill-blobber` command deactivates a blobber to avoid storage of data . Required parameters are :
 
-| Parameter          | Required | Description                               
-| ------------------ | -------- | ----------------------------------------- 
-| --blobber_id       | yes      | Blobber Id to kill a specific blobber.Can be retrieved using [List blobbers](#list-blobbers).    
-| --json             | optional | Print Response as json data                            
-| --help             | no       | Provide information about the command 
- 
+| Parameter          | Required | Description
+| ------------------ | -------- | -----------------------------------------
+| --blobber_id       | yes      | Blobber Id to kill a specific blobber.Can be retrieved using [List blobbers](#list-blobbers).
+| --json             | optional | Print Response as json data
+| --help             | no       | Provide information about the command
+
  Sample Command :
 ```
 ./zbox kill-blobber --id $BLOBBER_ID --wallet $CHAIN_OWNER_WALLET
 ```
 Note : Kill Blobber command should be evoked from chain owner wallet only
 
-Sample Response :  
+Sample Response :
 ```
 killed blobber $BLOBBER_ID
 ```
- 
+
 #### Kill Validator
 
-`./zbox kill-validator` command deactivates a specific validator available on the network. Required parameters are : 
+`./zbox kill-validator` command deactivates a specific validator available on the network. Required parameters are :
 
-| Parameter          | Required | Description                               
-| ------------------ | -------- | ----------------------------------------- 
-| --validator_id     | yes      | Validator Id to kill a specific blobber.Can be retrieved using [List all Validators](#list-all-validators).    
-| --json             | optional | Print Response as json data                            
-| --help             | no       | Provide information about the command 
+| Parameter          | Required | Description
+| ------------------ | -------- | -----------------------------------------
+| --validator_id     | yes      | Validator Id to kill a specific blobber.Can be retrieved using [List all Validators](#list-all-validators).
+| --json             | optional | Print Response as json data
+| --help             | no       | Provide information about the command
 
 
 Sample Command :
@@ -856,7 +853,7 @@ Status completed callback. Type = video/fmp4. Name = raw.samplevideo.mp4
 ```
 #### Create Directory
 
-`./zbox createdir` command is used to create directory on allocation for storing files. 
+`./zbox createdir` command is used to create directory on allocation for storing files.
 
 | Parameter    | Description                                | Valid Values |
 | ------------ | ------------------------------------------ | ------------ |
@@ -1620,7 +1617,7 @@ Repair file completed, Total files repaired:  0
 ```
 #### Rollback
 
-Use `./zbox rollback` to rollback to a previous state of allocation. This is helpful when you want to rollback to previous version of files you updated on allocation using [Update allocation.](#update-allocation) 
+Use `./zbox rollback` to rollback to a previous state of allocation. This is helpful when you want to rollback to previous version of files you updated on allocation using [Update allocation.](#update-allocation)
 
 | Parameter    | Description                         | Valid Values |
 | ------------ | ----------------------------------- | ------------ |
@@ -1630,7 +1627,7 @@ Use `./zbox rollback` to rollback to a previous state of allocation. This is hel
 Sample Command:
 
 ```
-./zbox rollback --allocation $ALLOCATION_ID 
+./zbox rollback --allocation $ALLOCATION_ID
 ```
 
 Sample Response:
