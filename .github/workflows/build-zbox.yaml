@@ -78,14 +78,14 @@ jobs:
 
       - name: Set GITHUB_ENV
         run: |
-          IF ( "${{github.base_ref}}" -eq "master" -OR "${{github.ref}}" -eq "refs/heads/master" ){
-            echo "TAG=v0.0.0-master" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
-          } ElseIf ( "${{github.base_ref}}" -eq "dev" -OR "${{github.ref}}" -eq "refs/heads/dev" ){
-            echo "TAG=v0.0.0-dev" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
-          } ElseIf ( "${{github.base_ref}}" -eq "staging" -OR "${{github.ref}}" -eq "refs/heads/staging" ){
-            echo "TAG=v0.0.0-staging" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
-          } ELSE {
-            echo "TAG=${{github.ref}}" | %{$_ -replace('refs/tags/', '')} | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+          if ($Env:GITHUB_BASE_REF -eq "master" -or $Env:GITHUB_REF -eq "refs/heads/master") {
+            "TAG=v0.0.0-master" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+          } elseif ($Env:GITHUB_BASE_REF -eq "dev" -or $Env:GITHUB_REF -eq "refs/heads/dev") {
+            "TAG=v0.0.0-dev" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+          } elseif ($Env:GITHUB_BASE_REF -eq "staging" -or $Env:GITHUB_REF -eq "refs/heads/staging") {
+            "TAG=v0.0.0-staging" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+          } else {
+            $Env:GITHUB_REF -replace 'refs/tags/', 'TAG=' | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
           }
 
       - name: Install
