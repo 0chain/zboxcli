@@ -1,54 +1,52 @@
 # zbox - a CLI for Z체s dStorage
 
-zbox is a command line interface (CLI) tool to understand the capabilities of Z체s dStorage and prototype your app. The utility is built using Z체s [GoSDK](https://github.com/0chain/gosdk) . 
+zbox is a command line interface (CLI) tool to understand the capabilities of Z체s dStorage and prototype your app. The utility is built using Z체s [GoSDK](https://github.com/0chain/gosdk) .
 ![Storage](https://user-images.githubusercontent.com/65766301/120052450-0ab66700-c043-11eb-91ab-1f7aa69e133a.png)
 
 - [zbox - a CLI for Z체s dStorage](#zbox---a-cli-for-z체s-dstorage)
   - [Z체s Overview](#z체s-overview)
-  - [Installation Guides](#installation-instructions)
-    - [Install on Linux Windows Mac](#build-instructions-for-linux-windows-mac)
+  - [Installation Instructions](#installation-instructions)
+    - [Build Instructions for Linux Windows Mac](#build-instructions-for-linux-windows-mac)
     - [Other Platform Builds](#other-platform-builds)
     - [Use custom miner/sharder](#use-custom-minersharder)
-    - [Running zbox](#running-zbox)
-  - [Global Flags](#global-flags)
+  - [Running zbox](#running-zbox)
+    - [Global Flags](#global-flags)
   - [Commands](#commands)
     - [Creating and Managing Allocations](#creating-and-managing-allocations)
       - [Create new allocation](#create-new-allocation)
         - [Free storage allocation](#free-storage-allocation)
       - [Update allocation](#update-allocation)
-        - [Forbid allocation](#forbid-allocation)
+        - [Forbid Allocation](#forbid-allocation)
         - [Add Blobber](#add-blobber)
         - [Replace Blobber](#replace-blobber)
       - [Cancel allocation](#cancel-allocation)
       - [Finalise allocation](#finalise-allocation)
-      - [Get Allocation Info](#get)
       - [List blobbers](#list-blobbers)
       - [Detailed blobber information](#detailed-blobber-information)
       - [List all files](#list-all-files)
       - [List owner's allocations](#list-owners-allocations)
       - [Update blobber settings](#update-blobber-settings)
-      - [List all Validators](#list-all-validators)
+      - [List All Validators](#list-all-validators)
       - [Get Validator Configuration](#get-validator-configuration)
       - [Kill Blobber](#kill-blobber)
       - [Kill Validator](#kill-validator)
-
     - [Uploading and Managing files](#uploading-and-managing-files)
       - [Upload](#upload)
         - [Upload file with no encryption](#upload-file-with-no-encryption)
         - [Upload file with encryption](#upload-file-with-encryption)
-        - [Upload file with web streaming](#upload-file-with-web-streaming)
+        - [Upload file with web-streaming](#upload-file-with-web-streaming)
         - [Multi Upload](#multi-upload)
-      - [Stream](#stream)
       - [Live Streaming](#live-streaming)
       - [Feed](#feed)
+        - [Stream](#stream)
       - [Download](#download)
         - [Multi Download](#multi-download)
       - [Update](#update)
       - [Delete](#delete)
       - [Share](#share)
-        - [Public Share](#public-share)
-        - [Encrypted Share](#encrypted-share)
-        - [Directory Share](#directory-share) 
+        - [Public share](#public-share)
+        - [Encrypted share](#encrypted-share)
+        - [Directory share](#directory-share)
         - [share-encrypted revoke](#share-encrypted-revoke)
       - [List](#list)
       - [Copy](#copy)
@@ -56,13 +54,12 @@ zbox is a command line interface (CLI) tool to understand the capabilities of Z�
       - [Sync](#sync)
       - [Get differences](#get-differences)
       - [Get wallet](#get-wallet)
+      - [Get](#get)
       - [Get metadata](#get-metadata)
       - [Rename](#rename)
       - [Stats](#stats)
       - [Repair](#repair)
       - [Sign data](#sign-data)
-      - [Download cost](#download-cost)
-      - [Upload cost](#upload-cost)
       - [Streaming](#streaming)
         - [How it works:](#how-it-works)
         - [Usage](#usage)
@@ -81,7 +78,8 @@ zbox is a command line interface (CLI) tool to understand the capabilities of Z�
       - [Write pool info](#write-pool-info)
       - [Lock tokens into write pool](#lock-tokens-into-write-pool)
       - [Unlock tokens from write pool](#unlock-tokens-from-write-pool)
-      
+      - [Download cost](#download-cost)
+      - [Upload cost](#upload-cost)
   - [Troubleshooting](#troubleshooting)
 
 ## Z체s Overview
@@ -133,7 +131,7 @@ Note: This is helpful for the Mac OS users running local cluster and having trou
 
 ## Running zbox
 
-When you run the `./zbox` command in terminal with no arguments, it will list all the available commands and the global flags.For working of specific command check [commands](#commands) section. 
+When you run the `./zbox` command in terminal with no arguments, it will list all the available commands and the global flags.For working of specific command check [commands](#commands) section.
 
 ```
 Usage:
@@ -260,7 +258,6 @@ and `free_storage` parameters.
 | allocationFileName     | local file to store allocation information                              | allocation.txt | file path    |
 | cost                   | returns the cost of the allocation, no allocation created               |                | flag         |
 | data                   | number of data shards, effects upload and download speeds               | 2              | int          |
-| expire                 | duration to allocation expiration                                       | 720h           | duration     |
 | free_storage           | free storage marker file.                                               |                | file path    |
 | owner                  | owner's id, use for funding an allocation for another                   |                | string       |
 | owner_public_key       | public key, use for funding an allocation for another                   |                | string       |
@@ -369,7 +366,6 @@ An increase in blobber count will increment the parity shards.
 | Parameter      | Required | Description                                                          | Valid Values |
 | -------------- | -------- | -------------------------------------------------------------------- | ------------ |
 | allocation     | yes      | allocation id                                                        | string       |
-| expiry         |          | adjust storage expiration time                                       | duration     |
 | free_storage   |          | free storage marker file                                             | string       |
 | lock           | yes\*    | lock additional tokens in write pool                                 | int          |
 | update_terms   |          | will update the allocation with the latest blobber terms             | boolean      |
@@ -438,7 +434,7 @@ Allocation Updated with txID : b84185dae620bbba8386286726f1efcd20d2516bcf1a44821
 ```
 To test functionality try uploading file to allocation. You should get the following response :
 ```
-Upload failed. this options for this file is not permitted for this allocation: 
+Upload failed. this options for this file is not permitted for this allocation:
 file_option_not_permitted.
 ```
 To Unforbid an operation after forbidding:
@@ -470,7 +466,7 @@ Sample Response:
 Allocation updated with txId : d853a82907453d37ed978b9fc1a55663be99bb351d18cca31068c0dc95566edd
 ```
 
-**Note:** Files will automatically be uploaded,splitted, and stored on added blobber. 
+**Note:** Files will automatically be uploaded,splitted, and stored on added blobber.
 
 **Note:** An allocation is already hosted on a set of blobbers. To find a blobber that is available to add you should exclude the current set of blobbers hosting your allocation by checking them via [Get Allocation Info](#get)command.
 
@@ -746,19 +742,19 @@ settings:
 
 #### Get Validator Configuration
 
-`./zbox validator-info` command is used to get a particular validator configuration . Here are the parameters for the command . 
+`./zbox validator-info` command is used to get a particular validator configuration . Here are the parameters for the command .
 
-| Parameter          | Required | Description                               
-| ------------------ | -------- | ----------------------------------------- 
-| --validator_id     | yes      | id of validator whose configuration has to be fetched          
-| --json             | optional | Print Response as json data                            
-| --help             | no       | Provide information about the command                          
+| Parameter          | Required | Description
+| ------------------ | -------- | -----------------------------------------
+| --validator_id     | yes      | id of validator whose configuration has to be fetched
+| --json             | optional | Print Response as json data
+| --help             | no       | Provide information about the command
 
 Sample Command :
 ```
 ./zbox validator-info --validator_id f82ab34a98406b8757f11513361752bab9cb679a5cb130b81
 ```
-Sample Response :  
+Sample Response :
 ```
 id:                f82ab34a98406b8757f11513361752bab9cb679a5cb130b81a4e86cec50eefc3
 url:               https://demo2.zus.network/validator01
@@ -777,32 +773,32 @@ settings:
 #### Kill Blobber
 `./zbox kill-blobber` command deactivates a blobber to avoid storage of data. Required parameters are:
 
-| Parameter          | Required | Description                               
-| ------------------ | -------- | ----------------------------------------- 
-| --blobber_id       | yes      | Blobber Id to kill a specific blobber. Can be retrieved using [List blobbers](#list-blobbers).    
-| --json             | optional | Print Response as json data                            
-| --help             | no       | Provide information about the command 
- 
+| Parameter          | Required | Description
+| ------------------ | -------- | -----------------------------------------
+| --blobber_id       | yes      | Blobber Id to kill a specific blobber. Can be retrieved using [List blobbers](#list-blobbers).
+| --json             | optional | Print Response as json data
+| --help             | no       | Provide information about the command
+
  Sample Command :
 ```
 ./zbox kill-blobber --id $BLOBBER_ID --wallet $CHAIN_OWNER_WALLET
 ```
 Note : Kill Blobber command should be evoked from chain owner wallet only
 
-Sample Response :  
+Sample Response :
 ```
 killed blobber $BLOBBER_ID
 ```
- 
+
 #### Kill Validator
 
-`./zbox kill-validator` command deactivates a specific validator available on the network. Required parameters are : 
+`./zbox kill-validator` command deactivates a specific validator available on the network. Required parameters are :
 
-| Parameter          | Required | Description                               
-| ------------------ | -------- | ----------------------------------------- 
-| --validator_id     | yes      | Validator Id to kill a specific blobber. Can be retrieved using [List all Validators](#list-all-validators).    
-| --json             | optional | Print Response as json data                            
-| --help             | no       | Provide information about the command 
+| Parameter          | Required | Description
+| ------------------ | -------- | -----------------------------------------
+| --validator_id     | yes      | Validator Id to kill a specific blobber. Can be retrieved using [List all Validators](#list-all-validators).
+| --json             | optional | Print Response as json data
+| --help             | no       | Provide information about the command
 
 
 Sample Command :
@@ -888,7 +884,7 @@ Response:
 15691733 / 15691733 [=====================================================================================] 100.00% 32s
 Status completed callback. Type = video/fmp4. Name = raw.samplevideo.mp4
 ```
-##### Multi Upload 
+##### Multi Upload
 
 Use `./zbox upload ` to upload multiple files to allocation at once via json file.
 
@@ -1136,7 +1132,7 @@ zbox download --multidownloadjson ./multi-download.json --allocation $ALLOC
 
 Use `update` command to update content of an existing file in the remote path.
 Like [upload](#upload) command. Only the owner of the allocation or a collaborator
-can update a file. 
+can update a file.
 
 | Parameter     | Required | Description                                          | Default | Valid values |
 | ------------- | -------- | ---------------------------------------------------- | ------- | ------------ |
