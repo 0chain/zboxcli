@@ -75,23 +75,23 @@ jobs:
       - uses: msys2/setup-msys2@v2
         with:
           msystem: ${{matrix.sys}}
-      
+
       - name: Install libraries
         run: |
           pacman -S base-devel git gcc make
-      
+
       - name: Install Clang and Go for MINGW64
         run: |
-          pacman -S  mingw-w64-x86_64-clang mingw-w64-x86_64-go unzip
+          pacman -S  mingw-w64-x86_64-clang mingw-w64-x86_64-go zip
 
       - name: Set environment variables
         run: |
            export GOROOT=/mingw64/lib/go
            export GOPATH=/mingw64
            export PATH=$PATH:$GOROOT/bin
-           
+
            # use clang as a default compiler for CGO
-           go env -w "CC=/mingw64/bin/clang.exe" 
+           go env -w "CC=/mingw64/bin/clang.exe"
 
 
       # - name: Setup go 1.20
@@ -120,7 +120,7 @@ jobs:
       - name: Zip release
         run: |
           copy zbox zbox.exe
-          7z a zbox-windows.zip zbox.exe
+          zip zbox-windows.zip zbox.exe 
 
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
