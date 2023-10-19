@@ -137,7 +137,7 @@ jobs:
 
       - name: Zip release
         run: |
-          copy zbox zbox.exe
+          cp zbox zbox.exe
           7z a zbox-windows.zip zbox.exe
 
       - name: 'Upload Artifact'
