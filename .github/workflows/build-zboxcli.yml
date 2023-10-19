@@ -138,11 +138,13 @@ jobs:
         run: make install
 
       - uses: crazy-max/ghaction-chocolatey@v3
+        with:
+         args: choco install 7zip
 
-      - name: Install 7-Zip
-        run: |
-          choco install 7zip
-        shell: powershell
+      # - name: Install 7-Zip
+      #   run: |
+      #     choco install 7zip
+      #   shell: powershell
 
       - name: Zip release
         run: |
