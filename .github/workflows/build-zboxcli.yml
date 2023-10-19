@@ -137,10 +137,11 @@ jobs:
       - name: Install
         run: make install
 
-      - name: Download and Install 7-Zip
+      - uses: crazy-max/ghaction-chocolatey@v3
+
+      - name: Install 7-Zip
         run: |
-          Invoke-WebRequest -Uri 'https://www.7-zip.org/a/7z2101-x64.msi' -OutFile '7z.msi'
-          Start-Process -Wait -FilePath 'msiexec' -ArgumentList '/i', '7z.msi', '/quiet', '/norestart'
+          choco install 7zip
         shell: powershell
 
       - name: Zip release
