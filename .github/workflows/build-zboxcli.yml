@@ -96,11 +96,38 @@ jobs:
   build-windows:
     name: Build-windows
     runs-on: windows-runner
+    defaults:
+      run:
+        shell: msys2 {0}
+    strategy:
+     matrix:
+      sys: [ MINGW64 ]
     steps:
-      - name: Setup go 1.20
-        uses: actions/setup-go@v2
+      - uses: msys2/setup-msys2@v2
         with:
-          go-version: '1.20' # The Go version to download (if necessary) and use.
+          msystem: ${{matrix.sys}}
+      
+      - name: Install libraries
+        run: |
+          pacman -S base-devel git gcc make
+      
+      - name: Install Clang and Go for MINGW64
+        run: |
+          pacman -S  mingw-w64-x86_64-clang mingw-w64-x86_64-go unzip
+
+      - name: Set environment variables
+        run: |
+           export GOROOT=/mingw64/lib/go
+           export GOPATH=/mingw64
+           export PATH=$PATH:$GOROOT/bin
+           
+           # use clang as a default compiler for CGO
+           go env -w "CC=/mingw64/bin/clang.exe" 
+
+      # - name: Setup go 1.20
+      #   uses: actions/setup-go@v2
+      #   with:
+      #     go-version: '1.20' # The Go version to download (if necessary) and use.
 
       - name: Checkout
         uses: actions/checkout@v2
