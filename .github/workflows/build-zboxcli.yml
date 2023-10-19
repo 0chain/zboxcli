@@ -106,6 +106,15 @@ jobs:
       - uses: msys2/setup-msys2@v2
         with:
           msystem: ${{matrix.sys}}
+
+      - name: Install Chocolatey
+        run: |
+            Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+        shell: powershell
+          
+      - name: Install 7-Zip using Chocolatey
+        run: choco install 7zip -y
+        shell: powershell
       
       - name: Install libraries
         run: |
@@ -137,14 +146,14 @@ jobs:
       - name: Install
         run: make install
 
-      - uses: crazy-max/ghaction-chocolatey@v3
-        with:
-         args: choco install 7zip
+      - name: Install Chocolatey
+        run: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+        shell: powershell
 
-      # - name: Install 7-Zip
-      #   run: |
-      #     choco install 7zip
-      #   shell: powershell
+      - name: Install 7-Zip using Chocolatey
+        run: choco install 7zip -y
+        shell: powershell
 
       - name: Zip release
         run: |
