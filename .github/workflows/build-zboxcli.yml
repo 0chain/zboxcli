@@ -120,6 +120,8 @@ jobs:
            export GOROOT=/mingw64/lib/go
            export GOPATH=/mingw64
            export PATH=$PATH:$GOROOT/bin
+           export PATH=$PATH:/usr/bin/7z
+
            
            # use clang as a default compiler for CGO
            go env -w "CC=/mingw64/bin/clang.exe" 
@@ -137,7 +139,7 @@ jobs:
 
       - name: Zip release
         run: |
-          copy zbox zbox.exe
+          cp zbox zbox.exe
           7z a zbox-windows.zip zbox.exe
         shell: powershell
 
