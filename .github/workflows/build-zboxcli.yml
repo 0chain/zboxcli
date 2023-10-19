@@ -137,9 +137,10 @@ jobs:
       - name: Install
         run: make install
 
-      - name: Install 7-Zip
+      - name: Download and Install 7-Zip
         run: |
-          choco install 7zip
+          Invoke-WebRequest -Uri 'https://www.7-zip.org/a/7z2101-x64.msi' -OutFile '7z.msi'
+          Start-Process -Wait -FilePath 'msiexec' -ArgumentList '/i', '7z.msi', '/quiet', '/norestart'
         shell: powershell
 
       - name: Zip release
