@@ -137,11 +137,16 @@ jobs:
       - name: Install
         run: make install
 
+      - name: Install 7-Zip
+        run: |
+          choco install 7zip
+        shell: powershell
+
       - name: Zip release
         run: |
           cp zbox zbox.exe
           7z a zbox-windows.zip zbox.exe
-        shell: powershell
+        shell: cmd
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v2
