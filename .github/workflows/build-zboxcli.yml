@@ -109,11 +109,11 @@ jobs:
       
       - name: Install libraries
         run: |
-          pacman -S base-devel git gcc make
+          echo 'Y'| pacman -S base-devel git gcc make
       
       - name: Install Clang and Go for MINGW64
         run: |
-          pacman -S  mingw-w64-x86_64-clang mingw-w64-x86_64-go unzip
+         echo 'y'| pacman -S  mingw-w64-x86_64-clang mingw-w64-x86_64-go unzip
 
       - name: Set environment variables
         run: |
