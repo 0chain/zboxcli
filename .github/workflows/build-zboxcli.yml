@@ -139,7 +139,7 @@ jobs:
         run: |
           copy zbox zbox.exe
           7z a zbox-windows.zip zbox.exe
-        shell: pwsh
+        shell: powershell
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v2
