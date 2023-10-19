@@ -1,4 +1,4 @@
-name: BUILD-ZBOXCLI.
+name: BUILD-ZBOXCLI
 
 on:
   workflow_dispatch:
@@ -137,8 +137,9 @@ jobs:
 
       - name: Zip release
         run: |
-          cp zbox zbox.exe
+          copy zbox zbox.exe
           7z a zbox-windows.zip zbox.exe
+        shell: pwsh
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v2
