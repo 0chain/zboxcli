@@ -77,7 +77,7 @@ jobs:
         run: |
           # download dll files
           wget https://github.com/0chain/zboxcli/files/11840033/windows.dll.s.zip
-          echo 'Y' | unzip windows.dll.s.zip
+          unzip -o windows.dll.s.zip
           cp zbox zbox.exe
           zip zbox-windows.zip zbox.exe libgcc_s_seh-1.dll libstdc++-6.dll libwinpthread-1.dll
 
