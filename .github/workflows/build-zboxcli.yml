@@ -1,4 +1,4 @@
-name: BUILD-ZBOXCLI
+name: RELEASE-ZBOXCLI
 
 on:
   workflow_dispatch:
@@ -96,28 +96,51 @@ jobs:
   build-windows:
     name: Build-windows
     runs-on: windows-runner
+    defaults:
+      run:
+        shell: msys2 {0}
+    strategy:
+     matrix:
+      sys: [ MINGW64 ]
     steps:
-      - name: Setup go 1.20
-        uses: actions/setup-go@v2
+      - uses: msys2/setup-msys2@v2
         with:
-          go-version: '1.20' # The Go version to download (if necessary) and use.
+          msystem: ${{matrix.sys}}
 
-      - name: Checkout
-        uses: actions/checkout@v2
+      - name: Install libraries
+        run: |
+          echo 'Y'| pacman -S base-devel git gcc make
+
+      - name: Install Clang and Go for MINGW64
+        run: |
+         echo 'y'| pacman -S  mingw-w64-x86_64-clang mingw-w64-x86_64-go zip
+
+      - name: Set environment variables
+        run: |
+           export GOROOT=/mingw64/lib/go
+           export GOPATH=/mingw64
+           export PATH=$PATH:$GOROOT/bin
+           export PATH=$PATH:/usr/bin/7z
+
+           # use clang as a default compiler for CGO
+           go env -w "CC=/mingw64/bin/clang.exe"
 
       - name: Install
         run: make install
 
       - name: Zip release
         run: |
-          copy zbox zbox.exe
-          7z a zbox-windows.zip zbox.exe
+          # download dll files
+          wget https://github.com/0chain/zboxcli/files/11840033/windows.dll.s.zip
+          unzip windows.dll.s.zip
+          cp zbox zbox.exe
+          zip zbox-windows.zip zbox.exe libgcc_s_seh-1.dll libstdc++-6.dll libwinpthread-1.dll
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v2
         with:
-          name: zbox-windows
-          path: zbox
+          name: zbox-windows.zip
+          path: zbox-windows.zip
           retention-days: 5
 
   build-macos:
@@ -145,4 +168,3 @@ jobs:
           name: zbox-macos
           path: zbox
           retention-days: 5
- 
