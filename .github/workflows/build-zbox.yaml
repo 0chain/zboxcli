@@ -70,6 +70,9 @@ jobs:
            # use clang as a default compiler for CGO
            go env -w "CC=/mingw64/bin/clang.exe"
 
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Install
         run: make install
 
