@@ -3,12 +3,12 @@ on:
   push:
     branches:
       - master
-      - dev
+      - sprint*
       - staging
     tags:
       - 'v*.*.*'
   pull_request:
-
+  workflow_dispatch:
 
 jobs:
   build-linux:
@@ -26,36 +26,10 @@ jobs:
       - name: Setup go 1.20
         uses: actions/setup-go@v2
         with:
-          go-version: '1.20' # The Go version to download (if necessary) and use.
-
-      - name: Set GITHUB_ENV
-        run: |
-          echo "BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
-
-          if [[ "${{github.base_ref}}" == "master" || "${{github.ref}}" == "refs/heads/master" ]]; then
-            echo "TAG=v0.0.0-master" >> $GITHUB_ENV
-          elif  [[ "${{github.base_ref}}" == "dev" || "${{github.ref}}" == "refs/heads/dev" ]]; then
-            echo "TAG=v0.0.0-dev" >> $GITHUB_ENV
-          elif  [[ "${{github.base_ref}}" == "staging" || "${{github.ref}}" == "refs/heads/staging" ]]; then
-            echo "TAG=v0.0.0-staging" >> $GITHUB_ENV
-          else
-            echo "TAG=$(echo ${GITHUB_REF#refs/tags/})" >> $GITHUB_ENV
-          fi
+          go-version: '1.20'
 
       - name: Install
         run: make install
-
-      # - name: Zip release
-      #   run: tar -czvf zbox-linux.tar.gz ./zbox
-
-      # - name: Upload binaries to release
-      #   uses: svenstaro/upload-release-action@v2
-      #   with:
-      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
-      #     file: zbox-linux.tar.gz
-      #     tag: ${{ env.TAG }}
-      #     overwrite: true
-      #     file_glob: true
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v2
@@ -127,34 +101,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Set GITHUB_ENV
-        run: |
-          echo "BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
-
-          if [[ "${{github.base_ref}}" == "master" || "${{github.ref}}" == "refs/heads/master" ]]; then
-            echo "TAG=v0.0.0-master" >> $GITHUB_ENV
-          elif  [[ "${{github.base_ref}}" == "dev" || "${{github.ref}}" == "refs/heads/dev" ]]; then
-            echo "TAG=v0.0.0-dev" >> $GITHUB_ENV
-          elif  [[ "${{github.base_ref}}" == "staging" || "${{github.ref}}" == "refs/heads/staging" ]]; then
-            echo "TAG=v0.0.0-dev" >> $GITHUB_ENV
-          else
-            echo "TAG=$(echo ${GITHUB_REF#refs/tags/})" >> $GITHUB_ENV
-          fi
-
       - name: Install
         run: make install
-
-      # - name: Zip release
-      #   run: tar -czvf zbox-macos.tar.gz ./zbox
-
-      # - name: Upload binaries to release
-      #   uses: svenstaro/upload-release-action@v2
-      #   with:
-      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
-      #     file: zbox-macos.tar.gz
-      #     tag: ${{ env.TAG }}
-      #     overwrite: true
-      #     file_glob: true
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v2
