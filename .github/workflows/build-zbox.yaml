@@ -45,17 +45,17 @@ jobs:
       - name: Install
         run: make install
 
-      - name: Zip release
-        run: tar -czvf zbox-linux.tar.gz ./zbox
+      # - name: Zip release
+      #   run: tar -czvf zbox-linux.tar.gz ./zbox
 
-      - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: zbox-linux.tar.gz
-          tag: ${{ env.TAG }}
-          overwrite: true
-          file_glob: true
+      # - name: Upload binaries to release
+      #   uses: svenstaro/upload-release-action@v2
+      #   with:
+      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
+      #     file: zbox-linux.tar.gz
+      #     tag: ${{ env.TAG }}
+      #     overwrite: true
+      #     file_glob: true
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v2
@@ -143,17 +143,18 @@ jobs:
 
       - name: Install
         run: make install
-      - name: Zip release
-        run: tar -czvf zbox-macos.tar.gz ./zbox
 
-      - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: zbox-macos.tar.gz
-          tag: ${{ env.TAG }}
-          overwrite: true
-          file_glob: true
+      # - name: Zip release
+      #   run: tar -czvf zbox-macos.tar.gz ./zbox
+
+      # - name: Upload binaries to release
+      #   uses: svenstaro/upload-release-action@v2
+      #   with:
+      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
+      #     file: zbox-macos.tar.gz
+      #     tag: ${{ env.TAG }}
+      #     overwrite: true
+      #     file_glob: true
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v2
