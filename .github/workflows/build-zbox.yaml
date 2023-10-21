@@ -29,7 +29,9 @@ jobs:
           go-version: '1.20'
 
       - name: Install
-        run: docker run -v $PWD:/app -w /app golang:1.20 sh -c "make install"
+        run: |
+          lsb_release -a
+          docker run -v $PWD:/app -w /app golang:1.20 sh -c "make install"
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v2
@@ -38,87 +40,87 @@ jobs:
           path: zbox
           retention-days: 5
 
-  build-windows:
-    name: Build-windows
-    runs-on: windows-runner
-    defaults:
-      run:
-        shell: msys2 {0}
-    strategy:
-     matrix:
-      sys: [ MINGW64 ]
-    steps:
-      - uses: msys2/setup-msys2@v2
-        with:
-          msystem: ${{matrix.sys}}
+  # build-windows:
+  #   name: Build-windows
+  #   runs-on: windows-runner
+  #   defaults:
+  #     run:
+  #       shell: msys2 {0}
+  #   strategy:
+  #    matrix:
+  #     sys: [ MINGW64 ]
+  #   steps:
+  #     - uses: msys2/setup-msys2@v2
+  #       with:
+  #         msystem: ${{matrix.sys}}
 
-      - name: Install libraries
-        run: |
-          echo 'Y'| pacman -S base-devel git gcc make
+  #     - name: Install libraries
+  #       run: |
+  #         echo 'Y'| pacman -S base-devel git gcc make
 
-      - name: Install Clang and Go for MINGW64
-        run: |
-         echo 'y'| pacman -S  mingw-w64-x86_64-clang mingw-w64-x86_64-go zip unzip
+  #     - name: Install Clang and Go for MINGW64
+  #       run: |
+  #        echo 'y'| pacman -S  mingw-w64-x86_64-clang mingw-w64-x86_64-go zip unzip
 
-      - name: Set environment variables
-        run: |
-           export GOROOT=/mingw64/lib/go
-           export GOPATH=/mingw64
-           export PATH=$PATH:$GOROOT/bin
-           export PATH=$PATH:/usr/bin/7z
+  #     - name: Set environment variables
+  #       run: |
+  #          export GOROOT=/mingw64/lib/go
+  #          export GOPATH=/mingw64
+  #          export PATH=$PATH:$GOROOT/bin
+  #          export PATH=$PATH:/usr/bin/7z
 
-           # use clang as a default compiler for CGO
-           go env -w "CC=/mingw64/bin/clang.exe"
+  #          # use clang as a default compiler for CGO
+  #          go env -w "CC=/mingw64/bin/clang.exe"
 
-      - name: Checkout
-        uses: actions/checkout@v2
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
 
-      - name: Install
-        run: make install
+  #     - name: Install
+  #       run: make install
 
-      - name: Zip release
-        run: |
-          # download dll files
-          wget https://github.com/0chain/zboxcli/files/11840033/windows.dll.s.zip
-          unzip -o windows.dll.s.zip
-          cp zbox zbox.exe
-          zip zbox-windows.zip zbox.exe libgcc_s_seh-1.dll libstdc++-6.dll libwinpthread-1.dll
+  #     - name: Zip release
+  #       run: |
+  #         # download dll files
+  #         wget https://github.com/0chain/zboxcli/files/11840033/windows.dll.s.zip
+  #         unzip -o windows.dll.s.zip
+  #         cp zbox zbox.exe
+  #         zip zbox-windows.zip zbox.exe libgcc_s_seh-1.dll libstdc++-6.dll libwinpthread-1.dll
 
-      - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v2
-        with:
-          name: zbox-windows.zip
-          path: zbox-windows.zip
-          retention-days: 5
+  #     - name: 'Upload Artifact'
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: zbox-windows.zip
+  #         path: zbox-windows.zip
+  #         retention-days: 5
 
-      - name: cleanup workspace
-        run: |
-            rm -Recurse ${{github.workspace}}\*
-        shell: powershell
+  #     - name: cleanup workspace
+  #       run: |
+  #           rm -Recurse ${{github.workspace}}\*
+  #       shell: powershell
 
-  build-macos:
-    name: Build-macos
-    runs-on: macos-runner
-    steps:
+  # build-macos:
+  #   name: Build-macos
+  #   runs-on: macos-runner
+  #   steps:
 
-      - name: Setup go 1.20
-        uses: actions/setup-go@v2
-        with:
-          go-version: '1.20' # The Go version to download (if necessary) and use.
+  #     - name: Setup go 1.20
+  #       uses: actions/setup-go@v2
+  #       with:
+  #         go-version: '1.20' # The Go version to download (if necessary) and use.
 
-      - name: Checkout
-        uses: actions/checkout@v2
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
 
-      - name: Install
-        run: make install
+  #     - name: Install
+  #       run: make install
 
-      - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v2
-        with:
-          name: zbox-macos
-          path: zbox
-          retention-days: 5
+  #     - name: 'Upload Artifact'
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: zbox-macos
+  #         path: zbox
+  #         retention-days: 5
 
-      - name: cleanup workspace
-        run: |
-            rm -rf ./*
+  #     - name: cleanup workspace
+  #       run: |
+  #           rm -rf ./*
