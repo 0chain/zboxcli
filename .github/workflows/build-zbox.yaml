@@ -29,7 +29,7 @@ jobs:
           go-version: '1.20'
 
       - name: Install
-        run: make install
+        run: docker run -v $PWD:/app -w /app golang:1.20 sh -c "make install"
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v2
