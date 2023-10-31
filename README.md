@@ -1,14 +1,20 @@
 # zbox - a CLI for Züs dStorage
 
-zbox is a command line interface (CLI) tool to understand the capabilities of Züs dStorage and prototype your app. The utility is built using Züs [GoSDK](https://github.com/0chain/gosdk) .
+zbox is a command-line interface (CLI) tool to understand the capabilities of Züs dStorage and prototype your app. The utility is built using Züs [GoSDK](https://github.com/0chain/gosdk) .
+
 ![Storage](https://user-images.githubusercontent.com/65766301/120052450-0ab66700-c043-11eb-91ab-1f7aa69e133a.png)
 
-- [zbox - a CLI for Züs dStorage](#zbox---a-cli-for-züs-dstorage)
+## Table of Contents
   - [Züs Overview](#züs-overview)
-  - [Installation Instructions](#installation-instructions)
-    - [Build Instructions for Linux Windows Mac](#build-instructions-for-linux-windows-mac)
-    - [Other Platform Builds](#other-platform-builds)
-    - [Use custom miner/sharder](#use-custom-minersharder)
+- [zbox - a CLI for Züs dStorage](#zbox---a-cli-for-züs-dstorage)
+  - [Get Started](https://github.com/0chain/zboxcli/wiki/Install-zboxcli)
+     - [Step1: Install zboxcli](https://github.com/0chain/zboxcli/wiki/Install-zboxcli)
+     - [Step2: Configure zbox network](https://github.com/0chain/zboxcli/wiki/Configure-zbox-network)
+     - [Step3: Create new allocation](#create-new-allocation)
+  - [Build zboxcli from source](https://github.com/0chain/zboxcli/wiki/Build-Instructions)
+     - [Build zboxcli for Linux and Mac](https://github.com/0chain/zboxcli/wiki/Build-Instructions#build-zbox-on-linux-and-mac)
+     - [Build zboxcli for Windows](https://github.com/0chain/zboxcli/wiki/Build-Windows)
+     - [Other Platform Builds](https://github.com/0chain/zboxcli/wiki/Alternative-Platform-Builds)
   - [Running zbox](#running-zbox)
     - [Global Flags](#global-flags)
   - [Commands](#commands)
@@ -16,7 +22,7 @@ zbox is a command line interface (CLI) tool to understand the capabilities of Z�
       - [Create new allocation](#create-new-allocation)
         - [Free storage allocation](#free-storage-allocation)
       - [Update allocation](#update-allocation)
-        - [Forbid Allocation](#forbid-allocation)
+        - [Forbid Allocation](#forbid-operations-on-allocation)
         - [Add Blobber](#add-blobber)
         - [Replace Blobber](#replace-blobber)
       - [Cancel allocation](#cancel-allocation)
@@ -91,47 +97,15 @@ Users can also add their own servers to the network to operate in a hybrid cloud
 
 [The QoS protocol](https://medium.com/0chain/qos-protocol-weekly-debrief-april-12-2023-44524924381f) is time-based where the blockchain challenges a provider on a file that the provider must respond within a certain time based on its size to pass. This forces the provider to have a good server and data center performance to earn rewards and income.
 
-The [privacy protocol](https://zus.network/build) from Züs is unique where a user can easily share their encrypted data with their business partners, friends, and family through a proxy key sharing protocol, where the key is given to the providers, and they re-encrypt the data using the proxy key so that only the recipient can decrypt it with their private key.
+The [privacy protocol](https://zus.network/build) from Züs is unique. Users can easily share their encrypted data with their business partners, friends, and family through a proxy key-sharing protocol. In this method, the key is provided to the providers, and they re-encrypt the data using the proxy key, ensuring that only the intended recipient can decrypt it with their private key.
 
 Züs has ecosystem apps to encourage traditional storage consumption such as [Blimp](https://blimp.software/), a S3 server and cloud migration platform, and [Vult](https://vult.network/), a personal cloud app to store encrypted data and share privately with friends and family, and [Chalk](https://chalk.software/), a high-performance story-telling storage solution for NFT artists.
 
 Other apps are [Bolt](https://bolt.holdings/), a wallet that is very secure with air-gapped 2FA split-key protocol to prevent hacks from compromising your digital assets, and it enables you to stake and earn from the storage providers; [Atlus](https://atlus.cloud/), a blockchain explorer and [Chimney](https://demo.chimney.software/), which allows anyone to join the network and earn using their server or by just renting one, with no prior knowledge required.
 
-## Installation Instructions
-
-### [Build Instructions for Linux Windows Mac](https://github.com/0chain/zboxcli/wiki/Build-Instructions)
-
-### [Other Platform Builds](https://github.com/0chain/zboxcli/wiki/Alternative-Platform-Builds)
-
-### Use custom miner/sharder
-
-As mentioned in build guides, a ./zcn folder is created to store configuration files for zboxcli. Here is a sample network config file
-
-```
-  ---
-  block_worker: https://demo.zus.network/dns
-  signature_scheme: bls0chain
-  min_submit: 50 # in percentage
-  min_confirmation: 50 # in percentage
-  confirmation_chain_length: 3
-```
-
-A blockWorker is used to connect to the network instead of giving network details directly, It will fetch the network details automatically from the blockWorker's network API. By default it will use the miner/sharder values which it will get using the `block_worker_url/network`. In case you want to override those values and give custom miner/sharder to use, You have to create a `network.yaml` in your ~/.zcn (config) folder and paste the miner/sharder values in below format.
-
-```
-miners:
-  - http://localhost:7071
-  - http://localhost:7072
-  - http://localhost:7073
-sharders:
-  - http://localhost:7171
-```
-
-Note: This is helpful for the Mac OS users running local cluster and having trouble with docker internal IPs (block_worker return docker IPs in local)
-
 ## Running zbox
 
-When you run the `./zbox` command in terminal with no arguments, it will list all the available commands and the global flags.For working of specific command check [commands](#commands) section.
+When you execute the ./zbox command in the terminal without any arguments, it will display a comprehensive list of all available commands along with the global flags. For the functionality of a particular command, refer to the [commands](#commands) section.
 
 ```
 Usage:
@@ -171,6 +145,7 @@ Available Commands:
   newallocation      Creates a new allocation
   recent-refs        get list of recently added refs
   rename             rename an object(file/folder) on blobbers
+  rollback           rollback file to previous version
   rp-create          Create read pool if missing
   rp-info            Read pool information.
   rp-lock            Lock some tokens in read pool.
@@ -213,7 +188,7 @@ Flags:
 
 ### Global Flags
 
-Global Flags are parameters in zbox that can be used with any command to override the default configuration.zbox supports the following global parameters.
+Global Flags are versatile flags within zbox which can be used alongside any command. zbox supports the global parameters mentioned below for overriding the default zbox configuration.
 
 | Flags                      | Description                                                                                                    | Usage                                            |
 | -------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
@@ -228,32 +203,17 @@ Global Flags are parameters in zbox that can be used with any command to overrid
 
 ## Commands
 
-Note in this document, we will only show the commands for particular functionalities,
-the response will vary depending on your usage and may not be provided in all places.
-To get a more descriptive view of all the zbox functionalities check zbox cli
-documentation at docs.zus.network.
+Below is a comprehensive table listing all zbox commands along with their respective functionalities for reference.
 
 ### Creating and Managing Allocations
 
 #### Create new allocation
 
-Command `newallocation` reserves hard disk space on the blobbers. Later `upload`
-can be used to save files to the blobber. `newallocation` has three modes triggered
-by the presence or absence of the `cost`
-and `free_storage` parameters.
+The 'newallocation' command is used to reserve storage space on the blobbers. Later [`upload`](#upload)
+can be used to upload files on the reserved storage space. Below is a list of flags that can be specified alongside 
+the 'newallocation' command.
 
-- `cost` Converts `newallocation` into a query that returns the cost of the allocation
-  determined by the remaining parameters.
-- [`free_storage`](#free-storage-allocation) Creates an allocation using a free storage marker. All other
-  parameters except `cost` will be ignored. The allocation settings will be set
-  automatically by `0chain`, from preconfigured values.
-- `otherwise` Creates an allocation applying the settings indicated by the
-  remaining parameters.
-- Use `owner` if you want to create and fund an allocation for someone else. If
-  using this option then you need to provide the new owner's public key. Otherwise,
-  the owner defaults to the client.
-
-| Parameter              | Description                                                             | Default        | Valid Values |
+| Flags              | Description                                                             | Default        | Valid Values |
 | ---------------------- | ----------------------------------------------------------------------- | -------------- | ------------ |
 | allocationFileName     | local file to store allocation information                              | allocation.txt | file path    |
 | cost                   | returns the cost of the allocation, no allocation created               |                | flag         |
@@ -263,11 +223,10 @@ and `free_storage` parameters.
 | owner_public_key       | public key, use for funding an allocation for another                   |                | string       |
 | lock                   | lock write pool with given number of tokens                             |                | float        |
 | parity                 | number of parity shards, effects availability                           | 2              | int          |
-| read_price             | filter blobbers by read price range                                     | 0-inf          | range        |
+| read_price             | select blobbers by provided read price range, use form 0.5-1.5| 0-inf          | range        |
 | size                   | size of space reserved on blobbers                                      | 2147483648     | bytes        |
 | usd                    | give token value in USD                                                 |                | flag         |
 | write_price            | filter blobbers by write price range                                    | 0-inf          | range        |
-| false                  | bool                                                                    |
 | third_party_extendable | specify if the allocation can be extended by users other than the owner | false          | bool         |
 | forbid_upload          | specify if users cannot upload to this allocation                       | false          | bool         |
 | forbid_delete          | specify if the users cannot delete objects from this allocation         | false          | bool         |
@@ -275,6 +234,8 @@ and `free_storage` parameters.
 | forbid_move            | specify if the users cannot move objects from this allocation           | false          | bool         |
 | forbid_copy            | specify if the users cannot copy object from this allocation            | false          | bool         |
 | forbid_rename          | specify if the users cannot rename objects in this allocation           | false          | bool         |
+| preferred_blobbers          | specify a coma seperated list of preferred blobbers for hosting your allocation         |           | string         |
+| name          | Specify name for the allocation      |           | string         |
 
 <details>
   <summary>newallocation </summary>
@@ -292,10 +253,47 @@ and `free_storage` parameters.
 
 </details>
 
+##### Allocation with default values
+
+To create a new allocation with default values, use `newallocation` with a `--lock` flag to add
+some tokens to the write pool . On success a related write pool is created and the allocation
+information is stored under `$HOME/.zcn/allocation.txt`.
+
+Sample Command:
+```shell
+./zbox newallocation --lock 0.5
+```
+Sample Response:
+```
+Allocation created : d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
+```
+##### Allocation with Custom values
+
+To create a new allocation with custom values. Pass the necessary custom values as flags alongside the `newallocation` command with  `--lock` flag to create custom allocation. Below is a list of custom values that can be passed as flags. 
+
+| Flags                  | Description                                                  | Default        | Valid Values |
+| ---------------------- | ------------------------------------------------------------ | -------------- | ------------ |
+| data                   | specify then number of data shards, effects upload and download speeds    | 2              | int          |
+| parity                 | specify the number of parity shards, effects availability                | 2              | int          |
+| read_price             | select blobbers by specified read price range, use form 0.5-1.5 | 0-inf          | range        |
+| size                   | specify storage size to reserve on blobbers                           | 2147483648     | bytes        |
+| write_price            | select blobbers by specified write price range ,use form 1.5-2.5                        | 0-inf          | range        |
+| name          | Specify name for the allocation      |           | string         |
+| lock                   | lock write pool with given number of tokens                             |                | float        |
+
+Sample Command:
+```shell
+./zbox newallocation --name files --data 3 --parity 3 --size 100000000 --lock 0.2 --read_price 0.5-1.5 --write_price 1.5-2.5
+```
+Sample Response:
+```shell
+Allocation created : d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
+```
+
 ##### Free storage allocation
 
-Entities can give free `0chain` storage in the form of markers. A marker takes the
-form of a json file
+Entities can give free `Züs` storage in the form of markers. A marker takes the
+form of a json file.
 
 ```json
 {
@@ -314,64 +312,73 @@ form of a json file
   and a new read pool; the ratio of this split configured on the blockchain.
 - `timestamp` A unique timestamp. Used to prevent multiple applications of the same marker.
 - `signature` Signed by the assigner, validated using the stored public key on the blockchain.
-  All allocation settings, other than `lock`, will be set automatically by 0chain.
+  All allocation settings, other than `lock`, will be set automatically by Züs .
   Once created, an allocation funded by a free storage marker becomes identical to
   any other allocation; Its history forgotten.
 
+Sample Command:
 ```shell
 ./zbox newallocation --free_allocation markers/referal_marker.json
 ```
-
+Sample Response:
 ```shell
 Allocation created : d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
 ```
+To lock tokens with the free storage marker, simply supply the `lock` flag with desired amount of tokens.
 
-Example
-
-To create a new allocation with default values,use `newallocation` with a `--lock` flag to add
-some tokens to the write pool .On success a related write pool is created and the allocation
-information is stored under `$HOME/.zcn/allocation.txt`.
-
-```shell
-./zbox newallocation --lock 0.5
-```
-
-To use a free storage marker, you only need to provide the path to the marker file.
-
+Sample Command:
 ```shell
 ./zbox newallocation --lock 0.5 --free_storage markers/my_marker.json
 ```
-
-Response:
-
+Sample Response:
 ```
 Allocation created : d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
+```
+##### Allocation with forbid operations.
+
+There are various operations which you can forbid when you create a new allocation. Below is list of operations that can be forbidded:
+
+| Parameter       | Description                                                  |
+| --------------- | ------------------------------------------------------------ |
+| --forbid_copy   | specify if the users cannot copy object from this allocation |
+| --forbid_update | specify if the users cannot update objects in this allocation |
+| --forbid_delete | specify if the users cannot delete objects from this allocation |
+| --forbid_move   | specify if the users cannot move objects from this allocation |
+| --forbid_rename | specify if the users cannot rename objects in this allocation |
+| --forbid_upload | specify if users cannot upload to this allocation            |
+
+Here is a sample command for --forbid_delete. Other forbid parameters can be specified the same way.
+
+Sample Command:
+```shell
+./zbox newallocation --lock 0.5 --allocation $ALLOCATION_ID --forbid_delete
+```
+Sample Response :
+```shell
+Allocation created : d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
+```
+To Unforbid a specific operation after forbidding:
+
+Sample Command:
+```shell
+./zbox updateallocation --allocation $ALLOCATION_ID --forbid_delete false
 ```
 
 #### Update allocation
 
-`updateallocation` updates allocation settings. It has two modes depending on
-the presence of the `free_storage` field.
-
-- `free_storage` Uses a free storage marker to fund this allocation update; settings
-  predefined by `0chain`. See [newallocation](#free-storage-allocation) for further details.
-- `otherwise` Update an allocation applying the settings indicated by the
-  remaining parameters.
-
-If not a `free_storage` update, then tokens will come from those locked.
-Further we can add a blobber to the allocation,
-adding a blobber will allow a blobber to be removed.
-An increase in blobber count will increment the parity shards.
+The 'updateallocation' command updates allocation settings. Below is a list of flags that can be specified alongside 
+the 'updateallocation' command.
 
 | Parameter      | Required | Description                                                          | Valid Values |
 | -------------- | -------- | -------------------------------------------------------------------- | ------------ |
 | allocation     | yes      | allocation id                                                        | string       |
 | free_storage   |          | free storage marker file                                             | string       |
 | lock           | yes\*    | lock additional tokens in write pool                                 | int          |
-| update_terms   |          | will update the allocation with the latest blobber terms             | boolean      |
+| update_terms   |          | Update the allocation with the latest blobber terms.                 | boolean      |
 | size           |          | adjust allocation size                                               | bytes        |
 | add_blobber    |          | add a new blobber to the allocation, required for remove_blobber     | string       |
-| remove_blobber |          | remove a blobber from the allocation, requires an add_blobber option | string2      |
+| remove_blobber |          | remove a blobber from the allocation, requires an add_blobber option | string       |
+| extend         |          | (default false) adjust storage expiration time, duration             | boolean
 
 `*` only required if free_storage not set.
 | third_party_extendable | specify if the allocation can be extended by users other than the owner | false | bool
@@ -396,8 +403,10 @@ An increase in blobber count will increment the parity shards.
 
 </details>
 
+##### Update allocation size
+
 ```
-./zbox updateallocation --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac --expiry 48h --size 4096
+./zbox updateallocation --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac --size 4096
 ```
 
 ```shell
@@ -409,10 +418,16 @@ Output:
 ```
 Allocation updated with txId : fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
 ```
-##### Forbid Allocation
 
-There are various operations which you can forbid on an allocation. Forbid flag works with [update allocation](#update-allocation) command.
-Here are the operations:
+##### Update allocation with free storage marker
+
+Use a free storage marker to fund the allocation update. See [Free storage allocation]() for further details.
+
+##### Forbid operations on Allocation
+
+The "forbid" flag can be used in conjunction with the `updateallocation` command for restricting different type of operations on an allocation.
+
+Here is a list of operations that can be forbidded:
 
 | Parameter       | Description                                                  |
 | --------------- | ------------------------------------------------------------ |
@@ -423,7 +438,7 @@ Here are the operations:
 | --forbid_rename | specify if the users cannot rename objects in this allocation |
 | --forbid_upload | specify if users cannot upload to this allocation            |
 
-Here is a sample command for --forbid_upload .Other parameters can be done the same way.
+Here is a sample command for --forbid_upload.
 
 ```
 ./zbox updateallocation --allocation $ALLOC --forbid_upload
@@ -445,7 +460,7 @@ Sample Command:
 ```
 ##### Add Blobber
 
-Use `add_blobber` flag with [update allocation](#update-allocation) command to add blobber to allocation.The new blobber will be added as a parity blobber.For more details [check how a file is stored on blobbers](https://docs.zus.network/concepts/store).
+Use `add_blobber` flag with [update allocation](#update-allocation) command to add blobber to allocation. The new blobber will be added as a parity blobber. For more details [check how a file is stored on blobbers](https://docs.zus.network/concepts/store).
 
 Here are the necessary parameters for adding blobber.
 
