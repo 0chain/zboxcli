@@ -1,91 +1,21 @@
 # zbox - a CLI for Züs dStorage
 
-zbox is a command-line interface (CLI) tool to understand the capabilities of Züs dStorage and prototype your app. The utility is built using Züs [GoSDK](https://github.com/0chain/gosdk) .
-
-![Storage](https://user-images.githubusercontent.com/65766301/120052450-0ab66700-c043-11eb-91ab-1f7aa69e133a.png)
+zbox is a command-line interface (CLI) tool to understand the capabilities of Züs dStorage and prototype your app. The tool is built using Züs [GoSDK](https://github.com/0chain/gosdk) .
 
 ## Table of Contents
-  - [Züs Overview](#züs-overview)
+- [Züs Overview](#züs-overview)
 - [zbox - a CLI for Züs dStorage](#zbox---a-cli-for-züs-dstorage)
+  - [Architecture](#architecture)
   - [Get Started](https://github.com/0chain/zboxcli/wiki/Install-zboxcli)
-     - [Step1: Install zboxcli](https://github.com/0chain/zboxcli/wiki/Install-zboxcli)
-     - [Step2: Configure zbox network](https://github.com/0chain/zboxcli/wiki/Configure-zbox-network)
-     - [Step3: Create new allocation](#create-new-allocation)
-  - [Build zboxcli from source](https://github.com/0chain/zboxcli/wiki/Build-Instructions)
-     - [Build zboxcli for Linux and Mac](https://github.com/0chain/zboxcli/wiki/Build-Instructions#build-zbox-on-linux-and-mac)
-     - [Build zboxcli for Windows](https://github.com/0chain/zboxcli/wiki/Build-Windows)
-     - [Other Platform Builds](https://github.com/0chain/zboxcli/wiki/Alternative-Platform-Builds)
-  - [Running zbox](#running-zbox)
-    - [Global Flags](#global-flags)
-  - [Commands](#commands)
+     - [1. Installation](#1-installation)
+     - [2. Configure zbox network](#2-configure-zbox-network)
+     - [3. Create wallet ](#3-create-wallet)
+     - [4. Create new allocation](#4-create-new-allocation)
+  - [Global Flags](#global-flags)
+  - [Commands Table](#commands-table)
     - [Creating and Managing Allocations](#creating-and-managing-allocations)
-      - [Create new allocation](#create-new-allocation)
-        - [Free storage allocation](#free-storage-allocation)
-      - [Update allocation](#update-allocation)
-        - [Forbid Allocation](#forbid-operations-on-allocation)
-        - [Add Blobber](#add-blobber)
-        - [Replace Blobber](#replace-blobber)
-      - [Cancel allocation](#cancel-allocation)
-      - [Finalise allocation](#finalise-allocation)
-      - [List blobbers](#list-blobbers)
-      - [Detailed blobber information](#detailed-blobber-information)
-      - [List all files](#list-all-files)
-      - [List owner's allocations](#list-owners-allocations)
-      - [Update blobber settings](#update-blobber-settings)
-      - [List All Validators](#list-all-validators)
-      - [Get Validator Configuration](#get-validator-configuration)
-      - [Kill Blobber](#kill-blobber)
-      - [Kill Validator](#kill-validator)
     - [Uploading and Managing files](#uploading-and-managing-files)
-      - [Upload](#upload)
-        - [Upload file with no encryption](#upload-file-with-no-encryption)
-        - [Upload file with encryption](#upload-file-with-encryption)
-        - [Upload file with web-streaming](#upload-file-with-web-streaming)
-        - [Multi Upload](#multi-upload)
-      - [Live Streaming](#live-streaming)
-      - [Feed](#feed)
-        - [Stream](#stream)
-      - [Download](#download)
-        - [Multi Download](#multi-download)
-      - [Update](#update)
-      - [Delete](#delete)
-      - [Share](#share)
-        - [Public share](#public-share)
-        - [Encrypted share](#encrypted-share)
-        - [Directory share](#directory-share)
-        - [share-encrypted revoke](#share-encrypted-revoke)
-      - [List](#list)
-      - [Copy](#copy)
-      - [Move](#move)
-      - [Sync](#sync)
-      - [Get differences](#get-differences)
-      - [Get wallet](#get-wallet)
-      - [Get](#get)
-      - [Get metadata](#get-metadata)
-      - [Rename](#rename)
-      - [Stats](#stats)
-      - [Repair](#repair)
-      - [Sign data](#sign-data)
-      - [Streaming](#streaming)
-        - [How it works:](#how-it-works)
-        - [Usage](#usage)
     - [Lock and Unlock Tokens](#lock-and-unlock-tokens)
-      - [Challenge pool information](#challenge-pool-information)
-      - [Create read pool](#create-read-pool)
-      - [Collect rewards](#collect-rewards)
-      - [Read pool info](#read-pool-info)
-      - [Lock tokens into read pool](#lock-tokens-into-read-pool)
-      - [Unlock tokens from read pool](#unlock-tokens-from-read-pool)
-      - [Storage SC configurations](#storage-sc-configurations)
-      - [Stake pool info](#stake-pool-info)
-      - [Lock tokens into stake pool](#lock-tokens-into-stake-pool)
-      - [Unlock tokens from stake pool](#unlock-tokens-from-stake-pool)
-      - [Stake pools info of user](#stake-pools-info-of-user)
-      - [Write pool info](#write-pool-info)
-      - [Lock tokens into write pool](#lock-tokens-into-write-pool)
-      - [Unlock tokens from write pool](#unlock-tokens-from-write-pool)
-      - [Download cost](#download-cost)
-      - [Upload cost](#upload-cost)
   - [Troubleshooting](#troubleshooting)
 
 ## Züs Overview
@@ -103,109 +33,133 @@ Züs has ecosystem apps to encourage traditional storage consumption such as [Bl
 
 Other apps are [Bolt](https://bolt.holdings/), a wallet that is very secure with air-gapped 2FA split-key protocol to prevent hacks from compromising your digital assets, and it enables you to stake and earn from the storage providers; [Atlus](https://atlus.cloud/), a blockchain explorer and [Chimney](https://demo.chimney.software/), which allows anyone to join the network and earn using their server or by just renting one, with no prior knowledge required.
 
-## Running zbox
+## Architecture
 
-When you execute the ./zbox command in the terminal without any arguments, it will display a comprehensive list of all available commands along with the global flags. For the functionality of a particular command, refer to the [commands](#commands) section.
+`zbox` can be configured to work with any Züs network. It uses a config and a wallet file stored on the local filesystem.
 
-```
-Usage:
-  zbox [command]
+For most transactions, `zbox` uses the `0dns` to discover the network nodes, then creates and submits transaction(s) to the miners, waits for transaction confirmation on the sharders and finally store user data files on blobbers.
 
-Available Commands:
-  add                Adds free storage assigner
-  alloc-cancel       Cancel an allocation
-  alloc-fini         Finalize an expired allocation
-  bl-info            Get blobber info
-  bl-update          Update blobber settings by its delegate_wallet owner
-  collect-reward     Collect accrued rewards for a stake pool.
-  completion         Generate the autocompletion script for the specified shell
-  copy               copy an object(file/folder) to another folder on blobbers
-  cp-info            Challenge pool information.
-  createdir          Create directory
-  decrypt            Decrypt text with passphrase
-  delete             delete file from blobbers
-  download           download file from blobbers
-  feed               download segment files from remote live feed, and upload
-  get-diff           Get difference of local and allocation root
-  get-download-cost  Get downloading cost
-  get-mpt            Directly view blockchain data
-  get-upload-cost    Get uploading cost
-  getallocation      Gets the allocation info
-  getwallet          Get wallet information
-  help               Help about any command
-  kill-blobber       punitively deactivate a blobber
-  kill-validator     punitively deactivate a validator
-  list               list files from blobbers
-  list-all           list all files from blobbers
-  listallocations    List allocations for the client
-  ls-blobbers        Show active blobbers in storage SC.
-  ls-validators      Show active Validators.
-  meta               get meta data of files from blobbers
-  move               move an object(file/folder) to another folder on blobbers
-  newallocation      Creates a new allocation
-  recent-refs        get list of recently added refs
-  rename             rename an object(file/folder) on blobbers
-  rollback           rollback file to previous version
-  rp-create          Create read pool if missing
-  rp-info            Read pool information.
-  rp-lock            Lock some tokens in read pool.
-  rp-unlock          Unlock some expired tokens in a read pool.
-  sc-config          Show storage SC configuration.
-  share              share files from blobbers
-  shutdown-blobber   deactivate a blobber
-  shutdown-validator deactivate a validator
-  sign-data          Sign given data
-  sp-info            Stake pool information.
-  sp-lock            Lock tokens lacking in stake pool.
-  sp-unlock          Unlock tokens in stake pool.
-  sp-user-info       Stake pool information for a user.
-  start-repair       start repair file to blobbers
-  stats              stats for file from blobbers
-  stream             capture video and audio streaming form local devices, and upload
-  sync               Sync files to/from blobbers
-  transferallocation Transfer an allocation from one account to another
-  update             update file to blobbers
-  updateallocation   Updates allocation's expiry and size
-  upload             upload file to blobbers
-  validator-info     Get validator info
-  validator-update   Update validator settings by its delegate_wallet owner
-  version            Prints version information
-  wp-lock            Lock some tokens in write pool.
-  wp-unlock          Unlock some expired tokens in a write pool.
+![zboxcli architecture diagram](https://github.com/0chain/zboxcli/assets/65766301/5aeadfaf-e259-4524-bf31-1d1a2f39c563)
 
-Flags:
-      --config string              config file (default is config.yaml)
-      --configDir string           configuration directory (default is $HOME/.zcn)
-      --fee float                  transaction fee for the given transaction (if unset, it will be set to blockchain min fee)
-  -h, --help                       help for zbox
-      --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --silent                     Do not show interactive sdk logs (shown by default)
-      --wallet string              wallet file (default is wallet.json)
-      --wallet_client_id string    wallet client_id
-      --wallet_client_key string   wallet client_key
-      --withNonce int              nonce that will be used in transaction (default is 0)
-```
+## Getting started
 
+### 1. Installation
+
+For detailed steps on the installation, follow the guides below:
+
+ - [Install zboxcli](https://github.com/0chain/zboxcli/wiki/Install-zboxcli)
+ - [Build zboxcli for Linux and Mac](https://github.com/0chain/zboxcli/wiki/Build-Instructions#build-zbox-on-linux-and-mac)
+ - [Build zboxcli for Windows](https://github.com/0chain/zboxcli/wiki/Build-Windows)
+ - [Other Platform Builds](https://github.com/0chain/zboxcli/wiki/Alternative-Platform-Builds)
+
+### 2. Configure zbox network  
+
+Configuration for the Züs network by default is stored in `network/config.yaml` file of the zbox repo which we will copy to a new config.yaml file in our local system. For detailed steps, follow the guide below:
+
+- [Configure zbox network](https://github.com/0chain/zboxcli/wiki/Configure-zbox-network) 
+
+### 3. Create wallet 
+
+You need to have a wallet with ZCN tokens available for performing zboxcli operations.
+
+Create and get test tokens into your wallet using the zwallet CLI tool. If you have not installed zwallet cli, follow the guides below:
+
+- [Install zwalletcli](https://github.com/0chain/zwalletcli/wiki/Install-zwalletcli)
+- [Create wallet](https://github.com/0chain/zwalletcli#creating-wallet---any-command)
+- [Get Tokens](https://github.com/0chain/zwalletcli#getting-tokens-with-faucet-smart-contract---faucet)
+
+### 4. Create new allocation
+
+Creating a new allocation reserves storage space on the blobbers, which can later be utilized for uploading files. For detailed steps, follow the guide below:
+
+- [Create new allocation](#create-new-allocation)
+ 
 ### Global Flags
 
 Global Flags are versatile flags within zbox which can be used alongside any command. zbox supports the global parameters mentioned below for overriding the default zbox configuration.
 
 | Flags                      | Description                                                                                                    | Usage                                            |
 | -------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| --config string            | Specify a zbox configuration file (default is [$HOME/.zcn/config.yaml](#zcnconfigyaml))                        | zbox [command] --config config1.yaml             |
-| --configDir string         | Specify a zbox configuration directory (default is $HOME/.zcn)                                                 | zbox [command] --configDir /$HOME/.zcn2          |
-| -h, --help                 | Gives more information about a particular command.                                                             | zbox [command] --help                            |
-| --network string           | Specify a network file to overwrite the network details(default is [$HOME/.zcn/network.yaml](#zcnnetworkyaml)) | zbox [command] --network network1.yaml           |
-| --verbose                  | Provides additional details as to what the particular command is doing.                                        | zbox [command] --silent                         |
-| --wallet string            | Specify a wallet file or 2nd wallet (default is $HOME/.zcn/wallet.json)                                        | zbox [command] --wallet wallet2.json             |
-| --wallet_client_id string  | Specify a wallet client id (By default client_id specified in $HOME/.zcn/wallet.json is used)                  | zbox [command] --wallet_client_id <client_id>    |
-| --wallet_client_key string | Specify a wallet client_key (By default client_key specified in $HOME/.zcn/wallet.json is used)                | zbox [command] --wallet_client_key < client_key> |
+| --config string            | Specify a zbox configuration file (default is [$HOME/.zcn/config.yaml](#zcnconfigyaml))                        | `./zbox [command] --config config1.yaml`             |
+| --configDir string         | Specify a zbox configuration directory (default is $HOME/.zcn)                                                 | `./zbox [command] --configDir /$HOME/.zcn2`          |
+| -h, --help                 | Gives more information about a particular command.                                                             | `./zbox [command] --help`                            |
+| --network string           | Specify a network file to overwrite the network details(default is [$HOME/.zcn/network.yaml](#zcnnetworkyaml)) | `./zbox [command] --network network1.yaml`           |
+| --verbose                  | Provides additional details as to what the particular command is doing.                                        | `./zbox [command] --silent`                         |
+| --wallet string            | Specify a wallet file or 2nd wallet (default is $HOME/.zcn/wallet.json)                                        | `./zbox [command] --wallet wallet2.json`             |
+| --wallet_client_id string  | Specify a wallet client id (By default client_id specified in $HOME/.zcn/wallet.json is used)                  | `./zbox [command] --wallet_client_id <client_id>`    |
+| --wallet_client_key string | Specify a wallet client_key (By default client_key specified in $HOME/.zcn/wallet.json is used)                | `./zbox [command] --wallet_client_key < client_key>` |
 
-## Commands
+## Commands Table
 
-Below is a comprehensive table listing all zbox commands along with their respective functionalities for reference.
+Below is a comprehensive table listing all zbox commands along with their respective functionalities for reference. We've included links for each command in case you need any further explanation of how it works. 
 
 ### Creating and Managing Allocations
+
+| Commands         | Description                                                  | Usage                                                        |
+| ---------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| newallocation    | Creates new allocation and reserves storage space on blobbers for storing files.<br /><br />Four types of allocations can be created:<br /><br />[Free Storage Allocation](https://github.com/0chain/zboxcli#free-storage-allocation):  Get free Züs storage in the form of storage json markers.<br /><br />[Allocation with default values](#allocation-with-default-values): Create allocation on default parameters set by Züs.<br /><br />[Allocation with custom values](#allocation-with-custom-values): Create allocation with custom data shards, parity shards, read and write prices, alongside specifications for name and size.<br /><br />[Allocation with Forbidden operations](#allocation-with-forbid-operations): Forbid various operations when you create a new allocation. | Free storage allocation:`./zbox newallocation --free_allocation markers/referal_marker.json`<br /><br />Allocation with default values:`./zbox newallocation --lock 0.5`<br /><br />Allocation with custom values:`./zbox newallocation --name files --data 3 --parity 3 --size 100000000 --lock 0.2 --read_price 0.5-1.5 --write_price 1.5-2.5`<br /><br />Allocation with Forbidden operations: `./zbox newallocation --lock 0.5 --forbid_delete` |
+| updateallocation | Update Allocation Settings.<br /><br />[Update allocation with free storage marker](update-allocation-with-free-storage-marker): Update allocation settings with a free storage marker.<br /><br />[Update allocation size](#update-allocation-size): Update allocation size default is 2GB.  <br />[Forbid operations on allocation](forbid-operations on allocation): Update allocation settings and forbid operations such as copy,update,delete,move,rename and upload.<br /><br />[Add Blobber](#add-blobber): Add a blobber to an allocation for cdn purposes.<br /><br />[Replace Blobber](#replace-blobber): Add or remove a blobber from existing allocation to prevent vendor lock-in. | Update allocation with free storage marker:`./zbox updateallocation --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac --free_storage "markers/my_marker.json"`<br /><br />Update allocation size:`./zbox updateallocation --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac --size 4096`<br /><br />Forbid operations on allocation:`./zbox updateallocation --allocation $ALLOC --forbid_upload`<br /><br />Unforbid operations on allocation:`./zbox updateallocation --allocation $ALLOC --forbid_upload false`<br /><br />Add Blobber:`./zbox updateallocation --allocation $ALLOC --add_blobber 98f14362f075caf467653044cf046eb9e8a5dfee88dc8b78cad1891748245003`<br /><br />Replace Blobber:`./zbox updateallocation --allocation $ALLOC --add_blobber 8d19a8fd7147279d1dfdadd7e3ceecaf91c63ad940dae78731e7a64b104441a6 --remove_blobber 06166f3dfd72a90cd0b51f4bd7520d4434552fc72880039b1ee1e8fe4b3cd7ea` |
+| alloc-cancel     | [Cancel allocation](#cancel-allocation):<br />               |                                                              |
+| alloc-fini       | [Finalise allocation](#finalise-allocation):                 |                                                              |
+| ls-blobbers      | [List blobbers](#list-blobbers)                              |                                                              |
+| bl-info          | [Detailed blobber information](#detailed-blobber-information) |                                                              |
+| list             | [List all files](#list-all-files)                            |                                                              |
+| listallocations  | [List owner's allocations](#list-owners-allocations)         |                                                              |
+| bl-update        | [Update blobber settings](#update-blobber-settings)          |                                                              |
+| ls-validators    | [List All Validators](#list-all-validators)                  |                                                              |
+| validator-info   | [Get Validator Configuration](#get-validator-configuration)  |                                                              |
+| kill-blobber     | [Kill Blobber](#kill-blobber)                                |                                                              |
+| kill-validator   | [Kill Validator](#kill-validator)                            |                                                              |
+|                 | [Download cost](#download-cost)<br/>                         |       |
+|                 | [Upload cost](#upload-cost)                                  |       |
+
+
+### Uploading and Managing Files                                                                                                                 
+
+| Command         | Description                                                  | Usage |
+| --------------- | ------------------------------------------------------------ | ----- |
+| upload          | [Upload file with no encryption](#upload-file-with-no-encryption)<br /><br />[Upload file with encryption](#upload-file-with-encryption)<br /><br />[Upload file with web-streaming](#upload-file-with-web-streaming)<br /><br />[Multi Upload](#multi-upload)<br />  <br />[Live Streaming](#live-streaming) |       |
+| feed            | [Feed](#feed)                                                |       |
+| stream          | [Stream](#stream)                                            |       |
+| download        | [Download](#download)<br /><br />[Multi Download](#multi-download) |       |
+| update          | [Update](#update)                                            |       |
+| delete          | [Delete](#delete)                                            |       |
+| share           | [Share](#share)<br />[Public share](#public-share)<br /><br />[Encrypted share](#encrypted-share)<br />[Directory share](#directory-share)<br />[share-encrypted revoke](#share-encrypted-revoke) |       |
+| list            | [List](#list)                                                |       |
+| copy            | [Copy](#copy)                                                |       |
+| move            | [Move](#move)                                                |       |
+| sync            | [Sync](#sync)                                                |       |
+| get-differences | [Get differences](#get-differences)                          |       |
+| get-wallet      | [Get wallet](#get-wallet)                                    |       |
+| get             | [Get](#get)                                                  |       |
+| get-metadata    | [Get metadata](#get-metadata)                                |       |
+| rename          | [Rename](#rename)                                            |       |
+| stats           | [Stats](#stats)                                              |       |
+| repair          | [Repair](#repair)                                            |       |
+| sign-data       | [Sign data](#sign-data)                                      |       |
+| streaming       | [Streaming](#streaming)                                      |       |
+
+
+                                                                                                  
+### Lock and Unlock Tokens
+
+| Command        | Description                                                  | Usage |
+| -------------- | ------------------------------------------------------------ | ----- |
+| cp-info        | [Challenge pool information](#challenge-pool-information)    |       |
+| rp-create      | [Create read pool](#create-read-pool)                        |       |
+| collect-reward | [Collect rewards](#collect-rewards)                          |       |
+| rp-info        | [Read pool info](#read-pool-info)                            |       |
+| rp-lock        | [Lock tokens into read pool](#lock-tokens-into-read-pool)    |       |
+| rp-unlock      | [Unlock tokens from read pool](#unlock-tokens-from-read-pool) |       |
+| sc-config      | [Storage SC configurations](#storage-sc-configurations)      |       |
+| sp-info        | [Stake pool info](#stake-pool-info)                          |       |
+| sp-lock        | [Lock tokens into stake pool](#lock-tokens-into-stake-pool)  |       |
+| sp-unlock      | [Unlock tokens from stake pool](#unlock-tokens-from-stake-pool) |       |
+| sp-user-info   | [Stake pools info of user](#stake-pools-info-of-user)        |       |
+| wp-lock        | [Lock tokens into write pool](#lock-tokens-into-write-pool)  |       |
+| wp-unlock      | [Unlock tokens from write pool](#unlock-tokens-from-write-pool) |       |
+
+
 
 #### Create new allocation
 
@@ -351,7 +305,7 @@ Here is a sample command for --forbid_delete. Other forbid parameters can be spe
 
 Sample Command:
 ```shell
-./zbox newallocation --lock 0.5 --allocation $ALLOCATION_ID --forbid_delete
+./zbox newallocation --lock 0.5 --forbid_delete
 ```
 Sample Response :
 ```shell
@@ -421,7 +375,7 @@ Allocation updated with txId : fb84185dae620bbba8386286726f1efcd20d2516bcf1a4482
 
 ##### Update allocation with free storage marker
 
-Use a free storage marker to fund the allocation update. See [Free storage allocation]() for further details.
+Use a free storage marker to fund the allocation update. See [Free storage allocation](#free-storage-allocation) for further details.
 
 ##### Forbid operations on Allocation
 
@@ -824,7 +778,7 @@ Sample Response :
 ```
 killed validator, id: $VALIDATOR_ID
 ```
-### Uploading and Managing files
+
 
 #### Upload
 
@@ -1824,7 +1778,6 @@ Status completed callback. Type = audio/mpeg. Name = audio.mp3
 
 As we can see, the downloaded file size(393216) is less than the original(2996198), which means zbox has downloaded some blocks of the file.
 
-### Lock and Unlock Tokens
 
 #### Challenge pool information
 
