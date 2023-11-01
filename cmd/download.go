@@ -151,15 +151,8 @@ var downloadCmd = &cobra.Command{
 				os.Exit(1)
 			}
 
-			var blobberID string
-			if fflags.Changed("blobber_id") {
-				blobberID = cmd.Flag("blobber_id").Value.String()
-			}
-
 			if thumbnail {
 				errE = allocationObj.DownloadThumbnail(localPath, remotePath, verifyDownload, statusBar, true)
-			} else if blobberID != "" {
-				errE = allocationObj.DownloadFromBlobber(blobberID, localPath, remotePath, statusBar)
 			} else {
 				if startBlock != 0 || endBlock != 0 {
 					errE = allocationObj.DownloadFileByBlock(localPath, remotePath, startBlock, endBlock, numBlocks, verifyDownload, statusBar, true)
@@ -189,12 +182,7 @@ var downloadCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		if !statusBar.success {
-			// status bar always returns failure when downloading from sigle blobber. Hence returning the zero exit status
-			if fflags.Changed("blobber_id") {
-				os.Exit(0)
-			} else {
-				os.Exit(1)
-			}
+			os.Exit(1)
 		}
 
 	},
@@ -246,7 +234,6 @@ func init() {
 	downloadCmd.PersistentFlags().String("allocation", "", "Allocation ID")
 	downloadCmd.PersistentFlags().String("remotepath", "", "Remote path to download")
 	downloadCmd.PersistentFlags().String("localpath", "", "Local path of file to download")
-	downloadCmd.PersistentFlags().String("blobber_id", "", "to download the data shard present in that blobber")
 	downloadCmd.PersistentFlags().String("authticket", "", "Auth ticket fot the file to download if you dont own it")
 	downloadCmd.PersistentFlags().String("lookuphash", "", "The remote lookuphash of the object retrieved from the list")
 	downloadCmd.PersistentFlags().String("multidownloadjson", "", "A JSON file containing multi download options")

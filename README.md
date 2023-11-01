@@ -1,13 +1,13 @@
 # zbox - a CLI for Züs dStorage
 
-zbox is a command line interface (CLI) tool to understand the capabilities of Züs dStorage and prototype your app. The utility is built using Züs [GoSDK](https://github.com/0chain/gosdk) . 
+zbox is a command line interface (CLI) tool to understand the capabilities of Züs dStorage and prototype your app. The utility is built using Züs [GoSDK](https://github.com/0chain/gosdk) .
 
-![zboxcli architecture diagram](https://github.com/0chain/zboxcli/assets/65766301/5aeadfaf-e259-4524-bf31-1d1a2f39c563)
+![Storage](https://user-images.githubusercontent.com/65766301/120052450-0ab66700-c043-11eb-91ab-1f7aa69e133a.png)
 
 - [zbox - a CLI for Züs dStorage](#zbox---a-cli-for-züs-dstorage)
   - [Züs Overview](#züs-overview)
-  - [Installation Guides](#installation-instructions)
-    - [Install on Linux Windows Mac](#build-instructions-for-linux-windows-mac)
+  - [Installation Instructions](#installation-instructions)
+    - [Build Instructions for Linux Windows Mac](#build-instructions-for-linux-windows-mac)
     - [Other Platform Builds](#other-platform-builds)
     - [Use custom miner/sharder](#use-custom-minersharder)
   - [Running zbox](#running-zbox)
@@ -17,25 +17,21 @@ zbox is a command line interface (CLI) tool to understand the capabilities of Z�
       - [Create new allocation](#create-new-allocation)
         - [Free storage allocation](#free-storage-allocation)
       - [Update allocation](#update-allocation)
-      - [Forbid allocation](#forbid-allocation)
+      - [Forbid Allocation](#forbid-allocation)
       - [Cancel allocation](#cancel-allocation)
       - [Finalise allocation](#finalise-allocation)
-      - [Get Allocation Info](#get)
       - [List blobbers](#list-blobbers)
       - [Detailed blobber information](#detailed-blobber-information)
       - [List all files](#list-all-files)
       - [List owner's allocations](#list-owners-allocations)
       - [Update blobber settings](#update-blobber-settings)
-      - [Update Validator settings](#update-validator-settings)
-      - [Get Version](#get-version)
-      - [List all Validators](#list-all-validators)
+    - [Update Validator Settings](#update-validator-settings)
+      - [List All Validators](#list-all-validators)
       - [Get Validator Configuration](#get-validator-configuration)
       - [Kill Blobber](#kill-blobber)
       - [Kill Validator](#kill-validator)
-
     - [Uploading and Managing files](#uploading-and-managing-files)
       - [Upload](#upload)
-      - [Create Directory](#create-directory)
       - [Stream](#stream)
       - [Feed](#feed)
       - [Download](#download)
@@ -49,16 +45,14 @@ zbox is a command line interface (CLI) tool to understand the capabilities of Z�
       - [Sync](#sync)
       - [Get differences](#get-differences)
       - [Get wallet](#get-wallet)
+      - [Get](#get)
       - [Get metadata](#get-metadata)
       - [Rename](#rename)
       - [Stats](#stats)
       - [Repair](#repair)
-      - [Rollback](#rollback)
       - [Sign data](#sign-data)
-      - [Download cost](#download-cost)
-      - [Upload cost](#upload-cost)
       - [Streaming](#streaming)
-        - [How it works](#how-it-works)
+        - [How it works:](#how-it-works)
         - [Usage](#usage)
     - [Lock and Unlock Tokens](#lock-and-unlock-tokens)
       - [Challenge pool information](#challenge-pool-information)
@@ -75,7 +69,8 @@ zbox is a command line interface (CLI) tool to understand the capabilities of Z�
       - [Write pool info](#write-pool-info)
       - [Lock tokens into write pool](#lock-tokens-into-write-pool)
       - [Unlock tokens from write pool](#unlock-tokens-from-write-pool)
-      
+      - [Download cost](#download-cost)
+      - [Upload cost](#upload-cost)
   - [Troubleshooting](#troubleshooting)
 
 ## Züs Overview
@@ -127,7 +122,7 @@ Note: This is helpful for the Mac OS users running local cluster and having trou
 
 ## Running zbox
 
-When you run the `./zbox` command in terminal with no arguments, it will list all the available commands and the global flags.For working of specific command check [commands](#commands) section. 
+When you run the `./zbox` command in terminal with no arguments, it will list all the available commands and the global flags.For working of specific command check [commands](#commands) section.
 
 ```
 Usage:
@@ -209,29 +204,25 @@ Flags:
 
 ### Global Flags
 
-Global Flags are parameters in zbox that can be used with any command to override the default configuration. zbox supports the following global parameters.
+Global Flags are parameters in zbox that can be used with any command to override the default configuration.zbox supports the following global parameters.
 
-| Flags                      | Description                                                  | Usage                                            |
-| -------------------------- | ------------------------------------------------------------ | ------------------------------------------------ |
-| --config string            | Specify a zbox configuration file (default is [$HOME/.zcn/config.yaml](#zcnconfigyaml)) | zbox [command] --config config1.yaml             |
-| --configDir string         | Specify a zbox configuration directory (default is $HOME/.zcn) | zbox [command] --configDir /$HOME/.zcn2          |
-| --fee float                | Transaction fee for the given transaction(if unset, it will be set to blockchain min fee) | zbox[command] --fee 0.5                          |
-| --h, --help                | Gives more information about a particular command.           | zbox [command] --help                            |
+| Flags                      | Description                                                                                                    | Usage                                            |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| --config string            | Specify a zbox configuration file (default is [$HOME/.zcn/config.yaml](#zcnconfigyaml))                        | zbox [command] --config config1.yaml             |
+| --configDir string         | Specify a zbox configuration directory (default is $HOME/.zcn)                                                 | zbox [command] --configDir /$HOME/.zcn2          |
+| -h, --help                 | Gives more information about a particular command.                                                             | zbox [command] --help                            |
 | --network string           | Specify a network file to overwrite the network details(default is [$HOME/.zcn/network.yaml](#zcnnetworkyaml)) | zbox [command] --network network1.yaml           |
-| --silent                   | (default false) Do not show interactive sdk logs (shown by default) | zbox [command] --verbose                         |
-| --wallet string            | Specify a wallet file or 2nd wallet (default is $HOME/.zcn/wallet.json) | zbox [command] --wallet wallet2.json             |
-| --wallet_client_id string  | Specify a wallet client id (By default client_id specified in $HOME/.zcn/wallet.json is used) | zbox [command] --wallet_client_id <client_id>    |
-| --wallet_client_key string | Specify a wallet client_key (By default client_key specified in $HOME/.zcn/wallet.json is used) | zbox [command] --wallet_client_key < client_key> |
-| --withNonce int            | nonce that will be used in transaction (default is 0)        | zbox [command] --withNonce 1                     |
-
-
+| --verbose                  | Provides additional details as to what the particular command is doing.                                        | zbox [command] --verbose                         |
+| --wallet string            | Specify a wallet file or 2nd wallet (default is $HOME/.zcn/wallet.json)                                        | zbox [command] --wallet wallet2.json             |
+| --wallet_client_id string  | Specify a wallet client id (By default client_id specified in $HOME/.zcn/wallet.json is used)                  | zbox [command] --wallet_client_id <client_id>    |
+| --wallet_client_key string | Specify a wallet client_key (By default client_key specified in $HOME/.zcn/wallet.json is used)                | zbox [command] --wallet_client_key < client_key> |
 
 ## Commands
 
 Note in this document, we will only show the commands for particular functionalities,
 the response will vary depending on your usage and may not be provided in all places.
 To get a more descriptive view of all the zbox functionalities check zbox cli
-documentation at https://docs.zus.network/guides/zbox-cli.
+documentation at docs.0chain.net.
 
 ### Creating and Managing Allocations
 
@@ -427,7 +418,7 @@ Here are the operations:
 | --forbid_upload | specify if users cannot upload to this allocation            |
 
 
-Here is a sample command for --forbid_upload. Other parameters can be done the same way.
+Here is a sample command for --forbid_upload .Other parameters can be done the same way.
 
 ```
 ./zbox updateallocation --allocation $ALLOC --forbid_upload
@@ -438,14 +429,8 @@ Allocation Updated with txID : b84185dae620bbba8386286726f1efcd20d2516bcf1a44821
 ```
 To test functionality try uploading file to allocation. You should get the following response :
 ```
-Upload failed. this options for this file is not permitted for this allocation: 
+Upload failed. this options for this file is not permitted for this allocation:
 file_option_not_permitted.
-```
-To Unforbid an operation after forbiding: 
-
-Sample Command: 
-```
-./zbox updateallocation --allocation $ALLOC --forbid_upload false
 ```
 #### Cancel allocation
 
@@ -648,28 +633,10 @@ Update blobber read price
 ```
 ./zbox bl-update --blobber_id 0ece681f6b00221c5567865b56040eaab23795a843ed629ce71fb340a5566ba3 --read_price 0.1
 ```
-### Update Validator Settings
 
-Use `./zbox validator-update ` to update a validator's configuration settings. 
-
-| Parameter      | Required | Description                                 | default | Valid values |
-| -------------- | -------- | ------------------------------------------- | ------- | ------------ |
-| validator_id   | yes      | id of validator of which to update settings |         | string       |
-| num_delegates  | no       | update maximum number of delegates          |         | int          |
-| max_stake      | no       | update maximum stake                        |         | float        |
-| min_stake      | no       | update minimum stake                        |         | float        |
-| service_charge | no       | update service charge                       |         | float        |
-
-Sample Command:
-
-**Update validator max stake**
-
-```
-./zbox validator-update --validator_id  f82ab34a98406b8757f11513361752bab9cb679a5cb130b81a4e86cec50eefc3 --max_stake 7.5
-```
 Get Version
 
-Use `./zbox version` to get the version of Zbox and GoSDK.
+The version of Zbox and Gosdk can be fetched using the ./zbox version command.
 
 ```
 ./zbox version
@@ -711,19 +678,19 @@ settings:
 
 #### Get Validator Configuration
 
-`./zbox validator-info` command is used to get a particular validator configuration . Here are the parameters for the command . 
+`./zbox validator-info` command is used to get a particular validator configuration . Here are the parameters for the command .
 
-| Parameter          | Required | Description                               
-| ------------------ | -------- | ----------------------------------------- 
-| --validator_id     | yes      | id of validator whose configuration has to be fetched          
-| --json             | optional | Print Response as json data                            
-| --help             | no       | Provide information about the command                          
+| Parameter          | Required | Description
+| ------------------ | -------- | -----------------------------------------
+| --validator_id     | yes      | id of validator whose configuration has to be fetched
+| --json             | optional | Print Response as json data
+| --help             | no       | Provide information about the command
 
 Sample Command :
 ```
 ./zbox validator-info --validator_id f82ab34a98406b8757f11513361752bab9cb679a5cb130b81
 ```
-Sample Response :  
+Sample Response :
 ```
 id:                f82ab34a98406b8757f11513361752bab9cb679a5cb130b81a4e86cec50eefc3
 url:               https://demo2.zus.network/validator01
@@ -742,32 +709,32 @@ settings:
 #### Kill Blobber
 `./zbox kill-blobber` command deactivates a blobber to avoid storage of data . Required parameters are :
 
-| Parameter          | Required | Description                               
-| ------------------ | -------- | ----------------------------------------- 
-| --blobber_id       | yes      | Blobber Id to kill a specific blobber.Can be retrieved using [List blobbers](#list-blobbers).    
-| --json             | optional | Print Response as json data                            
-| --help             | no       | Provide information about the command 
- 
+| Parameter          | Required | Description
+| ------------------ | -------- | -----------------------------------------
+| --blobber_id       | yes      | Blobber Id to kill a specific blobber.Can be retrieved using [List blobbers](#list-blobbers).
+| --json             | optional | Print Response as json data
+| --help             | no       | Provide information about the command
+
  Sample Command :
 ```
 ./zbox kill-blobber --id $BLOBBER_ID --wallet $CHAIN_OWNER_WALLET
 ```
 Note : Kill Blobber command should be evoked from chain owner wallet only
 
-Sample Response :  
+Sample Response :
 ```
 killed blobber $BLOBBER_ID
 ```
- 
+
 #### Kill Validator
 
-`./zbox kill-validator` command deactivates a specific validator available on the network. Required parameters are : 
+`./zbox kill-validator` command deactivates a specific validator available on the network. Required parameters are :
 
-| Parameter          | Required | Description                               
-| ------------------ | -------- | ----------------------------------------- 
-| --validator_id     | yes      | Validator Id to kill a specific blobber.Can be retrieved using [List all Validators](#list-all-validators).    
-| --json             | optional | Print Response as json data                            
-| --help             | no       | Provide information about the command 
+| Parameter          | Required | Description
+| ------------------ | -------- | -----------------------------------------
+| --validator_id     | yes      | Validator Id to kill a specific blobber.Can be retrieved using [List all Validators](#list-all-validators).
+| --json             | optional | Print Response as json data
+| --help             | no       | Provide information about the command
 
 
 Sample Command :
@@ -854,28 +821,6 @@ Response:
 15691733 / 15691733 [=====================================================================================] 100.00% 32s
 Status completed callback. Type = video/fmp4. Name = raw.samplevideo.mp4
 ```
-#### Create Directory
-
-`./zbox createdir` command is used to create directory on allocation for storing files. 
-
-| Parameter    | Description                                | Valid Values |
-| ------------ | ------------------------------------------ | ------------ |
-| --allocation | Provide Allocation ID                      | string       |
-| --dirname    | Provide Directory Name and absolute path . | string       |
-| --h,--help   | help for createdir                         | int          |
-
-Sample Command:
-
-```
-./zbox createdir --allocation $ALLOCATION_ID --dirname /photos
-```
-Sample Response:
-
-```
-/photos directory created
-```
-
-**Note:** To verify whether directory is created successfully run [List all files](#list-all-files) command.
 
 #### Stream
 
@@ -1618,26 +1563,7 @@ Response:
 ```
 Repair file completed, Total files repaired:  0
 ```
-#### Rollback
 
-Use `./zbox rollback` to rollback to a previous state of allocation. This is helpful when you want to rollback to previous version of files you updated on allocation using [Update allocation.](#update-allocation) 
-
-| Parameter    | Description                         | Valid Values |
-| ------------ | ----------------------------------- | ------------ |
-| --allocation | Provide Allocation ID for rollback. | string       |
-| --h,--help   | help for rollback                   | int          |
-
-Sample Command:
-
-```
-./zbox rollback --allocation $ALLOCATION_ID 
-```
-
-Sample Response:
-
-```
-Rollback successful
-```
 #### Sign data
 
 `sign-data` uses the information from your wallet to sign the input data string
