@@ -182,12 +182,7 @@ var downloadCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		if !statusBar.success {
-			// status bar always returns failure when downloading from sigle blobber. Hence returning the zero exit status
-			if fflags.Changed("blobber_id") {
-				os.Exit(0)
-			} else {
-				os.Exit(1)
-			}
+			os.Exit(1)
 		}
 
 	},
