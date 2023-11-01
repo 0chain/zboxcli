@@ -201,7 +201,19 @@ var spLock = &cobra.Command{
 			err          error
 		)
 
-		if flags.Changed("blobber_id") {
+		if flags.Changed("miner_id") {
+			if providerID, err = flags.GetString("miner_id"); err != nil {
+				log.Fatalf("invalid 'miner_id' flag: %v", err)
+			} else {
+				providerType = sdk.ProviderMiner
+			}
+		} else if flags.Changed("sharder_id") {
+			if providerID, err = flags.GetString("sharder_id"); err != nil {
+				log.Fatalf("invalid 'sharder_id' flag: %v", err)
+			} else {
+				providerType = sdk.ProviderSharder
+			}
+		} else if flags.Changed("blobber_id") {
 			if providerID, err = flags.GetString("blobber_id"); err != nil {
 				log.Fatalf("invalid 'blobber_id' flag: %v", err)
 			} else {
@@ -213,10 +225,14 @@ var spLock = &cobra.Command{
 			} else {
 				providerType = sdk.ProviderValidator
 			}
-		}
-
-		if providerType == 0 || providerID == "" {
-			log.Fatal("missing flag: one of 'blobber_id' or 'validator_id' is required")
+		} else if flags.Changed("authorizer_id") {
+			if providerID, err = flags.GetString("authorizer_id"); err != nil {
+				log.Fatalf("invalid 'authorizer_id' flag: %v", err)
+			} else {
+				providerType = sdk.ProviderAuthorizer
+			}
+		} else if providerType == 0 || providerID == "" {
+			log.Fatal("missing flag: one of 'miner_id', 'sharder_id', 'blobber_id', 'validator_id', 'authorizer_id' is required")
 		}
 
 		if !flags.Changed("tokens") {
@@ -303,10 +319,11 @@ func init() {
 	rootCmd.AddCommand(spLock)
 	rootCmd.AddCommand(spUnlock)
 
-	spInfo.PersistentFlags().String("blobber_id", "",
-		"for given blobber")
-	spInfo.PersistentFlags().String("validator_id", "",
-		"for given validator")
+	spInfo.PersistentFlags().String("miner_id", "", "for given miner")
+	spInfo.PersistentFlags().String("sharder_id", "", "for given sharder")
+	spInfo.PersistentFlags().String("blobber_id", "", "for given blobber")
+	spInfo.PersistentFlags().String("validator_id", "", "for given validator")
+	spInfo.PersistentFlags().String("authorizer_id", "", "for given authorizer")
 	spInfo.PersistentFlags().Bool("json", false, "(default false) pass this option to print response as json data")
 
 	spUserInfo.PersistentFlags().Bool("json", false, "(default false) pass this option to print response as json data")
@@ -315,15 +332,21 @@ func init() {
 	spUserInfo.PersistentFlags().Int("offset", 0, "pass this option to skip the number of rows before beginning")
 	spUserInfo.PersistentFlags().String("client_id", "", "pass for given client")
 
+	spLock.PersistentFlags().String("miner_id", "", "for given miner")
+	spLock.PersistentFlags().String("sharder_id", "", "for given sharder")
 	spLock.PersistentFlags().String("blobber_id", "", "for given blobber")
 	spLock.PersistentFlags().String("validator_id", "", "for given validator")
+	spLock.PersistentFlags().String("authorizer_id", "", "for given authorizer")
 	spLock.PersistentFlags().Float64("tokens", 0.0, "tokens to lock, required")
 	spLock.PersistentFlags().Float64("fee", 0.0, "transaction fee, default 0")
 
 	spLock.MarkFlagRequired("tokens")
 
+	spUnlock.PersistentFlags().String("miner_id", "", "for given miner")
+	spUnlock.PersistentFlags().String("sharder_id", "", "for given sharder")
 	spUnlock.PersistentFlags().String("blobber_id", "", "for given blobber")
 	spUnlock.PersistentFlags().String("validator_id", "", "for given validator")
+	spUnlock.PersistentFlags().String("authorizer_id", "", "for given authorizer")
 	spUnlock.PersistentFlags().Float64("fee", 0.0, "transaction fee, default 0")
 	spUnlock.MarkFlagRequired("tokens")
 }
