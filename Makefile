@@ -11,9 +11,13 @@ GOMODCORE           := $(GOMODBASE)/zcncore
 VERSION_FILE        := $(ROOT_DIR)/core/version/version.go
 MAJOR_VERSION       := "1.0"
 
+PLATFORMOS := $(shell uname | tr "[:upper:]" "[:lower:]")
+
 include _util/printer.mk
 
-default: help
+.PHONY: install-all herumi-all gosdk-all show
+
+default: help show
 
 #GO BUILD SDK
 gomod-download:

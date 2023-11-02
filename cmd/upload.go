@@ -67,6 +67,10 @@ var uploadCmd = &cobra.Command{
 			PrintError("Upload failed.", err)
 			os.Exit(1)
 		}
+		wg.Wait()
+		if !statusBar.success {
+			os.Exit(1)
+		}
 	},
 }
 

@@ -53,6 +53,11 @@ var updateCmd = &cobra.Command{
 			PrintError("Update failed.", err)
 			os.Exit(1)
 		}
+
+		wg.Wait()
+		if !statusBar.success {
+			os.Exit(1)
+		}
 	},
 }
 
