@@ -95,50 +95,51 @@ Below is a comprehensive table listing all zbox commands along with their respec
 
 ### Creating and Managing Allocations
 
-| Commands         | Description                                                  | Usage                                                        |
+| Command          | Description                                                  | Usage                                                        |
 | ---------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| newallocation    | Creates new allocation and reserves storage space on blobbers for storing files.<br /><br />Four types of allocations can be created:<br /><br />[Free Storage Allocation](https://github.com/0chain/zboxcli#free-storage-allocation):  Get free Züs storage in the form of storage json markers.<br /><br />[Allocation with default values](#allocation-with-default-values): Create allocation on default parameters set by Züs.<br /><br />[Allocation with custom values](#allocation-with-custom-values): Create allocation with custom data shards, parity shards, read and write prices, alongside specifications for name and size.<br /><br />[Allocation with Forbidden operations](#allocation-with-forbid-operations): Forbid various operations when you create a new allocation. | Free storage allocation:`./zbox newallocation --free_allocation markers/referal_marker.json`<br /><br />Allocation with default values:`./zbox newallocation --lock 0.5`<br /><br />Allocation with custom values:`./zbox newallocation --name files --data 3 --parity 3 --size 100000000 --lock 0.2 --read_price 0.5-1.5 --write_price 1.5-2.5`<br /><br />Allocation with Forbidden operations: `./zbox newallocation --lock 0.5 --forbid_delete` |
+| newallocation    | Creates new allocation and reserves storage space on blobbers for storing files.<br /><br />Four types of allocations can be created:<br /><br />[Free Storage Allocation](https://github.com/0chain/zboxcli#free-storage-allocation):  Get free Züs storage in the form of storage json markers.<br /><br />[Allocation with default values](#allocation-with-default-values): Create allocation on default parameters set by Züs.<br /><br />[Allocation with custom values](#allocation-with-custom-values): Create allocation with custom custom data shards, parity shards, read and write prices, alongside specifications for name and size.<br /><br />[Allocation with Forbidden operations](#allocation-with-forbid-operations): Forbid various operations when you create a new allocation. | Free storage allocation:`./zbox newallocation --free_allocation markers/referal_marker.json`<br /><br />Allocation with default values:`./zbox newallocation --lock 0.5`<br /><br />Allocation with custom values:`./zbox newallocation --name files --data 3 --parity 3 --size 100000000 --lock 0.2 --read_price 0.5-1.5 --write_price 1.5-2.5`<br /><br />Allocation with Forbidden operations: `./zbox newallocation --lock 0.5 --forbid_delete` |
 | updateallocation | Update Allocation Settings.<br /><br />[Update allocation with free storage marker](update-allocation-with-free-storage-marker): Update allocation settings with a free storage marker.<br /><br />[Update allocation size](#update-allocation-size): Update allocation size default is 2GB.  <br />[Forbid operations on allocation](forbid-operations on allocation): Update allocation settings and forbid operations such as copy,update,delete,move,rename and upload.<br /><br />[Add Blobber](#add-blobber): Add a blobber to an allocation for cdn purposes.<br /><br />[Replace Blobber](#replace-blobber): Add or remove a blobber from existing allocation to prevent vendor lock-in. | Update allocation with free storage marker:`./zbox updateallocation --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac --free_storage "markers/my_marker.json"`<br /><br />Update allocation size:`./zbox updateallocation --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac --size 4096`<br /><br />Forbid operations on allocation:`./zbox updateallocation --allocation $ALLOC --forbid_upload`<br /><br />Unforbid operations on allocation:`./zbox updateallocation --allocation $ALLOC --forbid_upload false`<br /><br />Add Blobber:`./zbox updateallocation --allocation $ALLOC --add_blobber 98f14362f075caf467653044cf046eb9e8a5dfee88dc8b78cad1891748245003`<br /><br />Replace Blobber:`./zbox updateallocation --allocation $ALLOC --add_blobber 8d19a8fd7147279d1dfdadd7e3ceecaf91c63ad940dae78731e7a64b104441a6 --remove_blobber 06166f3dfd72a90cd0b51f4bd7520d4434552fc72880039b1ee1e8fe4b3cd7ea` |
-| alloc-cancel     | [Cancel allocation](#cancel-allocation):<br />               |                                                              |
-| alloc-fini       | [Finalise allocation](#finalise-allocation):                 |                                                              |
-| ls-blobbers      | [List blobbers](#list-blobbers)                              |                                                              |
-| bl-info          | [Detailed blobber information](#detailed-blobber-information) |                                                              |
-| list             | [List all files](#list-all-files)                            |                                                              |
-| listallocations  | [List owner's allocations](#list-owners-allocations)         |                                                              |
-| bl-update        | [Update blobber settings](#update-blobber-settings)          |                                                              |
-| ls-validators    | [List All Validators](#list-all-validators)                  |                                                              |
-| validator-info   | [Get Validator Configuration](#get-validator-configuration)  |                                                              |
-| kill-blobber     | [Kill Blobber](#kill-blobber)                                |                                                              |
-| kill-validator   | [Kill Validator](#kill-validator)                            |                                                              |
-|                 | [Download cost](#download-cost)<br/>                         |       |
-|                 | [Upload cost](#upload-cost)                                  |       |
+| alloc-cancel     | [Cancel allocation](#cancel-allocation): Cancel the allocation and return all remaining tokens from challenge pool back to the allocation owner's wallet.  <br /> | Cancel Allocation: `./zbox alloc-cancel --allocation $ALLOCATION_ID` |
+| alloc-fini       | [Finalise allocation](#finalise-allocation): Finalize an allocation after its expiry. | Finalize Allocation: `./zbox alloc-fini --allocation $ALLOCATION_ID` |
+| ls-blobbers      | [List blobbers](#list-blobbers): List all blobbers(storage providers) on the Züs network. | List Blobbers:`./zbox ls-blobbers `                          |
+| bl-info          | [Detailed blobber information](#detailed-blobber-information): Get detailed information for a specific blobber based on its blobber ID.Blobber ID can be fetched using [List blobbers](#list-blobbers). | Detailed blobber information:`./zbox bl-info --blobber_id f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25 ` |
+| listallocations  | [List owner's allocations](#list-owners-allocations): List all owners allocations hosted on blobbers. | List owners allocations:`./zbox listallocations`             |
+| bl-update        | [Update blobber settings](#update-blobber-settings): Update blobber capacity to store files,read price,write price,service charge.max stake,min stake, number of delegates or availability. Blobber ID can be fetched using [List blobbers](#list-blobbers). | Update blobber read price and write price: `./zbox bl-update --blobber_id 0ece681f6b00221c5567865b56040eaab23795a843ed629ce71fb340a5566ba3 --read_price 0.1 --write_price 0.1`<br /><br />Update blobber min_stake and max_stake:`./zbox bl-update --blobber_id 0ece681f6b00221c5567865b56040eaab23795a843ed629ce71fb340a5566ba3 --max_stake 0.1 --min_stake 2.5`<br /><br />Update blobber number of delegates and service charge:`./zbox bl-update --blobber_id 0ece681f6b00221c5567865b56040eaab23795a843ed629ce71fb340a5566ba3 --service_charge 0.5 --num_delegates 5`<br /><br />Update blobber availability for not hosting new allocations(default is available):`./zbox bl-update --blobber_id 0ece681f6b00221c5567865b56040eaab23795a843ed629ce71fb340a5566ba3 --not_available false`<br /><br />Update Blobber Capacity(Provide capacity in bytes):`./zbox bl-update --blobber_id 0ece681f6b00221c5567865b56040eaab23795a843ed629ce71fb340a5566ba3 --capacity 1073741824  ` |
+| ls-validators    | [List All Validators](#list-all-validators): List all validators on the Züs network. | List Validators: `./zbox ls-validators`                      |
+| validator-info   | [Get Validator Configuration](#get-validator-configuration): Get detailed information for a specific blobber based on its blobber ID. Validator ID can be fetched using [List All Validators](#list-all-validators). | Detailed Validator Information:`./zbox validator-info --validator_id f82ab34a98406b8757f11513361752bab9cb679a5cb130b81` |
+|                  | [Update validator settings]():                               |                                                              |
+| kill-blobber     | [Kill Blobber](#kill-blobber): Deactivates a blobber to avoid storage of data .<br />Blobber ID can be fetched using [List blobbers](#list-blobbers).<br /><br />Note: Specify your chain owner wallet using the `wallet` flag to perform kill blobber command. | Kill Blobber:`./zbox kill-blobber --id $BLOBBER_ID --wallet $CHAIN_OWNER_WALLET` |
+| kill-validator   | [Kill Validator](#kill-validator): Deactivates a specific validator available on the network.<br /><br />Validator ID can be fetched using [List All Validators](#list-all-validators).<br /><br />Note: Specify your chain owner wallet using the `--wallet` flag to perform kill validator command. | Kill Validator: `./zbox kill-validator --id $VALIDATOR_ID --wallet $CHAIN_OWNER_WALLET  ` |
+| version          | [Get Version](#get-version): Get zbox and gosdk version.     | Get Version:`./zbox getversion`                              |
 
 
 ### Uploading and Managing Files                                                                                                                 
 
-| Command         | Description                                                  | Usage |
-| --------------- | ------------------------------------------------------------ | ----- |
-| upload          | [Upload file with no encryption](#upload-file-with-no-encryption)<br /><br />[Upload file with encryption](#upload-file-with-encryption)<br /><br />[Upload file with web-streaming](#upload-file-with-web-streaming)<br /><br />[Multi Upload](#multi-upload)<br />  <br />[Live Streaming](#live-streaming) |       |
-| feed            | [Feed](#feed)                                                |       |
-| stream          | [Stream](#stream)                                            |       |
-| download        | [Download](#download)<br /><br />[Multi Download](#multi-download) |       |
-| update          | [Update](#update)                                            |       |
-| delete          | [Delete](#delete)                                            |       |
-| share           | [Share](#share)<br />[Public share](#public-share)<br /><br />[Encrypted share](#encrypted-share)<br />[Directory share](#directory-share)<br />[share-encrypted revoke](#share-encrypted-revoke) |       |
-| list            | [List](#list)                                                |       |
-| copy            | [Copy](#copy)                                                |       |
-| move            | [Move](#move)                                                |       |
-| sync            | [Sync](#sync)                                                |       |
-| get-differences | [Get differences](#get-differences)                          |       |
-| get-wallet      | [Get wallet](#get-wallet)                                    |       |
-| get             | [Get](#get)                                                  |       |
-| get-metadata    | [Get metadata](#get-metadata)                                |       |
-| rename          | [Rename](#rename)                                            |       |
-| stats           | [Stats](#stats)                                              |       |
-| repair          | [Repair](#repair)                                            |       |
-| sign-data       | [Sign data](#sign-data)                                      |       |
-| streaming       | [Streaming](#streaming)                                      |       |
-
+| Command         | Description                                                  | Usage                                                        |
+| --------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| upload          | [Upload file with no encryption](#upload-file-with-no-encryption): Upload file only with required parameters to an allocation.<br /><br />[Upload file with encryption](#upload-file-with-encryption): Upload an encrypted file to an allocation<br /><br />[Upload file with web-streaming](#upload-file-with-web-streaming): Transcode file before upload to fragmented mp4. A *fragmented MP4* can start playback with just a fraction of its data, and continue loading as it plays which provide a much better user experience for mobile and web apps.<br /><br />[Multi Upload](#multi-upload): Upload multiple files to an allocation via json file.<br /><br />[Upload file with chunknumber](): Upload with chunk number to control the amount of data send in one http multipart request to blobbers.<br/>By default its set to 1 which will only send 64KB of data per request. Provide a bigger chunk number for sending more amount of data per request. | Upload file with no encryption:`./zbox upload --localpath /absolute-path-to-local-file/hello.txt --remotepath /myfiles/hello.txt --allocation $ALLOCATION_ID`<br /><br />Upload file with encryption:`./zbox upload --encrypt --localpath <absolute path to file>/sensitivedata.txt --remotepath /myfiles/sensitivedata.txt --allocation $ALLOCATION_ID`<br /><br />Upload file with web streaming:`./zbox upload --web-streaming --localpath <absolute path to file>/samplevideo.mov --remotepath /myfile/ --allocation $ALLOCATION_ID `<br /><br />Multi Upload:`./zbox upload --allocation $alloc --multiuploadjson ./multi-upload.json `<br /><br />Upload file with chunk number: `./zbox upload --allocation $ALLOCATION_ID --localpath <absolute path to file>/sample.mp3 --remotepath /myfile/file.mp3 --chunknumber 10` |
+| feed            | [Feed](#feed): Automatically download segment files from remote live feed such as youtube etc ,encode them into new segment files with `--delay` and `--ffmpeg-args`, and upload them to allocation. | Feed: `./zbox feed --localpath <absolute path to file>/tvshow.m3u8 --remotepath /videos/tvsho --allocation $ALLOCATION_ID  --delay 10 --downloader-args "-f 22" --feed https://www.youtube.com/watch?v=pC5mGB5enkw`<br /><br />Note: Make sure to list file download types for youtube video using [youtube-dl]((https://github.com/ytdl-org/youtube-dl/blob/master/README.md#options).)<br />.<br />Note: Download youtube-dl using brew package manager. |
+| stream          | [Live Streaming](#stream): Capture video and audio streaming from microphone ,camera, and push stream to allocation. | Live streaming:`./zbox stream --allocation $ALLOCATION_ID --localpath <absolute path to file>/sample.mp3 --remotepath /myfile/file.mp3   ` |
+| download        | [Download using Allocation ID and remotepath](#download): Download file from an allocation by specifying its remotepath.<br /><br />[Download using authticket](): Download a file using `authticket`,  auth ticket is generated when a file is shared usiing [share](#share) command.<br /><br />[Multi Download](#multi-download): Download multiple files to an allocation via json file.<br /><br />[Download using start block and end block]():  Download part of the file using `startblock` and `endblock` . | Download using Allocation ID and remotepath:`./zbox download --localpath /absolute-path-to-local-file/hello.txt --remotepath /myfiles/hello.txt --allocation $ALLOCATION_ID `<br /><br />Download using authticket:`./zbox download --authticket $AUTH --localpath <absolute-path-to-directory> `<br /><br />Multi Download: `./zbox download --multidownloadjson ./multi-download.json --allocation $ALLOCATION_ID`<br /><br />Download using start block and end block:`./zbox download --localpath /download --remotepath /myfiles/audio.mp3 --allocation $ALLOC --startblock 1 --endblock 3 ` |
+| update          | [Update](#update): Update contents of an existing file in the remote path of an allocation. | Update file contents:`./zbox update /absolute-path-to-local-file/hello.txt --remotepath /myfiles/hello.txt --allocation $ALLOCATION_ID  ` |
+| delete          | [Delete](#delete): Delete an existing file on remote path of an allocation. | Delete file:`./zbox delete --allocation $ALLOCATION_ID --remotepath /myfiles/sample.jpeg` |
+| share           | [Public share](#public-share): Share a file that can be downloaded by anyone via authticket.<br /><br />[Share file for a specific period of time](): Authticket will expire when the specified seconds have elapsed after its creation.<br /><br />[Private file sharing](#directory-share):Share encrypted file with a specific user. No one else can decrypt it or download it.<br /><br />[ Make the privately shared file available for download at certain time]():Timelock the privately shared file(yyyy-mm--dd).<br /><br /><br />[Private Directory share](#directory-share): Share encrypted directory with a specific user.No one else can decrypt it or download it. <br />[share-encrypted revoke](#share-encrypted-revoke): Cancel private share for a particular user. | Public share:`./zbox share --allocation $ALLOCATION_ID --remotepath /myfiles/hello.txt`<br /><br />Share file for a specific period of time:`./zbox share --allocation $ALLOCATION_ID --remotepath /myfiles/hello.txt --expiration-seconds 24567  `<br /><br />Private file sharing:`./zbox share --allocation $ALLOCATION_ID --remotepath /myfiles/sample.txt --clientid $WALLET_CLIENT_ID --encryptionpublickey $WALLET_ENCRYPTION_PUBLIC_KEY `<br /><br />Note: Wallet public key and encryption public key can be fetched using `./zbox getwallet` command.<br /><br /><br /> Make the privately shared file available for download at certain time: `./zbox share --allocation $ALLOCATION_ID --remotepath /myfiles/sample.txt --clientid $WALLET_CLIENT_ID --encryptionpublickey $WALLET_ENCRYPTION_PUBLIC_KEY --available-after 2023-11-02 10:21:38`<br /><br /><br /><br />Private directory share:`./zbox share --allocation $ALLOCATION_ID --remotepath /<path to directory> --clientid $WALLET_CLIENT_ID  --encryptionpublickey $WALLET_ENCRYPTION_PUBLIC_KEY `<br /><br />Note: Wallet public key and encryption public key can be fetched using `./zbox getwallet` command.<br />Share Encrypted revoke:`./zbox share --revoke --remotepath $remote --clientid WALLET_CLIENT_ID --allocation $ALLOCATION_ID`<br /><br />Note: Wallet client id can be fetched using `./zbox getwallet` command. |
+| list            | [List](#list)                                                |                                                              |
+| copy            | [Copy](#copy)                                                |                                                              |
+| move            | [Move](#move)                                                |                                                              |
+| sync            | [Sync](#sync)                                                |                                                              |
+| get-differences | [Get differences](#get-differences)                          |                                                              |
+| get-wallet      | [Get wallet](#get-wallet)                                    |                                                              |
+| get             | [Get](#get)                                                  |                                                              |
+| get-metadata    | [Get metadata](#get-metadata)                                |                                                              |
+| rename          | [Rename](#rename)                                            |                                                              |
+| stats           | [Stats](#stats)                                              |                                                              |
+| repair          | [Repair](#repair)                                            |                                                              |
+| sign-data       | [Sign data](#sign-data)                                      |                                                              |
+| streaming       | [Streaming](#streaming)<br />                                |                                                              |
+|                 | [Download cost](#download-cost)<br/>                         |                                                              |
+|                 | [Upload cost](#upload-cost)<br />                            |                                                              |
+| listall         | [List all files](#list-all-files):                           |                  
 
                                                                                                   
 ### Lock and Unlock Tokens
@@ -485,15 +486,21 @@ Cancelling an allocation can only occur if the amount of failed challenges excee
 
 </details>
 
-Example
+Sample Command:
 
 ```
-./zbox alloc-cancel --allocation <allocation_id>
+./zbox alloc-cancel --allocation $ALLOCATION_ID
 ```
 
-#### Finalise allocation
+Sample Response:
 
-`alloc-fini` finalises an expired allocation. An allocation becomes expired when
+```
+Allocation canceled with txId : 62ff90a533d63023fcbc3244be9d0f6fd1f8c737fd24c9474dd24055cdb60e39
+```
+
+#### Finalize allocation
+
+`alloc-fini` finalizes an expired allocation. An allocation becomes expired when
 the expiry time has passed followed by a period equal to the challenge completion
 period.
 
@@ -514,11 +521,18 @@ An allocation can be finalised by the owner or one of the allocation blobbers.
 
 </details>
 
-Example
+Sample Command:
 
 ```
 ./zbox alloc-fini --allocation <allocation_id>
 ```
+
+Sample Response:
+
+```
+
+```
+
 #### List blobbers
 
 Use `ls-blobbers` command to show active blobbers.
@@ -535,7 +549,7 @@ Use `ls-blobbers` command to show active blobbers.
 
 </details>
 
-Example
+Example:
 
 ```
 ./zbox ls-blobbers
@@ -573,13 +587,13 @@ Use `bl-info` command to get detailed blobber information.
 
 </details>
 
-Example
+Sample Command:
 
 ```
 ./zbox bl-info --blobber_id f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25
 ```
 
-Response:
+Sample Response:
 
 ```
 id:                f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25
@@ -608,8 +622,15 @@ settings:
 | ---------- | -------- | ---------------------------------------------- | ------- | ------------ |
 | allocation | yes      | allocation id, sender must be allocation owner |         | string       |
 
+Sample Command:
+
 ```shell
 ./zbox list-all --allocation 4ebeb69feeaeb3cd308570321981d61beea55db65cbeba4ba3b75c173c0f141b
+```
+Sample Response:
+
+```
+
 ```
 
 #### List owner's allocations
@@ -645,12 +666,12 @@ on the blockchain not the blobber.
 | capacity           | no       | update blobber capacity                   |         | int          |
 | max_offer_duration | no       | update max offer duration                 |         | duration     |
 | max_stake          | no       | update maximum stake                      |         | float        |
-| min_lock_demand    | no       | update minimum lock demand                |         | float        |
 | min_stake          | no       | update minimum stake                      |         | float        |
 | num_delegates      | no       | update maximum number of delegates        |         | int          |
 | read_price         | no       | update read price                         |         | float        |
 | service_charge     | no       | update service charge                     |         | float        |
 | write_price        | no       | update write price                        |         | float        |
+| not_available      | no       |set blobber's availability for new allocations |true | boolean |
 
 <details>
   <summary>bl-update</summary>
@@ -659,7 +680,7 @@ on the blockchain not the blobber.
 
 </details>
 
-Example
+Examples:
 
 Update blobber read price
 
@@ -667,7 +688,7 @@ Update blobber read price
 ./zbox bl-update --blobber_id 0ece681f6b00221c5567865b56040eaab23795a843ed629ce71fb340a5566ba3 --read_price 0.1
 ```
 
-Get Version
+#### Get Version
 
 The version of Zbox and Gosdk can be fetched using the `./zbox version` command.
 
@@ -799,6 +820,7 @@ The user must be the owner of the allocation.You can request the file be encrypt
 | remotepath    | yes      | remote path to upload file to, use to access file later |         | string       |
 | thumbnailpath | no       | local path of thumbnaSil                                |         | file path    |
 | chunknumber   | no       | how many chunks should be uploaded in a http request    | 1       | int          |
+| multiupload   |no        | A JSON file containing multiupload options              |         | string       |
 
 <details>
   <summary>upload</summary>
@@ -1005,11 +1027,8 @@ Status completed callback. Type = video/fmp4. Name = raw.samplevideo.mp4
 Use `download` command to download your own or a shared file.
 
 - `owner` The owner of the allocation can always download files, in this case the owner pays for the download.
-- `collaborator` A collaborator can download files, the owner pays. To add collaborators to an allocation, use
-  [add-collab](#add-collaborator).
-- `authticket` To download a file using `authticket`, you must have previous be given an auth
-  ticket using the [share](#share) command. Use rx_pay to indicate who pays, `rx_pay = true` you pay,
-  `rx_pay = false` the allocation owner pays.
+- `authticket` To download a file using `authticket`, you must have previous given an auth
+  ticket using the [share](#share) command.
   Use `startblock` and `endblock` to only download part of the file.
 
 | Parameter       | Required | Description                                                                                             | Default | Valid values |
@@ -1020,7 +1039,6 @@ Use `download` command to download your own or a shared file.
 | endblock        | no       | download until specified block number                                                                   |         | int          |
 | localpath       | yes      | local path to which to download the file to                                                             |         | file path    |
 | remotepath      | yes      | remote path to which the file was uploaded                                                              |         | string       |
-| rx_pay          | no       | `authticket` must be valid, true = sender pays, false = allocation owner pays                           | false   | boolean      |
 | startblock      | no       | start download from specified block                                                                     |         | int          |
 | thumbail        | no       | only download the thumbnail                                                                             | false   | boolean      |
 | live            | no       | start m3u8 downloader,and automatically generate media playlist(m3u8) on --localpath                    | false   | boolean      |
