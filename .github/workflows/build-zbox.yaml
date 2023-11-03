@@ -23,7 +23,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setup gopath and gcache
+      - name: Setup gopath and gocache
         run: |
             echo "GOPATH=$HOME/go" >> $GITHUB_ENV
             echo "GOCACHE=$GITHUB_WORKSPACE/.gocache" >> $GITHUB_ENV
@@ -36,7 +36,8 @@ jobs:
       - name: Install
         run: |
           lsb_release -a
-          docker run -v $PWD:/app -w /app golang:1.20 sh -c "make install"
+         
+          make install
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v2
