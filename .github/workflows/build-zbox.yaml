@@ -23,6 +23,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Setup gopath and gcache
+        run: |
+            echo "GOPATH=$HOME/go" >> $GITHUB_ENV
+            echo "GOCACHE=$GITHUB_WORKSPACE/.gocache" >> $GITHUB_ENV
+
       - name: Setup go 1.20
         uses: actions/setup-go@v3
         with:
