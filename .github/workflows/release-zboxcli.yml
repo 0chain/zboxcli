@@ -18,7 +18,7 @@ env:
 jobs:
   build-linux:
     name: Build-linux
-    runs-on: [self-hosted, build]
+    runs-on: [self-hosted, ubuntu20]
 
     steps:
     - name: Checkout code
