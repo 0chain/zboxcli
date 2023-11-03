@@ -15,7 +15,6 @@ zbox is a command-line interface (CLI) tool to understand the capabilities of ZÃ
   - [Commands Table](#commands-table)
     - [Creating and Managing Allocations](#creating-and-managing-allocations)
     - [Uploading and Managing files](#uploading-and-managing-files)
-    - [Lock and Unlock Tokens](#lock-and-unlock-tokens)
   - [Troubleshooting](#troubleshooting)
 
 ## ZÃ¼s Overview
@@ -91,7 +90,7 @@ Global Flags are versatile flags within zbox which can be used alongside any com
 
 ## Commands Table
 
-Below is a comprehensive table listing all zbox commands along with their respective functionalities for reference. We've included links for each command in case you need any further explanation of how it works. 
+Below is a comprehensive list showing all zbox commands along with their respective functionalities for reference. We've included links for each command in case you need any further explanation of how it works. 
 
 ### Creating and Managing Allocations
 
@@ -113,54 +112,30 @@ Below is a comprehensive table listing all zbox commands along with their respec
 | version          | [Get Version](#get-version): Get zbox and gosdk version.     | Get Version:`./zbox getversion`                              |
 
 
-### Uploading and Managing Files                                                                                                                 
+### Uploading and Managing Files
 
-| Command         | Description                                                  | Usage                                                        |
-| --------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| upload          | [Upload file with no encryption](#upload-file-with-no-encryption): Upload file only with required parameters to an allocation.<br /><br />[Upload file with encryption](#upload-file-with-encryption): Upload an encrypted file to an allocation<br /><br />[Upload file with web-streaming](#upload-file-with-web-streaming): Transcode file before upload to fragmented mp4. A *fragmented MP4* can start playback with just a fraction of its data, and continue loading as it plays which provide a much better user experience for mobile and web apps.<br /><br />[Multi Upload](#multi-upload): Upload multiple files to an allocation via json file.<br /><br />[Upload file with chunknumber](): Upload with chunk number to control the amount of data send in one http multipart request to blobbers.<br/>By default its set to 1 which will only send 64KB of data per request. Provide a bigger chunk number for sending more amount of data per request. | Upload file with no encryption:`./zbox upload --localpath /absolute-path-to-local-file/hello.txt --remotepath /myfiles/hello.txt --allocation $ALLOCATION_ID`<br /><br />Upload file with encryption:`./zbox upload --encrypt --localpath <absolute path to file>/sensitivedata.txt --remotepath /myfiles/sensitivedata.txt --allocation $ALLOCATION_ID`<br /><br />Upload file with web streaming:`./zbox upload --web-streaming --localpath <absolute path to file>/samplevideo.mov --remotepath /myfile/ --allocation $ALLOCATION_ID `<br /><br />Multi Upload:`./zbox upload --allocation $alloc --multiuploadjson ./multi-upload.json `<br /><br />Upload file with chunk number: `./zbox upload --allocation $ALLOCATION_ID --localpath <absolute path to file>/sample.mp3 --remotepath /myfile/file.mp3 --chunknumber 10` |
-| feed            | [Feed](#feed): Automatically download segment files from remote live feed such as youtube etc ,encode them into new segment files with `--delay` and `--ffmpeg-args`, and upload them to allocation. | Feed: `./zbox feed --localpath <absolute path to file>/tvshow.m3u8 --remotepath /videos/tvsho --allocation $ALLOCATION_ID  --delay 10 --downloader-args "-f 22" --feed https://www.youtube.com/watch?v=pC5mGB5enkw`<br /><br />Note: Make sure to list file download types for youtube video using [youtube-dl]((https://github.com/ytdl-org/youtube-dl/blob/master/README.md#options).)<br />.<br />Note: Download youtube-dl using brew package manager. |
-| stream          | [Live Streaming](#stream): Capture video and audio streaming from microphone ,camera, and push stream to allocation. | Live streaming:`./zbox stream --allocation $ALLOCATION_ID --localpath <absolute path to file>/sample.mp3 --remotepath /myfile/file.mp3   ` |
-| download        | [Download using Allocation ID and remotepath](#download): Download file from an allocation by specifying its remotepath.<br /><br />[Download using authticket](): Download a file using `authticket`,  auth ticket is generated when a file is shared usiing [share](#share) command.<br /><br />[Multi Download](#multi-download): Download multiple files to an allocation via json file.<br /><br />[Download using start block and end block]():  Download part of the file using `startblock` and `endblock` . | Download using Allocation ID and remotepath:`./zbox download --localpath /absolute-path-to-local-file/hello.txt --remotepath /myfiles/hello.txt --allocation $ALLOCATION_ID `<br /><br />Download using authticket:`./zbox download --authticket $AUTH --localpath <absolute-path-to-directory> `<br /><br />Multi Download: `./zbox download --multidownloadjson ./multi-download.json --allocation $ALLOCATION_ID`<br /><br />Download using start block and end block:`./zbox download --localpath /download --remotepath /myfiles/audio.mp3 --allocation $ALLOC --startblock 1 --endblock 3 ` |
-| update          | [Update](#update): Update contents of an existing file in the remote path of an allocation. | Update file contents:`./zbox update /absolute-path-to-local-file/hello.txt --remotepath /myfiles/hello.txt --allocation $ALLOCATION_ID  ` |
-| delete          | [Delete](#delete): Delete an existing file on remote path of an allocation. | Delete file:`./zbox delete --allocation $ALLOCATION_ID --remotepath /myfiles/sample.jpeg` |
-| share           | [Public share](#public-share): Share a file that can be downloaded by anyone via authticket.<br /><br />[Share file for a specific period of time](): Authticket will expire when the specified seconds have elapsed after its creation.<br /><br />[Private file sharing](#directory-share):Share encrypted file with a specific user. No one else can decrypt it or download it.<br /><br />[ Make the privately shared file available for download at certain time]():Timelock the privately shared file(yyyy-mm--dd).<br /><br /><br />[Private Directory share](#directory-share): Share encrypted directory with a specific user.No one else can decrypt it or download it. <br />[share-encrypted revoke](#share-encrypted-revoke): Cancel private share for a particular user. | Public share:`./zbox share --allocation $ALLOCATION_ID --remotepath /myfiles/hello.txt`<br /><br />Share file for a specific period of time:`./zbox share --allocation $ALLOCATION_ID --remotepath /myfiles/hello.txt --expiration-seconds 24567  `<br /><br />Private file sharing:`./zbox share --allocation $ALLOCATION_ID --remotepath /myfiles/sample.txt --clientid $WALLET_CLIENT_ID --encryptionpublickey $WALLET_ENCRYPTION_PUBLIC_KEY `<br /><br />Note: Wallet public key and encryption public key can be fetched using `./zbox getwallet` command.<br /><br /><br /> Make the privately shared file available for download at certain time: `./zbox share --allocation $ALLOCATION_ID --remotepath /myfiles/sample.txt --clientid $WALLET_CLIENT_ID --encryptionpublickey $WALLET_ENCRYPTION_PUBLIC_KEY --available-after 2023-11-02 10:21:38`<br /><br /><br /><br />Private directory share:`./zbox share --allocation $ALLOCATION_ID --remotepath /<path to directory> --clientid $WALLET_CLIENT_ID  --encryptionpublickey $WALLET_ENCRYPTION_PUBLIC_KEY `<br /><br />Note: Wallet public key and encryption public key can be fetched using `./zbox getwallet` command.<br />Share Encrypted revoke:`./zbox share --revoke --remotepath $remote --clientid WALLET_CLIENT_ID --allocation $ALLOCATION_ID`<br /><br />Note: Wallet client id can be fetched using `./zbox getwallet` command. |
-| list            | [List](#list)                                                |                                                              |
-| copy            | [Copy](#copy)                                                |                                                              |
-| move            | [Move](#move)                                                |                                                              |
-| sync            | [Sync](#sync)                                                |                                                              |
-| get-differences | [Get differences](#get-differences)                          |                                                              |
-| get-wallet      | [Get wallet](#get-wallet)                                    |                                                              |
-| get             | [Get](#get)                                                  |                                                              |
-| get-metadata    | [Get metadata](#get-metadata)                                |                                                              |
-| rename          | [Rename](#rename)                                            |                                                              |
-| stats           | [Stats](#stats)                                              |                                                              |
-| repair          | [Repair](#repair)                                            |                                                              |
-| sign-data       | [Sign data](#sign-data)                                      |                                                              |
-| streaming       | [Streaming](#streaming)<br />                                |                                                              |
-|                 | [Download cost](#download-cost)<br/>                         |                                                              |
-|                 | [Upload cost](#upload-cost)<br />                            |                                                              |
-| listall         | [List all files](#list-all-files):                           |                  
+| Command           | Description                                                  | Usage                                                        |
+| ----------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| upload            | [Upload file with no encryption](#upload-file-with-no-encryption): Upload file only with required parameters to an allocation.<br /><br />[Upload file with encryption](#upload-file-with-encryption): Upload an encrypted file to an allocation<br /><br />[Upload file with web-streaming](#upload-file-with-web-streaming): Transcode file before upload to fragmented mp4. A *fragmented MP4* can start playback with just a fraction of its data, and continue loading as it plays which provide a much better user experience for mobile and web apps.<br /><br />[Multi Upload](#multi-upload): Upload multiple files to an allocation via json file.<br /><br />[Upload file with chunknumber](): Upload with chunk number to control the amount of data send in one http multipart request to blobbers.<br/>By default its set to 1 which will only send 64KB of data per request. Provide a bigger chunk number for sending more amount of data per request. | Upload file with no encryption:`./zbox upload --localpath /absolute-path-to-local-file/hello.txt --remotepath /myfiles/hello.txt --allocation $ALLOCATION_ID`<br /><br />Upload file with encryption:`./zbox upload --encrypt --localpath <absolute path to file>/sensitivedata.txt --remotepath /myfiles/sensitivedata.txt --allocation $ALLOCATION_ID`<br /><br />Upload file with web streaming:`./zbox upload --web-streaming --localpath <absolute path to file>/samplevideo.mov --remotepath /myfile/ --allocation $ALLOCATION_ID `<br /><br />Multi Upload:`./zbox upload --allocation $alloc --multiuploadjson ./multi-upload.json `<br /><br />Upload file with chunk number: `./zbox upload --allocation $ALLOCATION_ID --localpath <absolute path to file>/sample.mp3 --remotepath /myfile/file.mp3 --chunknumber 10` |
+| feed              | [Feed](#feed): Automatically download segment files from remote live feed such as youtube etc ,encode them into new segment files with `--delay` and `--ffmpeg-args`, and upload them to allocation. | Feed: `./zbox feed --localpath <absolute path to file>/tvshow.m3u8 --remotepath /videos/tvsho --allocation $ALLOCATION_ID  --delay 10 --downloader-args "-f 22" --feed https://www.youtube.com/watch?v=pC5mGB5enkw`<br /><br />Note: Make sure to list file download types for youtube video using [youtube-dl]((https://github.com/ytdl-org/youtube-dl/blob/master/README.md#options).)<br />.<br />Note: Download youtube-dl using brew package manager. |
+| stream            | [Live Streaming](#stream): Capture video and audio streaming from microphone ,camera, and push stream to allocation. | Live streaming:`./zbox stream --allocation $ALLOCATION_ID --localpath <absolute path to file>/sample.mp3 --remotepath /myfile/file.mp3   ` |
+| download          | [Download using Allocation ID and remotepath](#download): Download file from an allocation by specifying its remotepath.<br /><br />[Download using authticket](): Download a file using `authticket`,  auth ticket is generated when a file is shared usiing [share](#share) command.<br /><br />[Multi Download](#multi-download): Download multiple files to an allocation via json file.<br /><br />[Download using start block and end block]():  Download part of the file using `startblock` and `endblock` . | Download using Allocation ID and remotepath:`./zbox download --localpath /absolute-path-to-local-file/hello.txt --remotepath /myfiles/hello.txt --allocation $ALLOCATION_ID `<br /><br />Download using authticket:`./zbox download --authticket $AUTH --localpath <absolute-path-to-directory> `<br /><br />Multi Download: `./zbox download --multidownloadjson ./multi-download.json --allocation $ALLOCATION_ID`<br /><br />Download using start block and end block:`./zbox download --localpath /download --remotepath /myfiles/audio.mp3 --allocation $ALLOC --startblock 1 --endblock 3 ` |
+| update            | [Update](#update): Update contents of an existing file in the remote path of an allocation. | Update file contents:`./zbox update /absolute-path-to-local-file/hello.txt --remotepath /myfiles/hello.txt --allocation $ALLOCATION_ID  ` |
+| delete            | [Delete](#delete): Delete an existing file on remote path of an allocation. | Delete file:`./zbox delete --allocation $ALLOCATION_ID --remotepath /myfiles/sample.jpeg` |
+| share             | [Public share](#public-share): Share a file that can be downloaded by anyone via authticket.<br /><br />[Share file for a specific period of time](): Authticket will expire when the specified seconds have elapsed after its creation.<br /><br />[Private file sharing](#directory-share): Share encrypted file with a specific user. No one else can decrypt it or download it.<br /><br />[ Make the privately shared file available for download at certain time](): Timelock the privately shared file(yyyy-mm--dd).<br /><br /><br />[Private Directory share](#directory-share): Share encrypted directory with a specific user.No one else can decrypt it or download it. <br />[share-encrypted revoke](#share-encrypted-revoke): Cancel private share for a particular user. | Public share:`./zbox share --allocation $ALLOCATION_ID --remotepath /myfiles/hello.txt`<br /><br />Share file for a specific period of time:`./zbox share --allocation $ALLOCATION_ID --remotepath /myfiles/hello.txt --expiration-seconds 24567  `<br /><br />Private file sharing:`./zbox share --allocation $ALLOCATION_ID --remotepath /myfiles/sample.txt --clientid $WALLET_CLIENT_ID --encryptionpublickey $WALLET_ENCRYPTION_PUBLIC_KEY `<br /><br />Note: Wallet public key and encryption public key can be fetched using `./zbox getwallet` command.<br /><br /><br /> Make the privately shared file available for download at certain time: `./zbox share --allocation $ALLOCATION_ID --remotepath /myfiles/sample.txt --clientid $WALLET_CLIENT_ID --encryptionpublickey $WALLET_ENCRYPTION_PUBLIC_KEY --available-after 2023-11-02 10:21:38`<br /><br /><br /><br />Private directory share:`./zbox share --allocation $ALLOCATION_ID --remotepath /<path to directory> --clientid $WALLET_CLIENT_ID  --encryptionpublickey $WALLET_ENCRYPTION_PUBLIC_KEY `<br /><br />Note: Wallet public key and encryption public key can be fetched using `./zbox getwallet` command.<br />Share Encrypted revoke:`./zbox share --revoke --remotepath <path_to_shared_file> --clientid WALLET_CLIENT_ID --allocation $ALLOCATION_ID`<br /><br />Note: Wallet client id can be fetched using `./zbox getwallet` command. |
+| list              | [List](#list):  List all the files from a specified directory on an allocation. | List files from root directory of an allocation:`./zbox list --remotepath / --allocation $ALLOCATION_ID `<br /><br /><br />List files from specified directory of an allocation: `./zbox list --remotepath /<DIRECTORY_NAME> --allocation $ALLOCATION_ID` |
+| copy              | [Copy](#copy):  Copy file to another directory on an allocation. | Copy file:`./zbox copy --remotepath <path_to_remote_file> --destpath <path_to_remote_directory> --allocation $ALLOCATION_ID` |
+| move              | [Move](#move): Move files between directories on an allocation. | Move file:`./zbox move --remotepath <path_to_remote_file> --destpath /<path_to_remote_directory> --allocation $ALLOCATION_ID ` |
+| sync              | [Sync](#sync): Sync all files from the local directory to root path on an allocation.<br /><br />[Sync to specifed path](#sync): Sync all files from the local directory to specified path on an allocation.<br /><br />[Batch Upload files using Sync](): Upload multiple files at once from a local directory.  <br />[Sync with Excludepath](): Exclude specific directories on an allocation during sync.<br /><br />[Sync with chunknumber](): Sync with chunk number to control the amount of data send in one http multipart request to blobbers.By default its set to 1 which will only send 64KB of data per request. | Sync:`./zbox sync --localpath /home/zus/files --allocation $ALLOCATION_ID`<br /><br />Sync to specifed path:`./zbox sync --localpath /home/zus/files --remotepath /myfiles --allocation $ALLOCATION_ID`<br /><br />Batch Upload Files using Sync: `./zbox sync --uploadonly --localpath /home/zus/files --remotepath /myfiles `<br /><br /><br />Sync with Excludepath: `./zbox sync --allocation $ALLOCATION_ID --localpath /home/zus/files --remotepath /myfiles --excludepath /myfiles/audio.mp3 `<br /><br /><br />Sync with chunknumber:`zbox sync --allocation $alloc --localpath /home/zus/files --remotepath /myfiles --chunknumber 100` |
+| get-diff          | [Get differences](#get-differences): Get differences between the local files specified by `localpath` and the files stored on the root remotepath of the allocation.<br /><br /><br />[Get differences with excludepath](): Get differences between local directory and root remotepath and exclude a specific remotepath. | Get differences:`./zbox get-diff --allocation $ALLOCATION_ID --localpath <path_to_local_directory>`<br /><br />Get differences with excludepath:`./zbox get-diff --allocation $ALLOCATION_ID --localpath /home/zus/files --excludepath /myfiles` |
+| get-wallet        | [Get wallet](#get-wallet): Get wallet information.           | Get wallet: `./zbox getwallet`                               |
+| rename            | [Rename](#rename): Rename an existing file on allocation.    | Rename:`./zbox rename --remotepath /sync.txt --destname <new_name_for_the_file> --allocation $ALLOCATION_ID` |
+| stats             | [Stats](#stats): Get Stats for a file such as upload, download and challenge information for a file. | Stats:`./zbox stats --remotepath <remote_path_of_file> --allocation $ALLOCATION_ID ` |
+| get-download-cost | [Download cost](#download-cost): Get Download cost for a file on an allocation.<br /><br />[Download cost via authticket](#download-cost): Get Download cost for a shared file. | Get Download Cost :`./zbox get-download-cost --allocation $ALLOCATION_ID --remotepath <path to_remote_file>`<br /><br /><br />Get Download Cost via authticket :`./zbox get-download-cost --authticket $AUTH_TICKET --allocation $ALLOCATION_ID` |
+| get-upload-cost   | [Upload cost](#upload-cost): Get Upload cost for a file.<br /><br />[Upload cost using duration](#upload-cost): Get Upload cost for a file for specified duration) (this will decrease upload cost).Default duration is allocation expiry. | Get Upload Cost:`./zbox get-upload-cost --allocation $ALLOCATION_ID --localpath <PATH_TO_LOCAL_FILE>`<br /><br /><br />Upload cost using duration:`./zbox get-upload-cost --allocation $ALLOCATION_ID --localpath <path_to_local_file> --duration 48h` |
+| list-all          | [List all files](#list-all-files): List all files stored on an allocation. | List all files:`./zbox list-all --allocation $ALLOCATION_ID` |
 
                                                                                                   
-### Lock and Unlock Tokens
-
-| Command        | Description                                                  | Usage |
-| -------------- | ------------------------------------------------------------ | ----- |
-| cp-info        | [Challenge pool information](#challenge-pool-information)    |       |
-| rp-create      | [Create read pool](#create-read-pool)                        |       |
-| collect-reward | [Collect rewards](#collect-rewards)                          |       |
-| rp-info        | [Read pool info](#read-pool-info)                            |       |
-| rp-lock        | [Lock tokens into read pool](#lock-tokens-into-read-pool)    |       |
-| rp-unlock      | [Unlock tokens from read pool](#unlock-tokens-from-read-pool) |       |
-| sc-config      | [Storage SC configurations](#storage-sc-configurations)      |       |
-| sp-info        | [Stake pool info](#stake-pool-info)                          |       |
-| sp-lock        | [Lock tokens into stake pool](#lock-tokens-into-stake-pool)  |       |
-| sp-unlock      | [Unlock tokens from stake pool](#unlock-tokens-from-stake-pool) |       |
-| sp-user-info   | [Stake pools info of user](#stake-pools-info-of-user)        |       |
-| wp-lock        | [Lock tokens into write pool](#lock-tokens-into-write-pool)  |       |
-| wp-unlock      | [Unlock tokens from write pool](#unlock-tokens-from-write-pool) |       |
-
-
 
 #### Create new allocation
 
@@ -530,7 +505,7 @@ Sample Command:
 Sample Response:
 
 ```
-
+Allocation finalized with txId : d853a82907453d37ed978b9fc1a55663be99bb351d18cca31068c0dc95566edd
 ```
 
 #### List blobbers
@@ -627,11 +602,6 @@ Sample Command:
 ```shell
 ./zbox list-all --allocation 4ebeb69feeaeb3cd308570321981d61beea55db65cbeba4ba3b75c173c0f141b
 ```
-Sample Response:
-
-```
-
-```
 
 #### List owner's allocations
 
@@ -680,13 +650,6 @@ on the blockchain not the blobber.
 
 </details>
 
-Examples:
-
-Update blobber read price
-
-```
-./zbox bl-update --blobber_id 0ece681f6b00221c5567865b56040eaab23795a843ed629ce71fb340a5566ba3 --read_price 0.1
-```
 
 #### Get Version
 
