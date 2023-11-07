@@ -361,7 +361,6 @@ An increase in blobber count will increment the parity shards.
 | expiry         |          | adjust storage expiration time                                       | duration     |
 | free_storage   |          | free storage marker file                                             | string       |
 | lock           | yes\*    | lock additional tokens in write pool                                 | int          |
-| update_terms   |          | will update the allocation with the latest blobber terms             | boolean      |
 | size           |          | adjust allocation size                                               | bytes        |
 | add_blobber    |          | add a new blobber to the allocation, required for remove_blobber     | string       |
 | remove_blobber |          | remove a blobber from the allocation, requires an add_blobber option | string2      |
