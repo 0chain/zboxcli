@@ -16,6 +16,7 @@ zbox is a command-line interface (CLI) tool to understand the capabilities of Z�
   - [Commands Table](#commands-table)
     - [Creating and Managing Allocations](#creating-and-managing-allocations)
     - [Uploading and Managing files](#uploading-and-managing-files)
+    - [Locking and Unlocking Tokens](#locking-and-unlocking-tokens)
   - [Troubleshooting](#troubleshooting)
 
 ## Züs Overview
@@ -43,7 +44,7 @@ For most transactions, `zbox` uses the `0dns` to discover the network nodes, the
 
 ## 3-Layer Security
 
-Züs offers a three-tiered security system to safeguard your data:
+Züs offers a three-layered security to safeguard your data:
 
 🔒 **Fragmentation**: Züs implements a robust security measure involving the strategic fragmentation of data. This process involves breaking down files into smaller, dispersed fragments distributed across multiple locations. This methodology not only strengthens data security but also mitigates the risk of a single point of failure. By avoiding consolidating data in a singular vulnerable location, Züs ensures enhanced protection.
 
@@ -149,8 +150,26 @@ Below is a comprehensive list showing all zbox commands along with their respect
 | get-upload-cost   | [Upload cost](#upload-cost): Get Upload cost for a file.<br /><br />[Upload cost using duration](#upload-cost): Get Upload cost for a file for specified duration) (this will decrease upload cost).Default duration is allocation expiry. | Get Upload Cost:`./zbox get-upload-cost --allocation $ALLOCATION_ID --localpath <PATH_TO_LOCAL_FILE>`<br /><br /><br />Upload cost using duration:`./zbox get-upload-cost --allocation $ALLOCATION_ID --localpath <path_to_local_file> --duration 48h` |
 | list-all          | [List all files](#list-all-files): List all files stored on an allocation. | List all files:`./zbox list-all --allocation $ALLOCATION_ID` |
 
-                                                                                                  
+       
+### Locking and Unlocking Tokens
 
+| Command        | Description                                                  | Usage                                                        |
+| -------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| cp-info        | [Challenge pool information](#challenge-pool-information): Get challenge pool information for a particular allocation. | Challenge Pool Information: `./zbox cp-info --allocation $ALLOCATION_ID`                 |
+| rp-create      | [Create read pool](#create-read-pool): Create read pool in storage smart contract if the pool is missing.  | Create Read Pool: `./zbox rp-create`                         |
+| collect-reward | [Collect rewards](#collect-rewards): Collect rewards for a stake pool as blobber or validator. | Collect rewards for blobbers: `./zbox collect-reward --provider_type blobber --provider_id $BLOBBER_ID`<br /><br />Collect rewards for validator:`./zbox collect-reward --provider_type validator --provider_id $VALIDATOR_ID  ` |
+| rp-info        | [Read pool info](#read-pool-info): Get read pool information. | Read pool info:`./zbox rp-info`                              |
+| rp-lock        | [Lock tokens into read pool](#lock-tokens-into-read-pool): Lock tokens into read pool. | Lock Tokens into read pool:`./zbox rp-lock --lock 3 --fee 0.5 ` <br /> |
+| rp-unlock      | [Unlock tokens from read pool](#unlock-tokens-from-read-pool): Unlock tokens from read pool. | Unlock Tokens from read pool: `./zbox rp-unlock --fee 0.5 `  |
+| sc-config      | [Storage SC configurations](#storage-sc-configurations): Show storage SC configuration. | Storage SC configuration: `./zbox sc-config `                |
+| sp-info        | [Stake pool info](#stake-pool-info): Get stake pool info for a validator or a blobber via its id.<br />Note: Blobber and Validator ID can be fetched using [List All Validators](#list-all-validators) and [List blobbers](#list-blobbers) command. | Stake pool info for blobber: `./zbox sp-info --blobber_id <blobber_id>`<br /><br /><br />Stake pool info for validator:`./zbox sp-info --validator_id <validator_id>` |
+| sp-lock        | [Lock tokens into stake pool](#lock-tokens-into-stake-pool): Lock tokens into blobber or validator stake pool and earn rewards. | Lock Tokens into Stake Pool of Blobber: `./zbox sp-lock --blobber_id <blobber_id> --tokens 1.0 --fee 0.5` <br /><br />Unlock Tokens into Stake Pool of Validator: `./zbox sp-lock --validator_id <validator_id> --tokens 1.0 --fee 0.5` |
+| sp-unlock      | [Unlock tokens from stake pool](#unlock-tokens-from-stake-pool): Unlock tokens from stake pool of a specific blobber or validator.<br /><br />Note: Blobber and Validator ID can be fetched using [List All Validators](#list-all-validators) and [List blobbers](#list-blobbers) command. | To unstake blobber tokens:`./zbox sp-unlock --blobber_id <blobber_id>`<br /><br />To unstake validator tokens:`./zbox sp-unlock --validator_id <validator_id> ` |
+| sp-user-info   | [Stake pools info of user](#stake-pools-info-of-user): Get Stake pool info for a user. | Stake pool info for a user:`./zbox sp-user-info `<br /><br />Stake pool info for specified user via clientid:`./zbox sp-user-info --client_id $WALLET_CLIENT_ID`<br /><br />Limit number of stake pool records returned(default is 20):`./zbox sp-user-info --client_id $WALLET_CLIENT_ID --limit 5` |
+| wp-lock        | [Lock tokens into write pool](#lock-tokens-into-write-pool): Lock tokens into write pool. | Lock Tokens into write pool:`./zbox wp-lock --allocation <allocation_id> --tokens 1` |
+| wp-unlock      | [Unlock tokens from write pool](#unlock-tokens-from-write-pool): Unlock tokens from write pool. | Unlock Tokens into write pool:`./zbox wp-unlock --allocation <allocation_id> --fees 0.5` |
+
+                                                                                         
 #### Create new allocation
 
 The 'newallocation' command is used to reserve storage space on the blobbers. Later [`upload`](#upload)
@@ -1891,9 +1910,10 @@ These rewards can be accessed using this `collect-reward` command.
 | Parameter     | Required | Description          | default | Valid values |
 | ------------- | -------- | -------------------- | ------- | ------------ |
 | provider_type | no       | blobber or validator | blobber | string       |
+| provider_id   | yes      | blobber or validator id |      | string |
 
 ```bash
-./zbox colect-reward --provider_type blobber
+./zbox collect-reward --provider_type blobber --provider_id $BLOBBER_ID
 ```
 
 #### Read pool info
@@ -2119,7 +2139,6 @@ allocation's owner on closing the allocation.
 | ------------- | -------- | --------------------------------- | ------- | ------------ |
 | allocation id | no       | allocation id                     |         | string       |
 | blobber       | no       | blobber id                        |         | string       |
-| duration      | yes      | duration for which to lock tokens |         | duration     |
 | fee           | no       | transaction fee                   | 0       | float        |
 | tokens        | yes      | number of tokens to lock          |         | float        |
 
@@ -2127,7 +2146,7 @@ allocation's owner on closing the allocation.
   <summary>rp-lock with a specific blobber</summary>
 
 ```shell
-./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1 --blobber f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25
+./zbox rp-lock --allocation <allocation_id> --tokens 1 --blobber f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25
 ```
 
 ![image](https://user-images.githubusercontent.com/6240686/123988183-b4c93c00-d9bf-11eb-825c-9a5849fedbbf.png)
@@ -2141,7 +2160,7 @@ Tokens are spread between the blobber pools weighted by
 each blobber's Terms.ReadPrice.
 
 ```shell
-./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1
+./zbox rp-lock --allocation <allocation_id> --tokens 1
 ```
 
 ![image](https://user-images.githubusercontent.com/6240686/123979735-e5f23e00-d9b8-11eb-8232-339a4a3374d0.png)
@@ -2149,7 +2168,7 @@ each blobber's Terms.ReadPrice.
 </details>
 
 ```
-./zbox wp-lock --allocation <allocation_id> --duration 40m --tokens 1
+./zbox wp-lock --allocation $ALLOCATION_ID --tokens 1
 ```
 
 #### Unlock tokens from write pool
@@ -2169,7 +2188,7 @@ An expired write pool, associated with an allocation, can be locked until alloca
 </details>
 
 ```
-./zbox wp-unlock
+./zbox wp-unlock --allocation $ALLOCATION_ID 
 ```
 
 #### Download cost
@@ -2190,11 +2209,12 @@ owner, collaborator, or using an auth ticket to determine the download cost of t
 ![image](https://user-images.githubusercontent.com/6240686/124497750-41ef0500-ddb3-11eb-99ea-115a4e234eda.png)
 
 </details>
-Command:
+
+Sample Command:
 ```
 ./zbox get-download-cost --allocation <allocation_id> --remotepath /path/file.ext
 ```
-Response:
+Sample Response:
 ```
 0.0000107434 tokens for 10 64KB blocks (24 B) of <remote_path_of_file> .
 ```
