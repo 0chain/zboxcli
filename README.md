@@ -669,13 +669,17 @@ Sample Response:
 
 </details>
 
-Example:
+Sample Command:
 
 ```shell
 ./zbox listallocations
-ZED | CANCELED | R  PRICE |   W  PRICE
-+------------------------------------------------------------------+-----------+-------------------------------+------------+--------------+-----------+----------+----------+--------------+
-  4ebeb69feeaeb3cd308570321981d61beea55db65cbeba4ba3b75c173c0f141b | 104857600 | 2021-07-16 13:34:29 +0100 BST |          1 |            1 | false     | false    |     0.02 | 0.1999999998
+```
+Sample Response:
+
+```shell
+                                 ID                                |    SIZE    |          EXPIRATION           | DATASHARDS | PARITYSHARDS | FINALIZED | CANCELED | R  PRICE |   W  PRICE
+-------------------------------------------------------------------+------------+-------------------------------+------------+--------------+-----------+----------+----------+---------------
+  62e81f7fa8151f8fd4519c48da2199934b1aa436b5271a5b6b2da799d296a231 | 2147483648 | 2023-12-08 16:27:44 +0530 IST |          2 |            2 | false     | false    | 0 SAS    | 400.000 mZCN
 ```
 
 #### Update blobber settings
@@ -732,11 +736,11 @@ gosdk...:  v1.8.14
 
 List all active validators on the network
 
-Command:
+Sample Command:
 ```
 ./zbox ls-validators
 ```
-Response :
+Sample Response:
 ```
 id:                b9f4f244e2e483548795e42dad0c5b5bb8f5c25d70cadeafc202ce6011b7ff8c
 url:               https://demo.zus.network/validator03/
@@ -795,13 +799,13 @@ settings:
 | --json             | optional | Print Response as json data
 | --help             | no       | Provide information about the command
 
- Sample Command :
+Sample Command:
 ```
 ./zbox kill-blobber --id $BLOBBER_ID --wallet $CHAIN_OWNER_WALLET
 ```
 Note : Kill Blobber command should be evoked from chain owner wallet only
 
-Sample Response :
+Sample Response:
 ```
 killed blobber $BLOBBER_ID
 ```
@@ -817,11 +821,11 @@ killed blobber $BLOBBER_ID
 | --help             | no       | Provide information about the command
 
 
-Sample Command :
+Sample Command:
 ```
 ./zbox kill-validator --id $VALIDATOR_ID --wallet $CHAIN_OWNER_WALLET
 ```
-Sample Response :
+Sample Response:
 ```
 killed validator, id: $VALIDATOR_ID
 ```
@@ -889,12 +893,11 @@ Status completed callback. Type = application/octet-stream. Name = sensitivedata
 Use the [upload](https://github.com/0chain/zboxcli#upload) command with an optional web-streaming parameter to upload a video file in fragmented mp4 format.
 
 Sample Command:
-
 ```
 ./zbox upload --web-streaming --localpath <absolute path to file>/samplevideo.mov --remotepath /myfile/ --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
 ```
 
-Response:
+Sample Response:
 
 ```
 15691733 / 15691733 [=====================================================================================] 100.00% 32s
@@ -915,21 +918,20 @@ Here is a sample json file for Multi Upload:
 
 ```
 [
-  {
-    "remotePath": "/raw.file_example_MP4_1920_18MG.mp4",
-    "localPath": "./a.mp4",
-    "downloadOp": 1
-  },
-  {
-    "remotePath": "/a.mp4",
-    "localPath": "./b.mp4",
-    "downloadOp": 1
-  },
-  {
-    "remotePath": "/raw.file_example_MP4_1920_18MG.mp4",
-    "localPath": "./c.mp4",
-    "downloadOp": 1
-  }
+ {
+      "remotePath": "/dir2",
+      "filePath": "/Users/zus/Downloads/file.txt",
+      "thumbnailPath": "",
+      "fileName": "file.txt",
+      "encrypt": false
+    },
+    {
+      "remotePath": "/dir3",
+      "filePath": "/Users/zus/Downloads/file.txt",
+      "thumbnailPath": "",
+      "fileName": "file.txt",
+      "encrypt": false
+    }
 ]
 ```
 
@@ -943,6 +945,20 @@ Sample Command:
 
 ```
 ./zbox upload --allocation $alloc --multiuploadjson ./multi-upload.json
+```
+
+Sample Response:
+
+```
+0box-sdk        [INFO]   2023/11/10 17:26:23.186632 multi_operation_worker.go:148: MultiOperation Process start
+0box-sdk        [INFO]   2023/11/10 17:26:23.186733 upload_worker.go:35: Connection ID: pmface933boTGeR8Vsz7tW
+ 0 / 19 [-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------]   0.00%0box-sdk        [INFO]   2023/11/10 17:26:23.191053 chunked_upload_form_builder.go:143: [hasherTime]3
+0box-sdk        [INFO]   2023/11/10 17:26:23.191083 chunked_upload_form_builder.go:143: [hasherTime]4
+0box-sdk        [INFO]   2023/11/10 17:26:23.191196 chunked_upload_form_builder.go:143: [hasherTime]4
+0box-sdk        [INFO]   2023/11/10 17:26:23.191602 chunked_upload_form_builder.go:143: [hasherTime]4
+0box-sdk        [INFO]   2023/11/10 17:26:23.362501 chunked_upload_blobber.go:94: [sendUploadRequestBlobber] 170
+ 21 / 21 [===========================================================================================================================================================================================] 100.00% 2s
+Status completed callback. Type = application/octet-stream. Name = file.txt
 ```
 
 #### Live Streaming
@@ -968,12 +984,39 @@ The user must be the owner of the allocation. You can request the file be encryp
 
 </details>
 
+Sample Command:
+```
+ ./zbox stream --allocation $ALLOCATION_ID --localpath home/zus/stream/ --remotepath /myfiles/
+```
+
+Sample Response:
+```
+ffmpeg -f v4l2 -i /dev/video0 -f alsa -i hw:0 -preset ultrafast -tune zerolatency -vcodec libx264 -r 30 -b:v 512k -acodec aac -strict -2 -ac 2 -map 0 -map 1 -f segment -segment_time 5 home/ubuntu/zboxcli/%d
+ffmpeg version 4.4.2-0ubuntu0.22.04.1 Copyright (c) 2000-2021 the FFmpeg developers
+  built with gcc 11 (Ubuntu 11.2.0-19ubuntu1)
+  configuration: --prefix=/usr --extra-version=0ubuntu0.22.04.1 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --enable-gnutls --enable-ladspa --enable-libaom --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libdav1d --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libjack --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librabbitmq --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libsrt --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzimg --enable-libzmq --enable-libzvbi --enable-lv2 --enable-omx --enable-openal --enable-opencl --enable-opengl --enable-sdl2 --enable-pocketsphinx --enable-librsvg --enable-libmfx --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-libx264 --enable-shared
+  libavutil      56. 70.100 / 56. 70.100
+  libavcodec     58.134.100 / 58.134.100
+  libavformat    58. 76.100 / 58. 76.100
+  libavdevice    58. 13.100 / 58. 13.100
+  libavfilter     7.110.100 /  7.110.100
+  libswscale      5.  9.100 /  5.  9.100
+  libswresample   3.  9.100 /  3.  9.100
+  libpostproc    55.  9.100 / 55.  9.100
+
+15691733 / 15691733 [=====================================================================================] 100.00% 32s
+Status completed callback. Type = video/fmp4. Name = raw.samplevideo.mp4
+
+393216 / 2996198 [=====================================================================================]  100.00% 7s
+Status completed callback. Type = audio/mpeg. Name = audio.mp3
+```
+
 #### Feed
 
 Use `feed` command to automatically download segment files from remote live feed with `--downloader-args "-q -f best"`
 
 - encode them into new segment files with `--delay` and `--ffmpeg-args`, and upload.
-- please use `youtube-dl -F https://www.youtube.com/watch?v=pC5mGB5enkw` to list formats of video (see below).
+- please use `youtube-dl -F https://www.youtube.com/watch?v=pC5mGB5enkw` to list formats for video (see sample response below).
 
 ```
 [youtube] pC5mGB5enkw: Downloading webpage
@@ -1001,7 +1044,7 @@ format code  extension  resolution note
 22           mp4        1280x676   720p 2117k , avc1.64001F, 30fps, mp4a.40.2 (44100Hz) (best)
 ```
 
-`--downloader-args "-f 22"` dowloads video with `22           mp4        1280x676   720p 2117k , avc1.64001F, 30fps, mp4a.40.2 (44100Hz) (best)`
+`--downloader-args "-f 22"` dowloads video with `22  mp4 1280x676   720p 2117k , avc1.64001F, 30fps, mp4a.40.2 (44100Hz) (best)`
 
 The user must be the owner of the allocation.You can request the file to be encrypted before upload, and can send thumbnails with the file.
 
@@ -1025,12 +1068,16 @@ The user must be the owner of the allocation.You can request the file to be encr
 
 </details>
 
-Example
+Sample Command:
 
 ```
-./zbox feed --localpath <absolute path to file>/tvshow.m3u8 --remotepath /videos/tvsho --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac  --delay 10 --downloader-args "-f 22" --feed https://www.youtube.com/watch?v=pC5mGB5enkw
+./zbox feed --localpath <absolute path to file>/tvshow.m3u8 --remotepath /videos/tvsho --allocation $ALLOCATION_ID  --delay 10 --downloader-args "-f 22" --feed https://www.youtube.com/watch?v=pC5mGB5enkw
 ```
-
+Sample Response:
+```
+15691733 / 15691733 [=====================================================================================] 100.00% 32s
+Status completed callback. Type = video/fmp4. Name = raw.samplevideo.mp4
+```
 ##### Stream
 
 Stream or web streaming can be used with [upload](https://github.com/0chain/zboxcli#upload) as an optional web-streaming parameter to upload a video file in fragmented mp4 format. Converting all uploads to fragmented mp4 format makes it easy to play them on standard video player on mobile, desktop and web.
@@ -1079,7 +1126,7 @@ Use `download` command to download your own or a shared file.
 Example
 
 ```
-./zbox download --allocation 3c0d32560ea18d9d0d76808216a9c634f661979d29ba59cc8dafccb3e5b95341 --remotepath /myfiles/horse.jpeg --localpath ../horse.jpeg
+./zbox download --allocation $ALLOCATION_ID --remotepath /myfiles/horse.jpeg --localpath ../horse.jpeg
 ```
 
 Response:
@@ -1110,23 +1157,20 @@ Here are the parameters for multi-download:
 Here is a sample json file for multi download:
 
 ```
-[
+
+ [
   {
-    "remotePath": "/raw.file_example_MP4_1920_18MG.mp4",
-    "localPath": "./a.mp4",
+    "remotePath": "/myfiles/upload1.txt",
+    "localPath": "./file2.txt",
     "downloadOp": 1
   },
   {
-    "remotePath": "/a.mp4",
-    "localPath": "./b.mp4",
-    "downloadOp": 1
-  },
-  {
-    "remotePath": "/raw.file_example_MP4_1920_18MG.mp4",
-    "localPath": "./c.mp4",
+    "remotePath": "/myfiles/upload2.txt",
+    "localPath": "./file3.txt",
     "downloadOp": 1
   }
 ]
+
 ```
 `remotepath`: Remote path of downloaded file.
 
@@ -1139,19 +1183,39 @@ Sample Command:
 ```
 zbox download --multidownloadjson ./multi-download.json --allocation $ALLOC
 ```
+Sample Response:
+```
+19 / 19 [===========================================================================================================================================================================================] 100.00% 0s
+Status completed callback. Type = . Name = upload2.txt
+ 0 / 21 [-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------]   0.00%0box-sdk        [INFO]   2023/11/10 18:24:40.510225 blockdownloadworker.go:182: verifying multiple blocks
+0box-sdk        [DEBUG]  2023/11/10 18:24:40.510404 blockdownloadworker.go:206: downloadBlobberBlock 200 OK: blobberID: 06166f3dfd72a90cd0b51f4bd7520d4434552fc72880039b1ee1e8fe4b3cd7ea, clientID: 700d8d29d8a01aa3afe224b6c9051dab43733daa44e56313be8904e34d2d0de3, blockNum: 0
+Status completed callback. Type = . Name = upload1.txt
+```
+##### Download using start block and end block
 
+Sample command for downloading till 3rd block of the `audio.mp3` file would be:
+
+```
+./zbox download --localpath /root --remotepath /myfiles/audio.mp3 --allocation $ALLOC --startblock 1 --endblock 3
+```
+
+Response:
+
+```
+ 393216 / 2996198 [====================>-----------------------------------------------------------------------------------------------------------------------------------------]  13.12% 1s
+Status completed callback. Type = audio/mpeg. Name = audio.mp3
+
+```
 #### Update
 
-Use `update` command to update content of an existing file in the remote path.
-Like [upload](#upload) command. Only the owner of the allocation or a collaborator
-can update a file.
+Use `update` command to update contents of an existing file in the remote path of an allocation. Only the owner of the allocation can update a file.
 
 | Parameter     | Required | Description                                          | Default | Valid values |
 | ------------- | -------- | ---------------------------------------------------- | ------- | ------------ |
 | allocation    | yes      | allocation id                                        |         | string       |
 | encrypt       | no       | encrypt file before upload                           | false   | boolean      |
-| localpath     | yes      | local file to upload                                 |         | file path    |
-| remotepath    | yes      | remote file to upload                                |         | string       |
+| localpath     | yes      | local file which contains updated file contents      |         | file path    |
+| remotepath    | yes      | remote file to update                                |         | string       |
 | thumbnailpath | no       | local fumbnail file to upload                        |         | file path    |
 | chunknumber   | no       | how many chunks should be uploaded in a http request | 1       | int          |
 
@@ -1161,6 +1225,15 @@ can update a file.
 ![image](https://user-images.githubusercontent.com/6240686/124354473-14b02480-dc04-11eb-9463-5a91d4f6f02d.png)
 
 </details>
+
+Sample Command:
+```
+./zbox update --localpath /home/zus/upload1.txt --remotepath /myfiles/upload1.txt --allocation $ALLOC  
+```
+Sample Response:
+```
+Status completed callback. Type = application/octet-stream. Name = upload1.txt
+```
 
 #### Delete
 
@@ -1179,13 +1252,12 @@ of the application can delete a file.
 
 </details>
 
-Example
-
+Sample Command:
 ```
 ./zbox delete --allocation 3c0d32560ea18d9d0d76808216a9c634flist661979d29ba59cc8dafccb3e5b95341 --remotepath /myfiles/horse.jpeg
 ```
 
-Response:
+Sample Response:
 
 ```
 /myfiles/horse.jpeg deleted
@@ -1252,7 +1324,7 @@ Auth token decoded
 
 Upload file with _--encrypted_ tag.
 
-Get encryptionpublickey first, by calling from user you are sharing with:
+Ask for encryptionpublickey first of the user you are sharing file with:
 
 ```
 ./zbox getwallet
@@ -1292,7 +1364,7 @@ Response contains an auth ticket- an encrypted string that can be shared.
 
 ##### Directory share
 
-Follow up steps above to get _encryptionpublickey_
+Follow up [Encrypted share](#encrypted-share) steps above to get _encryptionpublickey_
 
 Upload multiple files to directory with _zbox upload /folder1/file1.z ..._
 
@@ -1331,13 +1403,15 @@ This will cancel the share for particular buyer that was performed by the seller
 Use clientid of the user that was share the remotepath.
 Required parameters are allocation, remotepath and clientid.
 
-Command
+Sample Command:
 
     ./zbox share --revoke --allocation 3c0d32560ea18d9d0d76808216a9c634f661979d29ba59cc8dafccb3e5b95341 --remotepath /myfiles/hello.txt --clientid d52d82133177ec18505145e784bc87a0fb811d7ac82aa84ae6b013f96b93cfaa
 
-Response
+Sample Response:
 
-Returns status message showing whether the operation was successful or not.
+```
+Share revoked for client  $WALLET_CLIENT_ID
+```
 
 #### List
 
@@ -1360,16 +1434,15 @@ contents.
 
 </details>
 
-Example
-
+Sample Command:
 ```
-./zbox list --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --remotepath /
+./zbox list --allocation $ALLOCATION_ID --remotepath /
 ```
 
-Response:
-
+Sample Response:
 ```
-auth ticket :eyJjbGllbnRfaWQiOiJiNmRlNTYyYjU3YTBiNTkzZDA0ODA2MjRmNzlhNTVlZDQ2ZGJhNTQ0NDA0NTk1YmVlMDI3MzE0NGUwMTAzNGFlIiwib3duZXJfaWQiOiJiNmRlNTYyYjU3YTBiNTkzZDA0ODA2MjRmNzlhNTVlZDQ2ZGJhNTQ0NDA0NTk1YmVlMDI3MzE0NGUwMTAzNGFlIiwiYWxsb2NhdGlvbl9pZCI6Ijg2OTViOWU3Zjk4NmQ0YTQ0N2I2NGRlMDIwYmE4NmY1M2IzYjVlMmM0NDJhYmNlYjZjZDY1NzQyNzAyMDY3ZGMiLCJmaWxlX3BhdGhfaGFzaCI6IjIwZGM3OThiMDRlYmFiMzAxNTgxN2M4NWQyMmFlYTY0YTUyMzA1YmFkNmY3NDQ5YWNkMzgyOGM4ZDcwYzc2YTMiLCJmaWxlX25hbWUiOiIxLnR4dCIsInJlZmVyZW5jZV90eXBlIjoiZiIsImV4cGlyYXRpb24iOjE2MjY0MjA1NzQsInRpbWVzdGFtcCI6MTYxODY0NDU3NCwicmVfZW5jcnlwdGlvbl9rZXkiOiJ7XCJyMVwiOlwiOUpnci9aVDh6VnpyME1BcWFidlczdnhoWEZoVkdMSGpzcVZtVUQ1QTJEOD1cIixcInIyXCI6XCIrVEk2Z1pST3JCR3ZURG9BNFlicmNWNXpoSjJ4a0I4VU5SNTlRckwrNUhZPVwiLFwicjNcIjpcInhySjR3bENuMWhqK2Q3RXU5TXNJRzVhNnEzRXVzSlZ4a2N6YXN1K0VqQW89XCJ9Iiwic2lnbmF0dXJlIjoiZTk3NTYyOTAyODU4OTBhY2QwYTcyMzljNTFhZjc0YThmNjU2OTFjOTUwMzRjOWM0ZDJlMTFkMTQ0MTk0NmExYSJ9
+  TYPE | NAME | PATH | SIZE | NUM BLOCKS | ACTUAL SIZE | ACTUAL NUM BLOCKS | LOOKUP HASH | IS ENCRYPTED
+-------+------+------+------+------------+-------------+-------------------+-------------+---------------
 ```
 
 Response will be a list with information for each file/folder in the given path. The information includes lookuphash which is require for download via authticket.
@@ -1886,8 +1959,13 @@ Use `rp-create` to create a read pool, `rp-create` has no parameters.
 
 </details>
 
+Sample Command:
 ```
 ./zbox rp-create
+```
+Sample Response:
+```
+Read pool created successfully
 ```
 
 #### Collect rewards
@@ -1912,10 +1990,14 @@ These rewards can be accessed using this `collect-reward` command.
 | provider_type | no       | blobber or validator | blobber | string       |
 | provider_id   | yes      | blobber or validator id |      | string |
 
+Sample Command:
 ```bash
 ./zbox collect-reward --provider_type blobber --provider_id $BLOBBER_ID
 ```
-
+Sample Response:
+```
+transferred reward tokens
+```
 #### Read pool info
 
 Use `rp-info` to get read pool information.
@@ -1931,8 +2013,13 @@ Use `rp-info` to get read pool information.
 
 </details>
 
+Sample Command:
 ```
 ./zbox rp-info
+```
+Sample Response:
+```
+Read pool Balance: 1.497 ZCN (0.20 USD)
 ```
 
 #### Lock tokens into read pool
@@ -1951,10 +2038,15 @@ To use these tokens the user must be the allocation owner, collaborator or have 
 | fee       |          | transaction fee | 0       | int          |
 | tokens    | yes      | tokens to lock  |         | int          |
 
+
+Sample Command:
 ```
 ./zbox rp-lock --tokens 1
 ```
-
+Sample Response:
+```
+Locked
+```
 #### Unlock tokens from read pool
 
 Use `rp-unlock` to unlock tokens from `read pool by ownership.
@@ -1964,6 +2056,15 @@ Use `rp-unlock` to unlock tokens from `read pool by ownership.
 | fee       | no       | transaction fee | 0       | float        |
 
 Unlocked tokens get returned to the original wallet balance.
+
+Sample Command:
+```
+./zbox rp-unlock 
+```
+Sample Response:
+```
+Unlocked
+```
 
 #### Storage SC configurations
 
@@ -1981,10 +2082,93 @@ Show storage SC configuration.
 
 </details>
 
+Sample Command:
 ```
 ./zbox sc-config
 ```
-
+Sample Response:
+```
+{
+  "blobber_slash": "0.1",
+  "block_reward.block_reward": "1.8",
+  "block_reward.gamma.a": "10",
+  "block_reward.gamma.alpha": "0.2",
+  "block_reward.gamma.b": "9",
+  "block_reward.qualifying_stake": "1",
+  "block_reward.zeta.i": "1",
+  "block_reward.zeta.k": "0.9",
+  "block_reward.zeta.mu": "0.2",
+  "cancellation_charge": "0.2",
+  "challenge_enabled": "true",
+  "challenge_generation_gap": "1",
+  "cost.add_blobber": "100",
+  "cost.add_free_storage_assigner": "100",
+  "cost.add_validator": "100",
+  "cost.blobber_health_check": "100",
+  "cost.cancel_allocation": "8400",
+  "cost.challenge_response": "1600",
+  "cost.collect_reward": "100",
+  "cost.commit_connection": "100",
+  "cost.commit_settings_changes": "0",
+  "cost.finalize_allocation": "9500",
+  "cost.free_allocation_request": "1500",
+  "cost.free_update_allocation": "2500",
+  "cost.generate_challenge": "100",
+  "cost.kill_blobber": "100",
+  "cost.kill_validator": "100",
+  "cost.new_allocation_request": "3000",
+  "cost.pay_blobber_block_rewards": "100",
+  "cost.read_pool_lock": "100",
+  "cost.read_pool_unlock": "100",
+  "cost.read_redeem": "100",
+  "cost.shutdown_blobber": "100",
+  "cost.shutdown_validator": "100",
+  "cost.stake_pool_lock": "100",
+  "cost.stake_pool_unlock": "100",
+  "cost.update_allocation_request": "2500",
+  "cost.update_blobber_settings": "100",
+  "cost.update_settings": "100",
+  "cost.update_validator_settings": "100",
+  "cost.write_pool_lock": "100",
+  "cost.write_pool_unlock": "100",
+  "free_allocation_settings.data_shards": "4",
+  "free_allocation_settings.parity_shards": "2",
+  "free_allocation_settings.read_pool_fraction": "0",
+  "free_allocation_settings.read_price_range.max": "0",
+  "free_allocation_settings.read_price_range.min": "0",
+  "free_allocation_settings.size": "2147483648",
+  "free_allocation_settings.write_price_range.max": "1",
+  "free_allocation_settings.write_price_range.min": "0",
+  "health_check_period": "1h0m0s",
+  "max_blobber_select_for_challenge": "5",
+  "max_blobbers_per_allocation": "40",
+  "max_challenge_completion_rounds": "1200",
+  "max_charge": "0.5",
+  "max_delegates": "200",
+  "max_file_size": "549755813888",
+  "max_individual_free_allocation": "1e+06",
+  "max_mint": "7.5e+07",
+  "max_read_price": "100",
+  "max_stake": "20000",
+  "max_total_free_allocation": "9.223372036854776e+08",
+  "max_write_price": "100",
+  "min_alloc_size": "1048576",
+  "min_blobber_capacity": "10737418240",
+  "min_lock_demand": "0.1",
+  "min_stake": "0.01",
+  "min_stake_per_delegate": "0",
+  "min_write_price": "0.001",
+  "num_validators_rewarded": "10",
+  "owner_id": "1746b06bb09f55ee01b33b5e2e055d6cc7a900cb57c0a3a5eaabb8a0e7745802",
+  "readpool.min_lock": "0",
+  "stakepool.kill_slash": "0.5",
+  "stakepool.min_lock_period": "0s",
+  "time_unit": "720h0m0s",
+  "validator_reward": "0.025",
+  "validators_per_challenge": "2",
+  "writepool.min_lock": "0.1"
+}
+```
 #### Stake pool info
 
 Use `sp-info` to get your stake pool information and settings.
@@ -2001,8 +2185,43 @@ Use `sp-info` to get your stake pool information and settings.
 
 </details>
 
+Sample Command:
 ```
 ./zbox sp-info --blobber_id <blobber_id>
+```
+Sample Response:
+
+```
+pool id:            8d19a8fd7147279d1dfdadd7e3ceecaf91c63ad940dae78731e7a64b104441a6
+balance:            105.000 ZCN
+total stake:        105.000 ZCN
+unclaimed rewards:  3545.011 ZCN
+delegate_pools:
+- id:                75bc4d8358f335c5b0e066325f8cdf60cea93fd53323abdbb777b40862103533
+  balance:           100.000 ZCN
+  delegate_id:       75bc4d8358f335c5b0e066325f8cdf60cea93fd53323abdbb777b40862103533
+  unclaimed reward:  3008.019 ZCN
+  total_reward:      3008.019 ZCN
+  total_penalty:     54.082 uZCN
+  status:            active
+  round_created:     1575647
+  unstake:           false
+  staked_at:         2023-11-01 20:32:09 +0530 IST
+- id:                7b3271abb9d9950339b541f037951c7ea6a991eb277c09fc93083b9d6186e026
+  balance:           5.000 ZCN
+  delegate_id:       7b3271abb9d9950339b541f037951c7ea6a991eb277c09fc93083b9d6186e026
+  unclaimed reward:  182.491 ZCN
+  total_reward:      182.491 ZCN
+  total_penalty:     2.688 uZCN
+  status:            active
+  round_created:     1099
+  unstake:           false
+  staked_at:         2023-10-29 00:31:05 +0530 IST
+settings:
+  delegate_wallet:   9c693cb14f29917968d6e8c909ebbea3425b4c1bc64b6732cadc2a1869f49be9
+  min_stake:         0 SAS
+  max_stake:         0 SAS
+  num_delegates:     50
 ```
 
 #### Lock tokens into stake pool
@@ -2040,6 +2259,11 @@ To stake tokens for validators:
 ```
 ./zbox sp-lock --validator_id <validator_id> --tokens 1.0
 ```
+Sample Response:
+```
+Tokens locked, txn hash: d853a82907453d37ed978b9fc1a55663be99bb351d18cca31068c0dc95566edd 
+```
+
 
 #### Unlock tokens from stake pool
 
@@ -2073,6 +2297,11 @@ To unstake validator tokens:
 ./zbox sp-unlock --validator_id <validator_id> --pool_id <pool_id>
 ```
 
+Sample Response:
+```
+Tokens unlocked: d853a82907453d37ed978b9fc1a55663be99bb351d18cca31068c0dc95566edd , pool deleted
+```
+
 #### Stake pools info of user
 
 Get information about all stake pools of current user.
@@ -2091,35 +2320,20 @@ Get information about all stake pools of current user.
 ```
 ./zbox sp-user-info
 ```
-
-#### Write pool info
-
-Write pool information. Use allocation id to filter results to a singe allocation.
-
-| Parameter     | Required | Description                 | default | Valid values |
-| ------------- | -------- | --------------------------- | ------- | ------------ |
-| allocation id | no       | allocation id               |         | string       |
-| json          | no       | print result in json format | false   | boolean      |
-
-<details>
-  <summary>wp-info</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/124603444-d9ab2c80-de61-11eb-82f2-900d540ba63f.png)
-
-</details>
-
-For all write pools.
-
+Sample Response:
 ```
-./zbox wp-info
+- blobber_id:  8d19a8fd7147279d1dfdadd7e3ceecaf91c63ad940dae78731e7a64b104441a6
+  - id:                700d8d29d8a01aa3afe224b6c9051dab43733daa44e56313be8904e34d2d0de3
+    balance:           1.000 ZCN
+    delegate_id:       700d8d29d8a01aa3afe224b6c9051dab43733daa44e56313be8904e34d2d0de3
+    unclaimed reward:        321.703 uZCN
+    total rewards:           321.703 uZCN
+    total penalty:           0 SAS
+    status:           active
+    round_created:    5217506
+    unstake:          false
+    staked_at:        2023-11-10 19:26:29 +0530 IST
 ```
-
-Filtering by allocation.
-
-```
-./zbox wp-info --allocation <allocation_id>
-```
-
 #### Lock tokens into write pool
 
 `wp-lock` can be used to lock tokens in a write pool associated with an allocation.
@@ -2167,8 +2381,14 @@ each blobber's Terms.ReadPrice.
 
 </details>
 
+Sample Command:
 ```
 ./zbox wp-lock --allocation $ALLOCATION_ID --tokens 1
+```
+Sample Response:
+
+```
+locked
 ```
 
 #### Unlock tokens from write pool
@@ -2187,8 +2407,13 @@ An expired write pool, associated with an allocation, can be locked until alloca
 
 </details>
 
+Sample Command:
 ```
 ./zbox wp-unlock --allocation $ALLOCATION_ID 
+```
+Sample Response:
+```
+unlocked
 ```
 
 #### Download cost
