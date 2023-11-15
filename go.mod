@@ -1,10 +1,10 @@
 module github.com/0chain/zboxcli
 
-go 1.18
+go 1.20
 
 require (
 	github.com/0chain/errors v1.0.3
-	github.com/0chain/gosdk v1.10.1-0.20231114212833-17a9355755b6
+	github.com/0chain/gosdk v1.10.1-0.20231115115747-895c7f001283
 	github.com/icza/bitio v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.6.0
