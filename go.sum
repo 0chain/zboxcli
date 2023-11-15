@@ -46,6 +46,8 @@ github.com/0chain/gosdk v1.10.1-0.20231107204400-48a2999f153a h1:t/Zt/xzYgdMElxr
 github.com/0chain/gosdk v1.10.1-0.20231107204400-48a2999f153a/go.mod h1:d3YLgnSKvEtZ6I9taIQotb6xcMvUKvd01JnkXS+O1jk=
 github.com/0chain/gosdk v1.10.1-0.20231109152515-7c8549873ea5 h1:aOigkqa22jF/c7VLWUFCDhJf0kiNG8wr/ybLP2Q4YEE=
 github.com/0chain/gosdk v1.10.1-0.20231109152515-7c8549873ea5/go.mod h1:d3YLgnSKvEtZ6I9taIQotb6xcMvUKvd01JnkXS+O1jk=
+github.com/0chain/gosdk v1.10.1-0.20231114212833-17a9355755b6 h1:HHpFX0Qw/bO+N5IjL1wdbxLbHXsgpPGtfuocZUBGX9g=
+github.com/0chain/gosdk v1.10.1-0.20231114212833-17a9355755b6/go.mod h1:l/c+X5v6RMyzWUib6FFPdK5bTAzAJ7PojhEvELp3LGk=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/Luzifer/go-openssl/v3 v3.1.0 h1:QqKqo6kYXGGUsvtUoCpRZm8lHw+jDfhbzr36gVj+/gw=
@@ -227,6 +229,7 @@ github.com/klauspost/cpuid/v2 v2.2.4 h1:acbojRNwl3o09bUq+yDCtZFc1aiwaAAxtcn8YkZX
 github.com/klauspost/cpuid/v2 v2.2.4/go.mod h1:RVVoqg1df56z8g3pUjL/3lE5UfnlrJX8tyFgg4nqhuY=
 github.com/klauspost/reedsolomon v1.11.7 h1:9uaHU0slncktTEEg4+7Vl7q7XUNMBUOK4R9gnKhMjAU=
 github.com/klauspost/reedsolomon v1.11.7/go.mod h1:4bXRN+cVzMdml6ti7qLouuYi32KHJ5MGv0Qd8a47h6A=
+github.com/klauspost/reedsolomon v1.11.8/go.mod h1:4bXRN+cVzMdml6ti7qLouuYi32KHJ5MGv0Qd8a47h6A=
 github.com/kr/fs v0.1.0/go.mod h1:FFnZGqtBN9Gxj7eW1uZ42v5BccTP0vu6NEaFoC2HwRg=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=
 github.com/kr/pretty v0.3.1 h1:flRD4NNwYAUpkphVc1HcthR4KEIFJ65n8Mw5qdRn3LE=
