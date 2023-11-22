@@ -9,8 +9,8 @@ zbox is a command-line interface (CLI) tool to understand the capabilities of Z�
   - [3-Layer Security](#3-layer-security)
   - [Get Started](https://github.com/0chain/zboxcli/wiki/Install-zboxcli)
      - [1. Installation](#1-installation)
-     - [2. Configure zbox network](#2-configure-zbox-network)
-     - [3. Create wallet ](#3-create-wallet)
+     - [2. Configure network](#2-configure-network)
+     - [3. Create wallet](#3-create-wallet)
      - [4. Create new allocation](#4-create-new-allocation)
   - [Global Flags](#global-flags)
   - [Commands Table](#commands-table)
@@ -57,18 +57,174 @@ Züs offers a three-layered security to safeguard your data:
 
 ### 1. Installation
 
-For detailed steps on the installation, follow the guides below:
+* [Linux Installation](#linux-installation)
+* [Mac Installation](#mac-installation)
+* [Windows Installation](#windows-installation)
 
- - [Install zboxcli](https://github.com/0chain/zboxcli/wiki/Install-zboxcli)
- - [Build zboxcli for Linux and Mac](https://github.com/0chain/zboxcli/wiki/Build-Instructions#build-zbox-on-linux-and-mac)
- - [Build zboxcli for Windows](https://github.com/0chain/zboxcli/wiki/Build-Windows)
- - [Other Platform Builds](https://github.com/0chain/zboxcli/wiki/Alternative-Platform-Builds)
+#### Linux Installation
 
-### 2. Configure zbox network  
+**Note:** zbox binaries are designed to function optimally with gcc 11 as the default compiler. Notably, Ubuntu 22 is equipped with gcc 11 by default. However, Ubuntu 20 initially comes with gcc 9. To upgrade the gcc version, execute the following commands:
 
-Configuration for the Züs network by default is stored in `network/config.yaml` file of the zbox repo which we will copy to a new config.yaml file in our local system. For detailed steps, follow the guide below:
+```
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+sudo apt update
+sudo apt install build-essential
+sudo apt install gcc-11 g++-11
+```
 
-- [Configure zbox network](https://github.com/0chain/zboxcli/wiki/Configure-zbox-network) 
+1. Download the latest linux zboxcli release file `zbox-linux.tar.gz` from [here](https://github.com/0chain/zboxcli/releases/latest).
+
+2. The zip file will be downloaded in `Downloads` directory of your system. Open terminal,navigate to `Downloads` directory and extract the downloaded archive to `/usr/local/bin` path using the commands below.
+
+```
+cd Downloads
+sudo tar -xzf zbox-linux.tar.gz --directory /usr/local/bin
+```
+
+3. Navigate to the extracted directory path.
+
+```
+cd /usr/local/bin
+``` 
+
+4. Run the zwallet executable by using the command below.
+
+```
+./zbox
+```
+
+On successful installation, you will see a help section:
+
+```
+
+zbox is a decentralized storage application written on the 0Chain platform.                    
+
+Usage:
+  zbox [command]
+
+Available Commands:
+  add                Adds free storage assigner
+  alloc-cancel       Cancel an allocation
+
+```
+5. To rerun zboxcli at later time repeat steps 3 and 4 on the terminal.
+
+#### Windows Installation
+
+1. Download the latest windows zboxcli zip file `zbox-windows.zip` from [here](https://github.com/0chain/zboxcli/releases/latest).
+2. By default, the zip file will be downloaded in `Downloads` directory of your system(C:\Users\<your_windows_username>\Downloads). Extract the executable and dll files from archive `zbox-windows.zip` file into a directory of your choice.
+
+   **Note:** In case the zip file lack the necessary DLL files, kindly download them from [here](https://github.com/0chain/zboxcli/files/11840033/windows.dll.s.zip) and proceed to manually copy and paste these 
+   files into the extracted directory path.
+
+3. Open Windows Command prompt and navigate to directory where you have extracted the  `zbox-windows.zip`  files and run the executable using `zbox` command. See screenshot for reference.
+
+![zbox windows command prompt](https://github.com/0chain/zboxcli/assets/65766301/a802f5bb-25f0-405a-b41d-e410dcff95d4)
+
+4. On successful installation you will see a help section similar to response below:&#x20;
+
+```
+zbox is a decentralized storage application written on the 0Chain platform.                    
+
+Usage:
+  zbox [command]
+
+Available Commands:
+  add                Adds free storage assigner
+  alloc-cancel       Cancel an allocation
+
+```
+5. To rerun zboxcli at later time repeat steps 3 and 4 on windows command prompt.
+
+#### Mac Installation
+
+1. Download the latest mac zboxcli release file `zbox-macos.tar.gz` release from [here](https://github.com/0chain/zboxcli/releases/latest).
+
+2. The zip file will be downloaded in `Downloads` directory of your system. Open terminal, navigate to `Downloads` directory and extract the downloaded archive to `/usr/local/bin` path using the commands below.
+
+```
+cd Downloads/
+sudo tar -xzf zbox-macos.tar.gz --directory /usr/local/bin
+```
+Note: There can be a chance running above command on terminal will trigger a prompt to install Xcode Command Line Tools if you donot have them installed already. You'll see a panel similar to screenshot below that asks you to install Xcode Command Line Tools. Click 'Install' to begin the download and installation process. 
+
+![install-Xcode-CLT](https://github.com/0chain/zwalletcli/assets/65766301/fb8d761b-c8ce-468b-855f-a06d819850e7)
+
+
+3. Navigate to extracted directory path.
+
+```
+cd /usr/local/bin
+```
+
+4. Run the zbox executable using the command below.
+
+```
+./zbox
+```
+
+On successful installation you will see a help section similar to response below:
+
+```
+zbox is a decentralized storage application written on the 0Chain platform.                    
+
+Usage:
+  zbox [command]
+
+Available Commands:
+  add                Adds free storage assigner
+  alloc-cancel       Cancel an allocation
+```
+
+5. To rerun zboxcli at later time repeat steps 3 and 4 on the terminal.
+
+### 2. Configure network
+
+1. Copy the contents from [config.yaml](https://github.com/0chain/zboxcli/blob/staging/network/config.yaml) file and save it as `config.yaml` file on `Desktop`  of your mac and linux system .
+
+2. Open terminal and make a new .zcn folder in the home linux and mac directory using the command below:
+
+```
+mkdir $HOME/.zcn
+```
+Note: For windows manually create a folder named `.zcn` at `C:\Users\<windows_username>`path.
+
+3. Copy `config.yaml` from desktop directory into `$HOME/.zcn` directory in mac and linux using the command below:
+
+```
+cp /Users/<your_mac/linux_username>/Desktop/config.yaml $HOME/.zcn
+```
+Note: For windows manually copy paste the `config.yaml` file into `C:\Users\<windows_username>\.zcn` path.
+
+4. Verify the contents of config file in Linux and Mac using the command below:
+
+Note: In Windows check the contents manually by opening the file at `C:\Users\<windows_username>\.zcn` path.
+
+```
+cat config.yaml
+```
+
+Response:
+```
+---
+block_worker: https://demo.zus.network/dns
+signature_scheme: bls0chain
+min_submit: 50
+min_confirmation: 50
+confirmation_chain_length: 3
+max_txn_query: 5
+query_sleep_time: 5
+# # OPTIONAL - Uncomment to use/ Add more if you want
+# preferred_blobbers:
+#   - http://demo.zus.network:31051
+#   - http://demo.zus.network:31052
+#   - http://demo.zus.network:31053
+
+```
+
+Zbox connects to the Züs network using the `block_worker` field. These network details are automatically fetched from the blockWorker's network API. Preferred Blobbers are also present which you can uncomment for using specified storage providers for handling your files.
+
+**Note:** A block worker URL is a field that require the URL of blockchain network you want to connect to. Change the default value of block_worker field with the following: `http://198.18.0.98:9091/` for the local testnet.
 
 ### 3. Create wallet 
 
