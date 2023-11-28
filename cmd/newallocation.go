@@ -151,7 +151,7 @@ var newallocationCmd = &cobra.Command{
 		}
 
 		if costOnly {
-			minCost, err := sdk.GetAllocationMinLock(*datashards, *parityshards, *size, readPrice, writePrice)
+			minCost, err := sdk.GetAllocationMinLock(*datashards, *parityshards, *size, writePrice)
 			if err != nil {
 				log.Fatal("Error fetching cost: ", err)
 			}
