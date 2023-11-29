@@ -74,7 +74,7 @@ sudo apt install gcc-11 g++-11
 
 1. Download the latest linux zboxcli release file `zbox-linux.tar.gz` from [here](https://github.com/0chain/zboxcli/releases/latest).
 
-2. The zip file will be downloaded in `Downloads` directory of your system. Open terminal,navigate to `Downloads` directory and extract the downloaded archive to `/usr/local/bin` path using the commands below.
+2. The zip file will be downloaded in `Downloads` directory of your system. Open terminal, navigate to `Downloads` directory and extract the downloaded archive to `/usr/local/bin` path using the commands below.
 
 ```
 cd Downloads
@@ -194,7 +194,7 @@ Note: For windows manually create a folder named `.zcn` at `C:\Users\<windows_us
 ```
 cp /Users/<your_mac/linux_username>/Desktop/config.yaml $HOME/.zcn
 ```
-Note: For windows manually copy paste the `config.yaml` file into `C:\Users\<windows_username>\.zcn` path.
+Note: For windows copy paste the `config.yaml` file into `C:\Users\<windows_username>\.zcn` path.
 
 4. Verify the contents of config file in Linux and Mac using the command below:
 
@@ -225,6 +225,18 @@ query_sleep_time: 5
 Zbox connects to the Züs network using the `block_worker` field. These network details are automatically fetched from the blockWorker's network API. Preferred Blobbers are also present which you can uncomment for using specified storage providers for handling your files.
 
 **Note:** A block worker URL is a field that require the URL of blockchain network you want to connect to. Change the default value of block_worker field with the following: `http://198.18.0.98:9091/` for the local testnet.
+
+5. Override the nodes by creating a network.yaml file in your `.zcn` directory and add the following lines of code:
+
+```
+miners:
+  - http://localhost:7071
+  - http://localhost:7072
+  - http://localhost:7073
+sharders:
+  - http://localhost:7171
+``` 
+Note: The step above is only required when setting up local chain from [here](https://github.com/0chain/0chain). 
 
 ### 3. Create wallet 
 
