@@ -8,32 +8,37 @@ on:
   workflow_dispatch:
     inputs:
       gosdk:
-        description: 'The version of 0Chain GoSDK'
+        description: 'The version/branch of 0Chain GoSDK'
+        required: true
+      base:
+        description: the base branch to which PR needs to be raised
         required: true
 
 jobs:
   create-pr:
-    runs-on: [self-hosted, build]
+    runs-on: [arc-runner]
     steps:
       - name: Setup go 1.20
         uses: actions/setup-go@v2
         with:
-          go-version: '1.20' 
+          go-version: '1.20'
 
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.base }}
 
       - name: Upgrade 0Chain GoSDK
         run: |
           echo "BRANCH=$(echo ${{github.event.inputs.gosdk}} | sed 's/\//-/g')" >> $GITHUB_ENV
-
+          
           go get github.com/0chain/gosdk@${{github.event.inputs.gosdk}}
           go mod tidy
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
-          base: staging
+          base: ${{ github.event.inputs.base }}
           token: ${{ secrets.GOSDK }}
           commit-message: upgrade GoSDK to ${{ github.event.inputs.gosdk }}
           branch: gosdk-upgrade-${{ env.BRANCH }}
@@ -43,5 +48,5 @@ jobs:
             0Chain GoSDK `${{ github.event.inputs.gosdk }}` is released.
             see full changelog on https://github.com/0chain/gosdk/releases/tag/${{ github.event.inputs.gosdk }}
           draft: false
-          reviewers: cnlangzi
+          reviewers: guruhubb
           labels: GoSDK
