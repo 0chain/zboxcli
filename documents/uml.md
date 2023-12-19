@@ -1,47 +1,4 @@
 ```puml
-title Architecture
-@startuml
-card "<size:42><&terminal></size> zboxcli" as cli
-
-folder filesystem {
-    file "\~/.zcn/config.yaml" as config
-    file "\~/.zcn/wallet.json" as wallet
-}
-
-cloud "      Züs network" {
-
-  node blobbers [
-       Blobber1
-       ===
-       Blobber2
-       ===
-       ...
-  ]
-  node "miners" as miners
-  node "0dns" as 0dns
-  node  "sharders" as sharders
-}
-
-cli ---> config: Fetch
-cli ---> wallet: Read
-cli ---> 0dns: discover nodes
-cli ---> miners: Send Transactions
-cli ---> sharders: Verify Transactions, Get data
-cli ---> blobbers: Upload, Download, and Share files
-
-note bottom of config: required zbox config
-note bottom of wallet: contains secret key
-note bottom of miners: processes transactions
-note bottom of sharders: holds blockchain data
-note bottom of 0dns: serves the latest miner and sharder node details
-note bottom of blobbers: Stores data of any size and provide a single source of truth for that data 
-
-
-@enduml
-
-```
-
-```puml
 title Add collaborator
 boundary zbox 
 collections blobbers

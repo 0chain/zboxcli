@@ -44,28 +44,6 @@ var updateAllocationCmd = &cobra.Command{
 			}
 		}
 
-		if flags.Changed("free_storage") {
-			lock, freeStorageMarker := processFreeStorageFlags(flags)
-			if lock < 0 {
-				log.Fatal("Only positive values are allowed for --lock")
-			}
-
-			txnHash, _, err := sdk.CreateFreeUpdateAllocation(freeStorageMarker, allocID, lock)
-			if err != nil {
-				log.Fatal("Error free update allocation: ", err)
-			}
-			log.Println("Allocation updated with txId : " + txnHash)
-			return
-		}
-
-		var updateTerms = false
-		if flags.Changed("update_terms") {
-			updateTerms, err = flags.GetBool("update_terms")
-			if err != nil {
-				log.Fatal("invalid update terms entry: ", err)
-			}
-		}
-
 		var lockf float64
 		var lock uint64
 		if lockf, err = flags.GetFloat64("lock"); err != nil {
@@ -151,7 +129,6 @@ var updateAllocationCmd = &cobra.Command{
 				size,
 				extend,
 				lock,
-				updateTerms,
 				addBlobberId,
 				removeBlobberId,
 				setThirdPartyExtendable,
@@ -173,7 +150,6 @@ var updateAllocationCmd = &cobra.Command{
 				extend,
 				allocID,
 				lock,
-				updateTerms,
 				addBlobberId,
 				removeBlobberId,
 				setThirdPartyExtendable,
@@ -201,10 +177,6 @@ func init() {
 		"adjust allocation size, bytes")
 	updateAllocationCmd.PersistentFlags().Bool("extend", false,
 		"(default false) adjust storage expiration time, duration")
-	updateAllocationCmd.Flags().String("free_storage", "",
-		"json file containing marker for free storage")
-	updateAllocationCmd.Flags().Bool("update_terms", false,
-		"(default false) update blobber terms")
 
 	updateAllocationCmd.MarkFlagRequired("allocation")
 

@@ -1,10 +1,8 @@
 # zbox - a CLI for Züs dStorage
 
+zbox is a command line interface (CLI) tool to understand the capabilities of Züs dStorage and prototype your app. The utility is built using Züs [GoSDK](https://github.com/0chain/gosdk) .
 
-zbox is a command line interface (CLI) tool to understand the capabilities of Züs dStorage and prototype your app. The utility is built using Züs [GoSDK](https://github.com/0chain/gosdk) . 
-
-![zboxcli architecture diagram](https://github.com/0chain/zboxcli/assets/65766301/5aeadfaf-e259-4524-bf31-1d1a2f39c563)
-
+![Storage](https://user-images.githubusercontent.com/65766301/120052450-0ab66700-c043-11eb-91ab-1f7aa69e133a.png)
 
 - [zbox - a CLI for Züs dStorage](#zbox---a-cli-for-züs-dstorage)
   - [Züs Overview](#züs-overview)
@@ -19,9 +17,7 @@ zbox is a command line interface (CLI) tool to understand the capabilities of Z�
       - [Create new allocation](#create-new-allocation)
         - [Free storage allocation](#free-storage-allocation)
       - [Update allocation](#update-allocation)
-        - [Forbid Allocation](#forbid-allocation)
-        - [Add Blobber](#add-blobber)
-        - [Replace Blobber](#replace-blobber)
+      - [Forbid Allocation](#forbid-allocation)
       - [Cancel allocation](#cancel-allocation)
       - [Finalise allocation](#finalise-allocation)
       - [List blobbers](#list-blobbers)
@@ -29,30 +25,19 @@ zbox is a command line interface (CLI) tool to understand the capabilities of Z�
       - [List all files](#list-all-files)
       - [List owner's allocations](#list-owners-allocations)
       - [Update blobber settings](#update-blobber-settings)
-      - [Update Validator settings](#update-validator-settings)
-      - [Get Version](#get-version)
-      - [List all Validators](#list-all-validators)
+    - [Update Validator Settings](#update-validator-settings)
+      - [List All Validators](#list-all-validators)
       - [Get Validator Configuration](#get-validator-configuration)
       - [Kill Blobber](#kill-blobber)
       - [Kill Validator](#kill-validator)
     - [Uploading and Managing files](#uploading-and-managing-files)
       - [Upload](#upload)
-        - [Upload file with no encryption](#upload-file-with-no-encryption)
-        - [Upload file with encryption](#upload-file-with-encryption)
-        - [Upload file with web-streaming](#upload-file-with-web-streaming)
-        - [Multi Upload](#multi-upload)
-      - [Create Directory](#create-directory)
       - [Stream](#stream)
-      - [Live Streaming](#live-streaming)
       - [Feed](#feed)
       - [Download](#download)
-        - [Multi Download](#multi-download)
       - [Update](#update)
       - [Delete](#delete)
       - [Share](#share)
-        - [Public share](#public-share)
-        - [Encrypted share](#encrypted-share)
-        - [Directory share](#directory-share)
         - [share-encrypted revoke](#share-encrypted-revoke)
       - [List](#list)
       - [Copy](#copy)
@@ -65,10 +50,9 @@ zbox is a command line interface (CLI) tool to understand the capabilities of Z�
       - [Rename](#rename)
       - [Stats](#stats)
       - [Repair](#repair)
-      - [Rollback](#rollback)
       - [Sign data](#sign-data)
       - [Streaming](#streaming)
-        - [How it works](#how-it-works)
+        - [How it works:](#how-it-works)
         - [Usage](#usage)
     - [Lock and Unlock Tokens](#lock-and-unlock-tokens)
       - [Challenge pool information](#challenge-pool-information)
@@ -220,28 +204,25 @@ Flags:
 
 ### Global Flags
 
-Global Flags are parameters in zbox that can be used with any command to override the default configuration. zbox supports the following global parameters.
+Global Flags are parameters in zbox that can be used with any command to override the default configuration.zbox supports the following global parameters.
 
-| Flags                      | Description                                                  | Usage                                            |
-| -------------------------- | ------------------------------------------------------------ | ------------------------------------------------ |
-| --config string            | Specify a zbox configuration file (default is [$HOME/.zcn/config.yaml](#zcnconfigyaml)) | zbox [command] --config config1.yaml             |
-| --configDir string         | Specify a zbox configuration directory (default is $HOME/.zcn) | zbox [command] --configDir /$HOME/.zcn2          |
-| --fee float                | Transaction fee for the given transaction(if unset, it will be set to blockchain min fee) | zbox[command] --fee 0.5                          |
-| --h, --help                | Gives more information about a particular command.           | zbox [command] --help                            |
+| Flags                      | Description                                                                                                    | Usage                                            |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| --config string            | Specify a zbox configuration file (default is [$HOME/.zcn/config.yaml](#zcnconfigyaml))                        | zbox [command] --config config1.yaml             |
+| --configDir string         | Specify a zbox configuration directory (default is $HOME/.zcn)                                                 | zbox [command] --configDir /$HOME/.zcn2          |
+| -h, --help                 | Gives more information about a particular command.                                                             | zbox [command] --help                            |
 | --network string           | Specify a network file to overwrite the network details(default is [$HOME/.zcn/network.yaml](#zcnnetworkyaml)) | zbox [command] --network network1.yaml           |
-| --silent                   | (default false) Do not show interactive sdk logs (shown by default) | zbox [command] --verbose                         |
-| --wallet string            | Specify a wallet file or 2nd wallet (default is $HOME/.zcn/wallet.json) | zbox [command] --wallet wallet2.json             |
-| --wallet_client_id string  | Specify a wallet client id (By default client_id specified in $HOME/.zcn/wallet.json is used) | zbox [command] --wallet_client_id <client_id>    |
-| --wallet_client_key string | Specify a wallet client_key (By default client_key specified in $HOME/.zcn/wallet.json is used) | zbox [command] --wallet_client_key < client_key> |
-| --withNonce int            | nonce that will be used in transaction (default is 0)        | zbox [command] --withNonce 1                     |
-
+| --verbose                  | Provides additional details as to what the particular command is doing.                                        | zbox [command] --verbose                         |
+| --wallet string            | Specify a wallet file or 2nd wallet (default is $HOME/.zcn/wallet.json)                                        | zbox [command] --wallet wallet2.json             |
+| --wallet_client_id string  | Specify a wallet client id (By default client_id specified in $HOME/.zcn/wallet.json is used)                  | zbox [command] --wallet_client_id <client_id>    |
+| --wallet_client_key string | Specify a wallet client_key (By default client_key specified in $HOME/.zcn/wallet.json is used)                | zbox [command] --wallet_client_key < client_key> |
 
 ## Commands
 
 Note in this document, we will only show the commands for particular functionalities,
 the response will vary depending on your usage and may not be provided in all places.
-To get a more descriptive view of all the zbox functionalities check zbox cli documentation at https://docs.zus.network/guides/zbox-cli.
-
+To get a more descriptive view of all the zbox functionalities check zbox cli
+documentation at docs.0chain.net.
 
 ### Creating and Managing Allocations
 
@@ -268,6 +249,7 @@ and `free_storage` parameters.
 | allocationFileName     | local file to store allocation information                              | allocation.txt | file path    |
 | cost                   | returns the cost of the allocation, no allocation created               |                | flag         |
 | data                   | number of data shards, effects upload and download speeds               | 2              | int          |
+| expire                 | duration to allocation expiration                                       | 720h           | duration     |
 | free_storage           | free storage marker file.                                               |                | file path    |
 | owner                  | owner's id, use for funding an allocation for another                   |                | string       |
 | owner_public_key       | public key, use for funding an allocation for another                   |                | string       |
@@ -376,9 +358,9 @@ An increase in blobber count will increment the parity shards.
 | Parameter      | Required | Description                                                          | Valid Values |
 | -------------- | -------- | -------------------------------------------------------------------- | ------------ |
 | allocation     | yes      | allocation id                                                        | string       |
+| expiry         |          | adjust storage expiration time                                       | duration     |
 | free_storage   |          | free storage marker file                                             | string       |
 | lock           | yes\*    | lock additional tokens in write pool                                 | int          |
-| update_terms   |          | will update the allocation with the latest blobber terms             | boolean      |
 | size           |          | adjust allocation size                                               | bytes        |
 | add_blobber    |          | add a new blobber to the allocation, required for remove_blobber     | string       |
 | remove_blobber |          | remove a blobber from the allocation, requires an add_blobber option | string2      |
@@ -419,9 +401,10 @@ Output:
 ```
 Allocation updated with txId : fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
 ```
-##### Forbid Allocation
 
-There are various operations which you can forbid on an allocation. Forbid flag works with [update allocation](#update-allocation) command.
+#### Forbid Allocation
+
+There are various operations which you can forbid on an allocation. Forbid flag works with [update allocation](#update-allocation) command. Check its working first.
 Here are the operations:
 
 | Parameter       | Description                                                  |
@@ -433,7 +416,8 @@ Here are the operations:
 | --forbid_rename | specify if the users cannot rename objects in this allocation |
 | --forbid_upload | specify if users cannot upload to this allocation            |
 
-Here is a sample command for --forbid_upload. Other parameters can be done the same way.
+
+Here is a sample command for --forbid_upload .Other parameters can be done the same way.
 
 ```
 ./zbox updateallocation --allocation $ALLOC --forbid_upload
@@ -447,65 +431,6 @@ To test functionality try uploading file to allocation. You should get the follo
 Upload failed. this options for this file is not permitted for this allocation:
 file_option_not_permitted.
 ```
-To Unforbid an operation after forbidding:
-```
-Sample Command:
-
-./zbox updateallocation --allocation $ALLOC --forbid_upload false
-```
-##### Add Blobber
-
-Use `add_blobber` flag with [update allocation](#update-allocation) command to add blobber to allocation.The new blobber will be added as a parity blobber.For more details [check how a file is stored on blobbers](https://docs.zus.network/concepts/store).
-
-Here are the necessary parameters for adding blobber.
-
-| Parameter     | Description                                                 | Valid Values |
-| ------------- | ----------------------------------------------------------- | ------------ |
-| --allocation  | Provide Allocation ID for adding blobber to allocation      | string       |
-| --add_blobber | Provide Blobber ID to add. Can be fetched using [List blobbers](#list-blobbers). | string       |
-
-Sample Command:
-
-```
-./zbox updateallocation --allocation $ALLOC --add_blobber 98f14362f075caf467653044cf046eb9e8a5dfee88dc8b78cad1891748245003
-```
-
-Sample Response:
-
-```
-Allocation updated with txId : d853a82907453d37ed978b9fc1a55663be99bb351d18cca31068c0dc95566edd
-```
-
-**Note:** Files will automatically be uploaded,splitted, and stored on added blobber.
-
-**Note:** An allocation is already hosted on a set of blobbers. To find a blobber that is available to add you should exclude the current set of blobbers hosting your allocation by checking them via [Get Allocation Info](#get)command.
-
-##### Replace Blobber
-
-Sometimes, a blobber might be malfunctioning or faulty or the blobber might be slow because it is far from your geolocation, in such cases, you might have to replace the blobber with a new one.
-
-Use `add_blobber` and `remove_blobber` flag with [update allocation](#update-allocation) command to replace a blobber hosting an allocation.
-
-| Parameter        | Description                                                  | Valid Values |
-| ---------------- | ------------------------------------------------------------ | ------------ |
-| --allocation     | Provide Allocation ID for replacing blobber                  | string       |
-| --add_blobber    | Provide new Blobber ID . Can be fetched using [List blobbers](#list-blobbers). | string       |
-| --remove_blobber | Provide ID for the blobber which has to remove               | string       |
-
-Sample Command:
-
-```
-./zbox updateallocation --allocation $ALLOC --add_blobber 8d19a8fd7147279d1dfdadd7e3ceecaf91c63ad940dae78731e7a64b104441a6 --remove_blobber 06166f3dfd72a90cd0b51f4bd7520d4434552fc72880039b1ee1e8fe4b3cd7ea
-```
-
-Sample Response:
-
-```
-allocation updated successfully
-```
-**Note:** To find a blobber that can be replaced you should check the current set of blobbers hosting your allocation with [Get Allocation Info](#get) command.
-
-
 #### Cancel allocation
 
 `alloc-cancel` immediately return all remaining tokens from challenge pool back to the
@@ -707,30 +632,10 @@ Update blobber read price
 ```
 ./zbox bl-update --blobber_id 0ece681f6b00221c5567865b56040eaab23795a843ed629ce71fb340a5566ba3 --read_price 0.1
 ```
-### Update Validator Settings
 
-Use `./zbox validator-update ` to update a validator's configuration settings. 
+Get Version
 
-| Parameter      | Required | Description                                 | default | Valid values |
-| -------------- | -------- | ------------------------------------------- | ------- | ------------ |
-| validator_id   | yes      | id of validator of which to update settings |         | string       |
-| num_delegates  | no       | update maximum number of delegates          |         | int          |
-| max_stake      | no       | update maximum stake                        |         | float        |
-| min_stake      | no       | update minimum stake                        |         | float        |
-| service_charge | no       | update service charge                       |         | float        |
-
-Sample Command:
-
-**Update validator max stake**
-
-```
-./zbox validator-update --validator_id  f82ab34a98406b8757f11513361752bab9cb679a5cb130b81a4e86cec50eefc3 --max_stake 7.5
-```
-### Get Version
-
-
-Use `./zbox version` to get the version of Zbox and GoSDK.
-
+The version of Zbox and Gosdk can be fetched using the ./zbox version command.
 
 ```
 ./zbox version
@@ -801,11 +706,11 @@ settings:
   service_charge:  10 %
 ```
 #### Kill Blobber
-`./zbox kill-blobber` command deactivates a blobber to avoid storage of data. Required parameters are:
+`./zbox kill-blobber` command deactivates a blobber to avoid storage of data . Required parameters are :
 
 | Parameter          | Required | Description
 | ------------------ | -------- | -----------------------------------------
-| --blobber_id       | yes      | Blobber Id to kill a specific blobber. Can be retrieved using [List blobbers](#list-blobbers).
+| --blobber_id       | yes      | Blobber Id to kill a specific blobber.Can be retrieved using [List blobbers](#list-blobbers).
 | --json             | optional | Print Response as json data
 | --help             | no       | Provide information about the command
 
@@ -826,7 +731,7 @@ killed blobber $BLOBBER_ID
 
 | Parameter          | Required | Description
 | ------------------ | -------- | -----------------------------------------
-| --validator_id     | yes      | Validator Id to kill a specific blobber. Can be retrieved using [List all Validators](#list-all-validators).
+| --validator_id     | yes      | Validator Id to kill a specific blobber.Can be retrieved using [List all Validators](#list-all-validators).
 | --json             | optional | Print Response as json data
 | --help             | no       | Provide information about the command
 
@@ -868,7 +773,9 @@ The user must be the owner of the allocation.You can request the file be encrypt
 
 </details>
 
-##### Upload file with no encryption
+Example
+
+**Upload file with no encryption**
 
 ```
 ./zbox upload --localpath /absolute-path-to-local-file/hello.txt --remotepath /myfiles/hello.txt --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
@@ -881,7 +788,7 @@ Response:
 Status completed callback. Type = application/octet-stream. Name = hello.txt
 ```
 
-##### Upload file with encryption
+**Upload file with encryption**
 
 Use upload command with optional encrypt parameter to upload a file in encrypted
 format. This can be downloaded as normal from same wallet/allocation or utilize
@@ -898,11 +805,10 @@ Response:
 Status completed callback. Type = application/octet-stream. Name = sensitivedata.txt
 ```
 
-##### Upload file with web-streaming
+**Upload file with web-streaming**
 
-Use the [upload](https://github.com/0chain/zboxcli#upload) command with an optional web-streaming parameter to upload a video file in fragmented mp4 format.
-
-Sample Command:
+Use upload command with optional web-streaming parameter to upload a video file in fragmented
+mp4 format to support streaming from browser.
 
 ```
 ./zbox upload --web-streaming --localpath <absolute path to file>/samplevideo.mov --remotepath /myfile/ --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
@@ -915,79 +821,11 @@ Response:
 Status completed callback. Type = video/fmp4. Name = raw.samplevideo.mp4
 ```
 
-#### Create Directory
+#### Stream
 
-`./zbox createdir` command is used to create directory on allocation for storing files. 
+Use `stream` to capture video and audio streaming form local devices, and upload
 
-| Parameter    | Description                                | Valid Values |
-| ------------ | ------------------------------------------ | ------------ |
-| --allocation | Provide Allocation ID                      | string       |
-| --dirname    | Provide Directory Name and absolute path . | string       |
-| --h,--help   | help for createdir                         | int          |
-
-Sample Command:
-
-```
-./zbox createdir --allocation $ALLOCATION_ID --dirname /photos
-```
-Sample Response:
-
-```
-/photos directory created
-```
-
-**Note:** To verify whether directory is created successfully run [List all files](#list-all-files) command.
-
-##### Multi Upload
-
-Use `./zbox upload ` to upload multiple files to allocation at once via json file.
-
-Here are the parameters for multi-upload:
-
-| Parameter         | Description                                                | Valid Values |
-| ----------------- | ---------------------------------------------------------- | ------------ |
-| --allocation      | Provide Allocation ID for uploading multiple files         | string       |
-| --multiuploadjson | Path to  JSON file containing details for files to upload. | string       |
-
-Here is a sample json file for Multi Upload:
-
-```
-[
-  {
-    "remotePath": "/raw.file_example_MP4_1920_18MG.mp4",
-    "localPath": "./a.mp4",
-    "downloadOp": 1
-  },
-  {
-    "remotePath": "/a.mp4",
-    "localPath": "./b.mp4",
-    "downloadOp": 1
-  },
-  {
-    "remotePath": "/raw.file_example_MP4_1920_18MG.mp4",
-    "localPath": "./c.mp4",
-    "downloadOp": 1
-  }
-]
-```
-
-`remotepath`: Remote path to upload file to on Allocation.
-
-`localpath`: Local path of the file to upload
-
-`downloadOp`: Can pass two values 1 or 2. 1 is for downloading the actual file, 2 is for downloading the thumbnail only.
-
-Sample Command:
-
-```
-./zbox upload --allocation $alloc --multiuploadjson ./multi-upload.json
-```
-
-#### Live Streaming
-
-Use `stream` to capture video and audio streaming from microphone ,camera, and push stream to allocation.
-
-The user must be the owner of the allocation. You can request the file be encrypted before upload and can send thumbnails with the file.
+The user must be the owner of the allocation.You can request the file be encrypted before upload, and can send thumbnails with the file.
 
 | Parameter     | Required | Description                                                  | Default | Valid values |
 | ------------- | -------- | ------------------------------------------------------------ | ------- | ------------ |
@@ -1012,6 +850,28 @@ Use `feed` command to automatically download segment files from remote live feed
 
 - encode them into new segment files with `--delay` and `--ffmpeg-args`, and upload.
 - please use `youtube-dl -F https://www.youtube.com/watch?v=pC5mGB5enkw` to list formats of video (see below).
+
+The user must be the owner of the allocation.You can request the file be encrypted before upload, and can send thumbnails with the file.
+
+| Parameter       | Required | Description                                                           | Default           | Valid values                                                                       |
+| --------------- | -------- | --------------------------------------------------------------------- | ----------------- | ---------------------------------------------------------------------------------- |
+| allocation      | yes      | allocation id, sender must be allocation owner                        |                   | string                                                                             |
+| encrypt         | no       | encrypt file before upload                                            | false             | boolean                                                                            |
+| localpath       | yes      | local path of segment files to download, generate and upload          |                   | file path                                                                          |
+| remotepath      | yes      | remote path to upload file to, use to access file later               |                   | string                                                                             |
+| thumbnailpath   | no       | local path of thumbnaSil                                              |                   | file path                                                                          |
+| chunknumber     | no       | how many chunks should be uploaded in a http request                  | 1                 | int                                                                                |
+| delay           | no       | set segment duration to seconds.                                      | 5                 | int                                                                                |
+| feed            | no       | set remote live feed to url.                                          | false             | url                                                                                |
+| downloader-args | no       | pass args to youtube-dl to download video. default is \"-q -f best\". | -q -f best        | [youtube-dl](https://github.com/ytdl-org/youtube-dl/blob/master/README.md#options) |
+| ffmpeg-args     | no       | pass args to ffmpeg to build segments.                                | -loglevel warning | [ffmpeg](https://www.ffmpeg.org/ffmpeg.html)                                       |
+
+<details>
+  <summary>feed</summary>
+
+![image](https://github.com/0chain/blobber/wiki/uml/usecase/live_upload_sync.png)
+
+</details>
 
 ```
 [youtube] pC5mGB5enkw: Downloading webpage
@@ -1041,50 +901,11 @@ format code  extension  resolution note
 
 `--downloader-args "-f 22"` dowloads video with `22           mp4        1280x676   720p 2117k , avc1.64001F, 30fps, mp4a.40.2 (44100Hz) (best)`
 
-The user must be the owner of the allocation.You can request the file to be encrypted before upload, and can send thumbnails with the file.
-
-| Parameter       | Required | Description                                                           | Default           | Valid values                                                                       |
-| --------------- | -------- | --------------------------------------------------------------------- | ----------------- | ---------------------------------------------------------------------------------- |
-| allocation      | yes      | allocation id, sender must be allocation owner                        |                   | string                                                                             |
-| encrypt         | no       | encrypt file before upload                                            | false             | boolean                                                                            |
-| localpath       | yes      | local path of segment files to download, generate and upload          |                   | file path                                                                          |
-| remotepath      | yes      | remote path to upload file to, use to access file later               |                   | string                                                                             |
-| thumbnailpath   | no       | local path of thumbnaSil                                              |                   | file path                                                                          |
-| chunknumber     | no       | how many chunks should be uploaded in a http request                  | 1                 | int                                                                                |
-| delay           | no       | set segment duration to seconds.                                      | 5                 | int                                                                                |
-| feed            | no       | set remote live feed to url.                                          | false             | url                                                                                |
-| downloader-args | no       | pass args to youtube-dl to download video. default is \"-q -f best\". | -q -f best        | [youtube-dl](https://github.com/ytdl-org/youtube-dl/blob/master/README.md#options) |
-| ffmpeg-args     | no       | pass args to ffmpeg to build segments.                                | -loglevel warning | [ffmpeg](https://www.ffmpeg.org/ffmpeg.html)                                       |
-
-<details>
-  <summary>feed</summary>
-
-![image](https://github.com/0chain/blobber/wiki/uml/usecase/live_upload_sync.png)
-
-</details>
-
-Example
-
 ```
 ./zbox feed --localpath <absolute path to file>/tvshow.m3u8 --remotepath /videos/tvsho --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac  --delay 10 --downloader-args "-f 22" --feed https://www.youtube.com/watch?v=pC5mGB5enkw
-```
-
-##### Stream
-
-Stream or web streaming can be used with [upload](https://github.com/0chain/zboxcli#upload) as an optional web-streaming parameter to upload a video file in fragmented mp4 format. Converting all uploads to fragmented mp4 format makes it easy to play them on standard video player on mobile, desktop and web.
-
-Sample Command:
 
 ```
-./zbox upload --web-streaming --localpath <absolute path to file>/samplevideo.mov --remotepath /myfile/ --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
-```
 
-Response:
-
-```
-15691733 / 15691733 [=====================================================================================] 100.00% 32s
-Status completed callback. Type = video/fmp4. Name = raw.samplevideo.mp4
-```
 #### Download
 
 Use `download` command to download your own or a shared file.
@@ -1138,55 +959,12 @@ Note: You can download by using only 1 on the below combination:
 
 Downloaded file will be in the location specified by the `localpath` argument.
 
-##### Multi Download
-
-Use `./zbox download ` to download multiple files to local system at once via json file.
-
-Here are the parameters for multi-download:
-
-| Parameter           | Description                                                  | Valid Values |
-| ------------------- | ------------------------------------------------------------ | ------------ |
-| --allocation        | Provide Allocation ID for downloading multiple files from allocation | string       |
-| --multidownloadjson | Path to  JSON file containing details for files to download. | string       |
-
-Here is a sample json file for multi download:
-
-```
-[
-  {
-    "remotePath": "/raw.file_example_MP4_1920_18MG.mp4",
-    "localPath": "./a.mp4",
-    "downloadOp": 1
-  },
-  {
-    "remotePath": "/a.mp4",
-    "localPath": "./b.mp4",
-    "downloadOp": 1
-  },
-  {
-    "remotePath": "/raw.file_example_MP4_1920_18MG.mp4",
-    "localPath": "./c.mp4",
-    "downloadOp": 1
-  }
-]
-```
-`remotepath`: Remote path of downloaded file.
-
-`localpath`: Local path where file has to be downloaded.
-
-`downloadOp`: Can pass two values 1 or 2. 1 is for downloading the actual file, 2 is for downloading the thumbnail only.
-
-Sample Command:
-
-```
-zbox download --multidownloadjson ./multi-download.json --allocation $ALLOC
-```
-
 #### Update
 
 Use `update` command to update content of an existing file in the remote path.
 Like [upload](#upload) command. Only the owner of the allocation or a collaborator
-can update a file.
+can update a file. To add collaborators to an allocation, use
+[add-collab](#add-collaborator).
 
 | Parameter     | Required | Description                                          | Default | Valid values |
 | ------------- | -------- | ---------------------------------------------------- | ------- | ------------ |
@@ -1272,7 +1050,7 @@ the pre-defined remote path.
 
 Example
 
-##### Public share
+**Public share**
 
 ```
 ./zbox share --allocation 3c0d32560ea18d9d0d76808216a9c634f661979d29ba59cc8dafccb3e5b95341 --remotepath /myfiles/hello.txt
@@ -1290,11 +1068,11 @@ Auth token decoded
 {"client_id":"","owner_id":"17e119406d8887d028b1414acfe47e8808f5b3f98696998787a2055a7edb97af","allocation_id":"89db0cd296185dd986ba3cb4d0e8149176e16b2db21a0e5c06e10ff0b3f14a77","file_path_hash":"3ca722540e653f7545629f0dc19df6899e2404c428d4b1fe2c4627dd71f7fd64","actual_file_hash":"2bc95a9f8449dd1261f6bd587f67e069e11aa0bb","file_name":"test.pdf","reference_type":"f","expiration":1635849373,"timestamp":1628073373,"re_encryption_key":"","encrypted":false,"signature":"d4b938e14094ffd8ab0709af7d2002e7e0af6e71be4af2dc6e10f1ebfe509319"}
 ```
 
-##### Encrypted share
+**Encrypted share**
 
 Upload file with _--encrypted_ tag.
 
-Get encryptionpublickey first, by calling from user you are sharing with:
+Get encryptionpublickey first, by calling from user you sharing with:
 
 ```
 ./zbox getwallet
@@ -1332,7 +1110,7 @@ Auth token decoded
 
 Response contains an auth ticket- an encrypted string that can be shared.
 
-##### Directory share
+**Directory share**
 
 Follow up steps above to get _encryptionpublickey_
 
@@ -1784,26 +1562,7 @@ Response:
 ```
 Repair file completed, Total files repaired:  0
 ```
-#### Rollback
 
-Use `./zbox rollback` to rollback to a previous state of allocation. This is helpful when you want to rollback to previous version of files you updated on allocation using [Update allocation.](#update-allocation) 
-
-| Parameter    | Description                         | Valid Values |
-| ------------ | ----------------------------------- | ------------ |
-| --allocation | Provide Allocation ID for rollback. | string       |
-| --h,--help   | help for rollback                   | int          |
-
-Sample Command:
-
-```
-./zbox rollback --allocation $ALLOCATION_ID 
-```
-
-Sample Response:
-
-```
-Rollback successful
-```
 #### Sign data
 
 `sign-data` uses the information from your wallet to sign the input data string
@@ -1881,6 +1640,13 @@ Status completed callback. Type = audio/mpeg. Name = audio.mp3
 ```
 
 As we can see, the downloaded file size(393216) is less than the original(2996198), which means zbox has downloaded some blocks of the file.
+
+
+
+
+
+
+
 
 ### Lock and Unlock Tokens
 
