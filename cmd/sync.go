@@ -199,7 +199,6 @@ var syncCmd = &cobra.Command{
 
 		fileMetas := make(map[string]*sdk.ConsolidatedFileMeta)
 		wg := &sync.WaitGroup{}
-		statusBar := &StatusBar{wg: wg}
 		// Create filter
 		filter := []string{".DS_Store", ".git"}
 
@@ -227,6 +226,8 @@ var syncCmd = &cobra.Command{
 			return
 		}
 		argsSlice := make([]chunkedUploadArgs, 0)
+		downloadSlice := make([]MultiDownloadOption, 0)
+		downloadStatusBars := make([]*StatusBar, 0)
 		for _, f := range lDiff {
 			localpath = strings.TrimRight(localpath, "/")
 			lPath := localpath + f.Path
@@ -237,10 +238,14 @@ var syncCmd = &cobra.Command{
 			switch f.Op {
 			case sdk.Download:
 				wg.Add(1)
-
-				go func(lPath string, f sdk.FileDiff, verifyDownload bool, statusBar *StatusBar) {
-					err = allocationObj.DownloadFile(lPath, f.Path, verifyDownload, statusBar, true)
-				}(lPath, f, verifyDownload, statusBar)
+				option := MultiDownloadOption{
+					RemotePath: f.Path,
+					LocalPath:  lPath,
+					DownloadOp: 1,
+				}
+				downloadSlice = append(downloadSlice, option)
+				statusBar := &StatusBar{wg: wg}
+				downloadStatusBars = append(downloadStatusBars, statusBar)
 
 			case sdk.Upload:
 
@@ -296,7 +301,19 @@ var syncCmd = &cobra.Command{
 			PrintError("\nSync Failed", err.Error())
 			return
 		}
+		for i := 0; i < len(downloadSlice); i++ {
+			err = allocationObj.DownloadFile(downloadSlice[i].LocalPath, downloadSlice[i].RemotePath, verifyDownload, downloadStatusBars[i], i == len(downloadSlice)-1)
+			if err != nil {
+				PrintError("\nSync Download Failed", err.Error())
+				return
+			}
+		}
 		wg.Wait()
+		for ind, bar := range downloadStatusBars {
+			if !bar.success {
+				PrintError("\nSync Download Failed for file with remote path", downloadSlice[ind].RemotePath)
+			}
+		}
 		fmt.Println("\nSync Complete")
 		saveCache(allocationObj, localcache, exclPath)
 		return
