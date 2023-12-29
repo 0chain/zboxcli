@@ -31,7 +31,7 @@ var nonce int64
 var txFee float64
 var bSilent bool
 var allocUnderRepair bool
-
+var numRetries uint
 var walletJSON string
 
 var rootCmd = &cobra.Command{
@@ -57,13 +57,21 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&cDir, "configDir", "", "configuration directory (default is $HOME/.zcn)")
 	rootCmd.PersistentFlags().BoolVar(&bSilent, "silent", false, "(default false) Do not show interactive sdk logs (shown by default)")
 	rootCmd.PersistentFlags().Float64Var(&txFee, "fee", 0, "transaction fee for the given transaction (if unset, it will be set to blockchain min fee)")
+	rootCmd.PersistentFlags().UintVar(&numRetries, "with_retries", 0, "number of retries for the given transaction (if unset, it will be set to 0)")
 }
 
 func Execute() {
 
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+	for i := uint(0); i <= numRetries; i++ {
+		if err := rootCmd.Execute(); err != nil {
+			fmt.Println(err)
+		}
+
+		if i < numRetries {
+			fmt.Printf("Retrying the command %d time\n", i+1)
+		} else {
+			os.Exit(1)
+		}
 	}
 }
 
