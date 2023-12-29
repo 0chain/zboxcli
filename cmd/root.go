@@ -65,12 +65,14 @@ func Execute() {
 	for i := uint(0); i <= numRetries; i++ {
 		if err := rootCmd.Execute(); err != nil {
 			fmt.Println(err)
-		}
 
-		if i < numRetries {
-			fmt.Printf("Retrying the command %d time\n", i+1)
+			if i < numRetries {
+				fmt.Printf("Retrying the command %d time\n", i+1)
+			} else {
+				os.Exit(1)
+			}
 		} else {
-			os.Exit(1)
+			break
 		}
 	}
 }
