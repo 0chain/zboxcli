@@ -57,24 +57,30 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&cDir, "configDir", "", "configuration directory (default is $HOME/.zcn)")
 	rootCmd.PersistentFlags().BoolVar(&bSilent, "silent", false, "(default false) Do not show interactive sdk logs (shown by default)")
 	rootCmd.PersistentFlags().Float64Var(&txFee, "fee", 0, "transaction fee for the given transaction (if unset, it will be set to blockchain min fee)")
-	rootCmd.PersistentFlags().UintVar(&numRetries, "with_retries", 0, "number of retries for the given transaction (if unset, it will be set to 0)")
+	rootCmd.PersistentFlags().UintVar(&numRetries, "withRetries", 0, "number of retries for the given transaction (if unset, it will be set to 0)")
 }
 
 func Execute() {
+	// There needs to be as least one call to Execute() in the main function in order to parse the flags
+	if err := rootCmd.Execute(); err == nil {
+		fmt.Printf("Successfully executed the command\n")
+		os.Exit(0)
+	}
 
-	for i := uint(0); i <= numRetries; i++ {
-		if err := rootCmd.Execute(); err != nil {
-			fmt.Println(err)
+	numRetries, err := rootCmd.Flags().GetUint("withRetries")
+	if err != nil {
+		fmt.Printf("Error getting the number of retries: %v\n", err)
+		os.Exit(1)
+	}
 
-			if i < numRetries {
-				fmt.Printf("Retrying the command %d time\n", i+1)
-			} else {
-				os.Exit(1)
-			}
-		} else {
-			break
+	for i := uint(0); i < numRetries; i++ {
+		fmt.Printf("Retrying the command %d time\n", i+1)
+		if err := rootCmd.Execute(); err == nil {
+			os.Exit(0)
 		}
 	}
+
+	os.Exit(1)
 }
 
 func initConfig() {
