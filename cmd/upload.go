@@ -15,7 +15,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var uploadChunkNumber int = 1
+var uploadChunkNumber int = 200
 
 // uploadCmd represents upload command
 var uploadCmd = &cobra.Command{
