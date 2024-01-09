@@ -15,7 +15,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var uploadChunkNumber int = 1
+var uploadChunkNumber int = 200
 
 // uploadCmd represents upload command
 var uploadCmd = &cobra.Command{
@@ -222,7 +222,7 @@ func init() {
 	uploadCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
 	uploadCmd.Flags().Bool("encrypt", false, "(default false) pass this option to encrypt and upload the file")
 	uploadCmd.Flags().Bool("web-streaming", false, "(default false) pass this option to enable web streaming support")
-	uploadCmd.Flags().IntVarP(&uploadChunkNumber, "chunknumber", "", 1, "how many chunks should be uploaded in a http request")
+	uploadCmd.Flags().IntVarP(&uploadChunkNumber, "chunknumber", "", 200, "how many chunks should be uploaded in a http request")
 
 	uploadCmd.MarkFlagRequired("allocation")
 	uploadCmd.MarkFlagRequired("remotepath")
