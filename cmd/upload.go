@@ -15,7 +15,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var uploadChunkNumber int = 1
+var uploadChunkNumber int = 200
 
 // uploadCmd represents upload command
 var uploadCmd = &cobra.Command{
@@ -80,56 +80,6 @@ type chunkedUploadArgs struct {
 	chunkNumber  int
 	isUpdate     bool
 	isRepair     bool
-}
-
-func startChunkedUpload(allocationObj *sdk.Allocation, args chunkedUploadArgs, statusBar sdk.StatusCallback) error {
-	fileReader, err := os.Open(args.localPath)
-	if err != nil {
-		return err
-	}
-	defer fileReader.Close()
-
-	fileInfo, err := fileReader.Stat()
-	if err != nil {
-		return err
-	}
-
-	mimeType, err := zboxutil.GetFileContentType(fileReader)
-	if err != nil {
-		return err
-	}
-
-	remotePath, fileName, err := fullPathAndFileNameForUpload(args.localPath, args.remotePath)
-	if err != nil {
-		return err
-	}
-
-	fileMeta := sdk.FileMeta{
-		Path:       args.localPath,
-		ActualSize: fileInfo.Size(),
-		MimeType:   mimeType,
-		RemoteName: fileName,
-		RemotePath: remotePath,
-	}
-
-	options := []sdk.ChunkedUploadOption{
-		sdk.WithThumbnailFile(args.thumbnailPath),
-		sdk.WithEncrypt(args.encrypt),
-		sdk.WithStatusCallback(statusBar),
-		sdk.WithChunkNumber(args.chunkNumber),
-	}
-
-	chunkedUpload, err := sdk.CreateChunkedUpload(util.GetHomeDir(), allocationObj,
-		fileMeta, fileReader,
-		args.isUpdate, args.isRepair, args.webStreaming,
-		zboxutil.NewConnectionId(),
-		options...)
-
-	if err != nil {
-		return err
-	}
-
-	return chunkedUpload.Start()
 }
 
 type MultiUploadOption struct {
@@ -222,7 +172,7 @@ func init() {
 	uploadCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
 	uploadCmd.Flags().Bool("encrypt", false, "(default false) pass this option to encrypt and upload the file")
 	uploadCmd.Flags().Bool("web-streaming", false, "(default false) pass this option to enable web streaming support")
-	uploadCmd.Flags().IntVarP(&uploadChunkNumber, "chunknumber", "", 1, "how many chunks should be uploaded in a http request")
+	uploadCmd.Flags().IntVarP(&uploadChunkNumber, "chunknumber", "", 200, "how many chunks should be uploaded in a http request")
 
 	uploadCmd.MarkFlagRequired("allocation")
 	uploadCmd.MarkFlagRequired("remotepath")
