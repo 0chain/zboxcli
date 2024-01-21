@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"log"
+	"os"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
@@ -13,13 +14,17 @@ var shutDownBlobberCmd = &cobra.Command{
 	Long:  "deactivate a blobber, it will not be used for any new allocations",
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		var err error
-		_, _, err = sdk.ShutdownProvider(sdk.ProviderBlobber)
+		fflags := cmd.Flags()
+		if !fflags.Changed("id") {
+			PrintError("Error: blobber ID should be specified")
+			os.Exit(1)
+		}
+		blobberID := cmd.Flag("id").Value.String()
+		_, _, err := sdk.ShutdownProvider(sdk.ProviderBlobber, blobberID)
 		if err != nil {
 			log.Fatal("failed to shut down blobber", err)
 		}
 		log.Println("shut down blobber.")
-
 	},
 }
 
