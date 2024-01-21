@@ -114,6 +114,9 @@ var newallocationCmd = &cobra.Command{
 				log.Fatal("invalid read_price value: ", err)
 			}
 			preferred_blobbers = strings.Split(b, ",")
+			for i, id := range preferred_blobbers {
+				preferred_blobbers[i] = strings.TrimSpace(id)
+			}
 		}
 
 		if flags.Changed("read_price") {

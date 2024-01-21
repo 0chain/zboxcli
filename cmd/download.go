@@ -172,7 +172,7 @@ var downloadCmd = &cobra.Command{
 				os.Exit(1)
 			}
 
-			errE = MultiDownload(allocationObj, multidownloadJSON, statusBar)
+			errE = MultiDownload(allocationObj, multidownloadJSON, statusBar, verifyDownload)
 		}
 
 		if errE == nil {
@@ -196,7 +196,7 @@ type MultiDownloadOption struct {
 	RemoteLookupHash string `json:"remoteLookupHash,omitempty"` //Required only for file download with auth ticket
 }
 
-func MultiDownload(a *sdk.Allocation, jsonMultiDownloadOptions string, statusBar *StatusBar) error {
+func MultiDownload(a *sdk.Allocation, jsonMultiDownloadOptions string, statusBar *StatusBar, verifyDownload bool) error {
 	var options []MultiDownloadOption
 	file, err := os.Open(jsonMultiDownloadOptions)
 	if err != nil {
@@ -217,7 +217,7 @@ func MultiDownload(a *sdk.Allocation, jsonMultiDownloadOptions string, statusBar
 			statusBar.wg.Add(1)
 		}
 		if options[i].DownloadOp == 1 {
-			err = a.DownloadFile(options[i].LocalPath, options[i].RemotePath, true, statusBar, i == lastOp)
+			err = a.DownloadFile(options[i].LocalPath, options[i].RemotePath, verifyDownload, statusBar, i == lastOp)
 		} else {
 			err = a.DownloadThumbnail(options[i].LocalPath, options[i].RemotePath, false, statusBar, i == lastOp)
 		}
