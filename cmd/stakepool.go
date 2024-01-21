@@ -15,6 +15,7 @@ func printStakePoolInfo(info *sdk.StakePoolInfo) {
 	fmt.Println("balance:           ", info.Balance)
 	fmt.Println("total stake:       ", info.StakeTotal)
 	fmt.Println("unclaimed rewards: ", info.Rewards)
+	fmt.Println("total rewards:     ", info.TotalRewards)
 	if len(info.Delegate) == 0 {
 		fmt.Println("delegate_pools: no delegate pools")
 	} else {
