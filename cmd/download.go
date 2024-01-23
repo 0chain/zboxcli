@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/0chain/gosdk/zboxcore/fileref"
 
@@ -68,7 +69,7 @@ var downloadCmd = &cobra.Command{
 
 		numBlocks, _ := cmd.Flags().GetInt("blockspermarker")
 		if numBlocks == 0 {
-			numBlocks = 10
+			numBlocks = 100
 		}
 
 		startBlock, _ := cmd.Flags().GetInt64("startblock")
@@ -83,6 +84,8 @@ var downloadCmd = &cobra.Command{
 		wg.Add(1)
 		var errE error
 		var allocationObj *sdk.Allocation
+
+		now := time.Now()
 
 		var multidownloadJSON string
 		if fflags.Changed("multidownloadjson") {
@@ -177,6 +180,7 @@ var downloadCmd = &cobra.Command{
 
 		if errE == nil {
 			wg.Wait()
+			PrintInfo("Download completed in: ", time.Since(now).Milliseconds())
 		} else {
 			PrintError("Download failed.", errE.Error())
 			os.Exit(1)
@@ -242,7 +246,7 @@ func init() {
 	downloadCmd.Flags().Int64P("startblock", "s", 1,
 		"Pass this option to download from specific block number. It should not be less than 1")
 	downloadCmd.Flags().Int64P("endblock", "e", 0, "pass this option to download till specific block number")
-	downloadCmd.Flags().IntP("blockspermarker", "b", 10, "pass this option to download multiple blocks per marker")
+	downloadCmd.Flags().IntP("blockspermarker", "b", 100, "pass this option to download multiple blocks per marker")
 	downloadCmd.Flags().BoolP("verifydownload", "v", false, "(default false) pass this option to verify downloaded blocks")
 
 	downloadCmd.Flags().Bool("live", false, "(default false) start m3u8 downloader,and automatically generate media playlist(m3u8) on --localpath")
