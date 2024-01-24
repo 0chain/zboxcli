@@ -73,6 +73,11 @@ func isEmptyUploadOrUpdate(operation string, localPath string) bool {
 func filterEmptyFiles(localPath string, lDiff []sdk.FileDiff) (filterDiff []sdk.FileDiff) {
 	localPath = strings.TrimRight(localPath, "/")
 	for _, f := range lDiff {
+		operatingSys := runtime.GOOS
+		// Check the operating system and modify the path accordingly
+		if operatingSys == "windows" {
+			f.Path = strings.ReplaceAll(f.Path, "/", "\\")
+		}
 		if !isEmptyUploadOrUpdate(f.Op, localPath+f.Path) {
 			filterDiff = append(filterDiff, f)
 		}
@@ -210,15 +215,15 @@ var syncCmd = &cobra.Command{
 			PrintError("Error getting diff.", err)
 			os.Exit(1)
 		}
-		fmt.Println("ldff is: %s", lDiff)
+		fmt.Print("ldff is: ", lDiff)
 		if uploadOnly {
 			var otherPaths []string
 			lDiff, otherPaths = filterOperations(lDiff)
 			exclPath = append(exclPath, otherPaths...)
 		}
-		fmt.Println("ldff before filtration is: %s", lDiff)
+		fmt.Print("ldff before filtration is: ", lDiff)
 		lDiff = filterEmptyFiles(localpath, lDiff)
-		fmt.Println("ldff  after filtration is: %s", lDiff)
+		fmt.Print("ldff  after filtration is:", lDiff)
 
 		if len(lDiff) > 0 {
 			printTable(lDiff)
