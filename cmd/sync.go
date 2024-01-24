@@ -210,14 +210,15 @@ var syncCmd = &cobra.Command{
 			PrintError("Error getting diff.", err)
 			os.Exit(1)
 		}
-
+		fmt.Println("ldff is: %s", lDiff)
 		if uploadOnly {
 			var otherPaths []string
 			lDiff, otherPaths = filterOperations(lDiff)
 			exclPath = append(exclPath, otherPaths...)
 		}
-
+		fmt.Println("ldff before filtration is: %s", lDiff)
 		lDiff = filterEmptyFiles(localpath, lDiff)
+		fmt.Println("ldff  after filtration is: %s", lDiff)
 
 		if len(lDiff) > 0 {
 			printTable(lDiff)
