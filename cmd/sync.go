@@ -54,16 +54,20 @@ func isEmptyUploadOrUpdate(operation string, localPath string) bool {
 		return false
 	}
 	localPath = strings.TrimRight(localPath, "/")
+	fmt.Println("localpath is : ", localPath)
 	fileReader, err := os.Open(localPath)
 	if err != nil {
 		return false
 	}
+	fmt.Println("os open file succedded for ", localPath)
+
 	defer fileReader.Close()
 
 	fileInfo, err := fileReader.Stat()
 	if err != nil {
 		return false
 	}
+	fmt.Println("fileinfo.size is: ", fileInfo.Size())
 	if fileInfo.Size() == 0 {
 		return true
 	}
