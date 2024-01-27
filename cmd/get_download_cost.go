@@ -99,16 +99,12 @@ var getDownloadCostCmd = &cobra.Command{
 			}
 		}
 
-		if remotePath == "" && authTicket == "" {
-			log.Fatal("'remotepath' or 'authticket' flag required")
-		}
-
 		var (
 			alloc *sdk.Allocation
 			meta  *sdk.ConsolidatedFileMeta
 		)
 
-		if remotePath != "" {
+		if remotePath != "" && allocID != ""{
 
 			// by remote path
 
@@ -125,6 +121,11 @@ var getDownloadCostCmd = &cobra.Command{
 		}
 
 		// by authentication ticket
+
+		//if authTicket is provided no need of anything else to get the cost
+		if authTicket == "" {
+			log.Fatal("'authTicket' flag  OR 'remotepath' & 'allocation' flag required")
+		}
 
 		alloc, err = sdk.GetAllocationFromAuthTicket(authTicket)
 		if err != nil {
