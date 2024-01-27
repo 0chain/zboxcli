@@ -60,6 +60,10 @@ var getDownloadCostCmd = &cobra.Command{
 			err     error
 		)
 
+		if !fflags.Changed("allocation") {
+			log.Fatal("missing required 'allocation' flag")
+		}
+
 		allocID = cmd.Flag("allocation").Value.String()
 		blocksPerMarker, err := cmd.Flags().GetInt("blocks-per-marker")
 
