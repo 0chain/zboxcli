@@ -119,9 +119,6 @@ var getDownloadCostCmd = &cobra.Command{
 		// by authentication ticket
 
 		//if authTicket is provided no need of anything else to get the cost
-		if authTicket == "" {
-			log.Fatal("'authTicket' flag  OR 'remotepath' & 'allocation' flag required")
-		}
 
 		alloc, err = sdk.GetAllocationFromAuthTicket(authTicket)
 		if err != nil {
