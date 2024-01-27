@@ -122,8 +122,6 @@ var getDownloadCostCmd = &cobra.Command{
 
 		// by authentication ticket
 
-		//if authTicket is provided no need of anything else to get the cost
-
 		alloc, err = sdk.GetAllocationFromAuthTicket(authTicket)
 		if err != nil {
 			log.Fatal("can't get allocation object: ", err)
