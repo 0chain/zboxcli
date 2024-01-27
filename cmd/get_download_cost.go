@@ -104,7 +104,7 @@ var getDownloadCostCmd = &cobra.Command{
 			meta  *sdk.ConsolidatedFileMeta
 		)
 
-		if remotePath != "" && allocID != ""{
+		if remotePath != ""{
 
 			// by remote path
 
