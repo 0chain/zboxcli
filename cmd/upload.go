@@ -41,8 +41,6 @@ var uploadCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		sdk.UploadWorkers = 1
-
 		var multiuploadJSON string
 		if fflags.Changed("multiuploadjson") {
 			multiuploadJSON = cmd.Flag("multiuploadjson").Value.String()
