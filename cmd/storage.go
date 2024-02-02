@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/0chain/gosdk/zboxcore/blockchain"
 	"log"
 	"time"
+
+	"github.com/0chain/gosdk/zboxcore/blockchain"
 
 	"github.com/0chain/gosdk/core/common"
 	"github.com/0chain/gosdk/zboxcore/sdk"
@@ -321,5 +322,6 @@ func init() {
 	buf.Int("num_delegates", 0, "update num_delegates, optional")
 	buf.Float64("service_charge", 0.0, "update service_charge, optional")
 	buf.Bool("not_available", true, "(default false) set blobber's availability for new allocations")
+	buf.String("url", "", "update the url of the blobber, optional")
 	blobberUpdateCmd.MarkFlagRequired("blobber_id")
 }
