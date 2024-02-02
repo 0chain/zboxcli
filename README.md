@@ -144,7 +144,6 @@ Available Commands:
   download           download file from blobbers
   feed               download segment files from remote live feed, and upload
   get-diff           Get difference of local and allocation root
-  get-download-cost  Get downloading cost
   get-mpt            Directly view blockchain data
   get-upload-cost    Get uploading cost
   getallocation      Gets the allocation info
@@ -1997,33 +1996,6 @@ An expired write pool, associated with an allocation, can be locked until alloca
 
 ```
 ./zbox wp-unlock
-```
-
-#### Download cost
-
-`get-download-cost` determines the cost for downloading the remote file from dStorage. The client must be an
-owner, collaborator, or using an auth ticket to determine the download cost of the file.
-
-| Parameter  | Required | Description                               | default | Valid values |
-| ---------- | -------- | ----------------------------------------- | ------- | ------------ |
-| allocation | yes      | allocation id                             |         | string       |
-| authticket | no       | auth ticket to use if not the owner       |         | string       |
-| lookuphash | no       | hash of remote file, use with auth ticket |         | string       |
-| remotepath | no       | file of which to get stats, use if owner  |         | string       |
-
-<details>
-  <summary>get-download-cost</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/124497750-41ef0500-ddb3-11eb-99ea-115a4e234eda.png)
-
-</details>
-Command:
-```
-./zbox get-download-cost --allocation <allocation_id> --remotepath /path/file.ext
-```
-Response:
-```
-0.0000107434 tokens for 10 64KB blocks (24 B) of <remote_path_of_file> .
 ```
 
 #### Upload cost
