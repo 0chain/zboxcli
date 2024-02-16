@@ -128,6 +128,7 @@ func startMultiUploadUpdate(allocationObj *sdk.Allocation, argsSlice []chunkedUp
 			FileReader:    fileReader,
 			OperationType: constants.FileOperationInsert,
 			Opts:          options,
+			Workdir:       util.GetHomeDir(),
 		}
 		if args.isUpdate {
 			operationRequests[idx].OperationType = constants.FileOperationUpdate
