@@ -51,9 +51,8 @@ var collectRewards = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(collectRewards)
-	collectRewards.PersistentFlags().String("provider_type", "blobber", "provider type")
+	collectRewards.PersistentFlags().Int("provider_type", 3, "provider type. allowed values: 3 for blobber. 4 for blobber")
 	collectRewards.PersistentFlags().String("provider_id", "", "blobber or validator id")
 	collectRewards.MarkFlagRequired("provider_id")
 	collectRewards.MarkFlagRequired("provider_type")
-
 }
