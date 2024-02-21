@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"runtime"
+	"path/filepath"
 	"strings"
 	"sync"
 
@@ -230,17 +230,15 @@ var syncCmd = &cobra.Command{
 		downloadSlice := make([]MultiDownloadOption, 0)
 		downloadStatusBars := make([]*StatusBar, 0)
 		for _, f := range lDiff {
-			operatingSys := runtime.GOOS
+			// operatingSys := runtime.GOOS
 			// Check the operating system and modify the path accordingly
-			if operatingSys == "windows" {
-				f.Path = strings.ReplaceAll(f.Path, "/", "\\")
-			}
 			localpath = strings.TrimRight(localpath, "/")
-			lPath := localpath + f.Path
+			lPath := filepath.Join(localpath, f.Path)
 			fileRemotePath, err := getFullRemotePath(f.Path, remotepath)
 			if err != nil {
 				return
 			}
+
 			switch f.Op {
 			case sdk.Download:
 				wg.Add(1)
