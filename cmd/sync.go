@@ -230,8 +230,6 @@ var syncCmd = &cobra.Command{
 		downloadSlice := make([]MultiDownloadOption, 0)
 		downloadStatusBars := make([]*StatusBar, 0)
 		for _, f := range lDiff {
-			// operatingSys := runtime.GOOS
-			// Check the operating system and modify the path accordingly
 			localpath = strings.TrimRight(localpath, "/")
 			lPath := filepath.Join(localpath, f.Path)
 			fileRemotePath, err := getFullRemotePath(f.Path, remotepath)
