@@ -1,12 +1,13 @@
 package cmd
 
 import (
-	"github.com/0chain/gosdk/zboxcore/sdk"
-	"github.com/0chain/gosdk/zcncore"
-	"github.com/spf13/cobra"
 	"log"
 	"os"
 	"sync"
+
+	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk/zcncore"
+	"github.com/spf13/cobra"
 )
 
 // updateAllocationCmd used to change allocation size and expiration
@@ -174,7 +175,7 @@ func init() {
 	updateAllocationCmd.PersistentFlags().Float64("lock", 0.0,
 		"lock write pool with given number of tokens, required")
 	updateAllocationCmd.PersistentFlags().Int64("size", 0,
-		"adjust allocation size, bytes")
+		"Increase (positive value) or decrease (negative value) the allocation size by a given value, in bytes")
 	updateAllocationCmd.PersistentFlags().Bool("extend", false,
 		"(default false) adjust storage expiration time, duration")
 
