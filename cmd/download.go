@@ -69,7 +69,7 @@ var downloadCmd = &cobra.Command{
 
 		numBlocks, _ := cmd.Flags().GetInt("blockspermarker")
 		if numBlocks == 0 {
-			numBlocks = 10
+			numBlocks = 100
 		}
 
 		startBlock, _ := cmd.Flags().GetInt64("startblock")
@@ -155,11 +155,11 @@ var downloadCmd = &cobra.Command{
 			if thumbnail {
 				errE = allocationObj.DownloadThumbnail(localPath, remotePath, verifyDownload, statusBar, true)
 			} else {
-				if (startBlock != 0 || endBlock != 0) && startBlock < endBlock {
-					errE = allocationObj.DownloadFileByBlock(localPath, remotePath, startBlock, endBlock, numBlocks, verifyDownload, statusBar, true)
-				} else {
+				if startBlock == 1 && endBlock == 0 {
 					ds := sdk.CreateFsDownloadProgress()
 					errE = allocationObj.DownloadFile(localPath, remotePath, verifyDownload, statusBar, true, sdk.WithDownloadProgressStorer(ds), sdk.WithWorkDir(util.GetHomeDir()))
+				} else {
+					errE = allocationObj.DownloadFileByBlock(localPath, remotePath, startBlock, endBlock, numBlocks, verifyDownload, statusBar, true)
 				}
 			}
 		} else if len(multidownloadJSON) > 0 {
