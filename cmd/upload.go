@@ -82,56 +82,6 @@ type chunkedUploadArgs struct {
 	isRepair     bool
 }
 
-func startChunkedUpload(allocationObj *sdk.Allocation, args chunkedUploadArgs, statusBar sdk.StatusCallback) error {
-	fileReader, err := os.Open(args.localPath)
-	if err != nil {
-		return err
-	}
-	defer fileReader.Close()
-
-	fileInfo, err := fileReader.Stat()
-	if err != nil {
-		return err
-	}
-
-	mimeType, err := zboxutil.GetFileContentType(fileReader)
-	if err != nil {
-		return err
-	}
-
-	remotePath, fileName, err := fullPathAndFileNameForUpload(args.localPath, args.remotePath)
-	if err != nil {
-		return err
-	}
-
-	fileMeta := sdk.FileMeta{
-		Path:       args.localPath,
-		ActualSize: fileInfo.Size(),
-		MimeType:   mimeType,
-		RemoteName: fileName,
-		RemotePath: remotePath,
-	}
-
-	options := []sdk.ChunkedUploadOption{
-		sdk.WithThumbnailFile(args.thumbnailPath),
-		sdk.WithEncrypt(args.encrypt),
-		sdk.WithStatusCallback(statusBar),
-		sdk.WithChunkNumber(args.chunkNumber),
-	}
-
-	chunkedUpload, err := sdk.CreateChunkedUpload(util.GetHomeDir(), allocationObj,
-		fileMeta, fileReader,
-		args.isUpdate, args.isRepair, args.webStreaming,
-		zboxutil.NewConnectionId(),
-		options...)
-
-	if err != nil {
-		return err
-	}
-
-	return chunkedUpload.Start()
-}
-
 type MultiUploadOption struct {
 	FilePath       string `json:"filePath,omitempty"`
 	FileName       string `json:"fileName,omitempty"`
