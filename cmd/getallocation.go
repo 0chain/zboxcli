@@ -7,7 +7,6 @@ import (
 
 	"github.com/0chain/gosdk/core/common"
 	"github.com/0chain/gosdk/zboxcore/blockchain"
-	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/logger"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/zboxcli/util"
@@ -112,7 +111,6 @@ var getallocationCmd = &cobra.Command{
 
 		fmt.Println("  price:")
 		fmt.Println("    time_unit:  ", alloc.TimeUnit)
-		fmt.Println("    read_price: ", calculateDownloadCost(alloc, GB, (GB+fileref.CHUNK_SIZE-1)/fileref.CHUNK_SIZE), "/ GB (by 64KB)")
 		fmt.Println("    write_price:", uploadCostFor1GB(alloc), fmt.Sprintf("/ GB / %s", alloc.TimeUnit))
 	},
 }
