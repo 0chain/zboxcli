@@ -69,13 +69,10 @@ var downloadCmd = &cobra.Command{
 
 		numBlocks, _ := cmd.Flags().GetInt("blockspermarker")
 		if numBlocks == 0 {
-			numBlocks = 10
+			numBlocks = 100
 		}
 
 		startBlock, _ := cmd.Flags().GetInt64("startblock")
-		if startBlock < 1 {
-			PrintError("Error: start block should not be less than 1")
-		}
 		endBlock, _ := cmd.Flags().GetInt64("endblock")
 
 		sdk.SetNumBlockDownloads(numBlocks)
