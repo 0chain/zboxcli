@@ -73,6 +73,9 @@ var downloadCmd = &cobra.Command{
 		}
 
 		startBlock, _ := cmd.Flags().GetInt64("startblock")
+		if startBlock < 1 {
+			PrintError("Error: start block should not be less than 1")
+		}
 		endBlock, _ := cmd.Flags().GetInt64("endblock")
 
 		sdk.SetNumBlockDownloads(numBlocks)
@@ -152,11 +155,11 @@ var downloadCmd = &cobra.Command{
 			if thumbnail {
 				errE = allocationObj.DownloadThumbnail(localPath, remotePath, verifyDownload, statusBar, true)
 			} else {
-				if startBlock != 0 || endBlock != 0 {
-					errE = allocationObj.DownloadFileByBlock(localPath, remotePath, startBlock, endBlock, numBlocks, verifyDownload, statusBar, true)
-				} else {
+				if startBlock == 1 && endBlock == 0 {
 					ds := sdk.CreateFsDownloadProgress()
 					errE = allocationObj.DownloadFile(localPath, remotePath, verifyDownload, statusBar, true, sdk.WithDownloadProgressStorer(ds), sdk.WithWorkDir(util.GetHomeDir()))
+				} else {
+					errE = allocationObj.DownloadFileByBlock(localPath, remotePath, startBlock, endBlock, numBlocks, verifyDownload, statusBar, true)
 				}
 			}
 		} else if len(multidownloadJSON) > 0 {
@@ -239,7 +242,7 @@ func init() {
 	downloadCmd.PersistentFlags().String("multidownloadjson", "", "A JSON file containing multi download options")
 	downloadCmd.Flags().BoolP("thumbnail", "t", false, "(default false) pass this option to download only the thumbnail")
 
-	downloadCmd.Flags().Int64P("startblock", "s", 0,
+	downloadCmd.Flags().Int64P("startblock", "s", 1,
 		"Pass this option to download from specific block number. It should not be less than 1")
 	downloadCmd.Flags().Int64P("endblock", "e", 0, "pass this option to download till specific block number")
 	downloadCmd.Flags().IntP("blockspermarker", "b", 10, "pass this option to download multiple blocks per marker")
