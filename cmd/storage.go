@@ -298,8 +298,8 @@ var blobberUpdateCmd = &cobra.Command{
 
 var resetBlobberStatsCmd = &cobra.Command{
 	Use:   "reset-blobber-stats",
-	Short: "",
-	Long:  ``,
+	Short: "Reset blobber stats",
+	Long:  `Reset blobber stats`,
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		var (
@@ -355,7 +355,7 @@ var resetBlobberStatsCmd = &cobra.Command{
 			NewAllocated: 	newAllocated,
 			NewSavedData: newSavedData,
 		}
-		log.Println(*resetBlobberStatsDto)
+		fmt.Println(*resetBlobberStatsDto)
 
 		_, _, err = sdk.ResetBlobberStats(resetBlobberStatsDto)
 		if err != nil {
