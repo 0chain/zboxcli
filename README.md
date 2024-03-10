@@ -311,10 +311,6 @@ form of a json file
   any other allocation; Its history forgotten.
 
 ```shell
-./zbox newallocation --free_allocation markers/referal_marker.json
-```
-
-```shell
 Allocation created : d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac
 ```
 
