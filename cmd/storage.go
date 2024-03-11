@@ -287,7 +287,7 @@ var blobberUpdateCmd = &cobra.Command{
 			if ia, err = flags.GetBool("is_restricted"); err != nil {
 				log.Fatal(err)
 			}
-			updateBlobber.NotAvailable = &ia
+			updateBlobber.IsRestricted = &ia
 		}
 
 		if termsChanged {
