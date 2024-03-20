@@ -7,6 +7,7 @@ import (
 	"sync"
 
 	"github.com/0chain/gosdk/zboxcore/fileref"
+	"github.com/0chain/zboxcli/util"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
@@ -68,7 +69,7 @@ var downloadCmd = &cobra.Command{
 
 		numBlocks, _ := cmd.Flags().GetInt("blockspermarker")
 		if numBlocks == 0 {
-			numBlocks = 10
+			numBlocks = 100
 		}
 
 		startBlock, _ := cmd.Flags().GetInt64("startblock")
@@ -154,10 +155,11 @@ var downloadCmd = &cobra.Command{
 			if thumbnail {
 				errE = allocationObj.DownloadThumbnail(localPath, remotePath, verifyDownload, statusBar, true)
 			} else {
-				if startBlock != 0 || endBlock != 0 {
-					errE = allocationObj.DownloadFileByBlock(localPath, remotePath, startBlock, endBlock, numBlocks, verifyDownload, statusBar, true)
+				if startBlock == 1 && endBlock == 0 {
+					ds := sdk.CreateFsDownloadProgress()
+					errE = allocationObj.DownloadFile(localPath, remotePath, verifyDownload, statusBar, true, sdk.WithDownloadProgressStorer(ds), sdk.WithWorkDir(util.GetHomeDir()))
 				} else {
-					errE = allocationObj.DownloadFile(localPath, remotePath, verifyDownload, statusBar, true)
+					errE = allocationObj.DownloadFileByBlock(localPath, remotePath, startBlock, endBlock, numBlocks, verifyDownload, statusBar, true)
 				}
 			}
 		} else if len(multidownloadJSON) > 0 {
@@ -216,8 +218,9 @@ func MultiDownload(a *sdk.Allocation, jsonMultiDownloadOptions string, statusBar
 		if i > 0 {
 			statusBar.wg.Add(1)
 		}
+		ds := sdk.CreateFsDownloadProgress()
 		if options[i].DownloadOp == 1 {
-			err = a.DownloadFile(options[i].LocalPath, options[i].RemotePath, verifyDownload, statusBar, i == lastOp)
+			err = a.DownloadFile(options[i].LocalPath, options[i].RemotePath, verifyDownload, statusBar, i == lastOp, sdk.WithDownloadProgressStorer(ds), sdk.WithWorkDir(util.GetHomeDir()))
 		} else {
 			err = a.DownloadThumbnail(options[i].LocalPath, options[i].RemotePath, false, statusBar, i == lastOp)
 		}
