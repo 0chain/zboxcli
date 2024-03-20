@@ -23,6 +23,7 @@ var (
 	size                     *int64
 	allocationFileName       *string
 	preferred_blobbers       []string
+	blobber_auth_tickets     []string
 )
 
 func getPriceRange(val string) (pr sdk.PriceRange, err error) {
@@ -116,6 +117,17 @@ var newallocationCmd = &cobra.Command{
 			preferred_blobbers = strings.Split(b, ",")
 			for i, id := range preferred_blobbers {
 				preferred_blobbers[i] = strings.TrimSpace(id)
+			}
+		}
+
+		if flags.Changed("blobber_auth_tickets") {
+			b, err := flags.GetString("blobber_auth_tickets")
+			if err != nil {
+				log.Fatal("invalid read_price value: ", err)
+			}
+			blobber_auth_tickets = strings.Split(b, ",")
+			for i, id := range blobber_auth_tickets {
+				blobber_auth_tickets[i] = strings.TrimSpace(id)
 			}
 		}
 
@@ -230,15 +242,16 @@ var newallocationCmd = &cobra.Command{
 				ParityShards: *parityshards,
 				Size:         *size,
 				ReadPrice: sdk.PriceRange{
-					Min: uint64(readPrice.Min),
-					Max: uint64(readPrice.Max),
+					Min: readPrice.Min,
+					Max: readPrice.Max,
 				},
 				WritePrice: sdk.PriceRange{
-					Min: uint64(writePrice.Min),
-					Max: uint64(writePrice.Max),
+					Min: writePrice.Min,
+					Max: writePrice.Max,
 				},
 				Lock:                 uint64(lock),
 				BlobberIds:           preferred_blobbers,
+				BlobberAuthTickets:   blobber_auth_tickets,
 				FileOptionsParams:    &fileOptionParams,
 				ThirdPartyExtendable: thirdPartyExtendable,
 			}
@@ -258,7 +271,7 @@ var newallocationCmd = &cobra.Command{
 			}
 
 			allocationID, _, _, err = sdk.CreateAllocationForOwner(owner, ownerPublicKey, *datashards, *parityshards,
-				*size, readPrice, writePrice, lock, preferred_blobbers, thirdPartyExtendable, &fileOptionParams)
+				*size, readPrice, writePrice, lock, preferred_blobbers, blobber_auth_tickets, thirdPartyExtendable, &fileOptionParams)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
@@ -327,6 +340,7 @@ func init() {
 
 	newallocationCmd.Flags().String("name", "", "allocation name")
 	newallocationCmd.Flags().String("preferred_blobbers", "", "coma seperated list of preferred blobbers")
+	newallocationCmd.Flags().String("blobber_auth_tickets", "", "coma seperated list of blobber auth tickets")
 
 	newallocationCmd.Flags().Bool("third_party_extendable", false, "(default false) specify if the allocation can be extended by users other than the owner")
 	newallocationCmd.Flags().Bool("forbid_upload", false, "(default false) specify if users cannot upload to this allocation")

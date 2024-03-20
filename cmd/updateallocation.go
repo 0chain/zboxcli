@@ -26,12 +26,15 @@ var updateAllocationCmd = &cobra.Command{
 			log.Fatal("invalid 'allocation_id' flag: ", err)
 		}
 
-		var addBlobberId, removeBlobberId string
+		var addBlobberId, addBlobberAuthTicket, removeBlobberId string
 		if flags.Changed("add_blobber") {
 			addBlobberId, err = flags.GetString("add_blobber")
 			if err != nil {
 				log.Fatal("invalid 'add_blobber' flag: ", err)
 			}
+
+			addBlobberAuthTicket, _ = flags.GetString("add_blobber_auth_ticket")
+
 			if flags.Changed("remove_blobber") {
 				removeBlobberId, err = flags.GetString("remove_blobber")
 				if err != nil {
@@ -130,6 +133,7 @@ var updateAllocationCmd = &cobra.Command{
 				extend,
 				lock,
 				addBlobberId,
+				addBlobberAuthTicket,
 				removeBlobberId,
 				setThirdPartyExtendable,
 				&fileOptionParams,
@@ -151,6 +155,7 @@ var updateAllocationCmd = &cobra.Command{
 				allocID,
 				lock,
 				addBlobberId,
+				addBlobberAuthTicket,
 				removeBlobberId,
 				setThirdPartyExtendable,
 				&fileOptionParams,
@@ -169,6 +174,8 @@ func init() {
 		"Allocation ID")
 	updateAllocationCmd.PersistentFlags().String("add_blobber", "",
 		"ID of blobber to add to the allocation")
+	updateAllocationCmd.PersistentFlags().String("add_blobber_auth_ticket", "",
+		"Auth ticket of blobber to add to the allocation")
 	updateAllocationCmd.PersistentFlags().String("remove_blobber", "",
 		"ID of blobber to remove from the allocation")
 	updateAllocationCmd.PersistentFlags().Float64("lock", 0.0,

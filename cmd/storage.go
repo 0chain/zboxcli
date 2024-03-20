@@ -133,6 +133,7 @@ var blobberInfoCmd = &cobra.Command{
 		fmt.Println("capacity_used:    ", blob.Allocated)
 		fmt.Println("total_stake:      ", blob.TotalStake)
 		fmt.Println("not_available:     ", blob.NotAvailable)
+		fmt.Println("is_restricted:     ", blob.IsRestricted)
 		fmt.Println("terms:")
 		fmt.Println("  read_price:        ", blob.Terms.ReadPrice, "/ GB")
 		fmt.Println("  write_price:       ", blob.Terms.WritePrice, "/ GB")
@@ -281,6 +282,14 @@ var blobberUpdateCmd = &cobra.Command{
 			updateBlobber.NotAvailable = &ia
 		}
 
+		if flags.Changed("is_restricted") {
+			var ia bool
+			if ia, err = flags.GetBool("is_restricted"); err != nil {
+				log.Fatal(err)
+			}
+			updateBlobber.IsRestricted = &ia
+		}
+
 		if termsChanged {
 			updateBlobber.Terms = terms
 		}
@@ -392,6 +401,7 @@ func init() {
 	buf.Int("num_delegates", 0, "update num_delegates, optional")
 	buf.Float64("service_charge", 0.0, "update service_charge, optional")
 	buf.Bool("not_available", true, "(default false) set blobber's availability for new allocations")
+	buf.Bool("is_restricted", true, "(default false) set is_restricted")
 	buf.String("url", "", "update the url of the blobber, optional")
 	blobberUpdateCmd.MarkFlagRequired("blobber_id")
 
