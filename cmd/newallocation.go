@@ -242,12 +242,12 @@ var newallocationCmd = &cobra.Command{
 				ParityShards: *parityshards,
 				Size:         *size,
 				ReadPrice: sdk.PriceRange{
-					Min: uint64(readPrice.Min),
-					Max: uint64(readPrice.Max),
+					Min: readPrice.Min,
+					Max: readPrice.Max,
 				},
 				WritePrice: sdk.PriceRange{
-					Min: uint64(writePrice.Min),
-					Max: uint64(writePrice.Max),
+					Min: writePrice.Min,
+					Max: writePrice.Max,
 				},
 				Lock:                 uint64(lock),
 				BlobberIds:           preferred_blobbers,
