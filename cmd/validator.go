@@ -125,7 +125,6 @@ var validatorUpdateCmd = &cobra.Command{
 		updateValidator := new(sdk.UpdateValidator)
 		updateValidator.ID = common.Key(validatorID)
 		
-
 		if flags.Changed("num_delegates") {
 			var nd int
 			if nd, err = flags.GetInt("num_delegates"); err != nil {
