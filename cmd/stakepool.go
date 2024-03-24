@@ -280,7 +280,19 @@ var spUnlock = &cobra.Command{
 			err          error
 		)
 
-		if flags.Changed("blobber_id") {
+		if flags.Changed("miner_id") {
+			if providerID, err = flags.GetString("miner_id"); err != nil {
+				log.Fatalf("invalid 'miner_id' flag: %v", err)
+			} else {
+				providerType = sdk.ProviderMiner
+			}
+		} else if flags.Changed("sharder_id") {
+			if providerID, err = flags.GetString("sharder_id"); err != nil {
+				log.Fatalf("invalid 'sharder_id' flag: %v", err)
+			} else {
+				providerType = sdk.ProviderSharder
+			}
+		} else if flags.Changed("blobber_id") {
 			if providerID, err = flags.GetString("blobber_id"); err != nil {
 				log.Fatalf("invalid 'blobber_id' flag: %v", err)
 			} else {
@@ -292,10 +304,14 @@ var spUnlock = &cobra.Command{
 			} else {
 				providerType = sdk.ProviderValidator
 			}
-		}
-
-		if providerType == 0 || providerID == "" {
-			log.Fatal("missing flag: one of 'blobber_id' or 'validator_id' is required")
+		} else if flags.Changed("authorizer_id") {
+			if providerID, err = flags.GetString("authorizer_id"); err != nil {
+				log.Fatalf("invalid 'authorizer_id' flag: %v", err)
+			} else {
+				providerType = sdk.ProviderAuthorizer
+			}
+		} else if providerType == 0 || providerID == "" {
+			log.Fatal("missing flag: one of 'miner_id', 'sharder_id', 'blobber_id', 'validator_id', 'authorizer_id' is required")
 		}
 
 		if flags.Changed("fee") {
