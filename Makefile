@@ -17,6 +17,8 @@ default: help
 
 #GO BUILD SDK
 gomod-download:
+	go env
+	cat go.mod
 	go mod download
 	go mod tidy
 
