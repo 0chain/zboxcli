@@ -314,12 +314,12 @@ var resetBlobberStatsCmd = &cobra.Command{
 		var (
 			flags = cmd.Flags()
 
-			blobberID string
+			blobberID     string
 			prevAllocated int64
 			prevSavedData int64
-			newAllocated int64
-			newSavedData int64
-			err       error
+			newAllocated  int64
+			newSavedData  int64
+			err           error
 		)
 
 		if !flags.Changed("blobber_id") {
@@ -357,12 +357,12 @@ var resetBlobberStatsCmd = &cobra.Command{
 			log.Fatal("error in 'new_saved_data' flag: ", err)
 		}
 
-		resetBlobberStatsDto := &sdk.ResetBlobberStatsDto {
-			BlobberID: blobberID,
+		resetBlobberStatsDto := &sdk.ResetBlobberStatsDto{
+			BlobberID:     blobberID,
 			PrevAllocated: prevAllocated,
 			PrevSavedData: prevSavedData,
-			NewAllocated: 	newAllocated,
-			NewSavedData: newSavedData,
+			NewAllocated:  newAllocated,
+			NewSavedData:  newSavedData,
 		}
 		fmt.Println(*resetBlobberStatsDto)
 
