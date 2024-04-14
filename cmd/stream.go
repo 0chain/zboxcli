@@ -114,7 +114,6 @@ func init() {
 	streamCmd.PersistentFlags().String("allocation", "", "Allocation ID")
 	streamCmd.PersistentFlags().String("remotepath", "", "Remote path to upload")
 	streamCmd.PersistentFlags().String("localpath", "", "Local path of file to upload")
-	streamCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
 	streamCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
 	streamCmd.Flags().Bool("encrypt", false, "(default false) pass this option to encrypt and upload the file")
 
