@@ -275,17 +275,24 @@ var blobberUpdateCmd = &cobra.Command{
 		}
 
 		if flags.Changed("not_available") {
-			var ia bool
-			if ia, err = flags.GetBool("not_available"); err != nil {
+			var na bool
+			if na, err = flags.GetBool("not_available"); err != nil {
 				log.Fatal(err)
 			}
-			updateBlobber.NotAvailable = &ia
+			if !na {
+				na = false
+			}
+			updateBlobber.NotAvailable = &na
 		}
 
 		if flags.Changed("is_restricted") {
 			var ia bool
+			// Check if the flag is set to true
 			if ia, err = flags.GetBool("is_restricted"); err != nil {
 				log.Fatal(err)
+			}
+			if !ia {
+				ia = false
 			}
 			updateBlobber.IsRestricted = &ia
 		}
@@ -314,12 +321,12 @@ var resetBlobberStatsCmd = &cobra.Command{
 		var (
 			flags = cmd.Flags()
 
-			blobberID string
+			blobberID     string
 			prevAllocated int64
 			prevSavedData int64
-			newAllocated int64
-			newSavedData int64
-			err       error
+			newAllocated  int64
+			newSavedData  int64
+			err           error
 		)
 
 		if !flags.Changed("blobber_id") {
@@ -357,12 +364,12 @@ var resetBlobberStatsCmd = &cobra.Command{
 			log.Fatal("error in 'new_saved_data' flag: ", err)
 		}
 
-		resetBlobberStatsDto := &sdk.ResetBlobberStatsDto {
-			BlobberID: blobberID,
+		resetBlobberStatsDto := &sdk.ResetBlobberStatsDto{
+			BlobberID:     blobberID,
 			PrevAllocated: prevAllocated,
 			PrevSavedData: prevSavedData,
-			NewAllocated: 	newAllocated,
-			NewSavedData: newSavedData,
+			NewAllocated:  newAllocated,
+			NewSavedData:  newSavedData,
 		}
 		fmt.Println(*resetBlobberStatsDto)
 
