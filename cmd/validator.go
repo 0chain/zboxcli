@@ -40,9 +40,12 @@ var lsValidators = &cobra.Command{
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		doJSON, _ := cmd.Flags().GetBool("json")
+		stakable, err := cmd.Flags().GetBool("stakable")
+		if err != nil {
+			log.Fatalf("error parsing stakable flag: %v", err)
+		}
 
-		var list, err = sdk.GetValidators()
-
+		list, err := sdk.GetValidators(stakable)
 		if err != nil {
 			log.Fatalf("Failed to get storage SC configurations: %v", err)
 		}
@@ -193,4 +196,5 @@ func init() {
 	validatorUpdateCmd.MarkFlagRequired("validator_id")
 
 	lsValidators.Flags().Bool("json", false, "(default false) pass this flag to get response as json object")
+	lsValidators.Flags().Bool("stakable", false, "(default false) Gets only validators that can be staked if set to true")
 }
