@@ -183,6 +183,7 @@ var newallocationCmd = &cobra.Command{
 		}
 
 		thirdPartyExtendable, _ := flags.GetBool("third_party_extendable")
+		force, _ := flags.GetBool("force")
 
 		// Read the file options flags
 		var fileOptionParams sdk.FileOptionsParameters
@@ -254,6 +255,7 @@ var newallocationCmd = &cobra.Command{
 				BlobberAuthTickets:   blobber_auth_tickets,
 				FileOptionsParams:    &fileOptionParams,
 				ThirdPartyExtendable: thirdPartyExtendable,
+				Force:                force,
 			}
 			allocationID, _, _, err = sdk.CreateAllocationWith(options)
 			if err != nil {
@@ -271,7 +273,7 @@ var newallocationCmd = &cobra.Command{
 			}
 
 			allocationID, _, _, err = sdk.CreateAllocationForOwner(owner, ownerPublicKey, *datashards, *parityshards,
-				*size, readPrice, writePrice, lock, preferred_blobbers, blobber_auth_tickets, thirdPartyExtendable, &fileOptionParams)
+				*size, readPrice, writePrice, lock, preferred_blobbers, blobber_auth_tickets, thirdPartyExtendable, force, &fileOptionParams)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
@@ -342,6 +344,7 @@ func init() {
 	newallocationCmd.Flags().String("preferred_blobbers", "", "coma seperated list of preferred blobbers")
 	newallocationCmd.Flags().String("blobber_auth_tickets", "", "coma seperated list of blobber auth tickets")
 
+	newallocationCmd.Flags().Bool("force", false, "(default false) force to get blobbers even if required number of blobbers are not available (should be passed true in case of restricted blobbers)")
 	newallocationCmd.Flags().Bool("third_party_extendable", false, "(default false) specify if the allocation can be extended by users other than the owner")
 	newallocationCmd.Flags().Bool("forbid_upload", false, "(default false) specify if users cannot upload to this allocation")
 	newallocationCmd.Flags().Bool("forbid_delete", false, "(default false) specify if the users cannot delete objects from this allocation")
