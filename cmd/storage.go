@@ -66,13 +66,16 @@ var lsBlobers = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		doJSON, _ := cmd.Flags().GetBool("json")
 		doAll, _ := cmd.Flags().GetBool("all")
-
+		isStakable, err :=  cmd.Flags().GetBool("stakable")
+		if err != nil {
+			log.Fatalf("err parsing in stakable flag: %v", err)
+		}
 		// set is_active=true to get only active blobbers
 		isActive := true
 		if doAll {
 			isActive = false
 		}
-		var list, err = sdk.GetBlobbers(isActive)
+		list, err := sdk.GetBlobbers(isActive, isStakable)
 		if err != nil {
 			log.Fatalf("Failed to get storage SC configurations: %v", err)
 		}
@@ -275,17 +278,24 @@ var blobberUpdateCmd = &cobra.Command{
 		}
 
 		if flags.Changed("not_available") {
-			var ia bool
-			if ia, err = flags.GetBool("not_available"); err != nil {
+			var na bool
+			if na, err = flags.GetBool("not_available"); err != nil {
 				log.Fatal(err)
 			}
-			updateBlobber.NotAvailable = &ia
+			if !na {
+				na = false
+			}
+			updateBlobber.NotAvailable = &na
 		}
 
 		if flags.Changed("is_restricted") {
 			var ia bool
+			// Check if the flag is set to true
 			if ia, err = flags.GetBool("is_restricted"); err != nil {
 				log.Fatal(err)
+			}
+			if !ia {
+				ia = false
 			}
 			updateBlobber.IsRestricted = &ia
 		}
@@ -384,6 +394,7 @@ func init() {
 	scConfig.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
 	lsBlobers.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
 	lsBlobers.Flags().Bool("all", false, "(default false) shows active and non active list of blobbers on ls-blobbers")
+	lsBlobers.Flags().Bool("stakable", false, "(default false) gets only stakable list of blobbers if set to true")
 
 	blobberInfoCmd.Flags().String("blobber_id", "", "blobber ID, required")
 	blobberInfoCmd.Flags().Bool("json", false,
