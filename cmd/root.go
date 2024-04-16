@@ -115,6 +115,8 @@ func initConfig() {
 	clientWallet = loadWallet(configDir)
 	if cfg.ZauthServer != "" {
 		sys.SetAuthorize(zcncore.ZauthSignTxn(cfg.ZauthServer))
+		sys.AuthCommon = zcncore.ZauthAuthCommon(cfg.ZauthServer)
+		sys.SignWithAuth = zcncore.ZauthSignMsg(cfg.ZauthServer)
 		client.SetClient(clientWallet, cfg.SignatureScheme, getTxnFee())
 		if err := zcncore.SetWallet(*clientWallet, clientWallet.IsSplit); err != nil {
 			fmt.Println("Error setting wallet", err)
@@ -132,10 +134,6 @@ func initConfig() {
 		fmt.Println("Error initializing core SDK.", err)
 		os.Exit(1)
 	}
-
-	// Initialize sys functions for auth signing
-	sys.AuthCommon = zcncore.ZauthAuthCommon(cfg.ZauthServer)
-	sys.SignWithAuth = zcncore.ZauthSignMsg(cfg.ZauthServer)
 
 	//init the storage sdk with the known miners, sharders and client wallet info
 	if err = sdk.InitStorageSDK(
