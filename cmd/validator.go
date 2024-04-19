@@ -24,8 +24,6 @@ func printValidators(nodes []*sdk.Validator) {
 		fmt.Println("is shut down:     ", validator.IsShutdown)
 		fmt.Println("settings:")
 		fmt.Println("  delegate_wallet:", validator.DelegateWallet)
-		fmt.Println("  min_stake:      ", validator.MinStake)
-		fmt.Println("  max_stake:      ", validator.MaxStake)
 		fmt.Println("  total_stake:    ", validator.StakeTotal)
 		fmt.Println("  num_delegates:  ", validator.NumDelegates)
 		fmt.Println("  service_charge: ", validator.ServiceCharge*100, "%")
@@ -129,30 +127,7 @@ var validatorUpdateCmd = &cobra.Command{
 
 		updateValidator := new(sdk.UpdateValidator)
 		updateValidator.ID = common.Key(validatorID)
-		if flags.Changed("min_stake") {
-			var minStake float64
-			if minStake, err = flags.GetFloat64("min_stake"); err != nil {
-				log.Fatal(err)
-			}
-			stake, err := common.ToBalance(minStake)
-			if err != nil {
-				log.Fatal(err)
-			}
-			updateValidator.MinStake = &stake
-		}
-
-		if flags.Changed("max_stake") {
-			var maxStake float64
-			if maxStake, err = flags.GetFloat64("max_stake"); err != nil {
-				log.Fatal(err)
-			}
-			stake, err := common.ToBalance(maxStake)
-			if err != nil {
-				log.Fatal(err)
-			}
-			updateValidator.MaxStake = &stake
-		}
-
+		
 		if flags.Changed("num_delegates") {
 			var nd int
 			if nd, err = flags.GetInt("num_delegates"); err != nil {
@@ -189,8 +164,6 @@ func init() {
 
 	buf := validatorUpdateCmd.Flags()
 	buf.String("validator_id", "", "validator ID, required")
-	buf.Float64("min_stake", 0.0, "update min_stake, optional")
-	buf.Float64("max_stake", 0.0, "update max_stake, optional")
 	buf.Int("num_delegates", 0, "update num_delegates, optional")
 	buf.Float64("service_charge", 0.0, "update service_charge, optional")
 	validatorUpdateCmd.MarkFlagRequired("validator_id")

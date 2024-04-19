@@ -143,8 +143,6 @@ var blobberInfoCmd = &cobra.Command{
 		fmt.Println("  max_offer_duration:", blob.Terms.MaxOfferDuration)
 		fmt.Println("settings:")
 		fmt.Println("  delegate_wallet:", blob.StakePoolSettings.DelegateWallet)
-		fmt.Println("  min_stake:      ", blob.StakePoolSettings.MinStake)
-		fmt.Println("  max_stake:      ", blob.StakePoolSettings.MaxStake)
 		fmt.Println("  num_delegates:  ", blob.StakePoolSettings.NumDelegates)
 		fmt.Println("  service_charge: ", blob.StakePoolSettings.ServiceCharge*100, "%")
 	},
@@ -225,31 +223,6 @@ var blobberUpdateCmd = &cobra.Command{
 
 		stakePoolSettings := &blockchain.UpdateStakePoolSettings{}
 		var stakePoolSettingChanged bool
-		if flags.Changed("min_stake") {
-			var minStake float64
-			if minStake, err = flags.GetFloat64("min_stake"); err != nil {
-				log.Fatal(err)
-			}
-			stake, err := common.ToBalance(minStake)
-			if err != nil {
-				log.Fatal(err)
-			}
-			stakePoolSettings.MinStake = &stake
-			stakePoolSettingChanged = true
-		}
-
-		if flags.Changed("max_stake") {
-			var maxStake float64
-			if maxStake, err = flags.GetFloat64("max_stake"); err != nil {
-				log.Fatal(err)
-			}
-			stake, err := common.ToBalance(maxStake)
-			if err != nil {
-				log.Fatal(err)
-			}
-			stakePoolSettings.MaxStake = &stake
-			stakePoolSettingChanged = true
-		}
 
 		if flags.Changed("num_delegates") {
 			var nd int
@@ -407,8 +380,6 @@ func init() {
 	buf.Float64("read_price", 0.0, "update read_price, optional")
 	buf.Float64("write_price", 0.0, "update write_price, optional")
 	buf.Duration("max_offer_duration", 0*time.Second, "update max_offer_duration, optional")
-	buf.Float64("min_stake", 0.0, "update min_stake, optional")
-	buf.Float64("max_stake", 0.0, "update max_stake, optional")
 	buf.Int("num_delegates", 0, "update num_delegates, optional")
 	buf.Float64("service_charge", 0.0, "update service_charge, optional")
 	buf.Bool("not_available", true, "(default false) set blobber's availability for new allocations")
