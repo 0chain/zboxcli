@@ -17,6 +17,7 @@ zbox is a command line interface (CLI) tool to understand the capabilities of ZÃ
       - [Create new allocation](#create-new-allocation)
         - [Free storage allocation](#free-storage-allocation)
       - [Update allocation](#update-allocation)
+      - [Transfer allocation ownership](#transfer-allocation-ownership)
       - [Forbid Allocation](#forbid-allocation)
       - [Cancel allocation](#cancel-allocation)
       - [Finalise allocation](#finalise-allocation)
@@ -396,6 +397,27 @@ Output:
 
 ```
 Allocation updated with txId : fb84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
+```
+
+#### Transfer allocation ownership
+
+`transferallocation` transfers an allocation from one account to another.
+This operation needs to be run by the current owner of the allocation.
+
+| Parameter  | Required | Description   | Valid Values |
+| ---------- | -------- | ------------- | ------------ |
+| allocation | yes      | allocation id | string       |
+| new_owner  | yes      | new owner id  | string       |
+| new_owner_key  | yes      | new owner public key  | string       |
+
+```shell
+./zbox transferallocation --allocation d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac --new_owner e61b1d5f081c4dfa4d45c852ca8abbfcdc3023ed4ffe2402ba7e9b2ebc56b129 --new_owner_key 421d9f68e121884a02587c1d5aad0ca81a4df2358abe1acb0952efdd5a6afc0ed198ec897a848890bd36a74f3dfd178a1ed9dcd2fab969b6ed073f98d795759d
+```
+
+Output:
+
+```
+transferred ownership of allocation : d0939e912851959637257573b08c748474f0dd0ebbc8e191e4f6ad69e4fdc7ac to e61b1d5f081c4dfa4d45c852ca8abbfcdc3023ed4ffe2402ba7e9b2ebc56b129
 ```
 
 #### Forbid Allocation
