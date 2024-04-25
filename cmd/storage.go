@@ -66,7 +66,7 @@ var lsBlobers = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		doJSON, _ := cmd.Flags().GetBool("json")
 		doAll, _ := cmd.Flags().GetBool("all")
-		isStakable, err :=  cmd.Flags().GetBool("stakable")
+		isStakable, err := cmd.Flags().GetBool("stakable")
 		if err != nil {
 			log.Fatalf("err parsing in stakable flag: %v", err)
 		}
@@ -143,8 +143,8 @@ var blobberInfoCmd = &cobra.Command{
 		fmt.Println("  max_offer_duration:", blob.Terms.MaxOfferDuration)
 		fmt.Println("settings:")
 		fmt.Println("  delegate_wallet:", blob.StakePoolSettings.DelegateWallet)
-		fmt.Println("  min_stake:      ", blob.StakePoolSettings.MinStake)
-		fmt.Println("  max_stake:      ", blob.StakePoolSettings.MaxStake)
+		//fmt.Println("  min_stake:      ", blob.StakePoolSettings.MinStake)
+		//fmt.Println("  max_stake:      ", blob.StakePoolSettings.MaxStake)
 		fmt.Println("  num_delegates:  ", blob.StakePoolSettings.NumDelegates)
 		fmt.Println("  service_charge: ", blob.StakePoolSettings.ServiceCharge*100, "%")
 	},
@@ -225,32 +225,6 @@ var blobberUpdateCmd = &cobra.Command{
 
 		stakePoolSettings := &blockchain.UpdateStakePoolSettings{}
 		var stakePoolSettingChanged bool
-		if flags.Changed("min_stake") {
-			var minStake float64
-			if minStake, err = flags.GetFloat64("min_stake"); err != nil {
-				log.Fatal(err)
-			}
-			stake, err := common.ToBalance(minStake)
-			if err != nil {
-				log.Fatal(err)
-			}
-			stakePoolSettings.MinStake = &stake
-			stakePoolSettingChanged = true
-		}
-
-		if flags.Changed("max_stake") {
-			var maxStake float64
-			if maxStake, err = flags.GetFloat64("max_stake"); err != nil {
-				log.Fatal(err)
-			}
-			stake, err := common.ToBalance(maxStake)
-			if err != nil {
-				log.Fatal(err)
-			}
-			stakePoolSettings.MaxStake = &stake
-			stakePoolSettingChanged = true
-		}
-
 		if flags.Changed("num_delegates") {
 			var nd int
 			if nd, err = flags.GetInt("num_delegates"); err != nil {
