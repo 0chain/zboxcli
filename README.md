@@ -250,24 +250,27 @@ and `free_storage` parameters.
 | allocationFileName     | local file to store allocation information                              | allocation.txt | file path    |
 | cost                   | returns the cost of the allocation, no allocation created               |                | flag         |
 | data                   | number of data shards, effects upload and download speeds               | 2              | int          |
-| expire                 | duration to allocation expiration                                       | 720h           | duration     |
-| free_storage           | free storage marker file.                                               |                | file path    |
+| free_storage           | free storage marker file.                                               |                | file path to json marker file    |
 | owner                  | owner's id, use for funding an allocation for another                   |                | string       |
 | owner_public_key       | public key, use for funding an allocation for another                   |                | string       |
-| lock                   | lock write pool with given number of tokens                             |                | float        |
-| parity                 | number of parity shards, effects availability                           | 2              | int          |
+| lock\*                 | lock write pool with given number of tokens                             |                | float        |
+| parity                 | number of parity shards, effects availability  (has to be more than 1 and less than the number of available blobbers on the chain (upper capped to 30))                         | 2              | int          |
 | read_price             | filter blobbers by read price range                                     | 0-inf          | range        |
 | size                   | size of space reserved on blobbers                                      | 2147483648     | bytes        |
 | usd                    | give token value in USD                                                 |                | flag         |
 | write_price            | filter blobbers by write price range                                    | 0-inf          | range        |
-| false                  | bool                                                                    |
 | third_party_extendable | specify if the allocation can be extended by users other than the owner | false          | bool         |
-| forbid_upload          | specify if users cannot upload to this allocation                       | false          | bool         |
-| forbid_delete          | specify if the users cannot delete objects from this allocation         | false          | bool         |
-| forbid_update          | specify if the users cannot update objects in this allocation           | false          | bool         |
-| forbid_move            | specify if the users cannot move objects from this allocation           | false          | bool         |
-| forbid_copy            | specify if the users cannot copy object from this allocation            | false          | bool         |
-| forbid_rename          | specify if the users cannot rename objects in this allocation           | false          | bool         |
+| forbid_upload          | specify if users cannot upload to this allocation                       | on blank flag use :true ; else false          | bool         |
+| forbid_delete          | specify if the users cannot delete objects from this allocation         | on blank flag use :true ; else false          | bool         |
+| forbid_update          | specify if the users cannot update objects in this allocation           | on blank flag use :true ; else false          | bool         |
+| forbid_move            | specify if the users cannot move objects from this allocation           | on blank flag use :true ; else false          | bool         |
+| forbid_copy            | specify if the users cannot copy object from this allocation            | on blank flag use :true ; else false          | bool         |
+| forbid_rename          | specify if the users cannot rename objects in this allocation           | on blank flag use :true ; else false          | bool         |
+| blobber_auth_tickets   | comma separated list of blobber auth tickets                            |                | comma separated list of strings       |
+| force          | force to get blobbers even if required number of blobbers are not available (should be passed true in case of restricted blobbers)          | false          | bool         |
+| name          | allocation name           |            | string         |
+| preferred_blobbers          | comma separated list of preferred blobber ids           |           | comma separated list of strings        |
+`*` - only required if free_storage not set.
 
 <details>
   <summary>newallocation </summary>
@@ -352,25 +355,25 @@ Further we can add a blobber to the allocation,
 adding a blobber will allow a blobber to be removed.
 An increase in blobber count will increment the parity shards.
 
-| Parameter      | Required | Description                                                          | Valid Values |
-| -------------- | -------- | -------------------------------------------------------------------- | ------------ |
-| allocation     | yes      | allocation id                                                        | string       |
-| expiry         |          | adjust storage expiration time                                       | duration     |
-| free_storage   |          | free storage marker file                                             | string       |
-| lock           | yes\*    | lock additional tokens in write pool                                 | int          |
-| size           |          | adjust allocation size                                               | bytes        |
-| add_blobber    |          | add a new blobber to the allocation, required for remove_blobber     | string       |
-| remove_blobber |          | remove a blobber from the allocation, requires an add_blobber option | string2      |
-
+| Parameter      | Required | Description                                                          |   Default| Valid Values |
+| -------------- | -------- | -------------------------------------------------------------------- |          | ------------ |
+| allocation     | yes      | allocation id                                                        |          | string       |
+| name           |          | allocation name                                                      |          | string       |
+| extend         |          | adjust storage expiration time                                       |          | duration     |
+| free_storage   |          | free storage marker file                                             |          | string       |
+| lock           | yes\*    | lock additional tokens in write pool                                 |          | int          |
+| size           |          | adjust allocation size                                               |          | bytes        |
+| add_blobber    |          | add a new blobber to the allocation, required for remove_blobber     |          | string       |
+| add_blobber_auth_ticket    |          | Auth ticket of blobber to add to the allocation     |       | string       |
+| remove_blobber |          | remove a blobber from the allocation, requires an add_blobber option |        | string      |
+| third_party_extendable  |      | specify if the allocation can be extended by users other than the owner | false | bool
+| forbid_upload |         |specify if users cannot upload to this allocation |on blank flag use :true ; else false | bool
+| forbid_delete |         |specify if the users cannot delete objects from this allocation | on blank flag use :true ; else false | bool
+| forbid_update |         |specify if the users cannot update objects in this allocation |on blank flag use :true ; else false | bool
+| forbid_move   |         |specify if the users cannot move objects from this allocation |on blank flag use :true ; else false | bool
+| forbid_copy   |         |specify if the users cannot copy object from this allocation |on blank flag use :true ; else false | bool
+| forbid_rename |         |specify if the users cannot rename objects in this allocation |on blank flag use :true ; else false | bool
 `*` only required if free_storage not set.
-| third_party_extendable | specify if the allocation can be extended by users other than the owner | false | bool
-| forbid_upload | specify if users cannot upload to this allocation |false | bool
-| forbid_delete | specify if the users cannot delete objects from this allocation | false | bool
-| forbid_update | specify if the users cannot update objects in this allocation |false | bool
-| forbid_move | specify if the users cannot move objects from this allocation |false | bool
-| forbid_copy | specify if the users cannot copy object from this allocation |false | bool
-| forbid_rename | specify if the users cannot rename objects in this allocation |false | bool
-
 <details>
   <summary>updateallocation </summary>
 
@@ -509,8 +512,9 @@ Use `ls-blobbers` command to show active blobbers.
 
 | Parameter | Required | Description                          | Valid Values |
 | --------- | -------- | ------------------------------------ | ------------ |
-| all       | no       | shows active and non active blobbers | flag         |
-| json      | no       | display result in .json format       | flag         |
+| all       | no       | shows active and non active blobbers | bool         |
+| json      | no       | display result in .json format       | bool         |
+| stakable  | no       | gets only stakable list of blobbers if set to true     | bool         |
 
 <details>
   <summary>ls-blobbers</summary>
@@ -547,7 +551,7 @@ Use `bl-info` command to get detailed blobber information.
 
 | Parameter  | Required | Description                         | default | Valid values |
 | ---------- | -------- | ----------------------------------- | ------- | ------------ |
-| blobber id | yes      | blobber on which to get information |         | string       |
+| blobber_id | yes      | blobber on which to get information |         | string       |
 | json       | no       | print result in json format         | false   | boolean      |
 
 <details>
@@ -635,7 +639,9 @@ on the blockchain not the blobber.
 | read_price         | no       | update read price                         |         | float        |
 | service_charge     | no       | update service charge                     |         | float        |
 | write_price        | no       | update write price                        |         | float        |
-
+| url                | no       | update the url of the blobber             |         | string       |
+| is_restricted      | no       | update whether blobber is restricted             |   on blank flag use :true ; else false    | bool       |
+| not_available      | no       | set blobber's availability for new allocations                        |  on blank flag use :true ; else false        |    bool     |
 <details>
   <summary>bl-update</summary>
 
@@ -673,6 +679,12 @@ Command:
 ```
 ./zbox ls-validators
 ```
+
+| Parameter          | Required | Description
+| ------------------ | -------- | -----------------------------------------
+| --stakable     | no      | Gets only validators that can be staked if set to true
+| --json             | no | Print Response as json data
+
 Response :
 ```
 id:                b9f4f244e2e483548795e42dad0c5b5bb8f5c25d70cadeafc202ce6011b7ff8c
@@ -728,9 +740,7 @@ settings:
 
 | Parameter          | Required | Description
 | ------------------ | -------- | -----------------------------------------
-| --blobber_id       | yes      | Blobber Id to kill a specific blobber.Can be retrieved using [List blobbers](#list-blobbers).
-| --json             | optional | Print Response as json data
-| --help             | no       | Provide information about the command
+| --id       | yes      | Blobber Id to kill a specific blobber.Can be retrieved using [List blobbers](#list-blobbers).
 
  Sample Command :
 ```
@@ -749,9 +759,7 @@ killed blobber $BLOBBER_ID
 
 | Parameter          | Required | Description
 | ------------------ | -------- | -----------------------------------------
-| --validator_id     | yes      | Validator Id to kill a specific blobber.Can be retrieved using [List all Validators](#list-all-validators).
-| --json             | optional | Print Response as json data
-| --help             | no       | Provide information about the command
+| --id     | yes      | Validator Id to kill a specific blobber.Can be retrieved using [List all Validators](#list-all-validators).
 
 
 Sample Command :
