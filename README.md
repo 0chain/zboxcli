@@ -260,12 +260,12 @@ and `free_storage` parameters.
 | usd                    | give token value in USD                                                 |                | flag         |
 | write_price            | filter blobbers by write price range                                    | 0-inf          | range        |
 | third_party_extendable | specify if the allocation can be extended by users other than the owner | false          | bool         |
-| forbid_upload          | specify if users cannot upload to this allocation                       | on blank flag use :true ; else false          | bool         |
-| forbid_delete          | specify if the users cannot delete objects from this allocation         | on blank flag use :true ; else false          | bool         |
-| forbid_update          | specify if the users cannot update objects in this allocation           | on blank flag use :true ; else false          | bool         |
-| forbid_move            | specify if the users cannot move objects from this allocation           | on blank flag use :true ; else false          | bool         |
-| forbid_copy            | specify if the users cannot copy object from this allocation            | on blank flag use :true ; else false          | bool         |
-| forbid_rename          | specify if the users cannot rename objects in this allocation           | on blank flag use :true ; else false          | bool         |
+| forbid_upload          | specify if users cannot upload to this allocation                       |    false          | bool         |
+| forbid_delete          | specify if the users cannot delete objects from this allocation         |    false          | bool         |
+| forbid_update          | specify if the users cannot update objects in this allocation           |    false          | bool         |
+| forbid_move            | specify if the users cannot move objects from this allocation           |    false          | bool         |
+| forbid_copy            | specify if the users cannot copy object from this allocation            |    false          | bool         |
+| forbid_rename          | specify if the users cannot rename objects in this allocation           |    false          | bool         |
 | blobber_auth_tickets   | comma separated list of blobber auth tickets                            |                | comma separated list of strings       |
 | force          | force to get blobbers even if required number of blobbers are not available (should be passed true in case of restricted blobbers)          | false          | bool         |
 | name          | allocation name           |            | string         |
@@ -367,12 +367,12 @@ An increase in blobber count will increment the parity shards.
 | add_blobber_auth_ticket    |          | Auth ticket of blobber to add to the allocation     |       | string       |
 | remove_blobber |          | remove a blobber from the allocation, requires an add_blobber option |        | string      |
 | third_party_extendable  |      | specify if the allocation can be extended by users other than the owner | false | bool
-| forbid_upload |         |specify if users cannot upload to this allocation |on blank flag use :true ; else false | bool
-| forbid_delete |         |specify if the users cannot delete objects from this allocation | on blank flag use :true ; else false | bool
-| forbid_update |         |specify if the users cannot update objects in this allocation |on blank flag use :true ; else false | bool
-| forbid_move   |         |specify if the users cannot move objects from this allocation |on blank flag use :true ; else false | bool
-| forbid_copy   |         |specify if the users cannot copy object from this allocation |on blank flag use :true ; else false | bool
-| forbid_rename |         |specify if the users cannot rename objects in this allocation |on blank flag use :true ; else false | bool
+| forbid_upload |         |specify if users cannot upload to this allocation | false | bool
+| forbid_delete |         |specify if the users cannot delete objects from this allocation | false | bool
+| forbid_update |         |specify if the users cannot update objects in this allocation |   false | bool
+| forbid_move   |         |specify if the users cannot move objects from this allocation |   false | bool
+| forbid_copy   |         |specify if the users cannot copy object from this allocation |   false | bool
+| forbid_rename |         |specify if the users cannot rename objects in this allocation |   false | bool
 `*` only required if free_storage not set.
 <details>
   <summary>updateallocation </summary>
@@ -640,8 +640,8 @@ on the blockchain not the blobber.
 | service_charge     | no       | update service charge                     |         | float        |
 | write_price        | no       | update write price                        |         | float        |
 | url                | no       | update the url of the blobber             |         | string       |
-| is_restricted      | no       | update whether blobber is restricted             |   on blank flag use :true ; else false    | bool       |
-| not_available      | no       | set blobber's availability for new allocations                        |  on blank flag use :true ; else false        |    bool     |
+| is_restricted      | no       | update whether blobber is restricted             |      false    | bool       |
+| not_available      | no       | set blobber's availability for new allocations                        |     false        |    bool     |
 <details>
   <summary>bl-update</summary>
 
@@ -682,8 +682,8 @@ Command:
 
 | Parameter          | Required | Description
 | ------------------ | -------- | -----------------------------------------
-| --stakable     | no      | Gets only validators that can be staked if set to true
-| --json             | no | Print Response as json data
+| --stakable         | no       | Gets only validators that can be staked if set to true
+| --json             | no       | Print Response as json data
 
 Response :
 ```
@@ -713,7 +713,6 @@ settings:
 | ------------------ | -------- | -----------------------------------------
 | --validator_id     | yes      | id of validator whose configuration has to be fetched
 | --json             | optional | Print Response as json data
-| --help             | no       | Provide information about the command
 
 Sample Command :
 ```
@@ -789,8 +788,10 @@ The user must be the owner of the allocation.You can request the file be encrypt
 | web-streaming | no       | transcode file before upload to fragmented mp4          | false   | boolean      |
 | localpath     | yes      | local path of the file to upload                        |         | file path    |
 | remotepath    | yes      | remote path to upload file to, use to access file later |         | string       |
-| thumbnailpath | no       | local path of thumbnaSil                                |         | file path    |
+| thumbnailpath | no       | local path of thumbnail                                 |         | file path    |
 | chunknumber   | no       | how many chunks should be uploaded in a http request    | 1       | int          |
+| attr-who-pays-for-reads | no       | Who pays for reads: owner or 3rd_party        | owner   | owner / 3rd_party|
+| multiuploadjson | no     | A JSON file containing multiupload options    |        | file path          |
 
 <details>
   <summary>upload</summary>
@@ -862,6 +863,7 @@ The user must be the owner of the allocation.You can request the file be encrypt
 | thumbnailpath | no       | local path of thumbnaSil                                     |         | file path    |
 | chunknumber   | no       | how many chunks should be uploaded in a http request         | 1       | int          |
 | delay         | no       | set segment duration to seconds.                             | 5       | int          |
+| attr-who-pays-for-reads | no       | Who pays for reads: owner or 3rd_party         | owner   | owner / 3rd_party|
 
 <details>
   <summary>stream</summary>
@@ -891,7 +893,8 @@ The user must be the owner of the allocation.You can request the file be encrypt
 | feed            | no       | set remote live feed to url.                                          | false             | url                                                                                |
 | downloader-args | no       | pass args to youtube-dl to download video. default is \"-q -f best\". | -q -f best        | [youtube-dl](https://github.com/ytdl-org/youtube-dl/blob/master/README.md#options) |
 | ffmpeg-args     | no       | pass args to ffmpeg to build segments.                                | -loglevel warning | [ffmpeg](https://www.ffmpeg.org/ffmpeg.html)                                       |
-
+| attr-who-pays-for-reads | no       | Who pays for reads: owner or 3rd_party        | owner   | owner / 3rd_party|
+enum
 <details>
   <summary>feed</summary>
 
@@ -952,11 +955,13 @@ Use `download` command to download your own or a shared file.
 | endblock        | no       | download until specified block number                                                                   |         | int          |
 | localpath       | yes      | local path to which to download the file to                                                             |         | file path    |
 | remotepath      | yes      | remote path to which the file was uploaded                                                              |         | string       |
-| rx_pay          | no       | `authticket` must be valid, true = sender pays, false = allocation owner pays                           | false   | boolean      |
 | startblock      | no       | start download from specified block                                                                     |         | int          |
 | thumbail        | no       | only download the thumbnail                                                                             | false   | boolean      |
 | live            | no       | start m3u8 downloader,and automatically generate media playlist(m3u8) on --localpath                    | false   | boolean      |
 | delay           | no       | pass segment duration to generate media playlist(m3u8). only works with --live. default duration is 5s. | 5       | int          |
+| lookuphash      | no       | The remote lookuphash of the object retrieved from the list      |        | string          |
+| multidownloadjson      | no       | A JSON file containing multi download options      |        | string          |
+| verifydownload         | no       | pass this option to verify downloaded blocks      |   false    |  boolean           |
 
 <details>
   <summary>download</summary>
@@ -1044,14 +1049,6 @@ File successfully deleted (Can be verified using [list](https://github.com/0chai
 ![Alt text](documents/share_cli.png?raw=true 'Share')
 
 Use share command to generate an authtoken that provides authorization to the holder to the specified file on the remotepath.
-
-- --allocation string Allocation ID
-- --clientid string ClientID of the user to share with. Leave blank for public share
-- --encryptionpublickey string Encryption public key of the client you want to share with (from [getwallet](#Get-wallet) command )
-- --remotepath string Remote path to share
-- --expiration-seconds number The seconds after which the ticket will expire(defaults to number of seconds in 90 days
-  if option not provided)
-- --available-after Timelock for private file that makes the file available for download at certain time. 4 input formats are supported: +1h30m, +30, 1647858200 and 2022-03-21 10:21:38
 
 `auth ticket` can be used with [download](#download), and [list](#list),
 [meta](#get-metadata) and [get_download_cost](#download-cost), but only for files in
@@ -1295,7 +1292,9 @@ Only the allocation's owner can successfully run `sync`.
 | localchache | no       | local chache of remote snapshot. Used for comparsion with remote. After sync will be updated. |         | string       |
 | localpath   | yes      | local directory to which to sync                                                              |         | file path    |
 | uploadonly  | no       | only upload and update files                                                                  | false   | boolean      |
-| chunknumber | no       | how many chunks should be uploaded in a http request                                          | 1       | int          |
+| chunknumber | no       | how many chunks should be uploaded in a http request                                          |         | int          |
+| remotepath  | no       | Remote dir path from where it sync                                                            |   "/"   | string       |
+| verifydownload | no       | how many chunks should be uploaded in a http request                                       |  true   | boolean      |
 
 <details>
   <summary>sync</summary>
@@ -1393,6 +1392,7 @@ and challenges passed/failed/open/redeemed.
 | Parameter  | Required | Description                   | default | Valid values |
 | ---------- | -------- | ----------------------------- | ------- | ------------ |
 | allocation | yes      | allocation id                 |         | string       |
+| blocks-per-marker | no       | print response in json format | 10   | int      |
 | json       | no       | print response in json format | false   | boolean      |
 
 <details>
@@ -1744,9 +1744,10 @@ These rewards can be accessed using this `collect-reward` command.
 | Parameter     | Required | Description          | default | Valid values |
 | ------------- | -------- | -------------------- | ------- | ------------ |
 | provider_type | no       | blobber or validator | blobber | string       |
+| provider_id   | no       | id of blobber or validator |   | string       |
 
 ```bash
-./zbox colect-reward --provider_type blobber
+./zbox collect-reward --provider_type blobber
 ```
 
 #### Read pool info
@@ -1800,11 +1801,10 @@ Unlocked tokens get returned to the original wallet balance.
 
 #### Storage SC configurations
 
-Show storage SC configuration.
+Use `sc-config` to show storage SC configuration.
 
 | Parameter  | Required | Description                 | default | Valid values |
 | ---------- | -------- | --------------------------- | ------- | ------------ |
-| allocation | yes      | allocation id               |         | string       |
 | json       | no       | print result in json format | false   | boolean      |
 
 <details>
@@ -1814,8 +1814,12 @@ Show storage SC configuration.
 
 </details>
 
-```
+```sh
 ./zbox sc-config
+```
+
+```sh
+{"blobber_slash":"0.1","block_reward.block_reward":"0.0063","block_reward.gamma.a":"10","block_reward.gamma.alpha":"0.2","block_reward.gamma.b":"9","block_reward.qualifying_stake":"1","block_reward.zeta.i":"1","block_reward.zeta.k":"0.9","block_reward.zeta.mu":"0.2","cancellation_charge":"0.2","challenge_enabled":"true","challenge_generation_gap":"1","cost.add_blobber":"266","cost.add_free_storage_assigner":"124","cost.add_validator":"348","cost.blobber_health_check":"97","cost.cancel_allocation":"1163","cost.challenge_response":"728","cost.collect_reward":"181","cost.commit_connection":"743","cost.commit_settings_changes":"56","cost.finalize_allocation":"1091","cost.free_allocation_request":"2132","cost.generate_challenge":"600","cost.kill_blobber":"651","cost.kill_validator":"277","cost.new_allocation_request":"1919","cost.pay_blobber_block_rewards":"100","cost.read_pool_lock":"170","cost.read_pool_unlock":"104","cost.read_redeem":"664","cost.shutdown_blobber":"597","cost.shutdown_validator":"227","cost.stake_pool_lock":"187","cost.stake_pool_unlock":"119","cost.update_allocation_request":"2692","cost.update_blobber_settings":"338","cost.update_settings":"143","cost.update_validator_settings":"247","cost.write_pool_lock":"186","free_allocation_settings.data_shards":"4","free_allocation_settings.parity_shards":"2","free_allocation_settings.read_pool_fraction":"0","free_allocation_settings.read_price_range.max":"0","free_allocation_settings.read_price_range.min":"0","free_allocation_settings.size":"2147483648","free_allocation_settings.write_price_range.max":"0.025","free_allocation_settings.write_price_range.min":"0","health_check_period":"1h30m0s","max_blobber_select_for_challenge":"5","max_blobbers_per_allocation":"30","max_challenge_completion_rounds":"1200","max_charge":"0.5","max_delegates":"100","max_file_size":"549755813888","max_individual_free_allocation":"1","max_read_price":"0","max_stake":"2e+06","max_total_free_allocation":"1e+07","max_write_price":"0.025","min_alloc_size":"1073741824","min_blobber_capacity":"10737418240","min_stake":"1","min_stake_per_delegate":"10","min_write_price":"0.001","num_validators_rewarded":"10","owner_id":"1746b06bb09f55ee01b33b5e2e055d6cc7a900cb57c0a3a5eaabb8a0e7745802","readpool.min_lock":"0","stakepool.kill_slash":"0.5","stakepool.min_lock_period":"0s","time_unit":"8760h0m0s","validator_reward":"0.025","validators_per_challenge":"2","writepool.min_lock":"0.1"}
 ```
 
 #### Stake pool info
@@ -1824,8 +1828,13 @@ Use `sp-info` to get your stake pool information and settings.
 
 | Parameter  | Required | Description                 | default        | Valid values |
 | ---------- | -------- | --------------------------- | -------------- | ------------ |
-| blobber_id |          | id of blobber               | current client | string       |
+| blobber_id |          | id of blobber               |  | string       |
+| authorizer_id |          | id of authorizer               |  | string       |
+| miner_id |          | id of miner               |  | string       |
+| sharder_id |          | id of sharder               |  | string       |
+| validator_id |          | id of validator               |  | string       |
 | json       | no       | print result in json format | false          | boolean      |
+ \* - one of the above ids is required
 
 <details>
   <summary>sp-info</summary>
@@ -1837,6 +1846,21 @@ Use `sp-info` to get your stake pool information and settings.
 ```
 ./zbox sp-info --blobber_id <blobber_id>
 ```
+Sample Response : 
+
+```sh
+pool id:            1c9e629b3f6c2c402c5b2979ba4d618f8645de5c0152312e5b8bfff44466e56e
+balance:            0 SAS
+total stake:        0 SAS
+unclaimed rewards:  0 SAS
+total rewards:      0 SAS
+delegate_pools: no delegate pools
+settings:
+  delegate_wallet:   57da19ce71f8c28b21a2db84eb27cf91874d9ca5e04455d7ee364a757f4bf920
+  min_stake:         0 SAS
+  max_stake:         0 SAS
+  num_delegates:     1
+``` 
 
 #### Lock tokens into stake pool
 
@@ -1852,6 +1876,9 @@ to stake pool later.
 | ------------ | -------- | --------------- | ------- | ------------ |
 | blobber_id   |          | id of blobber   | n/a     | string       |
 | validator_id |          | id of validator | n/a     | string       |
+| miner_id     |          | id of miner     | n/a     | string       |
+| sharder_id   |          | id of blobber   | n/a     | string       |
+| authorizer_id|          | id of authorizer| n/a     | string       |
 | fee          | no       | transaction fee | 0       | float        |
 | tokens       | yes      | tokens to lock  |         | float        |
 
@@ -1885,6 +1912,9 @@ blobber allocation for any new allocations.
 | ------------ | -------- | --------------- | ------- | ------------ |
 | blobber_id   |          | id of blobber   | n/a     | string       |
 | validator_id |          | id of validator | n/a     | string       |
+| miner_id     |          | id of miner     | n/a     | string       |
+| sharder_id   |          | id of blobber   | n/a     | string       |
+| authorizer_id|          | id of authorizer| n/a     | string       |
 | fee          | no       | transaction fee | 0       | float        |
 
 <details>
@@ -1912,6 +1942,10 @@ Get information about all stake pools of current user.
 
 | Parameter | Required | Description                 | default | Valid values |
 | --------- | -------- | --------------------------- | ------- | ------------ |
+| all       | no       | get all the pools           | false   | boolean      |
+| client_id | no       | client_id of the user |     | string      |
+| limit     | no       | limit the number of records returned | 20   | int      |
+| offset    | no       | skip the number of rows before beginning |     | int      |
 | json      | no       | print result in json format | false   | boolean      |
 
 <details>
@@ -1970,31 +2004,28 @@ allocation's owner on closing the allocation.
 
 | Parameter     | Required | Description                       | default | Valid values |
 | ------------- | -------- | --------------------------------- | ------- | ------------ |
-| allocation id | no       | allocation id                     |         | string       |
-| blobber       | no       | blobber id                        |         | string       |
-| duration      | yes      | duration for which to lock tokens |         | duration     |
+| allocation    | no       | allocation id                     |         | string       |
 | fee           | no       | transaction fee                   | 0       | float        |
 | tokens        | yes      | number of tokens to lock          |         | float        |
 
 <details>
-  <summary>rp-lock with a specific blobber</summary>
+  <summary>wp-lock with a specific blobber</summary>
 
 ```shell
-./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1 --blobber f65af5d64000c7cd2883f4910eb69086f9d6e6635c744e62afcfab58b938ee25
-```
+./zbox wp-lock --allocation <allocation_id> --tokens 1
 
 ![image](https://user-images.githubusercontent.com/6240686/123988183-b4c93c00-d9bf-11eb-825c-9a5849fedbbf.png)
 
 </details>
 
 <details>
-  <summary>rp-lock spread across all blobbers</summary>
+  <summary>wp-lock spread across all blobbers</summary>
 
 Tokens are spread between the blobber pools weighted by
 each blobber's Terms.ReadPrice.
 
 ```shell
-./zbox rp-lock --allocation <allocation_id> --duration 40m --tokens 1
+./zbox wp-lock --allocation <allocation_id> --tokens 1
 ```
 
 ![image](https://user-images.githubusercontent.com/6240686/123979735-e5f23e00-d9b8-11eb-8232-339a4a3374d0.png)
@@ -2012,17 +2043,18 @@ An expired write pool, associated with an allocation, can be locked until alloca
 
 | Parameter | Required | Description     | default | Valid values |
 | --------- | -------- | --------------- | ------- | ------------ |
+| allocation    | no       | allocation id                     |         | string       |
 | fee       | no       | transaction fee | 0       | float        |
 
 <details>
-  <summary>rp-unlock</summary>
+  <summary>wp-unlock</summary>
 
 ![image](https://user-images.githubusercontent.com/6240686/123980742-b09a2000-d9b9-11eb-8987-c18ff90ee705.png)
 
 </details>
 
 ```
-./zbox wp-unlock
+./zbox wp-unlock --allocation <allocation_id>
 ```
 
 #### Download cost
@@ -2034,6 +2066,7 @@ owner, collaborator, or using an auth ticket to determine the download cost of t
 | ---------- | -------- | ----------------------------------------- | ------- | ------------ |
 | allocation | yes      | allocation id                             |         | string       |
 | authticket | no       | auth ticket to use if not the owner       |         | string       |
+| blocks-per-marker | no       | blocks signed per Read Marker       |    10     | int       |
 | lookuphash | no       | hash of remote file, use with auth ticket |         | string       |
 | remotepath | no       | file of which to get stats, use if owner  |         | string       |
 
