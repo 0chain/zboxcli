@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path"
 	"runtime"
 	"strings"
 	"sync"
@@ -101,7 +102,7 @@ func startMultiUploadUpdate(allocationObj *sdk.Allocation, argsSlice []chunkedUp
 			return err
 		}
 
-		mimeType, err := zboxutil.GetFileContentType(fileReader)
+		mimeType, err := zboxutil.GetFileContentType(path.Ext(args.localPath), fileReader)
 		if err != nil {
 			return err
 		}
