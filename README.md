@@ -130,65 +130,67 @@ Usage:
   zbox [command]
 
 Available Commands:
-  add                Adds free storage assigner
-  alloc-cancel       Cancel an allocation
-  alloc-fini         Finalize an expired allocation
-  bl-info            Get blobber info
-  bl-update          Update blobber settings by its delegate_wallet owner
-  collect-reward     Collect accrued rewards for a stake pool.
-  completion         Generate the autocompletion script for the specified shell
-  copy               copy an object(file/folder) to another folder on blobbers
-  cp-info            Challenge pool information.
-  createdir          Create directory
-  decrypt            Decrypt text with passphrase
-  delete             delete file from blobbers
-  download           download file from blobbers
-  feed               download segment files from remote live feed, and upload
-  get-diff           Get difference of local and allocation root
-  get-download-cost  Get downloading cost
-  get-mpt            Directly view blockchain data
-  get-upload-cost    Get uploading cost
-  getallocation      Gets the allocation info
-  getwallet          Get wallet information
-  help               Help about any command
-  kill-blobber       punitively deactivate a blobber
-  kill-validator     punitively deactivate a validator
-  list               list files from blobbers
-  list-all           list all files from blobbers
-  listallocations    List allocations for the client
-  ls-blobbers        Show active blobbers in storage SC.
-  ls-validators      Show active Validators.
-  meta               get meta data of files from blobbers
-  move               move an object(file/folder) to another folder on blobbers
-  newallocation      Creates a new allocation
-  recent-refs        get list of recently added refs
-  rename             rename an object(file/folder) on blobbers
-  rp-create          Create read pool if missing
-  rp-info            Read pool information.
-  rp-lock            Lock some tokens in read pool.
-  rp-unlock          Unlock some expired tokens in a read pool.
-  sc-config          Show storage SC configuration.
-  share              share files from blobbers
-  shutdown-blobber   deactivate a blobber
-  shutdown-validator deactivate a validator
-  sign-data          Sign given data
-  sp-info            Stake pool information.
-  sp-lock            Lock tokens lacking in stake pool.
-  sp-unlock          Unlock tokens in stake pool.
-  sp-user-info       Stake pool information for a user.
-  start-repair       start repair file to blobbers
-  stats              stats for file from blobbers
-  stream             capture video and audio streaming form local devices, and upload
-  sync               Sync files to/from blobbers
-  transferallocation Transfer an allocation from one account to another
-  update             update file to blobbers
-  updateallocation   Updates allocation's expiry and size
-  upload             upload file to blobbers
-  validator-info     Get validator info
-  validator-update   Update validator settings by its delegate_wallet owner
-  version            Prints version information
-  wp-lock            Lock some tokens in write pool.
-  wp-unlock          Unlock some expired tokens in a write pool.
+  add                 Adds free storage assigner
+  alloc-cancel        Cancel an allocation
+  alloc-fini          Finalize an expired allocation
+  bl-info             Get blobber info
+  bl-update           Update blobber settings by its delegate_wallet owner
+  collect-reward      Collect accrued rewards for a stake pool.
+  completion          Generate the autocompletion script for the specified shell
+  copy                copy an object(file/folder) to another folder on blobbers
+  cp-info             Challenge pool information.
+  createdir           Create directory
+  decrypt             Decrypt text with passphrase
+  delete              delete file from blobbers
+  download            download file from blobbers
+  feed                download segment files from remote live feed, and upload
+  get-diff            Get difference of local and allocation root
+  get-download-cost   Get downloading cost
+  get-mpt             Directly view blockchain data
+  get-upload-cost     Get uploading cost
+  getallocation       Gets the allocation info
+  getwallet           Get wallet information
+  help                Help about any command
+  kill-blobber        punitively deactivate a blobber
+  kill-validator      punitively deactivate a validator
+  list                list files from blobbers
+  list-all            list all files from blobbers
+  listallocations     List allocations for the client
+  ls-blobbers         Show active blobbers in storage SC.
+  ls-validators       Show active Validators.
+  meta                get meta data of files from blobbers
+  move                move an object(file/folder) to another folder on blobbers
+  newallocation       Creates a new allocation
+  recent-refs         get list of recently added refs
+  rename              rename an object(file/folder) on blobbers
+  reset-blobber-stats Reset blobber stats
+  rollback            rollback file to previous version
+  rp-create           Create read pool if missing
+  rp-info             Read pool information.
+  rp-lock             Lock some tokens in read pool.
+  rp-unlock           Unlock some expired tokens in a read pool.
+  sc-config           Show storage SC configuration.
+  share               share files from blobbers
+  shutdown-blobber    deactivate a blobber
+  shutdown-validator  deactivate a validator
+  sign-data           Sign given data
+  sp-info             Stake pool information.
+  sp-lock             Lock tokens lacking in stake pool.
+  sp-unlock           Unlock tokens in stake pool.
+  sp-user-info        Stake pool information for a user.
+  start-repair        start repair file to blobbers
+  stats               stats for file from blobbers
+  stream              capture video and audio streaming form local devices, and upload
+  sync                Sync files to/from blobbers
+  transferallocation  Transfer an allocation from one account to another
+  update              update file to blobbers
+  updateallocation    Updates allocation's expiry and size
+  upload              upload file to blobbers
+  validator-info      Get validator info
+  validator-update    Update validator settings by its delegate_wallet owner
+  version             Prints version information
+  wp-lock             Lock some tokens in write pool.
+  wp-unlock           Unlock some expired tokens in a write pool.
 
 Flags:
       --config string              config file (default is config.yaml)
@@ -196,11 +198,13 @@ Flags:
       --fee float                  transaction fee for the given transaction (if unset, it will be set to blockchain min fee)
   -h, --help                       help for zbox
       --network string             network file to overwrite the network details (if required, default is network.yaml)
-      --silent                     Do not show interactive sdk logs (shown by default)
+      --silent                     (default false) Do not show interactive sdk logs (shown by default)
       --wallet string              wallet file (default is wallet.json)
       --wallet_client_id string    wallet client_id
       --wallet_client_key string   wallet client_key
       --withNonce int              nonce that will be used in transaction (default is 0)
+
+Use "zbox [command] --help" for more information about a command.
 ```
 
 ### Global Flags
@@ -1384,7 +1388,7 @@ Response:
 
 Response will give details for current selected wallet (or wallet file specified by optional --wallet parameter)
 
-#### Get
+#### Get Allocation Information
 
 Use `getallocation` command to get the information about the allocation such as total size , used size, number of challenges
 and challenges passed/failed/open/redeemed.
@@ -1412,29 +1416,129 @@ Response:
 
 ```
 allocation:
-  id:              8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc
-  tx:              026c9d331e9c93aee4f3247507c20bdd4b7429bd81d27845bfab83f9c9c082e6 (latest create/update allocation transaction hash)
+  id:              2813684263f6a28de4d1301255bba21c6cf9429cc02286b56ef38db7b068d8f1
+  tx:              2813684263f6a28de4d1301255bba21c6cf9429cc02286b56ef38db7b068d8f1 (latest create/update allocation transaction hash)
   data_shards:     4
   parity_shards:   2
-  size:            6.0 GiB
-  expiration_date: 2021-05-24 00:27:23 +0700 +07
+  size:            2.0 GiB
+  expiration_date: 2024-05-27 15:42:23 +0200 EET
+  third_party_extendable:       false
+  file_options:      00111111
+  write pool       1.000 ZCN
   blobbers:
-    - blobber_id:       dea18e3f3c308666cb489877b9b2c7e2babf797d8b8c322fa9d074105787a9e9
-      base URL:         http://demo.zus.network:31304
-      size:             1.0 GiB
-      min_lock_demand:  0.0012333333
-      spent:            0.0000244839 (moved to challenge pool or to the blobber)
-      penalty:          0 (blobber stake slash)
-      read_reward:      0.000024414
-      returned:         0.0000000233 (on challenge failed)
-      challenge_reward: 0 (on challenge passed)
-      final_reward:     0 (if finalized)
+  min_lock_demand: 0 %
+    - blobber_id:       6f895dfc20b5e55df6b3084eeb69ad604eb232e5853cf054983d7495bdbc9ed7
+      base URL:         https://dev1.zus.network/blobber02/
+      size:             512.0 MiB
+      min_lock_demand:  0 SAS
+      spent:            0 SAS (moved to challenge pool or to the blobber)
+      penalty:          0 SAS (blobber stake slash)
+      read_reward:      0 SAS
+      returned:         0 SAS (on challenge failed)
+      challenge_reward: 0 SAS (on challenge passed)
+      final_reward:     0 SAS (if finalized)
       terms: (allocation related terms)
-        read_price:                0.0099999999 tok / GB (by 64KB chunks)
-        write_price:               0.0099999999 tok / GB
-        min_lock_demand:           10 %
-        max_offer_duration:        744h0m0s
-        challenge_completion_time: 2m0s
+        read_price:                0 SAS / GB (by 64KB chunks)
+        write_price:               10.000 mZCN / GB
+        min_lock_demand:           0 SAS %
+        max_offer_duration:        0s
+    - blobber_id:       98f14362f075caf467653044cf046eb9e8a5dfee88dc8b78cad1891748245003
+      base URL:         https://dev1.zus.network/blobber01/
+      size:             512.0 MiB
+      min_lock_demand:  0 SAS
+      spent:            0 SAS (moved to challenge pool or to the blobber)
+      penalty:          0 SAS (blobber stake slash)
+      read_reward:      0 SAS
+      returned:         0 SAS (on challenge failed)
+      challenge_reward: 0 SAS (on challenge passed)
+      final_reward:     0 SAS (if finalized)
+      terms: (allocation related terms)
+        read_price:                0 SAS / GB (by 64KB chunks)
+        write_price:               10.000 mZCN / GB
+        min_lock_demand:           0 SAS %
+        max_offer_duration:        0s
+    - blobber_id:       0e2fa9abc5a14231a1e7dc27b129480b732222e8e864d3b4e62d60a8b8ae617b
+      base URL:         https://dev2.zus.network/blobber02/
+      size:             512.0 MiB
+      min_lock_demand:  0 SAS
+      spent:            0 SAS (moved to challenge pool or to the blobber)
+      penalty:          0 SAS (blobber stake slash)
+      read_reward:      0 SAS
+      returned:         0 SAS (on challenge failed)
+      challenge_reward: 0 SAS (on challenge passed)
+      final_reward:     0 SAS (if finalized)
+      terms: (allocation related terms)
+        read_price:                0 SAS / GB (by 64KB chunks)
+        write_price:               10.000 mZCN / GB
+        min_lock_demand:           0 SAS %
+        max_offer_duration:        0s
+    - blobber_id:       06166f3dfd72a90cd0b51f4bd7520d4434552fc72880039b1ee1e8fe4b3cd7ea
+      base URL:         https://dev2.zus.network/blobber01/
+      size:             512.0 MiB
+      min_lock_demand:  0 SAS
+      spent:            0 SAS (moved to challenge pool or to the blobber)
+      penalty:          0 SAS (blobber stake slash)
+      read_reward:      0 SAS
+      returned:         0 SAS (on challenge failed)
+      challenge_reward: 0 SAS (on challenge passed)
+      final_reward:     0 SAS (if finalized)
+      terms: (allocation related terms)
+        read_price:                0 SAS / GB (by 64KB chunks)
+        write_price:               10.000 mZCN / GB
+        min_lock_demand:           0 SAS %
+        max_offer_duration:        0s
+    - blobber_id:       5c61f8d3e63528dfe45db89a598bd5c42c71b3994f7639d4647268ba75269d9a
+      base URL:         https://dev3.zus.network/blobber02/
+      size:             512.0 MiB
+      min_lock_demand:  0 SAS
+      spent:            0 SAS (moved to challenge pool or to the blobber)
+      penalty:          0 SAS (blobber stake slash)
+      read_reward:      0 SAS
+      returned:         0 SAS (on challenge failed)
+      challenge_reward: 0 SAS (on challenge passed)
+      final_reward:     0 SAS (if finalized)
+      terms: (allocation related terms)
+        read_price:                0 SAS / GB (by 64KB chunks)
+        write_price:               10.000 mZCN / GB
+        min_lock_demand:           0 SAS %
+        max_offer_duration:        0s
+    - blobber_id:       8d19a8fd7147279d1dfdadd7e3ceecaf91c63ad940dae78731e7a64b104441a6
+      base URL:         https://dev3.zus.network/blobber01/
+      size:             512.0 MiB
+      min_lock_demand:  0 SAS
+      spent:            0 SAS (moved to challenge pool or to the blobber)
+      penalty:          0 SAS (blobber stake slash)
+      read_reward:      0 SAS
+      returned:         0 SAS (on challenge failed)
+      challenge_reward: 0 SAS (on challenge passed)
+      final_reward:     0 SAS (if finalized)
+      terms: (allocation related terms)
+        read_price:                0 SAS / GB (by 64KB chunks)
+        write_price:               10.000 mZCN / GB
+        min_lock_demand:           0 SAS %
+        max_offer_duration:        0s
+  read_price_range:          0 SAS-0 SAS (requested)
+  write_price_range:         0 SAS-25.000 mZCN (requested)
+  challenge_completion_time: 0s (max)
+  start_time:                2024-04-27 15:42:23 +0200 EET
+  finalized:                 false
+  canceled:                  false
+  moved_to_challenge:        0 SAS
+  moved_back:                0 SAS
+  moved_to_validators:       0 SAS
+  stats:
+    total size:              2.0 GiB
+    used size:               0 B
+    number of writes:        0
+    total challenges:        0
+    passed challenges:       0
+    failed challenges:       0
+    open challenges:         0
+    last challenge redeemed: 
+  price:
+    time_unit:   720h0m0s
+    read_price:  0 SAS / GB (by 64KB)
+    write_price: 15.000 mZCN / GB / 720h0m0s
 ```
 
 #### Get metadata
@@ -1474,7 +1578,7 @@ Response:
   f    | 1.txt | /1.txt | 20dc798b04ebab3015817c85d22aea64a52305bad6f7449acd3828c8d70c76a3 |    4 | application/octet-stream | 03cfd743661f07975fa2f1220c5194cbaff48451
 ```
 
-**With authticket **
+**With authticket**
 
 ```
 ./zbox meta --lookuphash 20dc798b04ebab3015817c85d22aea64a52305bad6f7449acd3828c8d70c76a3 --authticket eyJjbGllbnRfaWQiOiJiNmRlNTYyYjU3YTBiNTkzZDA0ODA2MjRmNzlhNTVlZDQ2ZGJhNTQ0NDA0NTk1YmVlMDI3MzE0NGUwMTAzNGFlIiwib3duZXJfaWQiOiJiNmRlNTYyYjU3YTBiNTkzZDA0ODA2MjRmNzlhNTVlZDQ2ZGJhNTQ0NDA0NTk1YmVlMDI3MzE0NGUwMTAzNGFlIiwiYWxsb2NhdGlvbl9pZCI6Ijg2OTViOWU3Zjk4NmQ0YTQ0N2I2NGRlMDIwYmE4NmY1M2IzYjVlMmM0NDJhYmNlYjZjZDY1NzQyNzAyMDY3ZGMiLCJmaWxlX3BhdGhfaGFzaCI6IjIwZGM3OThiMDRlYmFiMzAxNTgxN2M4NWQyMmFlYTY0YTUyMzA1YmFkNmY3NDQ5YWNkMzgyOGM4ZDcwYzc2YTMiLCJmaWxlX25hbWUiOiIxLnR4dCIsInJlZmVyZW5jZV90eXBlIjoiZiIsImV4cGlyYXRpb24iOjE2MjY0MjA1NzQsInRpbWVzdGFtcCI6MTYxODY0NDU3NCwicmVfZW5jcnlwdGlvbl9rZXkiOiJ7XCJyMVwiOlwiOUpnci9aVDh6VnpyME1BcWFidlczdnhoWEZoVkdMSGpzcVZtVUQ1QTJEOD1cIixcInIyXCI6XCIrVEk2Z1pST3JCR3ZURG9BNFlicmNWNXpoSjJ4a0I4VU5SNTlRckwrNUhZPVwiLFwicjNcIjpcInhySjR3bENuMWhqK2Q3RXU5TXNJRzVhNnEzRXVzSlZ4a2N6YXN1K0VqQW89XCJ9Iiwic2lnbmF0dXJlIjoiZTk3NTYyOTAyODU4OTBhY2QwYTcyMzljNTFhZjc0YThmNjU2OTFjOTUwMzRjOWM0ZDJlMTFkMTQ0MTk0NmExYSJ9
@@ -1490,6 +1594,20 @@ TYPE | NAME  |                           LOOKUP HASH                            
 ```
 
 Response will be metadata for the given filepath/lookuphash (if using authTicket)
+
+**For a directory**
+
+```
+./zbox meta --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --remotepath /files
+```
+
+Response:
+
+```
+  TYPE | NAME  |  PATH  |                           LOOKUP HASH                             
+-------+-------+--------+-------------------------------------------------------------------
+  d    | files | /files | 9184e5f2634bd7b2cdaec97de9c3eb8f60192640d5e6f32bb3271f094ef7cc7a  
+```
 
 #### Rename
 
@@ -1560,7 +1678,7 @@ Response:
 
 #### Repair
 
-Use `start-repair` command to repair a file on dStorage.
+Use `start-repair` command to repair an allocation. Sometimes, your operations on the allocation files may not be successful on some blobbers (since the consensus of the operations is `data_shards + 1`) leading to incosistency of the allocation data on its hosting blobbers. In such cases, you can use the repair command to repair the allocation. The repair command will repair the allocation by downloading the files from the blobbers with the latest version and re-uploading them to the blobbers that failed before. The repair command will also update the allocation metadata on the blobbers. Only the owner of the allocation can repair the allocation.
 ![repair](https://user-images.githubusercontent.com/65766301/120052600-b364c680-c043-11eb-9bf2-038ab244fed6.png)
 \
 
@@ -1730,12 +1848,14 @@ Use `collect-reward` to transfer reward tokens from a stake pool in which you ha
 invested to your wallet.
 
 You earn rewards for:
+
 Blobbers
 
 - File space used by allocation owners and associates.
 - A min lock demand for each allocation.
 - Block rewards. Each block a reward gets paid out to blobber stakeholders in the form of a random lottery.
-  Validators
+
+Validators
 - Payment for validating blobber challenge responses.
 
 The stake pool keeps an account for all stakeholders to maintain accrued rewards.
@@ -1743,7 +1863,7 @@ These rewards can be accessed using this `collect-reward` command.
 
 | Parameter     | Required | Description          | default | Valid values |
 | ------------- | -------- | -------------------- | ------- | ------------ |
-| provider_type | no       | blobber or validator | blobber | string       |
+| provider_type | no       | blobber or validator | blobber | "blobber" \| "validator"     |
 | provider_id   | no       | id of blobber or validator |   | string       |
 
 ```bash
@@ -1849,17 +1969,25 @@ Use `sp-info` to get your stake pool information and settings.
 Sample Response : 
 
 ```sh
-pool id:            1c9e629b3f6c2c402c5b2979ba4d618f8645de5c0152312e5b8bfff44466e56e
-balance:            0 SAS
-total stake:        0 SAS
+pool id:            98f14362f075caf467653044cf046eb9e8a5dfee88dc8b78cad1891748245003
+balance:            12.000 ZCN
+total stake:        12.000 ZCN
 unclaimed rewards:  0 SAS
 total rewards:      0 SAS
-delegate_pools: no delegate pools
+delegate_pools:
+- id:                ba6ab426644f2b326b1da3dd426229fed19eed85387deaf72e05cb0fa4c5abbb
+  balance:           12.000 ZCN
+  delegate_id:       ba6ab426644f2b326b1da3dd426229fed19eed85387deaf72e05cb0fa4c5abbb
+  unclaimed reward:  0 SAS
+  total_reward:      0 SAS
+  total_penalty:     0 SAS
+  status:            active
+  round_created:     2074
+  unstake:           false
+  staked_at:         2024-04-27 16:29:47 +0200 EET
 settings:
-  delegate_wallet:   57da19ce71f8c28b21a2db84eb27cf91874d9ca5e04455d7ee364a757f4bf920
-  min_stake:         0 SAS
-  max_stake:         0 SAS
-  num_delegates:     1
+  delegate_wallet:   fdaa2b74e666a3f609ea714a649d44edd9c46ff468e094b797e1811c533d0b2b
+  num_delegates:     50
 ``` 
 
 #### Lock tokens into stake pool
@@ -1936,6 +2064,8 @@ To unstake validator tokens:
 ./zbox sp-unlock --validator_id <validator_id> --pool_id <pool_id>
 ```
 
+Same for the other providers.
+
 #### Stake pools info of user
 
 Get information about all stake pools of current user.
@@ -1957,6 +2087,22 @@ Get information about all stake pools of current user.
 
 ```
 ./zbox sp-user-info
+```
+
+Sample Response : 
+
+```
+- blobber_id:  98f14362f075caf467653044cf046eb9e8a5dfee88dc8b78cad1891748245003
+  - id:                ba6ab426644f2b326b1da3dd426229fed19eed85387deaf72e05cb0fa4c5abbb
+    balance:           12.000 ZCN
+    delegate_id:       ba6ab426644f2b326b1da3dd426229fed19eed85387deaf72e05cb0fa4c5abbb
+    unclaimed reward:        0 SAS
+    total rewards:           0 SAS
+    total penalty:           0 SAS
+    status:           active
+    round_created:    2074
+    unstake:          false
+    staked_at:        2024-04-27 16:29:47 +0200 EET
 ```
 
 #### Write pool info
@@ -1997,10 +2143,10 @@ All tokens will be divided between allocation blobbers depending on their write 
 - If the user does not have a pre-existing read pool, then the smart-contract
   creates one.
 
-Anyone can lock tokens with a write pool attached an allocation. These tokens can
+Anyone can lock tokens with a write pool attached to an allocation. These tokens can
 be used to pay for the allocation updates and min lock demand as needed. Any tokens
 moved into the challenge pool to underwrite blobbers' min lock demands return to the
-allocation's owner on closing the allocation.
+allocation's owner on closing the allocation either by cancelation or expiry.
 
 | Parameter     | Required | Description                       | default | Valid values |
 | ------------- | -------- | --------------------------------- | ------- | ------------ |
@@ -2013,6 +2159,7 @@ allocation's owner on closing the allocation.
 
 ```shell
 ./zbox wp-lock --allocation <allocation_id> --tokens 1
+```
 
 ![image](https://user-images.githubusercontent.com/6240686/123988183-b4c93c00-d9bf-11eb-825c-9a5849fedbbf.png)
 
@@ -2020,9 +2167,6 @@ allocation's owner on closing the allocation.
 
 <details>
   <summary>wp-lock spread across all blobbers</summary>
-
-Tokens are spread between the blobber pools weighted by
-each blobber's Terms.ReadPrice.
 
 ```shell
 ./zbox wp-lock --allocation <allocation_id> --tokens 1
@@ -2032,9 +2176,6 @@ each blobber's Terms.ReadPrice.
 
 </details>
 
-```
-./zbox wp-lock --allocation <allocation_id> --duration 40m --tokens 1
-```
 
 #### Unlock tokens from write pool
 
@@ -2076,6 +2217,7 @@ owner, collaborator, or using an auth ticket to determine the download cost of t
 ![image](https://user-images.githubusercontent.com/6240686/124497750-41ef0500-ddb3-11eb-99ea-115a4e234eda.png)
 
 </details>
+
 Command:
 ```
 ./zbox get-download-cost --allocation <allocation_id> --remotepath /path/file.ext
