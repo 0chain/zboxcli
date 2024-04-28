@@ -294,6 +294,7 @@ var resetBlobberStatsCmd = &cobra.Command{
 	Short: "Reset blobber stats",
 	Long:  `Reset blobber stats`,
 	Args:  cobra.MinimumNArgs(0),
+	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		var (
 			flags = cmd.Flags()

@@ -16,6 +16,7 @@ var streamCmd = &cobra.Command{
 	Short: "capture video and audio streaming form local devices, and upload",
 	Long:  "capture video and audio streaming form local devices, and upload",
 	Args:  cobra.MinimumNArgs(0),
+	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags()              // fflags is a *flag.FlagSet
 		if !fflags.Changed("allocation") { // check if the flag "path" is set

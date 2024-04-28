@@ -26,14 +26,16 @@ zbox is a command line interface (CLI) tool to understand the capabilities of ZÃ
       - [List all files](#list-all-files)
       - [List owner's allocations](#list-owners-allocations)
       - [Update blobber settings](#update-blobber-settings)
-    - [Update Validator Settings](#update-validator-settings)
+      - [Update Validator Settings](#update-validator-settings)
       - [List All Validators](#list-all-validators)
       - [Get Validator Configuration](#get-validator-configuration)
+      - [Shutdown Blobber](#shutdown-blobber)
+      - [Shutdown Validator](#shutdown-validator)
       - [Kill Blobber](#kill-blobber)
       - [Kill Validator](#kill-validator)
     - [Uploading and Managing files](#uploading-and-managing-files)
+      - [Create Directory](#create-directory)
       - [Upload](#upload)
-      - [Stream](#stream)
       - [Feed](#feed)
       - [Download](#download)
       - [Update](#update)
@@ -43,14 +45,13 @@ zbox is a command line interface (CLI) tool to understand the capabilities of ZÃ
       - [List](#list)
       - [Copy](#copy)
       - [Move](#move)
-      - [Sync](#sync)
-      - [Get differences](#get-differences)
       - [Get wallet](#get-wallet)
       - [Get](#get)
       - [Get metadata](#get-metadata)
       - [Rename](#rename)
       - [Stats](#stats)
       - [Repair](#repair)
+      - [Decrypt](#decrypt)
       - [Sign data](#sign-data)
       - [Streaming](#streaming)
         - [How it works:](#how-it-works)
@@ -130,7 +131,6 @@ Usage:
   zbox [command]
 
 Available Commands:
-  add                 Adds free storage assigner
   alloc-cancel        Cancel an allocation
   alloc-fini          Finalize an expired allocation
   bl-info             Get blobber info
@@ -144,9 +144,7 @@ Available Commands:
   delete              delete file from blobbers
   download            download file from blobbers
   feed                download segment files from remote live feed, and upload
-  get-diff            Get difference of local and allocation root
   get-download-cost   Get downloading cost
-  get-mpt             Directly view blockchain data
   get-upload-cost     Get uploading cost
   getallocation       Gets the allocation info
   getwallet           Get wallet information
@@ -161,10 +159,7 @@ Available Commands:
   meta                get meta data of files from blobbers
   move                move an object(file/folder) to another folder on blobbers
   newallocation       Creates a new allocation
-  recent-refs         get list of recently added refs
   rename              rename an object(file/folder) on blobbers
-  reset-blobber-stats Reset blobber stats
-  rollback            rollback file to previous version
   rp-create           Create read pool if missing
   rp-info             Read pool information.
   rp-lock             Lock some tokens in read pool.
@@ -180,7 +175,6 @@ Available Commands:
   sp-user-info        Stake pool information for a user.
   start-repair        start repair file to blobbers
   stats               stats for file from blobbers
-  stream              capture video and audio streaming form local devices, and upload
   sync                Sync files to/from blobbers
   transferallocation  Transfer an allocation from one account to another
   update              update file to blobbers
@@ -444,11 +438,11 @@ Here are the operations:
 
 Here is a sample command for --forbid_upload .Other parameters can be done the same way.
 
-```
+```sh
 ./zbox updateallocation --allocation $ALLOC --forbid_upload
 ```
 Sample Response :
-```
+```sh
 Allocation Updated with txID : b84185dae620bbba8386286726f1efcd20d2516bcf1a448215434d87be3b30d
 ```
 To test functionality try uploading file to allocation. You should get the following response :
@@ -478,8 +472,12 @@ Cancelling an allocation can only occur if the amount of failed challenges excee
 
 Example
 
-```
+```sh
 ./zbox alloc-cancel --allocation <allocation_id>
+```
+Sample Response : 
+```sh
+Allocation canceled with txId : 501df5a8e2a6b8ebced1d1e7dc4ed17f653012dd49834801b4413786ec031cd2
 ```
 
 #### Finalise allocation
@@ -507,8 +505,14 @@ An allocation can be finalised by the owner or one of the allocation blobbers.
 
 Example
 
-```
+```sh
 ./zbox alloc-fini --allocation <allocation_id>
+```
+
+Sample Response:
+
+```sh
+Allocation finalized with txId : 2a6c031ced1d1e7dc4ed17801b4413786ecd2501df5ab8ebf653012dd498348e
 ```
 #### List blobbers
 
@@ -600,8 +604,14 @@ settings:
 | ---------- | -------- | ---------------------------------------------- | ------- | ------------ |
 | allocation | yes      | allocation id, sender must be allocation owner |         | string       |
 
-```shell
+Sample Request : 
+```sh
 ./zbox list-all --allocation 4ebeb69feeaeb3cd308570321981d61beea55db65cbeba4ba3b75c173c0f141b
+```
+
+Sample Response : 
+```sh
+[{"size":0,"mimetype":"","actual_size":0,"hash":"","type":"d","encrypted_key":"","lookup_hash":"55e45925760e33f113642569a539e17a531285d2bf53dc78fde954017c8b27b3","created_at":1714335152,"updated_at":1714335152,"name":"abcd","path":"/abcd"}]
 ```
 
 #### List owner's allocations
@@ -657,20 +667,43 @@ Example
 
 Update blobber read price
 
-```
+```sh
 ./zbox bl-update --blobber_id 0ece681f6b00221c5567865b56040eaab23795a843ed629ce71fb340a5566ba3 --read_price 0.1
 ```
 
-Get Version
+#### Update validator settings
+
+Use `./zbox validator-update ` to update a validator's configuration settings. This updates the settings
+on the blockchain not the validator.
+
+| Parameter          | Required | Description                               | default | Valid values |
+| ------------------ | -------- | ----------------------------------------- | ------- | ------------ |
+| validator_id       | yes      | id of validator of which to update settings |         | string       |
+| max_stake          | no       | update maximum stake                      |         | float        |
+| min_stake          | no       | update minimum stake                      |         | float        |
+| num_delegates      | no       | update maximum number of delegates        |         | int          |
+| service_charge     | no       | update service charge                     |         | float        |
+<details>
+  <summary>validator-update</summary>
+
+Example
+
+Update validator service charge
+
+```sh
+./zbox validator-update --validator_id 0ece681f6b00221c5567865b56040eaab23795a843ed629ce71fb340a5566ba3 --service_charge 0.1
+```
+
+#### Get Version
 
 The version of Zbox and Gosdk can be fetched using the ./zbox version command.
 
-```
+```sh
 ./zbox version
 ```
 Sample Response:
 
-```
+```sh
 zbox....:  v1.4.3
 gosdk...:  v1.8.14
 ```
@@ -680,7 +713,7 @@ gosdk...:  v1.8.14
 List all active validators on the network
 
 Command:
-```
+```sh
 ./zbox ls-validators
 ```
 
@@ -690,7 +723,7 @@ Command:
 | --json             | no       | Print Response as json data
 
 Response :
-```
+```sh
 id:                b9f4f244e2e483548795e42dad0c5b5bb8f5c25d70cadeafc202ce6011b7ff8c
 url:               https://demo.zus.network/validator03/
 settings:
@@ -719,11 +752,11 @@ settings:
 | --json             | optional | Print Response as json data
 
 Sample Command :
-```
+```sh
 ./zbox validator-info --validator_id f82ab34a98406b8757f11513361752bab9cb679a5cb130b81
 ```
 Sample Response :
-```
+```sh
 id:                f82ab34a98406b8757f11513361752bab9cb679a5cb130b81a4e86cec50eefc3
 url:               https://demo2.zus.network/validator01
 last_health_check:  2023-05-12 20:09:15 +0530 IST
@@ -738,6 +771,45 @@ settings:
   num_delegates:   50
   service_charge:  10 %
 ```
+
+#### Shutdown Blobber
+`./zbox shutdown-blobber` command deactivates a blobber to avoid storage of data . Required parameters are :
+
+| Parameter          | Required | Description
+| ------------------ | -------- | -----------------------------------------
+| --id       | yes      | Blobber Id to kill a specific blobber.Can be retrieved using [List blobbers](#list-blobbers).
+| --fee       | no      | fee for transaction
+
+ Sample Command :
+```sh
+./zbox shutdown-blobber --id $BLOBBER_ID --wallet $CHAIN_OWNER_WALLET
+```
+Note : Shutdown Blobber command should be evoked from chain owner wallet only
+
+Sample Response :
+```sh
+shutdown blobber $BLOBBER_ID with txId : 2a6c031ced1d1e7dc4ed17801b4413786ecd2501df5ab8ebf653012dd498348e
+```
+
+#### Shutdown Validator
+`./zbox shutdown-validator` command deactivates a validator. Required parameters are :
+
+| Parameter          | Required | Description
+| ------------------ | -------- | -----------------------------------------
+| --id       | yes      | Validator Id to kill a specific validator.Can be retrieved using [List all Validators](#list-all-validators).
+| --fee       | no      | fee for transaction
+
+ Sample Command :
+```sh
+./zbox shutdown-validator --id $VALIDATOR_ID --wallet $CHAIN_OWNER_WALLET
+```
+Note : Shutdown Validator command should be evoked from chain owner wallet only
+
+Sample Response :
+```sh
+shutdown validator $VALIDATOR_ID with txId : 2a6c031ced1d1e7dc4ed17801b4413786ecd2501df5ab8ebf653012dd498348e
+```
+
 #### Kill Blobber
 `./zbox kill-blobber` command deactivates a blobber to avoid storage of data . Required parameters are :
 
@@ -766,14 +838,35 @@ killed blobber $BLOBBER_ID
 
 
 Sample Command :
-```
+```sh
 ./zbox kill-validator --id $VALIDATOR_ID --wallet $CHAIN_OWNER_WALLET
 ```
 Sample Response :
-```
+```sh
 killed validator, id: $VALIDATOR_ID
 ```
 ### Uploading and Managing files
+
+#### Create Directory
+
+Use `createdir` command to create a directory in the specified allocation
+
+The user must be the owner of the allocation.
+
+| Parameter     | Required | Description                                             | Default | Valid values |
+| ------------- | -------- | ------------------------------------------------------- | ------- | ------------ |
+| allocation    | yes      | allocation id, sender must be allocation owner          |         | string       |
+| dirname    | yes      |  path to directory          |         | string       |
+
+Sample Request : 
+```sh
+./zbox createdir --allocation {ALLOC_ID} --dirname /abcd/
+```
+
+Sample Response : 
+```sh
+/abcd/ directory created
+```
 
 #### Upload
 
@@ -851,30 +944,6 @@ Response:
 15691733 / 15691733 [=====================================================================================] 100.00% 32s
 Status completed callback. Type = video/fmp4. Name = raw.samplevideo.mp4
 ```
-
-#### Stream
-
-Use `stream` to capture video and audio streaming form local devices, and upload
-
-The user must be the owner of the allocation.You can request the file be encrypted before upload, and can send thumbnails with the file.
-
-| Parameter     | Required | Description                                                  | Default | Valid values |
-| ------------- | -------- | ------------------------------------------------------------ | ------- | ------------ |
-| allocation    | yes      | allocation id, sender must be allocation owner               |         | string       |
-| encrypt       | no       | encrypt file before upload                                   | false   | boolean      |
-| localpath     | yes      | local path of segment files to download, generate and upload |         | file path    |
-| remotepath    | yes      | remote path to upload file to, use to access file later      |         | string       |
-| thumbnailpath | no       | local path of thumbnaSil                                     |         | file path    |
-| chunknumber   | no       | how many chunks should be uploaded in a http request         | 1       | int          |
-| delay         | no       | set segment duration to seconds.                             | 5       | int          |
-| attr-who-pays-for-reads | no       | Who pays for reads: owner or 3rd_party         | owner   | owner / 3rd_party|
-
-<details>
-  <summary>stream</summary>
-
-![image](https://github.com/0chain/blobber/wiki/uml/usecase/live_upload_live.png)
-
-</details>
 
 #### Feed
 
@@ -1016,6 +1085,16 @@ can update a file. To add collaborators to an allocation, use
 ![image](https://user-images.githubusercontent.com/6240686/124354473-14b02480-dc04-11eb-9463-5a91d4f6f02d.png)
 
 </details>
+
+Sample Command : 
+```sh
+./zbox update --allocation {ALLOC_ID} --localpath ./zbox_commands.txt --remotepath /abcd/ --encrypt
+```
+
+Sample Response : 
+```sh
+Status completed callback. Type = application/octet-stream. Name = zbox_commands.txt
+```
 
 #### Delete
 
@@ -1281,86 +1360,6 @@ Response:
 ```
 /file.txt --destpath /existingFolder
 /file.txt moved
-```
-
-#### Sync
-
-`sync` command syncs all files from the local folder recursively to the remote.
-Only the allocation's owner can successfully run `sync`.
-
-| Parameter   | Required | Description                                                                                   | default | Valid values |
-| ----------- | -------- | --------------------------------------------------------------------------------------------- | ------- | ------------ |
-| allocation  | yes      | allocation id                                                                                 |         | string       |
-| encryptpath | no       | local directory path to be uploaded as encrypted                                              | false   | boolean      |
-| excludepath | no       | paths to exclude from sync                                                                    |         | string array |
-| localchache | no       | local chache of remote snapshot. Used for comparsion with remote. After sync will be updated. |         | string       |
-| localpath   | yes      | local directory to which to sync                                                              |         | file path    |
-| uploadonly  | no       | only upload and update files                                                                  | false   | boolean      |
-| chunknumber | no       | how many chunks should be uploaded in a http request                                          |         | int          |
-| remotepath  | no       | Remote dir path from where it sync                                                            |   "/"   | string       |
-| verifydownload | no       | how many chunks should be uploaded in a http request                                       |  true   | boolean      |
-
-<details>
-  <summary>sync</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/127884376-a95c4f27-4b2a-4d9b-91b6-c7e7919f88bc.png)
-
-</details>
-
-Example
-
-```
-./zbox sync --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --localpath /home/dung/Desktop/alloc --localcache /home/dung/Desktop/localcache.json
-```
-
-Response:
-
-```
-  OPERATION |      PATH
-+-----------+----------------+
-  Download  | /1.txt
-  Download  | /afolder/1.txt
-  Download  | /d2.txt
-
- 4 / 4 [===========================================================================] 100.00% 0s
-Status completed callback. Type = application/octet-stream. Name = 1.txt
- 4 / 4 [===========================================================================] 100.00% 0s
-Status completed callback. Type = application/octet-stream. Name = 1.txt
- 7 / 7 [===========================================================================] 100.00% 0s
-Status completed callback. Type = application/octet-stream. Name = d2.txt
-
-Sync Complete
-Local cache saved.
-```
-
-It will sync your localpath with the remote and do all the required CRUD operations.
-
-#### Get differences
-
-`./zbox get-diff` command returns the differences between the local files specified by `localpath` and the files stored
-on the root remotepath of the allocation.`localcache` flag can also be specified to use the local cache of remote snapshot created during [Sync](#sync) for file comparison.
-
-| Parameter   | Required | Description                                   | default | Valid values |
-| ----------- | -------- | --------------------------------------------- | ------- | ------------ |
-| allocation  | yes      | allocation id                                 |         | string       |
-| excludepath | no       | remote folder paths to exclude during syncing |         | string array |
-| localcache  | no       | local cache of remote snapshot                |         | string       |
-| localpath   | yes      | local directory to sync                       |         | string       |
-
-Example
-
-```
-./zbox get-diff --allocation $ALLOC --localpath $local
-```
-
-Response:
-
-```
-[{"operation":"Upload","path":"/file1.txt","type":"f","attributes":{}},
-{"operation":"Upload","path":"/file2.txt","type":"f","attributes":{}},
-{"operation":"Upload","path":"/file3.txt","type":"f","attributes":{}},
-{"operation":"Download","path":"/myfiles/file1.txt","type":"f","attributes":{}},
-{"operation":"Download","path":"/myfiles/file2.txt","type":"f","attributes":{}}]
 ```
 
 #### Get wallet
@@ -1707,6 +1706,19 @@ Response:
 Repair file completed, Total files repaired:  0
 ```
 
+#### Decrypt
+
+`decrypt` is used to decrypt data with a passphrase
+
+| Parameter | Required | Description    | default | Valid values |
+| --------- | -------- | -------------- | ------- | ------------ |
+| text      | yes      | string to decrypt |         | string       |
+| passphrase      | yes      | passphrase to use to decrypt |         | string       |
+
+```sh
+./zbox decrypt --text {encryted_data} --passphrase {passphrase}
+```
+
 #### Sign data
 
 `sign-data` uses the information from your wallet to sign the input data string
@@ -1715,7 +1727,7 @@ Repair file completed, Total files repaired:  0
 | --------- | -------- | -------------- | ------- | ------------ |
 | data      | yes      | string to sign |         | string       |
 
-```shell
+```sh
 ./zbox sign-data "data to sign"
 Signature : 9432ab2ee602062afaf48c4016b373a65db48a8546a81c09dead40e54966399e
 ```
@@ -1784,12 +1796,6 @@ Status completed callback. Type = audio/mpeg. Name = audio.mp3
 ```
 
 As we can see, the downloaded file size(393216) is less than the original(2996198), which means zbox has downloaded some blocks of the file.
-
-
-
-
-
-
 
 
 ### Lock and Unlock Tokens
@@ -2103,34 +2109,6 @@ Sample Response :
     round_created:    2074
     unstake:          false
     staked_at:        2024-04-27 16:29:47 +0200 EET
-```
-
-#### Write pool info
-
-Write pool information. Use allocation id to filter results to a singe allocation.
-
-| Parameter     | Required | Description                 | default | Valid values |
-| ------------- | -------- | --------------------------- | ------- | ------------ |
-| allocation id | no       | allocation id               |         | string       |
-| json          | no       | print result in json format | false   | boolean      |
-
-<details>
-  <summary>wp-info</summary>
-
-![image](https://user-images.githubusercontent.com/6240686/124603444-d9ab2c80-de61-11eb-82f2-900d540ba63f.png)
-
-</details>
-
-For all write pools.
-
-```
-./zbox wp-info
-```
-
-Filtering by allocation.
-
-```
-./zbox wp-info --allocation <allocation_id>
 ```
 
 #### Lock tokens into write pool
