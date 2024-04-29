@@ -669,6 +669,11 @@ Update blobber read price
 ./zbox bl-update --blobber_id 0ece681f6b00221c5567865b56040eaab23795a843ed629ce71fb340a5566ba3 --read_price 0.1
 ```
 
+Response : 
+```sh
+blobber settings updated successfully
+```
+
 #### Update validator settings
 
 Use `./zbox validator-update ` to update a validator's configuration settings. This updates the settings
