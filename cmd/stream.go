@@ -16,6 +16,7 @@ var streamCmd = &cobra.Command{
 	Short: "capture video and audio streaming form local devices, and upload",
 	Long:  "capture video and audio streaming form local devices, and upload",
 	Args:  cobra.MinimumNArgs(0),
+	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags()              // fflags is a *flag.FlagSet
 		if !fflags.Changed("allocation") { // check if the flag "path" is set
@@ -114,7 +115,6 @@ func init() {
 	streamCmd.PersistentFlags().String("allocation", "", "Allocation ID")
 	streamCmd.PersistentFlags().String("remotepath", "", "Remote path to upload")
 	streamCmd.PersistentFlags().String("localpath", "", "Local path of file to upload")
-	streamCmd.PersistentFlags().String("thumbnailpath", "", "Local thumbnail path of file to upload")
 	streamCmd.PersistentFlags().String("attr-who-pays-for-reads", "owner", "Who pays for reads: owner or 3rd_party")
 	streamCmd.Flags().Bool("encrypt", false, "(default false) pass this option to encrypt and upload the file")
 

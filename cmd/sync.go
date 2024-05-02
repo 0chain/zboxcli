@@ -152,6 +152,7 @@ var syncCmd = &cobra.Command{
 	Short: "Sync files to/from blobbers",
 	Long:  `Sync all files to/from blobbers from/to a localpath`,
 	Args:  cobra.MinimumNArgs(0),
+	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags() // fflags is a *flag.FlagSet
 		if fflags.Changed("localpath") == false {
@@ -333,6 +334,7 @@ var getDiffCmd = &cobra.Command{
 	Short: "Get difference of local and allocation root",
 	Long:  `Get difference of local and allocation root`,
 	Args:  cobra.MinimumNArgs(0),
+	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		fflags := cmd.Flags() // fflags is a *flag.FlagSet
