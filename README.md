@@ -781,13 +781,13 @@ settings:
 | Parameter          | Required | Description
 | ------------------ | -------- | -----------------------------------------
 | --id       | yes      | Blobber Id to kill a specific blobber.Can be retrieved using [List blobbers](#list-blobbers).
-| --fee       | no      | fee for transaction
+| --fee       | no      | Custom fee for transaction
 
  Sample Command :
 ```sh
 ./zbox shutdown-blobber --id $BLOBBER_ID --wallet $CHAIN_OWNER_WALLET
 ```
-Note : Shutdown Blobber command should be evoked from chain owner wallet only
+Note : Shutdown Blobber command should be invoked from chain owner wallet only
 
 Sample Response :
 ```sh
@@ -800,13 +800,13 @@ shutdown blobber $BLOBBER_ID with txId : 2a6c031ced1d1e7dc4ed17801b4413786ecd250
 | Parameter          | Required | Description
 | ------------------ | -------- | -----------------------------------------
 | --id       | yes      | Validator Id to kill a specific validator.Can be retrieved using [List all Validators](#list-all-validators).
-| --fee       | no      | fee for transaction
+| --fee       | no      | Custom fee for transaction
 
  Sample Command :
 ```sh
 ./zbox shutdown-validator --id $VALIDATOR_ID --wallet $CHAIN_OWNER_WALLET
 ```
-Note : Shutdown Validator command should be evoked from chain owner wallet only
+Note : Shutdown Validator command should be invoked from chain owner wallet only
 
 Sample Response :
 ```sh
@@ -1039,6 +1039,7 @@ Use `download` command to download your own or a shared file.
 | multidownloadjson      | no       | A JSON file containing multi download options      |        | string          |
 | verifydownload         | no       | pass this option to verify downloaded blocks      |   false    |  boolean           |
 
+
 <details>
   <summary>download</summary>
 
@@ -1046,11 +1047,19 @@ Use `download` command to download your own or a shared file.
 
 </details>
 
-Example
+Example (for owner)
 
 ```
 ./zbox download --allocation 3c0d32560ea18d9d0d76808216a9c634f661979d29ba59cc8dafccb3e5b95341 --remotepath /myfiles/horse.jpeg --localpath ../horse.jpeg
 ```
+
+Example (for non-owner) with authticket
+
+```
+./zbox download --allocation 3c0d32560ea18d9d0d76808216a9c634f661979d29ba59cc8dafccb3e5b95341 --authticket eyJjbGllbnRfaWQiOiIiLCJvd25lcl9pZCI6IiIsImFsbG9jYXRpb24iOiIzYzBkMzI1NjBlYTE4ZDlkMGQ3NjgwODIxNmE5YzYzNGY2NjE5NzlkMjliYTU5Y2M4ZGFjYmMzZTViOTUzNDEiLCJyZW1vdGVwYXRoIjoiL215ZmlsZXMvaG9yc2UuanBlZyIsImV4cG9ydCI6IjIwMjEtMDctMjFUMDk6MjA6MjAuMDAwWiJ9 --localpath ../horse.jpeg
+```
+If the authticket is for a directory, not a file, then you need to provide the lookup hash of the file you want to download. You can get the lookup hash from the [list](#list) command.
+
 
 Response:
 
@@ -1289,19 +1298,27 @@ contents.
 
 </details>
 
-Example
+Example (for owner)
 
 ```
 ./zbox list --allocation 8695b9e7f986d4a447b64de020ba86f53b3b5e2c442abceb6cd65742702067dc --remotepath /
 ```
 
-Response:
+Example (for non-owner with auth ticket)
 
 ```
-auth ticket :eyJjbGllbnRfaWQiOiJiNmRlNTYyYjU3YTBiNTkzZDA0ODA2MjRmNzlhNTVlZDQ2ZGJhNTQ0NDA0NTk1YmVlMDI3MzE0NGUwMTAzNGFlIiwib3duZXJfaWQiOiJiNmRlNTYyYjU3YTBiNTkzZDA0ODA2MjRmNzlhNTVlZDQ2ZGJhNTQ0NDA0NTk1YmVlMDI3MzE0NGUwMTAzNGFlIiwiYWxsb2NhdGlvbl9pZCI6Ijg2OTViOWU3Zjk4NmQ0YTQ0N2I2NGRlMDIwYmE4NmY1M2IzYjVlMmM0NDJhYmNlYjZjZDY1NzQyNzAyMDY3ZGMiLCJmaWxlX3BhdGhfaGFzaCI6IjIwZGM3OThiMDRlYmFiMzAxNTgxN2M4NWQyMmFlYTY0YTUyMzA1YmFkNmY3NDQ5YWNkMzgyOGM4ZDcwYzc2YTMiLCJmaWxlX25hbWUiOiIxLnR4dCIsInJlZmVyZW5jZV90eXBlIjoiZiIsImV4cGlyYXRpb24iOjE2MjY0MjA1NzQsInRpbWVzdGFtcCI6MTYxODY0NDU3NCwicmVfZW5jcnlwdGlvbl9rZXkiOiJ7XCJyMVwiOlwiOUpnci9aVDh6VnpyME1BcWFidlczdnhoWEZoVkdMSGpzcVZtVUQ1QTJEOD1cIixcInIyXCI6XCIrVEk2Z1pST3JCR3ZURG9BNFlicmNWNXpoSjJ4a0I4VU5SNTlRckwrNUhZPVwiLFwicjNcIjpcInhySjR3bENuMWhqK2Q3RXU5TXNJRzVhNnEzRXVzSlZ4a2N6YXN1K0VqQW89XCJ9Iiwic2lnbmF0dXJlIjoiZTk3NTYyOTAyODU4OTBhY2QwYTcyMzljNTFhZjc0YThmNjU2OTFjOTUwMzRjOWM0ZDJlMTFkMTQ0MTk0NmExYSJ9
+./zbox list --allocation 39c41dcc1f3fd5154e92e6285dd18ed869b72662198839a862d8f1fa627ec256 --authticket eyJjbGllbnRfaWQiOiIiLCJvd25lcl9pZCI6ImJhNmFiNDI2NjQ0ZjJiMzI2YjFkYTNkZDQyNjIyOWZlZDE5ZWVkODUzODdkZWFmNzJlMDVjYjBmYTRjNWFiYmIiLCJhbGxvY2F0aW9uX2lkIjoiMzljNDFkY2MxZjNmZDUxNTRlOTJlNjI4NWRkMThlZDg2OWI3MjY2MjE5ODgzOWE4NjJkOGYxZmE2MjdlYzI1NiIsImZpbGVfcGF0aF9oYXNoIjoiNDIzYjRhZTE0Y2YxZWNhMDViYzg1M2E0ZmJiMWVmZGU5ZWU4NzJkYmQxM2M0M2RmZjY4MmVlMTI3ZWU4ZjQ1NyIsImFjdHVhbF9maWxlX2hhc2giOiIiLCJmaWxlX25hbWUiOiJmaWxlcyIsInJlZmVyZW5jZV90eXBlIjoiZCIsImV4cGlyYXRpb24iOjAsInRpbWVzdGFtcCI6MTcxNDY0MTcxNiwiZW5jcnlwdGVkIjpmYWxzZSwic2lnbmF0dXJlIjoiMTNhNzk0YTNjZTczZDFmNjE2ZmY3Njc0MjNhNzBlMzZlNDMwZWYyYTA1MWQyOGViZjQ1YTkzMjIzNjliNTMwYyJ9
 ```
 
-Response will be a list with information for each file/folder in the given path. The information includes lookuphash which is require for download via authticket.
+Example Response:
+
+```
+  TYPE |  NAME  |     PATH      | SIZE | NUM BLOCKS | ACTUAL SIZE | ACTUAL NUM BLOCKS |                           LOOKUP HASH                            | IS ENCRYPTED  
+-------+--------+---------------+------+------------+-------------+-------------------+------------------------------------------------------------------+---------------
+  f    | one.js | /files/one.js |    5 |          1 |          19 |                 1 | 566669a0240db1ca5d48ab0e013f125faf3beb34f01ef065ffb31255d9e63f43 | NO            
+```
+
+Response will be a list with information for each file/folder in the given path. **The information includes lookuphash which is require for download via authticket**.
 
 #### Copy
 
@@ -1974,9 +1991,7 @@ To stake tokens for validators:
 
 #### Unlock tokens from stake pool
 
-Unlock a stake pool by pool owner. If the stake pool cannot be unlocked as
-it would leave insufficient funds for opened offers, then `sp-unlock` tags
-the stake pool to be unlocked later. This tag prevents the stake pool affecting
+Unlock a stake pool by pool owner. This tag prevents the stake pool affecting
 blobber allocation for any new allocations.
 
 | Parameter    | Required | Description     | default | Valid values |
