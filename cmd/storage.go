@@ -66,13 +66,16 @@ var lsBlobers = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		doJSON, _ := cmd.Flags().GetBool("json")
 		doAll, _ := cmd.Flags().GetBool("all")
-
+		isStakable, err := cmd.Flags().GetBool("stakable")
+		if err != nil {
+			log.Fatalf("err parsing in stakable flag: %v", err)
+		}
 		// set is_active=true to get only active blobbers
 		isActive := true
 		if doAll {
 			isActive = false
 		}
-		var list, err = sdk.GetBlobbers(isActive)
+		list, err := sdk.GetBlobbers(isActive, isStakable)
 		if err != nil {
 			log.Fatalf("Failed to get storage SC configurations: %v", err)
 		}
@@ -133,14 +136,15 @@ var blobberInfoCmd = &cobra.Command{
 		fmt.Println("capacity_used:    ", blob.Allocated)
 		fmt.Println("total_stake:      ", blob.TotalStake)
 		fmt.Println("not_available:     ", blob.NotAvailable)
+		fmt.Println("is_restricted:     ", blob.IsRestricted)
 		fmt.Println("terms:")
 		fmt.Println("  read_price:        ", blob.Terms.ReadPrice, "/ GB")
 		fmt.Println("  write_price:       ", blob.Terms.WritePrice, "/ GB")
 		fmt.Println("  max_offer_duration:", blob.Terms.MaxOfferDuration)
 		fmt.Println("settings:")
 		fmt.Println("  delegate_wallet:", blob.StakePoolSettings.DelegateWallet)
-		fmt.Println("  min_stake:      ", blob.StakePoolSettings.MinStake)
-		fmt.Println("  max_stake:      ", blob.StakePoolSettings.MaxStake)
+		//fmt.Println("  min_stake:      ", blob.StakePoolSettings.MinStake)
+		//fmt.Println("  max_stake:      ", blob.StakePoolSettings.MaxStake)
 		fmt.Println("  num_delegates:  ", blob.StakePoolSettings.NumDelegates)
 		fmt.Println("  service_charge: ", blob.StakePoolSettings.ServiceCharge*100, "%")
 	},
@@ -221,32 +225,6 @@ var blobberUpdateCmd = &cobra.Command{
 
 		stakePoolSettings := &blockchain.UpdateStakePoolSettings{}
 		var stakePoolSettingChanged bool
-		if flags.Changed("min_stake") {
-			var minStake float64
-			if minStake, err = flags.GetFloat64("min_stake"); err != nil {
-				log.Fatal(err)
-			}
-			stake, err := common.ToBalance(minStake)
-			if err != nil {
-				log.Fatal(err)
-			}
-			stakePoolSettings.MinStake = &stake
-			stakePoolSettingChanged = true
-		}
-
-		if flags.Changed("max_stake") {
-			var maxStake float64
-			if maxStake, err = flags.GetFloat64("max_stake"); err != nil {
-				log.Fatal(err)
-			}
-			stake, err := common.ToBalance(maxStake)
-			if err != nil {
-				log.Fatal(err)
-			}
-			stakePoolSettings.MaxStake = &stake
-			stakePoolSettingChanged = true
-		}
-
 		if flags.Changed("num_delegates") {
 			var nd int
 			if nd, err = flags.GetInt("num_delegates"); err != nil {
@@ -274,11 +252,26 @@ var blobberUpdateCmd = &cobra.Command{
 		}
 
 		if flags.Changed("not_available") {
-			var ia bool
-			if ia, err = flags.GetBool("not_available"); err != nil {
+			var na bool
+			if na, err = flags.GetBool("not_available"); err != nil {
 				log.Fatal(err)
 			}
-			updateBlobber.NotAvailable = &ia
+			if !na {
+				na = false
+			}
+			updateBlobber.NotAvailable = &na
+		}
+
+		if flags.Changed("is_restricted") {
+			var ia bool
+			// Check if the flag is set to true
+			if ia, err = flags.GetBool("is_restricted"); err != nil {
+				log.Fatal(err)
+			}
+			if !ia {
+				ia = false
+			}
+			updateBlobber.IsRestricted = &ia
 		}
 
 		if termsChanged {
@@ -301,16 +294,17 @@ var resetBlobberStatsCmd = &cobra.Command{
 	Short: "Reset blobber stats",
 	Long:  `Reset blobber stats`,
 	Args:  cobra.MinimumNArgs(0),
+	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		var (
 			flags = cmd.Flags()
 
-			blobberID string
+			blobberID     string
 			prevAllocated int64
 			prevSavedData int64
-			newAllocated int64
-			newSavedData int64
-			err       error
+			newAllocated  int64
+			newSavedData  int64
+			err           error
 		)
 
 		if !flags.Changed("blobber_id") {
@@ -348,12 +342,12 @@ var resetBlobberStatsCmd = &cobra.Command{
 			log.Fatal("error in 'new_saved_data' flag: ", err)
 		}
 
-		resetBlobberStatsDto := &sdk.ResetBlobberStatsDto {
-			BlobberID: blobberID,
+		resetBlobberStatsDto := &sdk.ResetBlobberStatsDto{
+			BlobberID:     blobberID,
 			PrevAllocated: prevAllocated,
 			PrevSavedData: prevSavedData,
-			NewAllocated: 	newAllocated,
-			NewSavedData: newSavedData,
+			NewAllocated:  newAllocated,
+			NewSavedData:  newSavedData,
 		}
 		fmt.Println(*resetBlobberStatsDto)
 
@@ -375,6 +369,7 @@ func init() {
 	scConfig.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
 	lsBlobers.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
 	lsBlobers.Flags().Bool("all", false, "(default false) shows active and non active list of blobbers on ls-blobbers")
+	lsBlobers.Flags().Bool("stakable", false, "(default false) gets only stakable list of blobbers if set to true")
 
 	blobberInfoCmd.Flags().String("blobber_id", "", "blobber ID, required")
 	blobberInfoCmd.Flags().Bool("json", false,
@@ -392,6 +387,7 @@ func init() {
 	buf.Int("num_delegates", 0, "update num_delegates, optional")
 	buf.Float64("service_charge", 0.0, "update service_charge, optional")
 	buf.Bool("not_available", true, "(default false) set blobber's availability for new allocations")
+	buf.Bool("is_restricted", true, "(default false) set is_restricted")
 	buf.String("url", "", "update the url of the blobber, optional")
 	blobberUpdateCmd.MarkFlagRequired("blobber_id")
 

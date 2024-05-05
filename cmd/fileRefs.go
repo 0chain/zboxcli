@@ -29,6 +29,7 @@ var fileRefsCmd = &cobra.Command{
 	Short: "get list of recently added refs",
 	Long:  `get list of recently added refs`,
 	Args:  cobra.MinimumNArgs(0),
+	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		page, err := cmd.Flags().GetUint("page")
 		checkError(err)
