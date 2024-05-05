@@ -43,5 +43,5 @@ jobs:
             0Chain GoSDK `${{ github.event.inputs.gosdk }}` is released.
             see full changelog on https://github.com/0chain/gosdk/releases/tag/${{ github.event.inputs.gosdk }}
           draft: false
-          reviewers: cnlangzi
+          reviewers: guruhubb
           labels: GoSDK
