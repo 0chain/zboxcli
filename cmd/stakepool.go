@@ -91,10 +91,16 @@ var spInfo = &cobra.Command{
 			} else {
 				providerType = sdk.ProviderValidator
 			}
+		} else if flags.Changed("authorizer_id") {
+			if providerID, err = flags.GetString("authorizer_id"); err != nil {
+				log.Fatalf("Error: cannot get the value of authorizer_id")
+			} else {
+				providerType = sdk.ProviderValidator
+			}
 		}
 
 		if providerType == 0 || providerID == "" {
-			log.Fatal("Error: missing flag: one of 'blobber_id' or 'validator_id' is required")
+			log.Fatal("Error: missing flag: one of 'blobber_id','validator_id' or authorizer_id is required")
 		}
 
 		var info *sdk.StakePoolInfo
@@ -292,10 +298,16 @@ var spUnlock = &cobra.Command{
 			} else {
 				providerType = sdk.ProviderValidator
 			}
+		} else if flags.Changed("authorizer_id") {
+			if providerID, err = flags.GetString("authorizer_id"); err != nil {
+				log.Fatalf("invalid 'authorizer_id' flag: %v", err)
+			} else {
+				providerType = sdk.ProviderValidator
+			}
 		}
 
 		if providerType == 0 || providerID == "" {
-			log.Fatal("missing flag: one of 'blobber_id' or 'validator_id' is required")
+			log.Fatal("missing flag: one of 'blobber_id','validator_id' or authorizer_id is required")
 		}
 
 		if flags.Changed("fee") {
