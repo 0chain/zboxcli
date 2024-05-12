@@ -95,7 +95,7 @@ var spInfo = &cobra.Command{
 			if providerID, err = flags.GetString("authorizer_id"); err != nil {
 				log.Fatalf("Error: cannot get the value of authorizer_id")
 			} else {
-				providerType = sdk.ProviderValidator
+				providerType = sdk.ProviderAuthorizer
 			}
 		}
 
@@ -302,7 +302,7 @@ var spUnlock = &cobra.Command{
 			if providerID, err = flags.GetString("authorizer_id"); err != nil {
 				log.Fatalf("invalid 'authorizer_id' flag: %v", err)
 			} else {
-				providerType = sdk.ProviderValidator
+				providerType = sdk.ProviderAuthorizer
 			}
 		}
 
