@@ -16,6 +16,7 @@ var getMptKeyCommand = &cobra.Command{
 	Short: "Directly view blockchain data",
 	Long:  `Directly view blockchain data from MPT key`,
 	Args:  cobra.MinimumNArgs(0),
+	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		if cmd.Flags().Changed("key") == false {
 			log.Fatal("Required Mpt key missing\n")

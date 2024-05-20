@@ -14,6 +14,7 @@ var rollbackCmd = &cobra.Command{
 	Short: "rollback file to previous version",
 	Long:  `rollback file to previous version`,
 	Args:  cobra.MinimumNArgs(0),
+	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags()
 		if !fflags.Changed("allocation") {

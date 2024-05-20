@@ -36,8 +36,8 @@ func printStakePoolInfo(info *sdk.StakePoolInfo) {
 	// settings
 	fmt.Println("settings:")
 	fmt.Println("  delegate_wallet:  ", info.Settings.DelegateWallet)
-	fmt.Println("  min_stake:        ", info.Settings.MinStake.String())
-	fmt.Println("  max_stake:        ", info.Settings.MaxStake.String())
+	//fmt.Println("  min_stake:        ", info.Settings.MinStake.String())
+	//fmt.Println("  max_stake:        ", info.Settings.MaxStake.String())
 	fmt.Println("  num_delegates:    ", info.Settings.NumDelegates)
 }
 

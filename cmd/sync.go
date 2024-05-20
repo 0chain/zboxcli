@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -101,7 +102,7 @@ func startMultiUploadUpdate(allocationObj *sdk.Allocation, argsSlice []chunkedUp
 			return err
 		}
 
-		mimeType, err := zboxutil.GetFileContentType(fileReader)
+		mimeType, err := zboxutil.GetFileContentType(path.Ext(args.localPath), fileReader)
 		if err != nil {
 			return err
 		}
@@ -147,10 +148,11 @@ func startMultiUploadUpdate(allocationObj *sdk.Allocation, argsSlice []chunkedUp
 
 // syncCmd represents sync command
 var syncCmd = &cobra.Command{
-	Use:   "sync",
-	Short: "Sync files to/from blobbers",
-	Long:  `Sync all files to/from blobbers from/to a localpath`,
-	Args:  cobra.MinimumNArgs(0),
+	Use:    "sync",
+	Short:  "Sync files to/from blobbers",
+	Long:   `Sync all files to/from blobbers from/to a localpath`,
+	Args:   cobra.MinimumNArgs(0),
+	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags() // fflags is a *flag.FlagSet
 		if fflags.Changed("localpath") == false {
@@ -324,10 +326,11 @@ var syncCmd = &cobra.Command{
 
 // The getUploadCostCmd returns value in tokens to upload a file.
 var getDiffCmd = &cobra.Command{
-	Use:   "get-diff",
-	Short: "Get difference of local and allocation root",
-	Long:  `Get difference of local and allocation root`,
-	Args:  cobra.MinimumNArgs(0),
+	Use:    "get-diff",
+	Short:  "Get difference of local and allocation root",
+	Long:   `Get difference of local and allocation root`,
+	Args:   cobra.MinimumNArgs(0),
+	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		fflags := cmd.Flags() // fflags is a *flag.FlagSet

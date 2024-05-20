@@ -23,6 +23,7 @@ var (
 	size                     *int64
 	allocationFileName       *string
 	preferred_blobbers       []string
+	blobber_auth_tickets     []string
 )
 
 func getPriceRange(val string) (pr sdk.PriceRange, err error) {
@@ -119,6 +120,17 @@ var newallocationCmd = &cobra.Command{
 			}
 		}
 
+		if flags.Changed("blobber_auth_tickets") {
+			b, err := flags.GetString("blobber_auth_tickets")
+			if err != nil {
+				log.Fatal("invalid read_price value: ", err)
+			}
+			blobber_auth_tickets = strings.Split(b, ",")
+			for i, id := range blobber_auth_tickets {
+				blobber_auth_tickets[i] = strings.TrimSpace(id)
+			}
+		}
+
 		if flags.Changed("read_price") {
 			rps, err := flags.GetString("read_price")
 			if err != nil {
@@ -171,6 +183,7 @@ var newallocationCmd = &cobra.Command{
 		}
 
 		thirdPartyExtendable, _ := flags.GetBool("third_party_extendable")
+		force, _ := flags.GetBool("force")
 
 		// Read the file options flags
 		var fileOptionParams sdk.FileOptionsParameters
@@ -230,17 +243,19 @@ var newallocationCmd = &cobra.Command{
 				ParityShards: *parityshards,
 				Size:         *size,
 				ReadPrice: sdk.PriceRange{
-					Min: uint64(readPrice.Min),
-					Max: uint64(readPrice.Max),
+					Min: readPrice.Min,
+					Max: readPrice.Max,
 				},
 				WritePrice: sdk.PriceRange{
-					Min: uint64(writePrice.Min),
-					Max: uint64(writePrice.Max),
+					Min: writePrice.Min,
+					Max: writePrice.Max,
 				},
 				Lock:                 uint64(lock),
 				BlobberIds:           preferred_blobbers,
+				BlobberAuthTickets:   blobber_auth_tickets,
 				FileOptionsParams:    &fileOptionParams,
 				ThirdPartyExtendable: thirdPartyExtendable,
+				Force:                force,
 			}
 			allocationID, _, _, err = sdk.CreateAllocationWith(options)
 			if err != nil {
@@ -258,7 +273,7 @@ var newallocationCmd = &cobra.Command{
 			}
 
 			allocationID, _, _, err = sdk.CreateAllocationForOwner(owner, ownerPublicKey, *datashards, *parityshards,
-				*size, readPrice, writePrice, lock, preferred_blobbers, thirdPartyExtendable, &fileOptionParams)
+				*size, readPrice, writePrice, lock, preferred_blobbers, blobber_auth_tickets, thirdPartyExtendable, force, &fileOptionParams)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
@@ -327,7 +342,9 @@ func init() {
 
 	newallocationCmd.Flags().String("name", "", "allocation name")
 	newallocationCmd.Flags().String("preferred_blobbers", "", "coma seperated list of preferred blobbers")
+	newallocationCmd.Flags().String("blobber_auth_tickets", "", "coma seperated list of blobber auth tickets")
 
+	newallocationCmd.Flags().Bool("force", false, "(default false) force to get blobbers even if required number of blobbers are not available (should be passed true in case of restricted blobbers)")
 	newallocationCmd.Flags().Bool("third_party_extendable", false, "(default false) specify if the allocation can be extended by users other than the owner")
 	newallocationCmd.Flags().Bool("forbid_upload", false, "(default false) specify if users cannot upload to this allocation")
 	newallocationCmd.Flags().Bool("forbid_delete", false, "(default false) specify if the users cannot delete objects from this allocation")

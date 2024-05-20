@@ -12,6 +12,7 @@ var addCmd = &cobra.Command{
 	Short: "Adds free storage assigner",
 	Long:  "Adds free storage assigner",
 	Args:  cobra.MinimumNArgs(0),
+	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		var err error
 		var flags = cmd.Flags()
