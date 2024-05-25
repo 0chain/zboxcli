@@ -10,6 +10,7 @@ import (
 
 	"github.com/0chain/errors"
 	"github.com/0chain/gosdk/constants"
+	"github.com/0chain/gosdk/core/imageutil"
 	"github.com/0chain/gosdk/zboxcore/logger"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zboxcore/zboxutil"
@@ -112,6 +113,27 @@ func startMultiUploadUpdate(allocationObj *sdk.Allocation, argsSlice []chunkedUp
 			return err
 		}
 
+		var buf []byte
+		finfo, err := os.Stat(args.localPath)
+		if err != nil {
+			return err
+		}
+		if finfo.Size() <= 500 * sdk.MB {
+			file, err := os.ReadFile(args.localPath)
+			if err != nil {
+				return err
+			}
+			buf, err = imageutil.Thumbnail(file, imageutil.DefWidth, imageutil.DefHeight)
+			if err != nil {
+				return err
+			}
+		} else {
+			buf, err = imageutil.Thumbnail([]byte{}, imageutil.DefWidth, imageutil.DefHeight)
+			if err != nil {
+				return err
+			}
+		}
+
 		fileMeta := sdk.FileMeta{
 			Path:       args.localPath,
 			ActualSize: fileInfo.Size(),
@@ -120,7 +142,7 @@ func startMultiUploadUpdate(allocationObj *sdk.Allocation, argsSlice []chunkedUp
 			RemotePath: remotePath,
 		}
 		options := []sdk.ChunkedUploadOption{
-			sdk.WithThumbnailFile(args.thumbnailPath),
+			sdk.WithThumbnail(buf),
 			sdk.WithEncrypt(args.encrypt),
 			sdk.WithStatusCallback(statusBar),
 			sdk.WithChunkNumber(args.chunkNumber),
@@ -260,7 +282,6 @@ var syncCmd = &cobra.Command{
 				encrypt := len(encryptpath) != 0 && strings.Contains(lPath, encryptpath)
 				argsSlice = append(argsSlice, chunkedUploadArgs{
 					localPath:     lPath,
-					thumbnailPath: "",
 					remotePath:    fileRemotePath,
 					encrypt:       encrypt,
 					chunkNumber:   syncChunkNumber,
@@ -271,7 +292,6 @@ var syncCmd = &cobra.Command{
 				encrypt := len(encryptpath) != 0 && strings.Contains(lPath, encryptpath)
 				argsSlice = append(argsSlice, chunkedUploadArgs{
 					localPath:     lPath,
-					thumbnailPath: "",
 					remotePath:    fileRemotePath,
 					encrypt:       encrypt,
 					chunkNumber:   syncChunkNumber,
