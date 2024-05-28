@@ -297,21 +297,19 @@ var resetBlobberStatsCmd = &cobra.Command{
 	Args:   cobra.MinimumNArgs(0),
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
-		var blobberIDs []string
+		var allocatedBlobberIds, savedDataBlobberIds, totalOffersBlobberIds []string
 		var prevAllocateds, newAllocateds []int64
 		var prevSavedDatas, newSavedDatas []int64
-		var prevTotalOfferss, newTotalOfferss []currency.Coin
+		var prevTotalOffers, newTotalOffers []currency.Coin
 		var (
 			flags = cmd.Flags()
 
-			blobberID       string
-			prevAllocated   int64
-			prevSavedData   int64
-			newAllocated    int64
-			newSavedData    int64
-			prevTotalOffers currency.Coin
-			newTotalOffers  currency.Coin
-			err             error
+			blobberID     string
+			prevAllocated int64
+			prevSavedData int64
+			newAllocated  int64
+			newSavedData  int64
+			err           error
 		)
 
 		if !flags.Changed("blobber_id") {
@@ -320,67 +318,66 @@ var resetBlobberStatsCmd = &cobra.Command{
 		if blobberID, err = flags.GetString("blobber_id"); err != nil {
 			log.Fatal("error in 'blobber_id' flag: ", err)
 		}
-		blobberIDs = append(blobberIDs, blobberID)
 
-		if flags.Changed("prev_allocated") {
+		if flags.Changed("prev_allocated") && flags.Changed("new_allocated") {
 			if prevAllocated, err = flags.GetInt64("prev_allocated"); err != nil {
 				log.Fatal(err)
 			}
 			prevAllocateds = append(prevAllocateds, prevAllocated)
-		}
 
-		if flags.Changed("prev_saved_data") {
-			if prevSavedData, err = flags.GetInt64("prev_saved_data"); err != nil {
-				log.Fatal(err)
-			}
-			prevSavedDatas = append(prevSavedDatas, prevSavedData)
-		}
-
-		if flags.Changed("new_allocated") {
 			if newAllocated, err = flags.GetInt64("new_allocated"); err != nil {
 				log.Fatal(err)
 			}
 			newAllocateds = append(newAllocateds, newAllocated)
+
+			allocatedBlobberIds = append(allocatedBlobberIds, blobberID)
 		}
 
-		if flags.Changed("new_saved_data") {
+		if flags.Changed("prev_saved_data") && flags.Changed("new_saved_data") {
+			if prevSavedData, err = flags.GetInt64("prev_saved_data"); err != nil {
+				log.Fatal(err)
+			}
+			prevSavedDatas = append(prevSavedDatas, prevSavedData)
+
 			if newSavedData, err = flags.GetInt64("new_saved_data"); err != nil {
 				log.Fatal(err)
 			}
 			newSavedDatas = append(newSavedDatas, newSavedData)
+
+			savedDataBlobberIds = append(savedDataBlobberIds, blobberID)
 		}
 
-		if flags.Changed("prev_total_offers") {
+		if flags.Changed("prev_total_offers") && flags.Changed("new_total_offers") {
 			var prevTotalOffersInt64 int64
 			if prevTotalOffersInt64, err = flags.GetInt64("prev_total_offers"); err != nil {
 				log.Fatal(err)
 			}
-			prevTotalOfferss = append(prevTotalOfferss, currency.Coin(prevTotalOffersInt64))
-		}
+			prevTotalOffers = append(prevTotalOffers, currency.Coin(prevTotalOffersInt64))
 
-		if flags.Changed("new_total_offers") {
 			var newTotalOffersInt64 int64
 			if newTotalOffersInt64, err = flags.GetInt64("new_total_offers"); err != nil {
 				log.Fatal(err)
 			}
-			newTotalOfferss = append(newTotalOfferss, currency.Coin(newTotalOffersInt64))
+			newTotalOffers = append(newTotalOffers, currency.Coin(newTotalOffersInt64))
+
+			totalOffersBlobberIds = append(totalOffersBlobberIds, blobberID)
 		}
 
 		resetBlobberStatsDto := &sdk.ResetBlobberStatsV2Dto{
 			AllocatedUpdates: sdk.BlobberAllocatedUpdates{
-				BlobberIds:    []string{blobberID},
-				PrevAllocated: []int64{prevAllocated},
-				NewAllocated:  []int64{newAllocated},
+				BlobberIds:    allocatedBlobberIds,
+				PrevAllocated: prevAllocateds,
+				NewAllocated:  newAllocateds,
 			},
 			SavedDataUpdates: sdk.BlobberSavedDataUpdates{
-				BlobberIds:    []string{blobberID},
-				PrevSavedData: []int64{prevSavedData},
-				NewSavedData:  []int64{newSavedData},
+				BlobberIds:    savedDataBlobberIds,
+				PrevSavedData: prevSavedDatas,
+				NewSavedData:  newSavedDatas,
 			},
 			TotalOffersUpdates: sdk.BlobberTotalOffersUpdates{
-				BlobberIds:      []string{blobberID},
-				PrevTotalOffers: []currency.Coin{currency.Coin(prevTotalOffers)},
-				NewTotalOffers:  []currency.Coin{currency.Coin(newTotalOffers)},
+				BlobberIds:      totalOffersBlobberIds,
+				PrevTotalOffers: prevTotalOffers,
+				NewTotalOffers:  newTotalOffers,
 			},
 		}
 		fmt.Println(*resetBlobberStatsDto)
