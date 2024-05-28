@@ -297,15 +297,21 @@ var resetBlobberStatsCmd = &cobra.Command{
 	Args:   cobra.MinimumNArgs(0),
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
+		var blobberIDs []string
+		var prevAllocateds, newAllocateds []int64
+		var prevSavedDatas, newSavedDatas []int64
+		var prevTotalOfferss, newTotalOfferss []currency.Coin
 		var (
 			flags = cmd.Flags()
 
-			blobberID     string
-			prevAllocated int64
-			prevSavedData int64
-			newAllocated  int64
-			newSavedData  int64
-			err           error
+			blobberID       string
+			prevAllocated   int64
+			prevSavedData   int64
+			newAllocated    int64
+			newSavedData    int64
+			prevTotalOffers currency.Coin
+			newTotalOffers  currency.Coin
+			err             error
 		)
 
 		if !flags.Changed("blobber_id") {
@@ -314,49 +320,50 @@ var resetBlobberStatsCmd = &cobra.Command{
 		if blobberID, err = flags.GetString("blobber_id"); err != nil {
 			log.Fatal("error in 'blobber_id' flag: ", err)
 		}
+		blobberIDs = append(blobberIDs, blobberID)
 
-		if !flags.Changed("prev_allocated") {
-			log.Fatal("missing required 'prev_allocated' flag")
-		}
-		if prevAllocated, err = flags.GetInt64("prev_allocated"); err != nil {
-			log.Fatal("error in 'prev_allocated' flag: ", err)
-		}
-
-		if !flags.Changed("prev_saved_data") {
-			log.Fatal("missing required 'prev_saved_data' flag")
-		}
-		if prevSavedData, err = flags.GetInt64("prev_saved_data"); err != nil {
-			log.Fatal("error in 'prev_saved_data' flag: ", err)
+		if flags.Changed("prev_allocated") {
+			if prevAllocated, err = flags.GetInt64("prev_allocated"); err != nil {
+				log.Fatal(err)
+			}
+			prevAllocateds = append(prevAllocateds, prevAllocated)
 		}
 
-		if !flags.Changed("new_allocated") {
-			log.Fatal("missing required 'new_allocated' flag")
-		}
-		if newAllocated, err = flags.GetInt64("new_allocated"); err != nil {
-			log.Fatal("error in 'new_allocated' flag: ", err)
-		}
-
-		if !flags.Changed("new_saved_data") {
-			log.Fatal("missing required 'new_saved_data' flag")
-		}
-		if newSavedData, err = flags.GetInt64("new_saved_data"); err != nil {
-			log.Fatal("error in 'new_saved_data' flag: ", err)
+		if flags.Changed("prev_saved_data") {
+			if prevSavedData, err = flags.GetInt64("prev_saved_data"); err != nil {
+				log.Fatal(err)
+			}
+			prevSavedDatas = append(prevSavedDatas, prevSavedData)
 		}
 
-		if !flags.Changed("prev_total_offers") {
-			log.Fatal("missing required 'prev_total_offers' flag")
-		}
-		prevTotalOffers, err := flags.GetInt64("prev_total_offers")
-		if err != nil {
-			log.Fatal("error in 'prev_total_offers' flag: ", err)
+		if flags.Changed("new_allocated") {
+			if newAllocated, err = flags.GetInt64("new_allocated"); err != nil {
+				log.Fatal(err)
+			}
+			newAllocateds = append(newAllocateds, newAllocated)
 		}
 
-		if !flags.Changed("new_total_offers") {
-			log.Fatal("missing required 'new_total_offers' flag")
+		if flags.Changed("new_saved_data") {
+			if newSavedData, err = flags.GetInt64("new_saved_data"); err != nil {
+				log.Fatal(err)
+			}
+			newSavedDatas = append(newSavedDatas, newSavedData)
 		}
-		newTotalOffers, err := flags.GetInt64("new_total_offers")
-		if err != nil {
-			log.Fatal("error in 'new_total_offers' flag: ", err)
+
+		if flags.Changed("prev_total_offers") {
+			var prevTotalOffersInt64 int64
+			if prevTotalOffersInt64, err = flags.GetInt64("prev_total_offers"); err != nil {
+				log.Fatal(err)
+			}
+			prevTotalOfferss = append(prevTotalOfferss, currency.Coin(prevTotalOffersInt64))
+		}
+
+		if flags.Changed("new_total_offers") {
+			var newTotalOffersInt64 int64
+			if newTotalOffersInt64, err = flags.GetInt64("new_total_offers"); err != nil {
+				log.Fatal(err)
+			}
+			newTotalOfferss = append(newTotalOfferss, currency.Coin(newTotalOffersInt64))
 		}
 
 		resetBlobberStatsDto := &sdk.ResetBlobberStatsV2Dto{
