@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/0chain/common/core/currency"
 	"log"
 	"time"
 
@@ -290,10 +291,10 @@ var blobberUpdateCmd = &cobra.Command{
 }
 
 var resetBlobberStatsCmd = &cobra.Command{
-	Use:   "reset-blobber-stats",
-	Short: "Reset blobber stats",
-	Long:  `Reset blobber stats`,
-	Args:  cobra.MinimumNArgs(0),
+	Use:    "reset-blobber-stats",
+	Short:  "Reset blobber stats",
+	Long:   `Reset blobber stats`,
+	Args:   cobra.MinimumNArgs(0),
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		var (
@@ -342,12 +343,38 @@ var resetBlobberStatsCmd = &cobra.Command{
 			log.Fatal("error in 'new_saved_data' flag: ", err)
 		}
 
-		resetBlobberStatsDto := &sdk.ResetBlobberStatsDto{
-			BlobberID:     blobberID,
-			PrevAllocated: prevAllocated,
-			PrevSavedData: prevSavedData,
-			NewAllocated:  newAllocated,
-			NewSavedData:  newSavedData,
+		if !flags.Changed("prev_total_offers") {
+			log.Fatal("missing required 'prev_total_offers' flag")
+		}
+		prevTotalOffers, err := flags.GetInt64("prev_total_offers")
+		if err != nil {
+			log.Fatal("error in 'prev_total_offers' flag: ", err)
+		}
+
+		if !flags.Changed("new_total_offers") {
+			log.Fatal("missing required 'new_total_offers' flag")
+		}
+		newTotalOffers, err := flags.GetInt64("new_total_offers")
+		if err != nil {
+			log.Fatal("error in 'new_total_offers' flag: ", err)
+		}
+
+		resetBlobberStatsDto := &sdk.ResetBlobberStatsV2Dto{
+			AllocatedUpdates: sdk.BlobberAllocatedUpdates{
+				BlobberIds:    []string{blobberID},
+				PrevAllocated: []int64{prevAllocated},
+				NewAllocated:  []int64{newAllocated},
+			},
+			SavedDataUpdates: sdk.BlobberSavedDataUpdates{
+				BlobberIds:    []string{blobberID},
+				PrevSavedData: []int64{prevSavedData},
+				NewSavedData:  []int64{newSavedData},
+			},
+			TotalOffersUpdates: sdk.BlobberTotalOffersUpdates{
+				BlobberIds:      []string{blobberID},
+				PrevTotalOffers: []currency.Coin{currency.Coin(prevTotalOffers)},
+				NewTotalOffers:  []currency.Coin{currency.Coin(newTotalOffers)},
+			},
 		}
 		fmt.Println(*resetBlobberStatsDto)
 
@@ -396,9 +423,7 @@ func init() {
 	resetBlobberStatsCmd.Flags().Int64("prev_saved_data", 0, "prev_saved_data is required")
 	resetBlobberStatsCmd.Flags().Int64("new_allocated", 0, "new_allocated is required")
 	resetBlobberStatsCmd.Flags().Int64("new_saved_data", 0, "new_saved_data is required")
+	resetBlobberStatsCmd.Flags().Int64("prev_total_offers", 0, "prev_total_offers is required")
+	resetBlobberStatsCmd.Flags().Int64("new_total_offers", 0, "new_total_offers is required")
 	resetBlobberStatsCmd.MarkFlagRequired("blobber_id")
-	resetBlobberStatsCmd.MarkFlagRequired("prev_allocated")
-	resetBlobberStatsCmd.MarkFlagRequired("prev_saved_data")
-	resetBlobberStatsCmd.MarkFlagRequired("new_allocated")
-	resetBlobberStatsCmd.MarkFlagRequired("new_saved_data")
 }

@@ -3,8 +3,9 @@ module github.com/0chain/zboxcli
 go 1.21
 
 require (
+	github.com/0chain/common v0.0.6-0.20230127095721-8df4d1d72565
 	github.com/0chain/errors v1.0.3
-	github.com/0chain/gosdk v1.14.0
+	github.com/0chain/gosdk v1.14.11-0.20240528152343-af815a9739a7
 	github.com/icza/bitio v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.6.0
@@ -13,7 +14,6 @@ require (
 )
 
 require (
-	github.com/0chain/common v0.0.6-0.20230127095721-8df4d1d72565 // indirect
 	github.com/Luzifer/go-openssl/v3 v3.1.0 // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/btcsuite/btcd v0.23.4 // indirect
@@ -33,7 +33,7 @@ require (
 	github.com/hashicorp/golang-lru/v2 v2.0.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/herumi/bls-go-binary v1.31.0 // indirect
-	github.com/hitenjain14/fasthttp v0.0.0-20240229173600-722723e15e17 // indirect
+	github.com/hitenjain14/fasthttp v0.0.0-20240527123209-06019e79bff9 // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/klauspost/compress v1.17.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.4 // indirect
