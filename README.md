@@ -1,15 +1,13 @@
 # zbox - a CLI for Züs dStorage
 
-zbox is a command line interface (CLI) tool to understand the capabilities of Züs dStorage and prototype your app. The utility is built using Züs [GoSDK](https://github.com/0chain/gosdk) .
+zbox is a command line interface (CLI) tool to understand the capabilities of Züs dStorage and prototype your app. The utility is built using Züs [GoSDK](https://github.com/0chain/gosdk). For more information on Züs Network and the system overview, refer to [docs.zus.network](https://docs.zus.network).
 
 ![Storage](https://user-images.githubusercontent.com/65766301/120052450-0ab66700-c043-11eb-91ab-1f7aa69e133a.png)
 
 - [zbox - a CLI for Züs dStorage](#zbox---a-cli-for-züs-dstorage)
-  - [Züs Overview](#züs-overview)
-  - [Installation Instructions](#installation-instructions)
-    - [Build Instructions for Linux Windows Mac](#build-instructions-for-linux-windows-mac)
-    - [Other Platform Builds](#other-platform-builds)
-    - [Use custom miner/sharder](#use-custom-minersharder)
+  - [Getting Started](#getting-started)
+    - [1. Installation](#1-installation)
+    - [2. Run `zbox` commands](#2-run-zbox-commands)
   - [Running zbox](#running-zbox)
     - [Global Flags](#global-flags)
   - [Commands](#commands)
@@ -71,58 +69,60 @@ zbox is a command line interface (CLI) tool to understand the capabilities of Z�
       - [Unlock tokens from write pool](#unlock-tokens-from-write-pool)
       - [Download cost](#download-cost)
       - [Upload cost](#upload-cost)
+  - [Config](#config)
+    - [~/.zcn/config.yaml](#zcnconfigyaml)
+    - [Override Network](#override-network)
   - [Troubleshooting](#troubleshooting)
 
-## Züs Overview
-[Züs](https://zus.network/) is a high-performance cloud on a fast blockchain offering privacy and configurable uptime. It is an alternative to traditional cloud S3 and has shown better performance on a test network due to its parallel data architecture. The technology uses erasure code to distribute the data between data and parity servers. Züs storage is configurable to provide flexibility for IT managers to design for desired security and uptime, and can design a hybrid or a multi-cloud architecture with a few clicks using [Blimp's](https://blimp.software/) workflow, and can change redundancy and providers on the fly.
+## Getting started
 
-For instance, the user can start with 10 data and 5 parity providers and select where they are located globally, and later decide to add a provider on-the-fly to increase resilience, performance, or switch to a lower cost provider.
+### 1. Installation
 
-Users can also add their own servers to the network to operate in a hybrid cloud architecture. Such flexibility allows the user to improve their regulatory, content distribution, and security requirements with a true multi-cloud architecture. Users can also construct a private cloud with all of their own servers rented across the globe to have a better content distribution, highly available network, higher performance, and lower cost.
+**Prerequisites**
 
-[The QoS protocol](https://medium.com/0chain/qos-protocol-weekly-debrief-april-12-2023-44524924381f) is time-based where the blockchain challenges a provider on a file that the provider must respond within a certain time based on its size to pass. This forces the provider to have a good server and data center performance to earn rewards and income.
+- Go: Installation instructions for Mac, Linux and Windows can be found [here](https://go.dev/doc/install).
 
-The [privacy protocol](https://zus.network/build) from Züs is unique where a user can easily share their encrypted data with their business partners, friends, and family through a proxy key sharing protocol, where the key is given to the providers, and they re-encrypt the data using the proxy key so that only the recipient can decrypt it with their private key.
+**Procedures**
 
-Züs has ecosystem apps to encourage traditional storage consumption such as [Blimp](https://blimp.software/), a S3 server and cloud migration platform, and [Vult](https://vult.network/), a personal cloud app to store encrypted data and share privately with friends and family, and [Chalk](https://chalk.software/), a high-performance story-telling storage solution for NFT artists.
+1. Clone the `zboxcli` repo and install
 
-Other apps are [Bolt](https://bolt.holdings/), a wallet that is very secure with air-gapped 2FA split-key protocol to prevent hacks from compromising your digital assets, and it enables you to stake and earn from the storage providers; [Atlus](https://atlus.cloud/), a blockchain explorer and [Chimney](https://demo.chimney.software/), which allows anyone to join the network and earn using their server or by just renting one, with no prior knowledge required.
-
-## Installation Instructions
-
-### [Build Instructions for Linux Windows Mac](https://github.com/0chain/zboxcli/wiki/Build-Instructions)
-
-### [Other Platform Builds](https://github.com/0chain/zboxcli/wiki/Alternative-Platform-Builds)
-
-### Use custom miner/sharder
-
-As mentioned in build guides, a ./zcn folder is created to store configuration files for zboxcli. Here is a sample network config file
-
-```
-  ---
-  block_worker: https://demo.zus.network/dns
-  signature_scheme: bls0chain
-  min_submit: 50 # in percentage
-  min_confirmation: 50 # in percentage
-  confirmation_chain_length: 3
+```sh
+git clone https://github.com/0chain/zboxcli.git
+cd zboxcli
+make install
 ```
 
-A blockWorker is used to connect to the network instead of giving network details directly, It will fetch the network details automatically from the blockWorker's network API. By default it will use the miner/sharder values which it will get using the `block_worker_url/network`. In case you want to override those values and give custom miner/sharder to use, You have to create a `network.yaml` in your ~/.zcn (config) folder and paste the miner/sharder values in below format.
+2. Add config yaml at `~/.zcn/config.yaml`
 
-```
-miners:
-  - http://localhost:7071
-  - http://localhost:7072
-  - http://localhost:7073
-sharders:
-  - http://localhost:7171
-```
+The following script sets `https://demo.zus.network` as your network.
 
-Note: This is helpful for the Mac OS users running local cluster and having trouble with docker internal IPs (block_worker return docker IPs in local)
+```sh
+cat > ~/.zcn/config.yaml << EOF
+block_worker: https://demo.zus.network/dns
+signature_scheme: bls0chain
+min_submit: 50 # in percentage
+min_confirmation: 50 # in percentage
+confirmation_chain_length: 3
+EOF
+```
+3. Run `zboxcli` to display the list of supported commands.
+
+```sh
+./zbox
+```
+----
+For machine requirements and pre-requisites, follow the guides below:
+
+- [How to build on Linux/Mac](https://github.com/0chain/zboxcli/wiki/Build-Instructions)
+- [How to build on other platforms](https://github.com/0chain/zboxcli/wiki/Alternative-Platform-Builds)
+
+### 2. Run `zbox` commands
+
+The following steps assume that your terminal's working directory is inside the `zboxcli` repo.
 
 ## Running zbox
 
-When you run the `./zbox` command in terminal with no arguments, it will list all the available commands and the global flags.For working of specific command check [commands](#commands) section.
+When you run the `./zbox` command in terminal with no arguments, it will list all the available commands and the global flags. For working of specific command check [commands](#commands) section.
 
 ```
 Usage:
@@ -2188,6 +2188,39 @@ Response:
 ```
  0.0000000028 tokens / 720h0m0s for 24 B of <remote_path_of_file>
 ```
+
+## Config
+
+### ~/.zcn/config.yaml
+
+`~/.zcn/config.yaml` is a required `zboxcli` config.
+
+| Field                       | Description                                                  | Value type |
+| --------------------------- | ------------------------------------------------------------ | ---------- |
+| `block_worker`              | The URL to chain network DNS that provides the lists of miners and sharders | string     |
+| `signature_scheme`          | The signature scheme used in the network. This would be `bls0chain` for most networks | string     |
+| `min_submit`                | The desired minimum success ratio (in percent) to meet when submitting transactions to miners | integer    |
+| `min_confirmation`          | The desired minimum success ratio (in percent) to meet when verifying transactions on sharders | integer    |
+| `confirmation_chain_length` | The desired chain length to meet when verifying transactions | integer    |
+
+### Override Network
+
+Network nodes are automatically discovered using the `block_worker` provided on [config file](https://github.com/0chain/zwalletcli/blob/staging/network/config.yaml).
+
+To override/limit the nodes used on `zbox`, create `~/.zcn/network.yaml` as shown below.
+
+```sh
+cat > ~/.zcn/network.yaml << EOF
+miners:
+  - http://demo1.zus.network:31201
+  - http://demo1.zus.network:31202
+  - http://demo1.zus.network:31203
+sharders:
+  - http://demo1.zus.network:31101
+EOF
+```
+
+Overriding the nodes can be useful in local chain setup. In some cases, the block worker might return URLs with IP/alias only accessible within the docker network.
 
 ## Troubleshooting
 
