@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/0chain/common/core/currency"
 	"log"
 	"time"
 
@@ -290,21 +291,19 @@ var blobberUpdateCmd = &cobra.Command{
 }
 
 var resetBlobberStatsCmd = &cobra.Command{
-	Use:   "reset-blobber-stats",
-	Short: "Reset blobber stats",
-	Long:  `Reset blobber stats`,
-	Args:  cobra.MinimumNArgs(0),
+	Use:    "reset-blobber-stats",
+	Short:  "Reset blobber stats",
+	Long:   `Reset blobber stats`,
+	Args:   cobra.MinimumNArgs(0),
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		var (
 			flags = cmd.Flags()
 
-			blobberID     string
-			prevAllocated int64
-			prevSavedData int64
-			newAllocated  int64
-			newSavedData  int64
-			err           error
+			blobberID       string
+			prevTotalOffers currency.Coin
+			newTotalOffers  currency.Coin
+			err             error
 		)
 
 		if !flags.Changed("blobber_id") {
@@ -314,40 +313,28 @@ var resetBlobberStatsCmd = &cobra.Command{
 			log.Fatal("error in 'blobber_id' flag: ", err)
 		}
 
-		if !flags.Changed("prev_allocated") {
-			log.Fatal("missing required 'prev_allocated' flag")
+		if !flags.Changed("prev_total_offers") {
+			log.Fatal("missing required 'prev_total_offers' flag")
 		}
-		if prevAllocated, err = flags.GetInt64("prev_allocated"); err != nil {
-			log.Fatal("error in 'prev_allocated' flag: ", err)
+		var prevTotalOffersInt int64
+		if prevTotalOffersInt, err = flags.GetInt64("prev_total_offers"); err != nil {
+			log.Fatal("error in 'prev_total_offers' flag: ", err)
 		}
+		prevTotalOffers = currency.Coin(prevTotalOffersInt)
 
-		if !flags.Changed("prev_saved_data") {
-			log.Fatal("missing required 'prev_saved_data' flag")
+		var newTotalOffersInt int64
+		if !flags.Changed("new_total_offers") {
+			log.Fatal("missing required 'new_total_offers' flag")
 		}
-		if prevSavedData, err = flags.GetInt64("prev_saved_data"); err != nil {
-			log.Fatal("error in 'prev_saved_data' flag: ", err)
+		if newTotalOffersInt, err = flags.GetInt64("new_total_offers"); err != nil {
+			log.Fatal("error in 'new_total_offers' flag: ", err)
 		}
-
-		if !flags.Changed("new_allocated") {
-			log.Fatal("missing required 'new_allocated' flag")
-		}
-		if newAllocated, err = flags.GetInt64("new_allocated"); err != nil {
-			log.Fatal("error in 'new_allocated' flag: ", err)
-		}
-
-		if !flags.Changed("new_saved_data") {
-			log.Fatal("missing required 'new_saved_data' flag")
-		}
-		if newSavedData, err = flags.GetInt64("new_saved_data"); err != nil {
-			log.Fatal("error in 'new_saved_data' flag: ", err)
-		}
+		newTotalOffers = currency.Coin(newTotalOffersInt)
 
 		resetBlobberStatsDto := &sdk.ResetBlobberStatsDto{
-			BlobberID:     blobberID,
-			PrevAllocated: prevAllocated,
-			PrevSavedData: prevSavedData,
-			NewAllocated:  newAllocated,
-			NewSavedData:  newSavedData,
+			BlobberID:       blobberID,
+			PrevTotalOffers: prevTotalOffers,
+			NewTotalOffers:  newTotalOffers,
 		}
 		fmt.Println(*resetBlobberStatsDto)
 
@@ -396,9 +383,7 @@ func init() {
 	resetBlobberStatsCmd.Flags().Int64("prev_saved_data", 0, "prev_saved_data is required")
 	resetBlobberStatsCmd.Flags().Int64("new_allocated", 0, "new_allocated is required")
 	resetBlobberStatsCmd.Flags().Int64("new_saved_data", 0, "new_saved_data is required")
+	resetBlobberStatsCmd.Flags().Int64("prev_total_offers", 0, "prev_total_offers is required")
+	resetBlobberStatsCmd.Flags().Int64("new_total_offers", 0, "new_total_offers is required")
 	resetBlobberStatsCmd.MarkFlagRequired("blobber_id")
-	resetBlobberStatsCmd.MarkFlagRequired("prev_allocated")
-	resetBlobberStatsCmd.MarkFlagRequired("prev_saved_data")
-	resetBlobberStatsCmd.MarkFlagRequired("new_allocated")
-	resetBlobberStatsCmd.MarkFlagRequired("new_saved_data")
 }
