@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"runtime"
+	"path/filepath"
 	"strings"
 	"sync"
 
@@ -148,10 +148,10 @@ func startMultiUploadUpdate(allocationObj *sdk.Allocation, argsSlice []chunkedUp
 
 // syncCmd represents sync command
 var syncCmd = &cobra.Command{
-	Use:   "sync",
-	Short: "Sync files to/from blobbers",
-	Long:  `Sync all files to/from blobbers from/to a localpath`,
-	Args:  cobra.MinimumNArgs(0),
+	Use:    "sync",
+	Short:  "Sync files to/from blobbers",
+	Long:   `Sync all files to/from blobbers from/to a localpath`,
+	Args:   cobra.MinimumNArgs(0),
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags() // fflags is a *flag.FlagSet
@@ -232,17 +232,13 @@ var syncCmd = &cobra.Command{
 		downloadSlice := make([]MultiDownloadOption, 0)
 		downloadStatusBars := make([]*StatusBar, 0)
 		for _, f := range lDiff {
-			operatingSys := runtime.GOOS
-			// Check the operating system and modify the path accordingly
-			if operatingSys == "windows" {
-				f.Path = strings.ReplaceAll(f.Path, "/", "\\")
-			}
 			localpath = strings.TrimRight(localpath, "/")
-			lPath := localpath + f.Path
+			lPath := filepath.Join(localpath, f.Path)
 			fileRemotePath, err := getFullRemotePath(f.Path, remotepath)
 			if err != nil {
 				return
 			}
+
 			switch f.Op {
 			case sdk.Download:
 				wg.Add(1)
@@ -330,10 +326,10 @@ var syncCmd = &cobra.Command{
 
 // The getUploadCostCmd returns value in tokens to upload a file.
 var getDiffCmd = &cobra.Command{
-	Use:   "get-diff",
-	Short: "Get difference of local and allocation root",
-	Long:  `Get difference of local and allocation root`,
-	Args:  cobra.MinimumNArgs(0),
+	Use:    "get-diff",
+	Short:  "Get difference of local and allocation root",
+	Long:   `Get difference of local and allocation root`,
+	Args:   cobra.MinimumNArgs(0),
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 
