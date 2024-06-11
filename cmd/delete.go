@@ -34,7 +34,7 @@ var deleteCmd = &cobra.Command{
 		}
 		remotePath := cmd.Flag("remotepath").Value.String()
 		skipCheck, _ := cmd.Flags().GetBool("skipcheck")
-		allocationObj.SetCheckStatus(!skipCheck)
+		allocationObj.SetCheckStatus(skipCheck)
 
 		err = allocationObj.DoMultiOperation([]sdk.OperationRequest{
 			{
