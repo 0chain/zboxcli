@@ -33,6 +33,8 @@ var deleteCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		remotePath := cmd.Flag("remotepath").Value.String()
+		skipCheck, _ := cmd.Flags().GetBool("skipcheck")
+		allocationObj.SetCheckStatus(skipCheck)
 
 		err = allocationObj.DoMultiOperation([]sdk.OperationRequest{
 			{
@@ -53,6 +55,7 @@ func init() {
 	rootCmd.AddCommand(deleteCmd)
 	deleteCmd.PersistentFlags().String("allocation", "", "Allocation ID")
 	deleteCmd.PersistentFlags().String("remotepath", "", "Remote path of the object to delete")
+	deleteCmd.PersistentFlags().Bool("skipcheck", false, "Skip the repair check")
 
 	deleteCmd.MarkFlagRequired("allocation")
 	deleteCmd.MarkFlagRequired("remotepath")
