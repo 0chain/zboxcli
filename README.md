@@ -686,8 +686,6 @@ on the blockchain not the validator.
 | min_stake          | no       | update minimum stake                      |         | float        |
 | num_delegates      | no       | update maximum number of delegates        |         | int          |
 | service_charge     | no       | update service charge                     |         | float        |
-<details>
-  <summary>validator-update</summary>
 
 Example
 
@@ -2221,19 +2219,3 @@ EOF
 ```
 
 Overriding the nodes can be useful in local chain setup. In some cases, the block worker might return URLs with IP/alias only accessible within the docker network.
-
-## Troubleshooting
-
-1. Both `rp-info` and `rp-lock` are not working.
-
-```
-./zbox rp-info
-```
-
-Response:
-
-```
-Failed to get read pool info: error requesting read pool info: consensus_failed: consensus failed on sharders
-```
-
-This can happen if read pool is not yet created for wallet. Read pool is usually created when new wallet is created by `zbox` or `zwallet`. However, if wallet is recovered through `zwallet recoverwallet`, read pool may not have been created. Simply run `zbox rp-create` to create a read pool.
