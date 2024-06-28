@@ -290,10 +290,10 @@ var blobberUpdateCmd = &cobra.Command{
 }
 
 var resetBlobberStatsCmd = &cobra.Command{
-	Use:   "reset-blobber-stats",
-	Short: "Reset blobber stats",
-	Long:  `Reset blobber stats`,
-	Args:  cobra.MinimumNArgs(0),
+	Use:    "reset-blobber-stats",
+	Short:  "Reset blobber stats",
+	Long:   `Reset blobber stats`,
+	Args:   cobra.MinimumNArgs(0),
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		var (
@@ -356,6 +356,37 @@ var resetBlobberStatsCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 		fmt.Println("reset blobber stats successfully")
+	},
+}
+
+var fixValidatorUrl = &cobra.Command{
+	Use:   "fix-validator-url",
+	Short: "Fix validator url",
+	Long:  `Fix validator url`,
+	Args:  cobra.MinimumNArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		var (
+			validatorRequest = &sdk.FixValidatorRequest{}
+			validatorID      string
+
+			err error
+
+			flags = cmd.Flags()
+		)
+
+		if !flags.Changed("validator_id") {
+			log.Fatal("missing required 'validator_id' flag")
+		}
+		if validatorID, err = flags.GetString("validator_id"); err != nil {
+			log.Fatal("error in 'validator_id' flag: ", err)
+		}
+
+		validatorRequest.ValidatorID = validatorID
+
+		if _, _, err = sdk.ResetValidator(validatorRequest); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("validator url fixed successfully")
 	},
 }
 
