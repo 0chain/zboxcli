@@ -15,7 +15,6 @@ env:
   PACKAGE_DIR: ${{ github.workspace }}/package
   DEB_DIR: ${{ github.workspace }}/deb
   REPO_DIR: ${{ github.workspace }}/aptrepo
-  GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
   DISTRIBUTIONS: focal
   ARCHITECTURES: amd64
   REMOTE_SERVER: 
@@ -43,13 +42,10 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
-    - name: Install dependencies
+    - name: Setup
       run: |
         sudo apt-get update
         sudo apt-get install -y docker-ce docker-ce-cli containerd.io tar gnupg dpkg-sig
-
-    - name: Setup directories
-      run: |
         mkdir -p ${{ env.DEB_DIR }}
         mkdir -p ${{ env.OUTPUT_DIR }}
         mkdir -p ${{ env.PACKAGE_DIR }}
@@ -92,6 +88,19 @@ jobs:
         Description: zbox is a command line interface (CLI) tool to understand the capabilities of Züs dStorage and prototype your app
         EOT
 
+        echo "Configuring GPG for batch mode and loopback pinentry..."
+        mkdir -p ~/.gnupg
+        echo "use-agent" >> ~/.gnupg/gpg.conf
+        echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+        echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+        gpg-connect-agent reloadagent /bye
+
+        echo "Importing GPG private key..."
+        echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+
+        echo "Trusting the GPG key..."
+        echo -e "5\ny\n" | gpg --command-fd 0 --batch --yes --pinentry-mode loopback --edit-key ${{ secrets.GPG_KEY_ID }} trust quit
+
         tar czf "${{ env.OUTPUT_DIR }}/data.tar.gz" -C "${{ env.PACKAGE_DIR }}" .
         echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --yes --passphrase-fd 0 --pinentry-mode loopback --detach-sign --armor -o "${{ env.PACKAGE_DIR }}/DEBIAN/signature.asc" "${{ env.OUTPUT_DIR }}/data.tar.gz"
         dpkg-deb -b ${{ env.PACKAGE_DIR }} ${{ env.DEB_DIR }}/${{ env.APP_NAME }}_${{ env.APP_VERSION }}~${{ matrix.distro.name }}_${{ matrix.arch.name }}.deb
@@ -133,8 +142,8 @@ jobs:
                       -o APT::FTPArchive::Release::Components="main" \
                       dists/${dist} > dists/${dist}/Release
 
-          echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --default-key ${GPG_KEY_ID} --batch --yes --passphrase-fd 0 -abs -o dists/${dist}/Release.gpg dists/${dist}/Release
-          echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --default-key ${GPG_KEY_ID} --batch --yes --passphrase-fd 0 --clearsign -o dists/${dist}/InRelease dists/${dist}/Release
+          echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --default-key ${{ secrets.GPG_KEY_ID }} --batch --yes --passphrase-fd 0 -abs -o dists/${dist}/Release.gpg dists/${dist}/Release
+          echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --default-key ${{ secrets.GPG_KEY_ID }} --batch --yes --passphrase-fd 0 --clearsign -o dists/${dist}/InRelease dists/${dist}/Release
         done
 
     - name: Upload APT repo to remote
