@@ -1,0 +1,51 @@
+# syntax=docker/dockerfile:latest
+
+ARG BASE_IMAGE
+
+# Stage 1: Build zboxcli on the base image
+FROM --platform=$BUILDPLATFORM ${BASE_IMAGE} AS builder
+
+# Enable shell debugging
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN set -x
+
+# Install dependencies
+RUN echo "Installing dependencies" \
+    && apt-get update && \
+    apt-get install -y wget tar software-properties-common && \
+    add-apt-repository ppa:ubuntu-toolchain-r/test && \
+    apt-get update && \
+    apt-get install -y gcc-11 g++-11
+
+# Set gcc-11 as default
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100 && \
+    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 100 && \
+    update-alternatives --set gcc /usr/bin/gcc-11 && \
+    update-alternatives --set g++ /usr/bin/g++-11
+
+
+# Download and install Go
+ARG GO_VERSION=1.21.0
+ARG TARGETARCH
+RUN echo "Downloading and installing Go version ${GO_VERSION} for architecture ${TARGETARCH}" && \
+    wget https://go.dev/dl/go${GO_VERSION}.linux-${TARGETARCH}.tar.gz -O /tmp/go.tar.gz && \
+    tar -C /usr/local -xzf /tmp/go.tar.gz && \
+    ln -s /usr/local/go/bin/go /usr/local/bin/go
+
+# Set Go environment variables
+ENV GOROOT=/usr/local/go
+ENV GOPATH=/root/go
+ENV PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+
+# Setting up working directory and copying files
+WORKDIR /zboxcli
+COPY . .
+
+# Building zboxcli
+ARG VERSION
+RUN go env
+RUN CGO_ENABLED=1 GOOS=linux GOARCH=${TARGETARCH} go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${VERSION}" -o /zbox .
+
+# Stage 2: Create a minimal image with the binary
+# FROM scratch
+# COPY --from=builder /zbox /zbox
