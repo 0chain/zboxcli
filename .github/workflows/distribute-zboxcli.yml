@@ -57,9 +57,8 @@ jobs:
         unset DOCKER_HOST
         docker context create dist-context || echo "Context already exists"
         docker context use dist-context
-        docker buildx create --name dist-builder
-        docker buildx use dist-builder
-        docker buildx inspect --bootstrap
+        docker buildx create --name dist-builder --use --driver containerd
+        docker buildx inspect dist-builder --bootstrap
 
     - name: Setup directories
       run: |
