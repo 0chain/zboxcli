@@ -23,7 +23,7 @@ env:
 
 jobs:
   build:
-    runs-on: [ubuntu-latest]
+    runs-on: [self-hosted, arc-runner]
     strategy:
       matrix:
         distro:
@@ -110,7 +110,7 @@ jobs:
         dpkg-deb -b ${{ env.PACKAGE_DIR }} ${{ env.DEB_DIR }}/${{ env.APP_NAME }}_${{ env.APP_VERSION }}~${{ matrix.distro.name }}_${{ matrix.arch.name }}.deb
 
   distribute:
-    runs-on: [ubuntu-latest]
+    runs-on: [self-hosted, arc-runner]
     needs: build
 
     steps:
