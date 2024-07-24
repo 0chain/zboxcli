@@ -50,13 +50,12 @@ jobs:
           lsb-release \
           dpkg-sig
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-
     - name: Create and use Buildx builder
       run: |
-        docker buildx create --name builder
-        docker buildx use builder
+        docker context create mycontext || echo "Context already exists"
+        docker context use mycontext
+        docker buildx create --name mybuilder
+        docker buildx use mybuilder
         docker buildx inspect --bootstrap
 
     - name: Setup directories
