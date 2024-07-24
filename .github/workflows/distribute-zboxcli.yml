@@ -117,7 +117,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y apt-utils dpkg-sig gnupg scp
+        sudo apt-get install -y apt-utils dpkg-sig gnupg openssh-client
 
     - name: Download APT repo
       run: |
