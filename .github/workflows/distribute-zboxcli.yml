@@ -52,6 +52,7 @@ jobs:
 
     - name: Build Docker image
       run: |
+        docker buildx create --use
         docker buildx build \
           --platform ${{ matrix.arch.platform }} \
           --build-arg GO_VERSION=${{ env.GO_VERSION }} \
@@ -157,4 +158,4 @@ jobs:
     - name: Upload GPG public key to remote server
       run: |
         echo "${{ secrets.GPG_PUBLIC_KEY }}" > zus.asc
-        scp -i ~/.ssh/id_rsa zus.asc ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:${{ env.REMOTE_PATH }}/keys/
+        scp -i ~/.ssh/id_rsa zus.asc ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:${{ env.REMOTE_PATH }}/
