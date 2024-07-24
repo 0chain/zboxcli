@@ -19,7 +19,7 @@ env:
   ARCHITECTURES: amd64
   REMOTE_SERVER: 5.9.151.246
   REMOTE_USER: root
-  REMOTE_PATH: /var/www/html/aptrepo/
+  REMOTE_PATH: /var/www/html
 
 jobs:
   build:
@@ -46,10 +46,6 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y curl tar gnupg dpkg-sig
-        curl -fsSL https://get.docker.com -o get-docker.sh
-        sudo sh get-docker.sh
-        docker buildx create --name builder --use
-        docker buildx inspect --bootstrap
         mkdir -p ${{ env.DEB_DIR }}
         mkdir -p ${{ env.OUTPUT_DIR }}
         mkdir -p ${{ env.PACKAGE_DIR }}
@@ -126,7 +122,7 @@ jobs:
     - name: Download APT repo
       run: |
           mkdir -p ${{ env.REPO_DIR }}
-          scp -i ~/.ssh/id_rsa -r ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:${{ env.REMOTE_PATH }}/* ${{ env.REPO_DIR }}
+          scp -i ~/.ssh/id_rsa -r ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:${{ env.REMOTE_PATH }}/aptrepo/* ${{ env.REPO_DIR }}
 
     - name: Copy debian packages
       run : |
@@ -156,4 +152,9 @@ jobs:
 
     - name: Upload APT repo to remote
       run: |
-        scp -i ~/.ssh/id_rsa -r ${{ env.REPO_DIR }}/* ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:${{ env.REMOTE_PATH }}
+        scp -i ~/.ssh/id_rsa -r ${{ env.REPO_DIR }}/* ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:${{ env.REMOTE_PATH }}/aptrepo/
+
+    - name: Upload GPG public key to remote server
+      run: |
+        echo "${{ secrets.GPG_PUBLIC_KEY }}" > zus.asc
+        scp -i ~/.ssh/id_rsa zus.asc ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:${{ env.REMOTE_PATH }}/keys/
