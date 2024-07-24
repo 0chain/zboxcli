@@ -45,8 +45,10 @@ jobs:
     - name: Setup
       run: |
         sudo apt-get update
-        sudo apt-get install -y docker-ce docker-ce-cli docker.io containerd.io tar gnupg dpkg-sig
-        docker buildx create --name mybuilder --use
+        sudo apt-get install -y curl tar gnupg dpkg-sig
+        curl -fsSL https://get.docker.com -o get-docker.sh
+        sudo sh get-docker.sh
+        docker buildx create --name builder --use
         docker buildx inspect --bootstrap
         mkdir -p ${{ env.DEB_DIR }}
         mkdir -p ${{ env.OUTPUT_DIR }}
