@@ -17,13 +17,13 @@ env:
   REPO_DIR: ${{ github.workspace }}/aptrepo
   DISTRIBUTIONS: focal
   ARCHITECTURES: amd64
-  REMOTE_SERVER: 
-  REMOTE_USER: 
-  REMOTE_PATH: 
+  REMOTE_SERVER: 5.9.151.246
+  REMOTE_USER: root
+  REMOTE_PATH: /var/www/html/aptrepo/
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, arc-runner]
     strategy:
       matrix:
         distro:
@@ -106,7 +106,7 @@ jobs:
         dpkg-deb -b ${{ env.PACKAGE_DIR }} ${{ env.DEB_DIR }}/${{ env.APP_NAME }}_${{ env.APP_VERSION }}~${{ matrix.distro.name }}_${{ matrix.arch.name }}.deb
 
   distribute:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, arc-runner]
     needs: build
 
     steps:
