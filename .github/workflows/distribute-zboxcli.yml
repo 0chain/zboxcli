@@ -52,6 +52,8 @@ jobs:
 
     - name: Create and use Buildx builder
       run: |
+        curl -fsSL https://get.docker.com -o get-docker.sh
+        sudo sh get-docker.sh
         docker context create mycontext || echo "Context already exists"
         docker context use mycontext
         docker buildx create --name mybuilder
