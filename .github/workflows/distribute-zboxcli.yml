@@ -54,10 +54,11 @@ jobs:
       run: |
         curl -fsSL https://get.docker.com -o get-docker.sh
         sudo sh get-docker.sh
-        docker context create mycontext || echo "Context already exists"
-        docker context use mycontext
-        docker buildx create --name mybuilder
-        docker buildx use mybuilder
+        unset DOCKER_HOST
+        docker context create dist-context || echo "Context already exists"
+        docker context use dist-context
+        docker buildx create --name dist-builder
+        docker buildx use dist-builder
         docker buildx inspect --bootstrap
 
     - name: Setup directories
