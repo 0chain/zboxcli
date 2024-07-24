@@ -114,15 +114,19 @@ jobs:
     needs: build
 
     steps:
-    - name: Install dependencies
+    - name: Setup
       run: |
         sudo apt-get update
         sudo apt-get install -y apt-utils dpkg-sig gnupg openssh-client
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.REMOTE_SERVER }} >> ~/.ssh/known_hosts
 
     - name: Download APT repo
       run: |
           mkdir -p ${{ env.REPO_DIR }}
-          scp -i ${{ secrets.SSH_KEY }} ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:${{ env.REMOTE_PATH }}/* ${{ env.REPO_DIR }}
+          scp -i ~/.ssh/id_rsa -r ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:${{ env.REMOTE_PATH }}/* ${{ env.REPO_DIR }}
 
     - name: Copy debian packages
       run : |
@@ -152,4 +156,4 @@ jobs:
 
     - name: Upload APT repo to remote
       run: |
-        scp -i ${{ secrets.SSH_KEY }} -r ${{ env.REPO_DIR }}/* ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:${{ env.REMOTE_PATH }}
+        scp -i ~/.ssh/id_rsa -r ${{ env.REPO_DIR }}/* ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:${{ env.REMOTE_PATH }}
