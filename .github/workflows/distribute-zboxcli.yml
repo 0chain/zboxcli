@@ -39,13 +39,15 @@ jobs:
       with:
         path: ${{ env.SRC_DIR }}
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+    # - name: Set up Docker Buildx
+    #   uses: docker/setup-buildx-action@v1
 
     - name: Setup
       run: |
         sudo apt-get update
-        sudo apt-get install -y docker-ce docker-ce-cli containerd.io tar gnupg dpkg-sig
+        sudo apt-get install -y docker-ce docker-ce-cli docker.io containerd.io tar gnupg dpkg-sig
+        docker buildx create --name mybuilder --use
+        docker buildx inspect --bootstrap
         mkdir -p ${{ env.DEB_DIR }}
         mkdir -p ${{ env.OUTPUT_DIR }}
         mkdir -p ${{ env.PACKAGE_DIR }}
