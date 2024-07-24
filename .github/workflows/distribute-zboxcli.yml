@@ -117,7 +117,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y apt-utils dpkg-sig gnupg
+        sudo apt-get install -y apt-utils dpkg-sig gnupg scp
 
     - name: Download APT repo
       run: |
