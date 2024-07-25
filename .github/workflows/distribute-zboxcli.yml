@@ -23,7 +23,7 @@ env:
 
 jobs:
   build:
-    runs-on: [self-hosted, arc-runner]
+    runs-on: [ubuntu-latest]
     strategy:
       matrix:
         distro:
@@ -82,7 +82,7 @@ jobs:
         mkdir -p ${{ env.PACKAGE_DIR }}/DEBIAN
         mkdir -p ${{ env.PACKAGE_DIR }}/usr/local/bin
 
-        cp ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}_${{ env.APP_VERSION }}~${{ matrix.distro.name }}_${{ matrix.arch.name }} ${{ env.PACKAGE_DIR }}/usr/local/bin/
+        cp ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}_${{ env.APP_VERSION }}~${{ matrix.distro.name }}_${{ matrix.arch.name }} ${{ env.PACKAGE_DIR }}/usr/local/bin/${APP_NAME}
 
         cat <<EOT > ${{ env.PACKAGE_DIR }}/DEBIAN/control
         Package: ${{ env.APP_NAME }}
@@ -110,7 +110,7 @@ jobs:
         dpkg-deb -b ${{ env.PACKAGE_DIR }} ${{ env.DEB_DIR }}/${{ env.APP_NAME }}_${{ env.APP_VERSION }}~${{ matrix.distro.name }}_${{ matrix.arch.name }}.deb
 
   distribute:
-    runs-on: [self-hosted, arc-runner]
+    runs-on: [ubuntu-latest]
     needs: build
 
     steps:
@@ -161,4 +161,37 @@ jobs:
     - name: Upload GPG public key to remote server
       run: |
         echo "${{ secrets.GPG_PUBLIC_KEY }}" > zus.asc
-        scp -i ~/.ssh/id_rsa zus.asc ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:${{ env.REMOTE_PATH }}/
+        scp -i ~/.ssh/id_rsa zus.asc ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:${{ env.REMOTE_PATH }}/zus.asc
+
+    - name: Upload install script to remote server
+      run: |
+        scp -i ~/.ssh/id_rsa ${{ env.SRC_DIR }}/scripts/debian/install.sh ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:${{ env.REMOTE_PATH }}/deb_install.sh
+
+    
+
+  test:
+    runs-on: [ubuntu-latest]
+    needs: distribute
+    strategy:
+      matrix:
+        distro:
+          - name: focal
+            base_image: ubuntu:20.04
+        arch:
+          - name: amd64
+            platform: linux/amd64
+    steps:
+    - name: Build Docker image
+      run: |
+        docker buildx create --use
+        docker buildx build \
+          --platform ${{ matrix.arch.platform }} \
+          --build-arg BASE_IMAGE=${{ matrix.distro.base_image }} \
+          --build-arg LOC="https://packages.zus.network/deb_install.sh"
+          --tag ${{ env.APP_NAME }}-${{ env.APP_VERSION }}-${{ matrix.distro.name }}-${{ matrix.arch.name }} \
+          -f ${{ env.SRC_DIR }}/scripts/debian/Dockerfile.install_test .
+
+    - name: Test zbox
+      run: |
+      docker run --rm ${{ env.APP_NAME }}-${{ env.APP_VERSION }}-${{ matrix.distro.name }}-${{ matrix.arch.name }} || { echo "Test installation failed"; exit 1; }
+

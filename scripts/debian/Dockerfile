@@ -5,9 +5,7 @@ ARG BASE_IMAGE
 # Stage 1: Build zboxcli on the base image
 FROM --platform=$BUILDPLATFORM ${BASE_IMAGE} AS builder
 
-# Enable shell debugging
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN set -x
+RUN set -e
 
 # Install dependencies
 RUN echo "Installing dependencies" \

@@ -1,0 +1,17 @@
+# syntax=docker/dockerfile:latest
+
+ARG BASE_IMAGE
+
+FROM --platform=$BUILDPLATFORM ${BASE_IMAGE}
+
+# Install necessary packages
+RUN apt-get update && apt-get install -y curl
+
+# Download and install the app
+ARG LOC=https://packages.zus.network/deb_install.sh
+RUN set -e; \
+    curl -sL ${LOC} | bash -s -- -y
+
+# Check the app version
+CMD ["zbox", "version"]
+
