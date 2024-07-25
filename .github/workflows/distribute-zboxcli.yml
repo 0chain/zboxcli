@@ -192,6 +192,5 @@ jobs:
           -f ${{ env.SRC_DIR }}/scripts/debian/Dockerfile.install_test .
 
     - name: Test zbox
-      run: |
-      docker run --rm ${{ env.APP_NAME }}-${{ env.APP_VERSION }}-${{ matrix.distro.name }}-${{ matrix.arch.name }} || { echo "Test installation failed"; exit 1; }
+      run:  docker run --rm ${{ env.APP_NAME }}-${{ env.APP_VERSION }}-${{ matrix.distro.name }}-${{ matrix.arch.name }} || { echo "Test installation failed"; exit 1; }
 
