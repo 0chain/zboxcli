@@ -126,7 +126,7 @@ jobs:
     - name: Download APT repo
       run: |
           mkdir -p ${{ env.REPO_DIR }}
-          scp -v -i ~/.ssh/id_rsa -r ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:${{ env.REMOTE_PATH }}/aptrepo/* ${{ env.REPO_DIR }}
+          scp -v -i ~/.ssh/id_rsa -r ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:/var/www/html/aptrepo/ ${{ env.REPO_DIR }}
 
     - name: Copy debian packages
       run : |
@@ -156,16 +156,16 @@ jobs:
 
     - name: Upload APT repo to remote
       run: |
-        scp -v -i ~/.ssh/id_rsa -r ${{ env.REPO_DIR }}/* ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:${{ env.REMOTE_PATH }}/aptrepo/
+        scp -v -i ~/.ssh/id_rsa -r ${{ env.REPO_DIR }}/ ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:/var/www/html/aptrepo/
 
     - name: Upload GPG public key to remote server
       run: |
         echo "${{ secrets.GPG_PUBLIC_KEY }}" > zus.asc
-        scp -v -i ~/.ssh/id_rsa zus.asc ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:${{ env.REMOTE_PATH }}/zus.asc
+        scp -v -i ~/.ssh/id_rsa zus.asc ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:/var/www/html/zus.asc
 
     - name: Upload install script to remote server
       run: |
-        scp -v -i ~/.ssh/id_rsa ${{ env.SRC_DIR }}/scripts/debian/install.sh ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:${{ env.REMOTE_PATH }}/deb_install.sh
+        scp -v -i ~/.ssh/id_rsa ${{ env.SRC_DIR }}/scripts/debian/install.sh ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:/var/www/html/deb_install.sh
 
     
 
