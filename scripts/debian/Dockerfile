@@ -10,7 +10,7 @@ RUN set -e
 # Install dependencies
 RUN echo "Installing dependencies" \
     && apt-get update && \
-    apt-get install -y wget tar software-properties-common && \
+    apt-get install -y wget tar software-properties-common musl-dev musl-tools && \
     add-apt-repository ppa:ubuntu-toolchain-r/test && \
     apt-get update && \
     apt-get install -y gcc-11 g++-11
@@ -42,7 +42,7 @@ COPY . .
 # Building zboxcli
 ARG VERSION
 RUN go env
-RUN CGO_ENABLED=1 GOOS=linux GOARCH=${TARGETARCH} go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${VERSION}" -o /zbox .
+RUN CC=musl-gcc CGO_ENABLED=1 GOOS=linux GOARCH=${TARGETARCH} go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${VERSION}" -o /zbox .
 
 # Stage 2: Create a minimal image with the binary
 # FROM scratch
