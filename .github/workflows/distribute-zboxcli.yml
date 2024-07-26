@@ -154,7 +154,7 @@ jobs:
 
     - name: Download APT repo
       run: |
-          scp -v -i ~/.ssh/id_rsa -r ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:/var/www/html/aptrepo/* ${{ env.REPO_DIR }}
+          scp -v -i ~/.ssh/id_rsa -r ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:/var/www/html/aptrepo/ ${{ github.workspace }}
 
     - name: Download all .deb files
       uses: actions/download-artifact@v3
@@ -192,7 +192,7 @@ jobs:
 
     - name: Upload APT repo to remote
       run: |
-        scp -v -i ~/.ssh/id_rsa -r ${{ env.REPO_DIR }}/* ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:/var/www/html/aptrepo/
+        scp -v -i ~/.ssh/id_rsa -r ${{ github.workspace }}/aptrepo/ ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:/var/www/html/
 
     - name: Upload GPG public key to remote server
       run: |
