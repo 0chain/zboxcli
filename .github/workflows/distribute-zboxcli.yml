@@ -132,6 +132,8 @@ jobs:
         mkdir -p ${{ env.REPO_DIR }}
         mkdir -p ${{ env.DEB_DIR }}
 
+        echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+
     - name: Download APT repo
       run: |
           scp -v -i ~/.ssh/id_rsa -r ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:/var/www/html/aptrepo/ ${{ env.REPO_DIR }}
