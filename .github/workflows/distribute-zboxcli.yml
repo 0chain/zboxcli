@@ -144,8 +144,10 @@ jobs:
     - name: Copy debian packages
       run : |
             mkdir -p ${{ env.REPO_DIR }}/pool/main/z/${APP_NAME}/
-            ls -la ${{ env.DEB_DIR }}
-            cp ${{ env.DEB_DIR }}/*.deb ${{ env.REPO_DIR }}/pool/main/z/${APP_NAME}/
+            find ${{ env.DEB_DIR }} -name "*.deb"
+            for deb in $(find ${{ env.DEB_DIR }} -name "*.deb"); do
+              cp deb ${{ env.REPO_DIR }}/pool/main/z/${APP_NAME}/
+            done
 
     - name: Update APT repo
       run: |
