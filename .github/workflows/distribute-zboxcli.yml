@@ -154,7 +154,7 @@ jobs:
 
     - name: Download APT repo
       run: |
-          scp -v -i ~/.ssh/id_rsa -r ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:/var/www/html/aptrepo/ ${{ env.REPO_DIR }}
+          scp -v -i ~/.ssh/id_rsa -r ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:/var/www/html/aptrepo/* ${{ env.REPO_DIR }}
 
     - name: Download all .deb files
       uses: actions/download-artifact@v3
@@ -192,7 +192,7 @@ jobs:
 
     - name: Upload APT repo to remote
       run: |
-        scp -v -i ~/.ssh/id_rsa -r ${{ env.REPO_DIR }}/ ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:/var/www/html/aptrepo/
+        scp -v -i ~/.ssh/id_rsa -r ${{ env.REPO_DIR }}/* ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:/var/www/html/aptrepo/
 
     - name: Upload GPG public key to remote server
       run: |
@@ -208,6 +208,8 @@ jobs:
   test:
     runs-on: [ubuntu-latest]
     needs: distribute
+    env:
+      SRC_DIR: ${{ github.workspace }}/src
     strategy:
       matrix:
         distro:
@@ -217,13 +219,18 @@ jobs:
           - name: amd64
             platform: linux/amd64
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        path: ${{ env.SRC_DIR }}
+
     - name: Build Docker image
       run: |
         docker buildx create --use
         docker buildx build \
           --platform ${{ matrix.arch.platform }} \
           --build-arg BASE_IMAGE=${{ matrix.distro.base_image }} \
-          --build-arg LOC="https://packages.zus.network/deb_install.sh"
+          --build-arg LOC="https://packages.zus.network/deb_install.sh" \
           --tag ${{ env.APP_NAME }}-${{ env.APP_VERSION }}-${{ matrix.distro.name }}-${{ matrix.arch.name }} \
           -f ${{ env.SRC_DIR }}/scripts/debian/Dockerfile.install_test .
 
