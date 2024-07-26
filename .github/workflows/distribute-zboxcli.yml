@@ -116,9 +116,15 @@ jobs:
     env:
       DISTRIBUTIONS: focal
       ARCHITECTURES: amd64
+      SRC_DIR: ${{ github.workspace }}/src
       REPO_DIR: ${{ github.workspace }}/aptrepo
       DEB_DIR: ${{ github.workspace }}/deb-files
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        path: ${{ env.SRC_DIR }}
+
     - name: Setup
       run: |
         sudo apt-get update
@@ -132,7 +138,19 @@ jobs:
         mkdir -p ${{ env.REPO_DIR }}
         mkdir -p ${{ env.DEB_DIR }}
 
+        echo "Configuring GPG for batch mode and loopback pinentry..."
+        mkdir -p ~/.gnupg
+        echo "use-agent" >> ~/.gnupg/gpg.conf
+        echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+        echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+        gpg-connect-agent reloadagent /bye
+
+        echo "Importing GPG private key..."
         echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+
+        echo "Trusting the GPG key..."
+        echo -e "5\ny\n" | gpg --command-fd 0 --batch --yes --pinentry-mode loopback --edit-key ${{ secrets.GPG_KEY_ID }} trust quit
+
 
     - name: Download APT repo
       run: |
