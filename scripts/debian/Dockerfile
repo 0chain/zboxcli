@@ -42,7 +42,7 @@ COPY . .
 # Building zboxcli
 ARG VERSION
 RUN go env
-RUN CC=musl-gcc CGO_ENABLED=1 GOOS=linux GOARCH=${TARGETARCH} go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${VERSION}" -o /zbox .
+RUN CC=musl-gcc CGO_ENABLED=1 GOOS=linux GOARCH=${TARGETARCH} go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${VERSION} -extldflags \"-static\"" -o /zbox .
 
 # Stage 2: Create a minimal image with the binary
 # FROM scratch
