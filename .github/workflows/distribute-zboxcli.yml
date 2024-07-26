@@ -231,9 +231,9 @@ jobs:
           --platform ${{ matrix.arch.platform }} \
           --build-arg BASE_IMAGE=${{ matrix.distro.base_image }} \
           --build-arg LOC="https://packages.zus.network/deb_install.sh" \
-          --tag ${{ env.APP_NAME }}-${{ env.APP_VERSION }}-${{ matrix.distro.name }}-${{ matrix.arch.name }} \
+          --tag ${{ env.APP_NAME }}:${{ env.APP_VERSION }} \
           -f ${{ env.SRC_DIR }}/scripts/debian/Dockerfile.install_test .
 
     - name: Test zbox
-      run:  docker run --rm ${{ env.APP_NAME }}-${{ env.APP_VERSION }}-${{ matrix.distro.name }}-${{ matrix.arch.name }} || { echo "Test installation failed"; exit 1; }
+      run:  docker run --platform=${{ matrix.arch.platform }} ${{ env.APP_NAME }}:${{ env.APP_VERSION }} || { echo "Test installation failed"; exit 1; }
 
