@@ -26,9 +26,16 @@ setup() {
     assert_consent "Add packages necessary to modify your apt-package sources?" ${global_consent}
     set -v
     export DEBIAN_FRONTEND=noninteractive
+    apt-get update
+    apt-get install --assume-yes --no-install-recommends apt-transport-https ca-certificates curl gnupg lsb-release software-properties-common
     add-apt-repository ppa:ubuntu-toolchain-r/test
     apt-get update
-    apt-get install --assume-yes --no-install-recommends apt-transport-https ca-certificates curl gnupg lsb-release gcc-11 g++-11
+    apt-get install -y gcc-11 g++-11
+
+    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100
+    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 100
+    update-alternatives --set gcc /usr/bin/gcc-11
+    update-alternatives --set g++ /usr/bin/g++-11
     set +v
 
     assert_consent "Add Züs as a trusted package signer?" ${global_consent}
