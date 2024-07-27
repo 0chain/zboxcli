@@ -23,8 +23,6 @@ jobs:
     strategy:
       matrix:
         distro:
-          - name: artful
-            base_image: ubuntu:17.10
           - name: bionic
             base_image: ubuntu:18.04
           - name: bookworm
@@ -33,34 +31,12 @@ jobs:
             base_image: debian:11
           - name: buster
             base_image: debian:10
-          - name: cosmic
-            base_image: ubuntu:18.10
-          - name: disco
-            base_image: ubuntu:19.04
-          - name: eoan
-            base_image: ubuntu:19.10
           - name: focal
             base_image: ubuntu:20.04
-          - name: groovy
-            base_image: ubuntu:20.10
-          - name: hirsute
-            base_image: ubuntu:21.04
-          - name: impish
-            base_image: ubuntu:21.10
           - name: jammy
             base_image: ubuntu:22.04
-          - name: jessie
-            base_image: debian:8
           - name: noble
             base_image: ubuntu:24.04
-          - name: stretch
-            base_image: debian:9
-          - name: trusty
-            base_image: ubuntu:14.04
-          - name: wheezy
-            base_image: debian:7
-          - name: xenial
-            base_image: ubuntu:16.04
         arch:
           - name: amd64
             platform: linux/amd64
@@ -163,7 +139,7 @@ jobs:
     runs-on: [ubuntu-latest]
     needs: build
     env:
-      DISTRIBUTIONS: artful bionic bookworm bullseye buster cosmic disco eoan focal groovy hirsute impish jammy jessie noble stretch trusty wheezy xenial
+      DISTRIBUTIONS: bionic bookworm bullseye buster focal jammy noble
       ARCHITECTURES: amd64 arm64 armhf i386
       SRC_DIR: ${{ github.workspace }}/src
       REPO_DIR: ${{ github.workspace }}/aptrepo
@@ -262,8 +238,6 @@ jobs:
     strategy:
       matrix:
         distro:
-          - name: artful
-            base_image: ubuntu:17.10
           - name: bionic
             base_image: ubuntu:18.04
           - name: bookworm
@@ -272,34 +246,12 @@ jobs:
             base_image: debian:11
           - name: buster
             base_image: debian:10
-          - name: cosmic
-            base_image: ubuntu:18.10
-          - name: disco
-            base_image: ubuntu:19.04
-          - name: eoan
-            base_image: ubuntu:19.10
           - name: focal
             base_image: ubuntu:20.04
-          - name: groovy
-            base_image: ubuntu:20.10
-          - name: hirsute
-            base_image: ubuntu:21.04
-          - name: impish
-            base_image: ubuntu:21.10
           - name: jammy
             base_image: ubuntu:22.04
-          - name: jessie
-            base_image: debian:8
           - name: noble
             base_image: ubuntu:24.04
-          - name: stretch
-            base_image: debian:9
-          - name: trusty
-            base_image: ubuntu:14.04
-          - name: wheezy
-            base_image: debian:7
-          - name: xenial
-            base_image: ubuntu:16.04
         arch:
           - name: amd64
             platform: linux/amd64
