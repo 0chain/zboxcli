@@ -34,19 +34,19 @@ jobs:
         arch:
           - name: amd64
             platform: linux/amd64
-            goos: amd64
+            goarch: amd64
 
           - name: arm64
             platform: linux/arm64
-            goos: arm64
+            goarch: arm64
 
           - name: armhf
             platform: linux/arm/v7
-            goos: arm
+            goarch: arm64
 
           - name: i386
             platform: linux/386
-            goos: 386
+            goarch: 386
 
     steps:
     - name: Checkout code
@@ -74,7 +74,7 @@ jobs:
           --platform ${{ matrix.arch.platform }} \
           --build-arg GO_VERSION=${{ env.GO_VERSION }} \
           --build-arg BASE_IMAGE=${{ matrix.distro.base_image }} \
-          --build-arg TARGETARCH=${{ matrix.arch.goos }} \
+          --build-arg TARGETARCH=${{ matrix.arch.goarch }} \
           --build-arg VERSION=${{ env.APP_VERSION }} \
           --tag ${{ env.APP_NAME }}-${{ env.APP_VERSION }}-${{ matrix.distro.name }}-${{ matrix.arch.name }} \
           --load \
