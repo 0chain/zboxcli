@@ -73,7 +73,7 @@ jobs:
           --tag ${{ env.APP_NAME }}-${{ env.APP_VERSION }}-${{ matrix.distro.name }}-${{ matrix.arch.name }} \
           --load \
           --output type=docker,dest=${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-${{ matrix.distro.name }}-${{ matrix.arch.name }}.tar \
-          -f ${{ env.SRC_DIR }}/scripts/debian/Dockerfile.ubuntu_build_${matrix.arch.name} ${{ env.SRC_DIR }}
+          -f ${{ env.SRC_DIR }}/scripts/debian/Dockerfile.ubuntu_build_${{ matrix.arch.name }} ${{ env.SRC_DIR }}
 
     - name: Load Docker image
       run: |
