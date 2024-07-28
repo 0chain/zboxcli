@@ -34,11 +34,9 @@ jobs:
         arch:
           - name: amd64
             platform: linux/amd64
-            goarch: amd64
 
           - name: arm64
             platform: linux/arm64
-            goarch: arm64
 
     steps:
     - name: Checkout code
@@ -71,12 +69,11 @@ jobs:
           --platform ${{ matrix.arch.platform }} \
           --build-arg GO_VERSION=${{ env.GO_VERSION }} \
           --build-arg BASE_IMAGE=${{ matrix.distro.base_image }} \
-          --build-arg TARGETARCH=${{ matrix.arch.goarch }} \
           --build-arg VERSION=${{ env.APP_VERSION }} \
           --tag ${{ env.APP_NAME }}-${{ env.APP_VERSION }}-${{ matrix.distro.name }}-${{ matrix.arch.name }} \
           --load \
           --output type=docker,dest=${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-${{ matrix.distro.name }}-${{ matrix.arch.name }}.tar \
-          -f ${{ env.SRC_DIR }}/scripts/debian/Dockerfile ${{ env.SRC_DIR }}
+          -f ${{ env.SRC_DIR }}/scripts/debian/Dockerfile.ubuntu_build_${matrix.arch.name} ${{ env.SRC_DIR }}
 
     - name: Load Docker image
       run: |
