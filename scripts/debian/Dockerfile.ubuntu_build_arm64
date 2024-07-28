@@ -13,7 +13,7 @@ RUN echo "Installing dependencies" \
     apt-get install -y wget tar software-properties-common dpkg && \
     add-apt-repository ppa:ubuntu-toolchain-r/test && \
     apt-get update && \
-    apt-get install -y gcc-11 g++-11 gcc-11-aarch64-linux-gnu g++-11-aarch64-linux-gnu
+    apt-get install -y gcc-11 g++-11 gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
 
 # Set gcc-11 as default
 RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100 && \
@@ -43,5 +43,5 @@ COPY . .
 # Building zboxcli
 ARG VERSION
 RUN go env
-RUN CC=aarch64-linux-gnu-gcc-11 CXX=aarch64-linux-gnu-g++-11 CGO_ENABLED=1 GOOS=linux GOARCH=arm64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${VERSION}" -o /zbox .
+RUN CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-g++ CGO_ENABLED=1 GOOS=linux GOARCH=arm64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${VERSION}" -o /zbox .
 
