@@ -25,12 +25,6 @@ jobs:
         distro:
           - name: bionic
             base_image: ubuntu:18.04
-          - name: bookworm
-            base_image: debian:12
-          - name: bullseye
-            base_image: debian:11
-          - name: buster
-            base_image: debian:10
           - name: focal
             base_image: ubuntu:20.04
           - name: jammy
@@ -139,7 +133,7 @@ jobs:
     runs-on: [ubuntu-latest]
     needs: build
     env:
-      DISTRIBUTIONS: bionic bookworm bullseye buster focal jammy noble
+      DISTRIBUTIONS: bionic focal jammy noble
       ARCHITECTURES: amd64 arm64 armhf i386
       SRC_DIR: ${{ github.workspace }}/src
       REPO_DIR: ${{ github.workspace }}/aptrepo
@@ -240,12 +234,6 @@ jobs:
         distro:
           - name: bionic
             base_image: ubuntu:18.04
-          - name: bookworm
-            base_image: debian:12
-          - name: bullseye
-            base_image: debian:11
-          - name: buster
-            base_image: debian:10
           - name: focal
             base_image: ubuntu:20.04
           - name: jammy
