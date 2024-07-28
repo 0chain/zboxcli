@@ -5,7 +5,10 @@ ARG BASE_IMAGE
 FROM --platform=$BUILDPLATFORM ${BASE_IMAGE}
 
 # Install necessary packages
-RUN apt-get update && apt-get install -y curl
+RUN apt-get update && apt-get install -y curl dpkg
+
+# print architecture
+RUN dpkg --print-architecture
 
 # Download and install the app
 ARG LOC=https://packages.zus.network/deb_install.sh

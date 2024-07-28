@@ -40,14 +40,6 @@ jobs:
             platform: linux/arm64
             goarch: arm64
 
-          - name: armhf
-            platform: linux/arm/v7
-            goarch: arm64
-
-          - name: i386
-            platform: linux/386
-            goarch: 386
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -66,6 +58,11 @@ jobs:
           dpkg-sig
         mkdir -p ${{ env.OUTPUT_DIR }}
         mkdir -p ${{ env.PACKAGE_DIR }}
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: ${{ matrix.arch.platform }}
 
     - name: Build Docker image
       run: |
@@ -134,7 +131,7 @@ jobs:
     needs: build
     env:
       DISTRIBUTIONS: bionic focal jammy noble
-      ARCHITECTURES: amd64 arm64 armhf i386
+      ARCHITECTURES: amd64 arm64
       SRC_DIR: ${{ github.workspace }}/src
       REPO_DIR: ${{ github.workspace }}/aptrepo
       DEB_DIR: ${{ github.workspace }}/deb-files
@@ -247,17 +244,16 @@ jobs:
           - name: arm64
             platform: linux/arm64
 
-          - name: armhf
-            platform: linux/arm/v7
-
-          - name: i386
-            platform: linux/386
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
       with:
         path: ${{ env.SRC_DIR }}
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: ${{ matrix.arch.platform }}
 
     - name: Build Docker image
       run: |
