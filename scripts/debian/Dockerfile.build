@@ -1,8 +1,8 @@
-FROM --platform=$BUILDPLATFORM golang:1.21 AS build
+FROM --platform=$TARGETPLATFORM golang:1.21 AS build
 ARG VERSION
 WORKDIR /src
 COPY go.mod go.sum .
 RUN go mod download
 COPY . .
-ARG TARGETOS TARGETARCH
-RUN CGO_ENABLED=1 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${VERSION}" -o /zbox .
+RUN go env
+RUN CGO_ENABLED=1 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${VERSION}" -o /zbox .
