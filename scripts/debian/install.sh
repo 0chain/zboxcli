@@ -2,38 +2,14 @@
 
 set -e
 
-if [[ $# -ge 1 && $1 == "-y" ]]; then
-    global_consent=0
-else
-    global_consent=1
-fi
-
-function assert_consent {
-    if [[ $2 -eq 0 ]]; then
-        return 0
-    fi
-
-    echo -n "$1 [Y/n] "
-    read consent
-    if [[ ! "${consent}" == "y" && ! "${consent}" == "Y" && ! "${consent}" == "" ]]; then
-        echo "'${consent}'"
-        exit 1
-    fi
-}
-
 setup() {
 
-    assert_consent "Add packages necessary to modify your apt-package sources?" ${global_consent}
     set -v
     export DEBIAN_FRONTEND=noninteractive
     apt-get update
     apt-get install --assume-yes --no-install-recommends apt-transport-https ca-certificates curl gnupg lsb-release software-properties-common
-    add-apt-repository ppa:ubuntu-toolchain-r/test
-    apt-get update
-    apt-get install -y gcc-11 g++-11
     set +v
 
-    assert_consent "Add Züs as a trusted package signer?" ${global_consent}
     set -v
     mkdir -p /etc/apt/keyrings
     curl -sLS https://packages.zus.network/zus.asc |
@@ -41,13 +17,12 @@ setup() {
     chmod go+r /etc/apt/keyrings/zus.gpg
     set +v
 
-    assert_consent "Add the zbox Repository to your apt sources?" ${global_consent}
     set -v
     # Use env var DIST_CODE for the package dist name if provided
     if [[ -z $DIST_CODE ]]; then
         CLI_REPO=$(lsb_release -cs)
         shopt -s nocasematch
-        ERROR_MSG="Unable to find a package for your system. Please check if an existing package in https://packages.zus.network/aptrepo/dists/ can be used in your system and install with the dist name: 'curl -sL https://packages.zus.network/aptrepo/ | sudo DIST_CODE=<dist_code_name> bash'"
+        ERROR_MSG="Unable to find a package for your system. Please check if an existing package in https://packages.zus.network/aptrepo/dists/ can be used in your system and install with the dist name: 'curl -sL https://packages.zus.network/deb_install.sh | sudo DIST_CODE=<dist_code_name> bash'"
         if [[ ! $(curl -sL https://packages.zus.network/aptrepo/dists/) =~ $CLI_REPO ]]; then
             DIST=$(lsb_release -is)
             if [[ $DIST =~ "Ubuntu" ]]; then
@@ -86,17 +61,11 @@ Signed-by: /etc/apt/keyrings/zus.gpg" | tee /etc/apt/sources.list.d/zbox.sources
     apt-get update
     set +v
 
-    assert_consent "Install the zbox?" ${global_consent}
     apt-get install --assume-yes zbox
 
-    # Check if config.yaml already exists
+    # Create or update the config.yaml file
     CONFIG_DIR="${HOME}/.zcn"
     CONFIG_PATH="${CONFIG_DIR}/config.yaml"
-    if [ -f "${CONFIG_PATH}" ]; then
-        assert_consent "The configuration file ${CONFIG_PATH} already exists. Do you want to update it?" ${global_consent}
-    fi
-
-    # Create or update the config.yaml file
     echo "Creating/updating configuration file at ${CONFIG_PATH}..."
     mkdir -p $CONFIG_DIR
     touch $CONFIG_PATH
