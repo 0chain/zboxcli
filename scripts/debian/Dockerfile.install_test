@@ -13,7 +13,7 @@ RUN dpkg --print-architecture
 # Download and install the app
 ARG LOC=https://packages.zus.network/deb_install.sh
 RUN set -e; \
-    curl -sL ${LOC} | sudo bash
+    curl -sL ${LOC} | bash
 
 # Check the app version
 CMD ["zbox", "version"]
