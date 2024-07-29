@@ -64,6 +64,7 @@ jobs:
 
     - name: Build Docker image
       run: |
+        docker buildx create --use
         docker buildx build \
           --platform ${{ matrix.arch.platform }} \
           --build-arg VERSION=${{ env.APP_VERSION }} \
@@ -251,6 +252,7 @@ jobs:
 
     - name: Build Docker image
       run: |
+        docker buildx create --use
         docker buildx build \
           --platform ${{ matrix.arch.platform }} \
           --build-arg BASE_IMAGE=${{ matrix.distro.base_image }} \
