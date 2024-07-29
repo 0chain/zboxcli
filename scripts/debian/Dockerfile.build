@@ -1,0 +1,11 @@
+FROM --platform=$BUILDPLATFORM golang:1.21-alpine AS build
+ARG VERSION
+WORKDIR /src
+COPY go.mod go.sum .
+RUN go mod download
+COPY . .
+ARG TARGETOS TARGETARCH
+RUN CGO_ENABLED=1 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${VERSION}" -o /zbox .
+
+FROM alpine
+COPY --from=build /out/myapp /bin

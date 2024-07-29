@@ -2,7 +2,7 @@
 
 ARG BASE_IMAGE
 
-FROM --platform=$BUILDPLATFORM ${BASE_IMAGE}
+FROM --platform=$TARGETPLATFORM ${BASE_IMAGE}
 
 # Install necessary packages
 RUN apt-get update && apt-get install -y curl dpkg
