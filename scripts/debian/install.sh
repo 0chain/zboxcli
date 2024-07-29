@@ -31,11 +31,6 @@ setup() {
     add-apt-repository ppa:ubuntu-toolchain-r/test
     apt-get update
     apt-get install -y gcc-11 g++-11
-
-    update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100
-    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 100
-    update-alternatives --set gcc /usr/bin/gcc-11
-    update-alternatives --set g++ /usr/bin/g++-11
     set +v
 
     assert_consent "Add Züs as a trusted package signer?" ${global_consent}
