@@ -257,6 +257,7 @@ var newallocationCmd = &cobra.Command{
 				FileOptionsParams:    &fileOptionParams,
 				ThirdPartyExtendable: thirdPartyExtendable,
 				Force:                force,
+				IsEnterprise:         isEnterprise,
 			}
 			allocationID, _, _, err = sdk.CreateAllocationWith(options)
 			if err != nil {
