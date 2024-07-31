@@ -120,7 +120,7 @@ jobs:
 
         tar czf "${{ env.OUTPUT_DIR }}/data.tar.gz" -C "${{ env.PACKAGE_DIR }}" .
         echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --yes --passphrase-fd 0 --pinentry-mode loopback --detach-sign --armor -o "${{ env.PACKAGE_DIR }}/DEBIAN/signature.asc" "${{ env.OUTPUT_DIR }}/data.tar.gz"
-        dpkg-deb -b ${{ env.PACKAGE_DIR }} ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}_${{ env.APP_VERSION }}~${{ matrix.distro.name }}_${{ matrix.arch.name }}.deb
+        dpkg-deb -Zgzip -b ${{ env.PACKAGE_DIR }} ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}_${{ env.APP_VERSION }}~${{ matrix.distro.name }}_${{ matrix.arch.name }}.deb
 
     - name: Upload .deb file
       uses: actions/upload-artifact@v3
