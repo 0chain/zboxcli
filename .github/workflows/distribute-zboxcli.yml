@@ -31,6 +31,13 @@ jobs:
             base_image: ubuntu:22.04
           - name: noble
             base_image: ubuntu:24.04
+          - name: bookworm
+            base_image: debian:12
+          - name: bullseye
+            base_image: debian:11
+          - name: buster
+            base_image: debian:10
+
         arch:
           - name: amd64
             platform: linux/amd64
@@ -125,7 +132,7 @@ jobs:
     runs-on: [ubuntu-latest]
     needs: build
     env:
-      DISTRIBUTIONS: bionic focal jammy noble
+      DISTRIBUTIONS: bionic focal jammy noble bookworm bullseye buster
       ARCHITECTURES: amd64 arm64
       SRC_DIR: ${{ github.workspace }}/src
       REPO_DIR: ${{ github.workspace }}/aptrepo
@@ -232,6 +239,12 @@ jobs:
             base_image: ubuntu:22.04
           - name: noble
             base_image: ubuntu:24.04
+          - name: bookworm
+            base_image: debian:12
+          - name: bullseye
+            base_image: debian:11
+          - name: buster
+            base_image: debian:10
         arch:
           - name: amd64
             platform: linux/amd64
