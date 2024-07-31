@@ -7,7 +7,7 @@ setup() {
     set -v
     export DEBIAN_FRONTEND=noninteractive
     apt-get update
-    apt-get install --assume-yes --no-install-recommends apt-transport-https ca-certificates curl gnupg lsb-release software-properties-common
+    apt-get install --assume-yes --no-install-recommends apt-transport-https ca-certificates curl gnupg lsb-release software-properties-common apt-utils zstd dpkg
     set +v
 
     set -v
