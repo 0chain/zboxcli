@@ -1,0 +1,56 @@
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version of zboxcli to release'
+        required: true
+        default: '1.0.0'
+      dry_run:
+        description: 'Run without making changes'
+        required: false
+        default: 'false'
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GOSDK }}
+  VERSION: ${{ github.event.inputs.version }}
+
+jobs:
+  linux_amd64:
+    name: linux_amd64
+    runs-on: ubuntu-latest
+    env:
+      SRC_DIR: ${{ github.workspace }}/src
+      OUTPUT_DIR: ${{ github.workspace }}/output
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        path: ${{ env.SRC_DIR }}
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version-file: 'go.mod'
+        cache: false
+
+    - name: Setup
+      run : |
+        mkdir -p ${{ env.OUTPUT_DIR }}
+
+    - name: Build
+      run: |
+        cd ${{ env.SRC_DIR }} 
+        CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${{ env.VERSION }} -linkmode 'external' -extldflags '-static'" -o ${{ env.OUTPUT_DIR }}/zbox .
+
+    - name: Zip
+      uses: montudor/action-zip@v1
+      with:
+        args: zip -r ${{ env.OUTPUT_DIR }}/zbox-linux-amd64.zip ${{ env.OUTPUT_DIR }}/zbox
+
+    - name: Upload Zip
+      uses: actions/upload-artifact@v3
+      with:
+        name: zbox-linux-amd64
+        path: ${{ env.OUTPUT_DIR }}/zbox-linux-amd64.zip
+
