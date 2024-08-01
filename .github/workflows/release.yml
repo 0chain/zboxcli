@@ -16,20 +16,23 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GOSDK }}
-  VERSION: ${{ github.event.inputs.version }}
+  VERSION: 1.16.0
   APP_NAME: zbox
 
 jobs:
   windows:
     runs-on: windows-latest
     env:
-      SRC_DIR: ${{ github.workspace }}/src
-      OUTPUT_DIR: ${{ github.workspace }}/output
+      SRC_DIR: ${{ github.workspace }}\src
+      OUTPUT_DIR: ${{ github.workspace }}\output
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
       with:
         path: ${{ env.SRC_DIR }}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
 
     - name: Setup
       run : |
@@ -42,27 +45,27 @@ jobs:
           --build-arg VERSION=${{ env.VERSION }} \
           --tag ${{ env.APP_NAME }}:${{ env.VERSION }} \
           --load \
-          --output type=docker,dest=${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-${{ env.VERSION }}.tar \
-          -f ${{ env.SRC_DIR }}/scripts/windows/Dockerfile.build ${{ env.SRC_DIR }}
+          --output type=docker,dest=${{ env.OUTPUT_DIR }}\${{ env.APP_NAME }}-${{ env.VERSION }}.tar \
+          -f ${{ env.SRC_DIR }}\scripts\windows\Dockerfile.build ${{ env.SRC_DIR }}
 
     - name: Load Docker image
       run: |
-        docker load -i ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-${{ env.VERSION }}.tar
+        docker load -i ${{ env.OUTPUT_DIR }}\${{ env.APP_NAME }}-${{ env.VERSION }}.tar
 
     - name: Extract binary from container
       run: |
         CONTAINER_ID=$(docker create ${{ env.APP_NAME }}-${{ env.VERSION }})
-        docker cp ${CONTAINER_ID}:c:/src/zbox.exe ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}
+        docker cp ${CONTAINER_ID}:c:\src\zbox.exe ${{ env.OUTPUT_DIR }}\${{ env.APP_NAME }}
         docker rm ${CONTAINER_ID}
 
     - name: Create Zip File
       uses: montudor/action-zip@v1
       with:
-        args: zip -r ${{ env.OUTPUT_DIR }}/zbox-linux-amd64.zip ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}
+        args: zip -r ${{ env.OUTPUT_DIR }}\zbox-linux-amd64.zip ${{ env.OUTPUT_DIR }}\${{ env.APP_NAME }}
 
     - name: Upload Zip
       uses: actions/upload-artifact@v3
       with:
         name: zbox-windows-amd64
-        path: ${{ env.OUTPUT_DIR }}/zbox-linux-amd64.zip
+        path: ${{ env.OUTPUT_DIR }}\zbox-linux-amd64.zip
     
