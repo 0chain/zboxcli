@@ -1,0 +1,71 @@
+name: Release
+on:
+  push: # remove push once tested
+    branches:
+      - packaging
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version of zboxcli to release'
+        required: true
+        default: '1.0.0'
+      dry_run:
+        description: 'Run without making changes'
+        required: false
+        default: 'false'
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GOSDK }}
+  VERSION: ${{ github.event.inputs.version }}
+  APP_NAME: zbox
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    env:
+      SRC_DIR: ${{ github.workspace }}/src
+      OUTPUT_DIR: ${{ github.workspace }}/output
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        path: ${{ env.SRC_DIR }}
+
+    - name: Setup
+      run : |
+        mkdir -p ${{ env.OUTPUT_DIR }}
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+
+    - name: Build Docker image
+      run: |
+        docker buildx create --use
+        docker buildx build \
+          --build-arg VERSION=${{ env.VERSION }} \
+          --tag ${{ env.APP_NAME }}:${{ env.VERSION }} \
+          --load \
+          --output type=docker,dest=${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-${{ env.VERSION }}.tar \
+          -f ${{ env.SRC_DIR }}/scripts/windows/Dockerfile.build ${{ env.SRC_DIR }}
+
+    - name: Load Docker image
+      run: |
+        docker load -i ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-${{ env.VERSION }}.tar
+
+    - name: Extract binary from container
+      run: |
+        CONTAINER_ID=$(docker create ${{ env.APP_NAME }}-${{ env.VERSION }})
+        docker cp ${CONTAINER_ID}:c:/src/zbox.exe ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}
+        docker rm ${CONTAINER_ID}
+
+    - name: Create Zip File
+      uses: montudor/action-zip@v1
+      with:
+        args: zip -r ${{ env.OUTPUT_DIR }}/zbox-linux-amd64.zip ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}
+
+    - name: Upload Zip
+      uses: actions/upload-artifact@v3
+      with:
+        name: zbox-windows-amd64
+        path: ${{ env.OUTPUT_DIR }}/zbox-linux-amd64.zip
+    
