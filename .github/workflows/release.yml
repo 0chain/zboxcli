@@ -35,9 +35,6 @@ jobs:
       run : |
         mkdir -p ${{ env.OUTPUT_DIR }}
 
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v3
-
     - name: Build Docker image
       run: |
         docker buildx create --use
