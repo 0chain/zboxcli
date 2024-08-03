@@ -36,7 +36,7 @@ jobs:
       run : |
         mkdir -p ${{ env.OUTPUT_DIR }}
         sudo apt-get update
-        sudo apt-get install -y clang cmake git patch python libssl-dev lzma-dev libxml2-dev xz-utils bzip2 cpio libbz2-dev zlib1g-dev
+        sudo apt-get install -y clang cmake git patch python-is-python3 libssl-dev lzma-dev libxml2-dev xz-utils bzip2 cpio libbz2-dev zlib1g-dev
 
     - name: Set up Go
       uses: actions/setup-go@v4
@@ -113,6 +113,10 @@ jobs:
       uses: docker/setup-qemu-action@v3
       with:
         platforms: linux/amd64,linux/arm64
+
+    - name: Setup
+      run : |
+        mkdir -p ${{ env.OUTPUT_DIR }}
 
     - name: Build Docker image for linux/amd64
       run: |
