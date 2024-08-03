@@ -60,10 +60,11 @@ jobs:
         PATH: ${{ github.workspace }}/osxcross/target/bin:${{ env.PATH }}
         VERSION: ${{ env.VERSION }}
       run: |
-        echo "Building for Darwin/amd64..."
+        cd ${{ env.SRC_DIR }}
         export GO111MODULE=on
         export CGO_ENABLED=1
-        CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=amd64 go build -o ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }} ${{ env.SRC_DIR }}
+        echo "Building for Darwin/amd64..."
+        CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=amd64 go build -o ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }} .
         echo "Build completed."
 
     - name: Create Zip File for linux/amd64
@@ -83,8 +84,11 @@ jobs:
         PATH: ${{ github.workspace }}/osxcross/target/bin:${{ env.PATH }}
         VERSION: ${{ env.VERSION }}
       run: |
+        cd ${{ env.SRC_DIR }}
+        export GO111MODULE=on
+        export CGO_ENABLED=1
         echo "Building for Darwin/arm64..."
-        CGO_ENABLED=1 CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=arm64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${VERSION} -linkmode 'external' -extldflags '-static'" -o ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }} ${{ env.SRC_DIR }}
+        CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=arm64 go build -o ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }} .
         echo "Build completed."
 
     - name: Create Zip File for linux/arm64
