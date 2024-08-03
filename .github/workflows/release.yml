@@ -16,15 +16,16 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GOSDK }}
-  VERSION: 1.16.0
+  VERSION: 1.16.0    # take as input from workflow
   APP_NAME: zbox
+  GO_VERSION: 1.21
 
 jobs:
-  windows:
-    runs-on: windows-latest
+  darwin:
+    runs-on: ubuntu-latest
     env:
-      SRC_DIR: ${{ github.workspace }}\src
-      OUTPUT_DIR: ${{ github.workspace }}\output
+      SRC_DIR: ${{ github.workspace }}/src
+      OUTPUT_DIR: ${{ github.workspace }}/output
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -34,38 +35,140 @@ jobs:
     - name: Setup
       run : |
         mkdir -p ${{ env.OUTPUT_DIR }}
+        sudo apt-get update
+        sudo apt-get install -y clang cmake git patch python libssl-dev lzma-dev libxml2-dev xz-utils bzip2 cpio libbz2-dev zlib1g-dev
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
-    - name: Build Docker image
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{ env.GO_VERSION }}
+    
+    - name: Set up osxcross
       run: |
-        docker buildx create --use
-        docker buildx build \
-          --build-arg VERSION=${{ env.VERSION }} \
-          --tag ${{ env.APP_NAME }}:${{ env.VERSION }} \
-          --load \
-          --output type=docker,dest=${{ env.OUTPUT_DIR }}\${{ env.APP_NAME }}-${{ env.VERSION }}.tar \
-          -f ${{ env.SRC_DIR }}\scripts\windows\Dockerfile.build ${{ env.SRC_DIR }}
-
-    - name: Load Docker image
+        cd ${{ github.workspace }}
+        git clone https://github.com/tpoechtrager/osxcross.git
+        cd osxcross/tarballs
+        wget https://github.com/phracker/MacOSX-SDKs/releases/download/11.3/MacOSX11.3.sdk.tar.xz
+        cd ..
+        export CC=clang
+        export CXX=clang++
+        UNATTENDED=yes OSX_VERSION_MIN=10.11 ./build.sh
+    
+    - name: Cross-compile for Darwin/amd64
+      env:
+        OSXCROSS_ROOT: ${{ github.workspace }}/osxcross
+        PATH: ${{ env.OSXCROSS_ROOT }}/target/bin:${{ env.PATH }}
+        VERSION: ${{ env.VERSION }}
       run: |
-        docker load -i ${{ env.OUTPUT_DIR }}\${{ env.APP_NAME }}-${{ env.VERSION }}.tar
+        cd ${{ env.SRC_DIR }}
+        echo "Building for Darwin/amd64..."
+        CGO_ENABLED=1 CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=amd64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${VERSION} -linkmode 'external' -extldflags '-static'" -o ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }} .
+        echo "Build completed."
 
-    - name: Extract binary from container
-      run: |
-        CONTAINER_ID=$(docker create ${{ env.APP_NAME }}-${{ env.VERSION }})
-        docker cp ${CONTAINER_ID}:c:\src\zbox.exe ${{ env.OUTPUT_DIR }}\${{ env.APP_NAME }}
-        docker rm ${CONTAINER_ID}
-
-    - name: Create Zip File
+    - name: Create Zip File for Darwin/amd64
       uses: montudor/action-zip@v1
       with:
-        args: zip -r ${{ env.OUTPUT_DIR }}\zbox-linux-amd64.zip ${{ env.OUTPUT_DIR }}\${{ env.APP_NAME }}
+        args: zip -r ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-darwin-amd64.zip ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}
+
+    - name: Upload Zip for Darwin/amd64
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.APP_NAME }}-darwin-amd64
+        path: ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-darwin-amd64.zip
+
+    - name: Cross-compile for Darwin/arm64
+      env:
+        OSXCROSS_ROOT: ${{ github.workspace }}/osxcross
+        PATH: ${{ env.OSXCROSS_ROOT }}/target/bin:${{ env.PATH }}
+        VERSION: ${{ env.VERSION }}
+      run: |
+        cd ${{ env.SRC_DIR }}
+        echo "Building for Darwin/arm64..."
+        CGO_ENABLED=1 CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=arm64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${VERSION} -linkmode 'external' -extldflags '-static'" -o ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }} .
+        echo "Build completed."
+
+    - name: Create Zip File for Darwin/arm64
+      uses: montudor/action-zip@v1
+      with:
+        args: zip -r ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-darwin-arm64.zip ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}
 
     - name: Upload Zip
       uses: actions/upload-artifact@v3
       with:
-        name: zbox-windows-amd64
-        path: ${{ env.OUTPUT_DIR }}\zbox-linux-amd64.zip
+        name: ${{ env.APP_NAME }}-darwin-arm64
+        path: ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-darwin-arm64.zip
+
+  linux: 
+    runs-on: ubuntu-latest
+    env:
+      SRC_DIR: ${{ github.workspace }}/src
+      OUTPUT_DIR: ${{ github.workspace }}/output
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        path: ${{ env.SRC_DIR }}
     
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: linux/amd64,linux/arm64
+
+    - name: Build Docker image for linux/amd64
+      run: |
+        docker buildx create --use
+        docker buildx build \
+          --platform linux/amd64 \
+          --build-arg VERSION=${{ env.VERSION }} \
+          --tag ${{ env.APP_NAME }}-amd64 \
+          --load \
+          --output type=docker,dest=${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-amd64.tar \
+          -f ${{ env.SRC_DIR }}/scripts/debian/Dockerfile.build ${{ env.SRC_DIR }}
+
+    - name: Load image ${{ env.APP_NAME }}-amd64 & Extract binary from container
+      run: |
+        docker load -i ${{ env.APP_NAME }}-amd64.tar
+        CONTAINER_ID=$(docker create ${{ env.APP_NAME }}-amd64.tar)
+        docker cp ${CONTAINER_ID}:/${{ env.APP_NAME }} ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}
+        docker rm ${CONTAINER_ID}
+
+    - name: Create Zip File for linux/amd64
+      uses: montudor/action-zip@v1
+      with:
+        args: zip -r ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-linux-amd64.zip ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}
+
+    - name: Upload Zip for Darwin/amd64
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.APP_NAME }}-linux-amd64
+        path: ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-linux-amd64.zip
+    
+    - name: Build Docker image for linux/arm64
+      run: |
+        docker buildx create --use
+        docker buildx build \
+          --platform linux/arm64 \
+          --build-arg VERSION=${{ env.VERSION }} \
+          --tag ${{ env.APP_NAME }}-arm64 \
+          --load \
+          --output type=docker,dest=${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-arm64.tar \
+          -f ${{ env.SRC_DIR }}/scripts/debian/Dockerfile.build ${{ env.SRC_DIR }}
+
+    - name: Load image ${{ env.APP_NAME }}-arm64 & Extract binary from container
+      run: |
+        docker load -i ${{ env.APP_NAME }}-arm64.tar
+        CONTAINER_ID=$(docker create ${{ env.APP_NAME }}-arm64.tar)
+        docker cp ${CONTAINER_ID}:/${{ env.APP_NAME }} ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}
+        docker rm ${CONTAINER_ID}
+
+    - name: Create Zip File for linux/arm64
+      uses: montudor/action-zip@v1
+      with:
+        args: zip -r ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-linux-arm64.zip ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}
+
+    - name: Upload Zip for Darwin/arm64
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.APP_NAME }}-linux-arm64
+        path: ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-linux-arm64.zip
+  
