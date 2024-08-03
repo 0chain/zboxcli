@@ -55,12 +55,10 @@ jobs:
         UNATTENDED=yes OSX_VERSION_MIN=10.11 ./build.sh
     
     - name: Cross-compile for Darwin/amd64
-      env:
-        OSXCROSS_ROOT: ${{ github.workspace }}/osxcross
-        PATH: ${{ github.workspace }}/osxcross/target/bin:${{ env.PATH }}
-        VERSION: ${{ env.VERSION }}
       run: |
         cd ${{ env.SRC_DIR }}
+        export OSXCROSS_ROOT=${{ github.workspace }}/osxcross
+        export PATH=$OSXCROSS_ROOT/target/bin:$PATH
         export GO111MODULE=on
         export CGO_ENABLED=1
         echo "Building for Darwin/amd64..."
@@ -79,12 +77,10 @@ jobs:
         path: ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-darwin-amd64.zip
 
     - name: Cross-compile for Darwin/arm64
-      env:
-        OSXCROSS_ROOT: ${{ github.workspace }}/osxcross
-        PATH: ${{ github.workspace }}/osxcross/target/bin:${{ env.PATH }}
-        VERSION: ${{ env.VERSION }}
       run: |
         cd ${{ env.SRC_DIR }}
+        export OSXCROSS_ROOT=${{ github.workspace }}/osxcross
+        export PATH=$OSXCROSS_ROOT/target/bin:$PATH
         export GO111MODULE=on
         export CGO_ENABLED=1
         echo "Building for Darwin/arm64..."
