@@ -48,7 +48,7 @@ jobs:
         cd ${{ github.workspace }}
         git clone https://github.com/tpoechtrager/osxcross.git
         cd osxcross/tarballs
-        wget https://github.com/phracker/MacOSX-SDKs/releases/download/11.3/MacOSX11.3.sdk.tar.xz
+        wget https://github.com/phracker/MacOSX-SDKs/releases/download/10.13/MacOSX10.13.sdk.tar.xz
         cd ..
         export CC=clang
         export CXX=clang++
