@@ -57,21 +57,20 @@ jobs:
     - name: Cross-compile for Darwin/amd64
       env:
         OSXCROSS_ROOT: ${{ github.workspace }}/osxcross
-        PATH: ${{ env.OSXCROSS_ROOT }}/target/bin:${{ env.PATH }}
+        PATH: ${{ github.workspace }}/osxcross/target/bin:${{ env.PATH }}
         VERSION: ${{ env.VERSION }}
       run: |
-        cd ${{ env.SRC_DIR }}
         echo "Building for Darwin/amd64..."
         export GO111MODULE=on
         export CGO_ENABLED=1
         CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=amd64 go build -o ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }} ${{ env.SRC_DIR }}
         echo "Build completed."
 
-    - name: Create Zip File for Darwin/amd64
-      uses: montudor/action-zip@v1
-      with:
-        args: zip -r ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-darwin-amd64.zip ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}
-
+    - name: Create Zip File for linux/amd64
+      run: |
+        cd ${{ env.OUTPUT_DIR }}
+        zip -qq -r ${{ env.APP_NAME }}-darwin-amd64.zip ${{ env.APP_NAME }}
+    
     - name: Upload Zip for Darwin/amd64
       uses: actions/upload-artifact@v3
       with:
@@ -81,19 +80,18 @@ jobs:
     - name: Cross-compile for Darwin/arm64
       env:
         OSXCROSS_ROOT: ${{ github.workspace }}/osxcross
-        PATH: ${{ env.OSXCROSS_ROOT }}/target/bin:${{ env.PATH }}
+        PATH: ${{ github.workspace }}/osxcross/target/bin:${{ env.PATH }}
         VERSION: ${{ env.VERSION }}
       run: |
-        cd ${{ env.SRC_DIR }}
         echo "Building for Darwin/arm64..."
-        CGO_ENABLED=1 CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=arm64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${VERSION} -linkmode 'external' -extldflags '-static'" -o ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }} .
+        CGO_ENABLED=1 CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=arm64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${VERSION} -linkmode 'external' -extldflags '-static'" -o ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }} ${{ env.SRC_DIR }}
         echo "Build completed."
 
-    - name: Create Zip File for Darwin/arm64
-      uses: montudor/action-zip@v1
-      with:
-        args: zip -r ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-darwin-arm64.zip ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}
-
+    - name: Create Zip File for linux/arm64
+      run: |
+        cd ${{ env.OUTPUT_DIR }}
+        zip -qq -r ${{ env.APP_NAME }}-darwin-arm64.zip ${{ env.APP_NAME }}
+    
     - name: Upload Zip
       uses: actions/upload-artifact@v3
       with:
@@ -116,6 +114,9 @@ jobs:
       with:
         platforms: linux/amd64,linux/arm64
 
+    - name: Install zip
+      uses: montudor/action-zip@v1
+
     - name: Setup
       run : |
         mkdir -p ${{ env.OUTPUT_DIR }}
@@ -131,20 +132,17 @@ jobs:
           --output type=docker,dest=${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-amd64.tar \
           -f ${{ env.SRC_DIR }}/scripts/debian/Dockerfile.build ${{ env.SRC_DIR }}
 
-    - name: Load image ${{ env.APP_NAME }}-amd64
+    - name: Load image ${{ env.APP_NAME }}-amd64 & Extract binary ${{ env.APP_NAME }} from container
       run: |
         docker load -i ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-amd64.tar
-
-    - name: Extract binary ${{ env.APP_NAME }}-amd64 from container
-      run: |
         CONTAINER_ID=$(docker create ${{ env.APP_NAME }}-amd64)
         docker cp ${CONTAINER_ID}:/zbox ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}
         docker rm ${CONTAINER_ID}
 
     - name: Create Zip File for linux/amd64
-      uses: montudor/action-zip@v1
-      with:
-        args: zip -r ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-linux-amd64.zip ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}
+      run: |
+        cd ${{ env.OUTPUT_DIR }}
+        zip -qq -r ${{ env.APP_NAME }}-linux-amd64.zip ${{ env.APP_NAME }}
 
     - name: Upload Zip for Darwin/amd64
       uses: actions/upload-artifact@v3
@@ -167,14 +165,14 @@ jobs:
       run: |
         docker load -i ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-arm64.tar
         CONTAINER_ID=$(docker create ${{ env.APP_NAME }}-arm64)
-        docker cp ${CONTAINER_ID}:/${{ env.APP_NAME }} ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}
+        docker cp ${CONTAINER_ID}:/zbox ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}
         docker rm ${CONTAINER_ID}
 
     - name: Create Zip File for linux/arm64
-      uses: montudor/action-zip@v1
-      with:
-        args: zip -r ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-linux-arm64.zip ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}
-
+      run: |
+        cd ${{ env.OUTPUT_DIR }}
+        zip -qq -r ${{ env.APP_NAME }}-linux-arm64.zip ${{ env.APP_NAME }}
+  
     - name: Upload Zip for Darwin/arm64
       uses: actions/upload-artifact@v3
       with:
