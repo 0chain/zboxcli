@@ -48,8 +48,11 @@ jobs:
         cd ${{ github.workspace }}
         git clone https://github.com/tpoechtrager/osxcross.git
         cd osxcross/tarballs
-        wget https://github.com/phracker/MacOSX-SDKs/releases/download/10.13/MacOSX10.13.sdk.tar.xz
+        wget https://github.com/phracker/MacOSX-SDKs/releases/download/11.3/MacOSX11.3.sdk.tar.xz
+        wget https://github.com/llvm/llvm-project/releases/download/llvmorg-11.1.0/libcxx-11.1.0.src.tar.xz
+        tar -xf libcxx-11.1.0.src.tar.xz -C ${{ github.workspace }}/osxcross/target/
         cd ..
+        ./tools/gen_sdk_package.sh --darwin-version=11.3
         export CC=clang
         export CXX=clang++
         UNATTENDED=yes OSX_VERSION_MIN=10.11 ./build.sh
@@ -59,6 +62,9 @@ jobs:
         cd ${{ env.SRC_DIR }}
         export OSXCROSS_ROOT=${{ github.workspace }}/osxcross
         export PATH=$OSXCROSS_ROOT/target/bin:$PATH
+        export SDKROOT=$OSXCROSS_ROOT/target/SDK/MacOSX11.3.sdk
+        export CFLAGS="-isysroot $SDKROOT"
+        export CXXFLAGS="-isysroot $SDKROOT -stdlib=libc++"
         export GO111MODULE=on
         export CGO_ENABLED=1
         echo "Building for Darwin/amd64..."
