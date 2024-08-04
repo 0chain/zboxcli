@@ -36,7 +36,7 @@ jobs:
       run : |
         mkdir -p ${{ env.OUTPUT_DIR }}
         sudo apt-get update
-        sudo apt-get install -y clang cmake git patch python-is-python3 libssl-dev lzma-dev libxml2-dev xz-utils bzip2 cpio libbz2-dev zlib1g-dev libc++-dev libc++abi-dev build-essential libstdc++-7-dev
+        sudo apt-get install -y clang cmake git patch python-is-python3 libssl-dev lzma-dev libxml2-dev xz-utils bzip2 cpio libbz2-dev zlib1g-dev libc++-dev libc++abi-dev gcc g++ build-essential libstdc++-12-dev
 
     - name: Set up Go
       uses: actions/setup-go@v4
