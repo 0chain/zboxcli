@@ -36,7 +36,7 @@ jobs:
       run : |
         mkdir -p ${{ env.OUTPUT_DIR }}
         sudo apt-get update
-        sudo apt-get install -y clang cmake git patch python-is-python3 libssl-dev lzma-dev libxml2-dev xz-utils bzip2 cpio libbz2-dev zlib1g-dev libc++-dev libc++abi-dev
+        sudo apt-get install -y clang cmake git patch python-is-python3 libssl-dev lzma-dev libxml2-dev xz-utils bzip2 cpio libbz2-dev zlib1g-dev libc++-dev libc++abi-dev build-essential
 
     - name: Set up Go
       uses: actions/setup-go@v4
@@ -66,10 +66,10 @@ jobs:
         export GO111MODULE=on
         export CGO_ENABLED=1
         echo "Building for Darwin/amd64..."
-        CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=amd64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${{env.VERSION }} -linkmode 'external' -extldflags '-static -stdlib=libc++'" -o ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }} .
+        CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=amd64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${{env.VERSION }}" -o ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }} .
         echo "Build completed."
 
-    - name: Create Zip File for linux/amd64
+    - name: Create Zip File for Darwin/amd64
       run: |
         cd ${{ env.OUTPUT_DIR }}
         zip -qq -r ${{ env.APP_NAME }}-darwin-amd64.zip ${{ env.APP_NAME }}
@@ -88,15 +88,15 @@ jobs:
         export GO111MODULE=on
         export CGO_ENABLED=1
         echo "Building for Darwin/arm64..."
-        CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=arm64 go build -o ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }} .
+        CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=arm64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${{env.VERSION }}" -o ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }} .
         echo "Build completed."
 
-    - name: Create Zip File for linux/arm64
+    - name: Create Zip File for Darwin/arm64
       run: |
         cd ${{ env.OUTPUT_DIR }}
         zip -qq -r ${{ env.APP_NAME }}-darwin-arm64.zip ${{ env.APP_NAME }}
     
-    - name: Upload Zip
+    - name: Upload Zip for Darwin/arm64
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.APP_NAME }}-darwin-arm64
