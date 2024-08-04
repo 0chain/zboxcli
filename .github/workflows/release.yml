@@ -36,7 +36,7 @@ jobs:
       run : |
         mkdir -p ${{ env.OUTPUT_DIR }}
         sudo apt-get update
-        sudo apt-get install -y clang cmake git patch python-is-python3 libssl-dev lzma-dev libxml2-dev xz-utils bzip2 cpio libbz2-dev zlib1g-dev libc++-dev libc++abi-dev gcc g++ build-essential libstdc++-12-dev
+        sudo apt-get install -y clang cmake git patch python-is-python3 libssl-dev lzma-dev libxml2-dev xz-utils bzip2 cpio libbz2-dev zlib1g-dev
 
     - name: Set up Go
       uses: actions/setup-go@v4
@@ -52,22 +52,22 @@ jobs:
         cd ..
         export CC=clang
         export CXX=clang++
-        UNATTENDED=yes OSX_VERSION_MIN=10.11 ./build.sh
+        UNATTENDED=yes OSX_VERSION_MIN=10.10 ./build.sh
 
     - name: Cross-compile for Darwin/amd64
       run: |
         cd ${{ env.SRC_DIR }}
         export OSXCROSS_ROOT=${{ github.workspace }}/osxcross
         export PATH=$OSXCROSS_ROOT/target/bin:$PATH
-        export SDKROOT=$OSXCROSS_ROOT/target/SDK/MacOSX11.3.sdk
-        export CFLAGS="-isysroot $SDKROOT -stdlib=libc++"
-        export CXXFLAGS="-isysroot $SDKROOT -stdlib=libc++"
-        export LDFLAGS="-isysroot $SDKROOT -stdlib=libc++"
         export GO111MODULE=on
         export CGO_ENABLED=1
+
+        find /usr -name "libstdc++*" # debug
+        o64-clang -v
+        o64-clang++ -v
+
         echo "Building for Darwin/amd64..."
-        find /usr -name "libstdc++*" 
-        CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=amd64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${{env.VERSION }} -extldflags '-stdlib=libc++'" -o ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }} .
+        CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=amd64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${{env.VERSION }}" -o ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }} .
         echo "Build completed."
 
     - name: Create Zip File for Darwin/amd64
@@ -89,7 +89,7 @@ jobs:
         export GO111MODULE=on
         export CGO_ENABLED=1
         echo "Building for Darwin/arm64..."
-        CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=arm64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${{env.VERSION }} -extldflags '-stdlib=libc++'" -o ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }} .
+        CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=arm64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${{env.VERSION }}" -o ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }} .
         echo "Build completed."
 
     - name: Create Zip File for Darwin/arm64
