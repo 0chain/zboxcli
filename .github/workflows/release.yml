@@ -36,7 +36,7 @@ jobs:
       run : |
         mkdir -p ${{ env.OUTPUT_DIR }}
         sudo apt-get update
-        sudo apt-get install -y clang cmake git patch python-is-python3 libssl-dev lzma-dev libxml2-dev xz-utils bzip2 cpio libbz2-dev zlib1g-dev libc++-dev libc++abi-dev build-essential
+        sudo apt-get install -y clang cmake git patch python-is-python3 libssl-dev lzma-dev libxml2-dev xz-utils bzip2 cpio libbz2-dev zlib1g-dev libc++-dev libc++abi-dev build-essential libstdc++-7-dev
 
     - name: Set up Go
       uses: actions/setup-go@v4
@@ -66,6 +66,7 @@ jobs:
         export GO111MODULE=on
         export CGO_ENABLED=1
         echo "Building for Darwin/amd64..."
+        find /usr -name "libstdc++*" 
         CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=amd64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${{env.VERSION }} -extldflags '-stdlib=libc++'" -o ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }} .
         echo "Build completed."
 
