@@ -66,7 +66,7 @@ jobs:
         export GO111MODULE=on
         export CGO_ENABLED=1
         echo "Building for Darwin/amd64..."
-        CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=amd64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${{env.VERSION }}" -o ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }} .
+        CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=amd64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${{env.VERSION }} -extldflags '-stdlib=libc++'" -o ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }} .
         echo "Build completed."
 
     - name: Create Zip File for Darwin/amd64
@@ -88,7 +88,7 @@ jobs:
         export GO111MODULE=on
         export CGO_ENABLED=1
         echo "Building for Darwin/arm64..."
-        CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=arm64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${{env.VERSION }}" -o ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }} .
+        CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=arm64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${{env.VERSION }} -extldflags '-stdlib=libc++'" -o ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }} .
         echo "Build completed."
 
     - name: Create Zip File for Darwin/arm64
