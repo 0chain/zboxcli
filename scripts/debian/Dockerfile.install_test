@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y curl dpkg
 RUN dpkg --print-architecture
 
 # Download and install the app
-ARG LOC=https://packages.zus.network/deb_install.sh
+ARG LOC=https://packages.zus.network/aptrepo/zbox_deb_install.sh
 RUN set -e; \
     curl -sL ${LOC} | bash
 

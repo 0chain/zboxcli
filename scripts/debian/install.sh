@@ -22,8 +22,8 @@ setup() {
     if [[ -z $DIST_CODE ]]; then
         CLI_REPO=$(lsb_release -cs)
         shopt -s nocasematch
-        ERROR_MSG="Unable to find a package for your system. Please check if an existing package in https://packages.zus.network/aptrepo/dists/ can be used in your system and install with the dist name: 'curl -sL https://packages.zus.network/deb_install.sh | sudo DIST_CODE=<dist_code_name> bash'"
-        if [[ ! $(curl -sL https://packages.zus.network/aptrepo/dists/) =~ $CLI_REPO ]]; then
+        ERROR_MSG="Unable to find a package for your system. Please check if an existing package in https://packages.zus.network/aptrepo/zbox/dists/ can be used in your system and install with the dist name: 'curl -sL https://packages.zus.network/aptrepo/zbox_deb_install.sh | sudo DIST_CODE=<dist_code_name> bash'"
+        if [[ ! $(curl -sL https://packages.zus.network/aptrepo/zbox/dists/) =~ $CLI_REPO ]]; then
             DIST=$(lsb_release -is)
             if [[ $DIST =~ "Ubuntu" ]]; then
                 CLI_REPO="jammy"
@@ -42,8 +42,8 @@ setup() {
         fi
     else
         CLI_REPO=$DIST_CODE
-        if [[ ! $(curl -sL https://packages.zus.network/aptrepo/dists/) =~ $CLI_REPO ]]; then
-            echo "Unable to find an zbox-cli package with DIST_CODE=$CLI_REPO in https://packages.zus.network/aptrepo/dists/"
+        if [[ ! $(curl -sL https://packages.zus.network/aptrepo/zbox/dists/) =~ $CLI_REPO ]]; then
+            echo "Unable to find an zbox package with DIST_CODE=$CLI_REPO in https://packages.zus.network/aptrepo/zbox/dists/"
             exit 1
         fi
     fi
@@ -53,7 +53,7 @@ setup() {
     fi
 
     echo "Types: deb
-URIs: https://packages.zus.network/aptrepo/
+URIs: https://packages.zus.network/aptrepo/zbox/
 Suites: ${CLI_REPO}
 Components: main
 Architectures: $(dpkg --print-architecture)

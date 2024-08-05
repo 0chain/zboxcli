@@ -1,11 +1,19 @@
 name: Build, Distribute and Test zbox
 
 on:
+  push: # REMOVE: push once tested
+    branches:
+      - packaging
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version of zbox to release'
+        required: true
+        default: 'v1.0.0'
 
 env:
   APP_NAME: zbox
-  APP_VERSION: 1.16.0-1
+  APP_VERSION: v1.16.0 # REMOVE: take as input from workflow
   GO_VERSION: 1.21.0
   REMOTE_SERVER: 5.9.151.246
   REMOTE_USER: root
@@ -132,7 +140,7 @@ jobs:
       DISTRIBUTIONS: bionic focal jammy noble bookworm bullseye buster
       ARCHITECTURES: amd64 arm64
       SRC_DIR: ${{ github.workspace }}/src
-      REPO_DIR: ${{ github.workspace }}/aptrepo
+      REPO_DIR: ${{ github.workspace }}/zbox
       DEB_DIR: ${{ github.workspace }}/deb-files
     steps:
     - name: Checkout code
@@ -169,7 +177,7 @@ jobs:
 
     - name: Download APT repo
       run: |
-          scp -v -i ~/.ssh/id_rsa -r ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:/var/www/html/aptrepo/ ${{ github.workspace }}
+          scp -v -i ~/.ssh/id_rsa -r ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:/var/www/html/aptrepo/zbox/ ${{ github.workspace }}
 
     - name: Download all .deb files
       uses: actions/download-artifact@v3
@@ -188,18 +196,18 @@ jobs:
       run: |
         cd ${{ env.REPO_DIR }}
         for dist in ${{ env.DISTRIBUTIONS }}; do
-          for arch in ${{ env.ARCHITECTURES }}; do
-            mkdir -p dists/${dist}/main/binary-${arch}
-            apt-ftparchive packages pool/main > dists/${dist}/main/binary-${arch}/Packages
-          done
-          apt-ftparchive release -o APT::FTPArchive::Release::Origin="${{ env.APP_NAME }}" \
+          apt-ftparchive -o APT::FTPArchive::Release::Origin="${{ env.APP_NAME }}" \
                       -o APT::FTPArchive::Release::Label="${{ env.APP_NAME }}" \
                       -o APT::FTPArchive::Release::Suite="${dist}" \
                       -o APT::FTPArchive::Release::Codename="${dist}" \
                       -o APT::FTPArchive::Release::Version="${{ env.APP_VERSION }}" \
                       -o APT::FTPArchive::Release::Architectures="${{ env.ARCHITECTURES }}" \
                       -o APT::FTPArchive::Release::Components="main" \
-                      dists/${dist} > dists/${dist}/Release
+                      -o Tree::dists/${dist}::Sections="main" \
+                      -o Tree::dists/${dist}::Architectures="${{ env.ARCHITECTURES }}" \
+                      -o Dir::ArchiveDir="${{ env.REPO_DIR }}" \
+                      packages pool/main override-file \
+                      release dists/${dist}
 
           echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --default-key ${{ secrets.GPG_KEY_ID }} --batch --yes --passphrase-fd 0 -abs -o dists/${dist}/Release.gpg dists/${dist}/Release
           echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --default-key ${{ secrets.GPG_KEY_ID }} --batch --yes --passphrase-fd 0 --clearsign -o dists/${dist}/InRelease dists/${dist}/Release
@@ -207,7 +215,7 @@ jobs:
 
     - name: Upload APT repo to remote
       run: |
-        scp -v -i ~/.ssh/id_rsa -r ${{ github.workspace }}/aptrepo/ ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:/var/www/html/
+        scp -v -i ~/.ssh/id_rsa -r ${{ github.workspace }}/zbox/ ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:/var/www/html/aptrepo/
 
     - name: Upload GPG public key to remote server
       run: |
@@ -216,7 +224,7 @@ jobs:
 
     - name: Upload install script to remote server
       run: |
-        scp -v -i ~/.ssh/id_rsa ${{ env.SRC_DIR }}/scripts/debian/install.sh ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:/var/www/html/deb_install.sh
+        scp -v -i ~/.ssh/id_rsa ${{ env.SRC_DIR }}/scripts/debian/install.sh ${{ env.REMOTE_USER }}@${{ env.REMOTE_SERVER }}:/var/www/html/aptrepo/zbox_deb_install.sh
 
     
 
@@ -266,7 +274,7 @@ jobs:
         docker buildx build \
           --platform ${{ matrix.arch.platform }} \
           --build-arg BASE_IMAGE=${{ matrix.distro.base_image }} \
-          --build-arg LOC="https://packages.zus.network/deb_install.sh" \
+          --build-arg LOC="https://packages.zus.network/aptrepo/zbox_deb_install.sh" \
           --tag ${{ env.APP_NAME }}-${{ env.APP_VERSION }}-${{ matrix.distro.name }}-${{ matrix.arch.name }} \
           --load \
           --output type=docker,dest=${{ github.workspace }}/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-${{ matrix.distro.name }}-${{ matrix.arch.name }}.tar \
