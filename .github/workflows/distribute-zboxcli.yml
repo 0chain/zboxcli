@@ -9,11 +9,11 @@ on:
       version:
         description: 'Version of zbox to release'
         required: true
-        default: 'v1.0.0'
+        default: '1.0.0'
 
 env:
   APP_NAME: zbox
-  APP_VERSION: v1.16.0 # REMOVE: take as input from workflow
+  APP_VERSION: 1.16.0 # REMOVE: take as input from workflow
   GO_VERSION: 1.21.0
   REMOTE_SERVER: 5.9.151.246
   REMOTE_USER: root

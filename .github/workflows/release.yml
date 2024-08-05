@@ -8,11 +8,11 @@ on:
       version:
         description: 'Version of zbox to release'
         required: true
-        default: 'v1.0.0'
+        default: '1.0.0'
 
 env:
   GITHUB_TOKEN: ${{ secrets.GOSDK }}
-  VERSION: v1.16.0    # take as input from workflow
+  VERSION: 1.16.0    # take as input from workflow
   APP_NAME: zbox
   GO_VERSION: 1.21
 
