@@ -71,7 +71,7 @@ Signed-by: /etc/apt/keyrings/zus.gpg" | tee /etc/apt/sources.list.d/zbox.sources
     touch $CONFIG_PATH
     cat <<EOT > ${CONFIG_PATH}
 ---
-block_worker: https://dev.zus.network   # UPDATE: mainnet url
+block_worker: https://mainnet.zus.network/dns
 signature_scheme: bls0chain
 min_submit: 50
 min_confirmation: 50

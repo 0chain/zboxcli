@@ -1,9 +1,6 @@
 name: Build, Distribute and Test zbox
 
 on:
-  push: # REMOVE: push once tested
-    branches:
-      - packaging
   workflow_dispatch:
     inputs:
       version:
@@ -13,7 +10,7 @@ on:
 
 env:
   APP_NAME: zbox
-  APP_VERSION: 1.16.0 # REMOVE: take as input from workflow
+  APP_VERSION: ${{ github.event.inputs.version }}
   GO_VERSION: 1.21.0
   REMOTE_SERVER: 5.9.151.246
   REMOTE_USER: root
