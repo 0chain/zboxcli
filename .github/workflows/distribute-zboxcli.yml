@@ -106,7 +106,6 @@ jobs:
         Package: ${{ env.APP_NAME }}
         Version: ${{ env.APP_VERSION }}
         Architecture: ${{ matrix.arch.name }}
-        Maintainer: none <no-reply@gmail.com>
         Description: zbox is a command line interface (CLI) tool to understand the capabilities of Züs dStorage and prototype your app
         EOT
 
@@ -199,7 +198,7 @@ jobs:
           mkdir -p dists/${dist}
           for arch in ${{ env.ARCHITECTURES }}; do
               mkdir -p dists/${dist}/main/binary-${arch}
-              find "${{ env.REPO_DIR }}/pool/main/z/${{ env.APP_NAME }}" -type f -name "${{ env.APP_NAME }}_*~${dist}_${arch}.deb" | \
+              find "pool/main/z/${{ env.APP_NAME }}" -type f -name "${{ env.APP_NAME }}_*~${dist}_${arch}.deb" | \
               xargs -I {} apt-ftparchive -o Tree::dists/${dist}::Sections="main" \
                           -o Tree::dists/${dist}::Architectures="${arch}" \
                           -o Dir::ArchiveDir="${{ env.REPO_DIR }}" \
