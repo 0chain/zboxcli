@@ -1,6 +1,6 @@
 name: Release
 on:
-  push: # remove push once tested
+  push: # REMOVE: push once tested
     branches:
       - packaging
   workflow_dispatch:
@@ -12,7 +12,7 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GOSDK }}
-  VERSION: 1.16.0    # take as input from workflow
+  VERSION: 1.16.0    # REMOVE: take as input from workflow
   APP_NAME: zbox
   GO_VERSION: 1.21
 

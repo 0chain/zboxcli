@@ -186,28 +186,35 @@ jobs:
 
     - name: Copy debian packages
       run : |
-            mkdir -p ${{ env.REPO_DIR }}/pool/main/z/${APP_NAME}/
+            mkdir -p ${{ env.REPO_DIR }}/pool/main/z/${{ env.APP_NAME }}/
             find ${{ env.DEB_DIR }} -name "*.deb"
             for deb in $(find ${{ env.DEB_DIR }} -name "*.deb"); do
-              cp $deb ${{ env.REPO_DIR }}/pool/main/z/${APP_NAME}/
+              cp $deb ${{ env.REPO_DIR }}/pool/main/z/${{ env.APP_NAME }}/
             done
 
     - name: Update APT repo
       run: |
         cd ${{ env.REPO_DIR }}
         for dist in ${{ env.DISTRIBUTIONS }}; do
+          mkdir -p dists/${dist}
+          for arch in ${{ env.ARCHITECTURES }}; do
+              mkdir -p dists/${dist}/main/binary-${arch}
+              find "${{ env.REPO_DIR }}/pool/main/z/${{ env.APP_NAME }}" -type f -name "${{ env.APP_NAME }}_*~${dist}_${arch}.deb" | \
+              xargs -I {} apt-ftparchive -o Tree::dists/${dist}::Sections="main" \
+                          -o Tree::dists/${dist}::Architectures="${arch}" \
+                          -o Dir::ArchiveDir="${{ env.REPO_DIR }}" \
+                          packages {} > dists/${dist}/main/binary-${arch}/Packages
+          done
+
           apt-ftparchive -o APT::FTPArchive::Release::Origin="${{ env.APP_NAME }}" \
-                      -o APT::FTPArchive::Release::Label="${{ env.APP_NAME }}" \
-                      -o APT::FTPArchive::Release::Suite="${dist}" \
-                      -o APT::FTPArchive::Release::Codename="${dist}" \
-                      -o APT::FTPArchive::Release::Version="${{ env.APP_VERSION }}" \
-                      -o APT::FTPArchive::Release::Architectures="${{ env.ARCHITECTURES }}" \
-                      -o APT::FTPArchive::Release::Components="main" \
-                      -o Tree::dists/${dist}::Sections="main" \
-                      -o Tree::dists/${dist}::Architectures="${{ env.ARCHITECTURES }}" \
-                      -o Dir::ArchiveDir="${{ env.REPO_DIR }}" \
-                      packages pool/main override-file \
-                      release dists/${dist}
+                -o APT::FTPArchive::Release::Label="${{ env.APP_NAME }}" \
+                -o APT::FTPArchive::Release::Suite="${dist}" \
+                -o APT::FTPArchive::Release::Codename="${dist}" \
+                -o APT::FTPArchive::Release::Version="${{ env.APP_VERSION }}" \
+                -o APT::FTPArchive::Release::Architectures="${{ env.ARCHITECTURES }}" \
+                -o APT::FTPArchive::Release::Components="main" \
+                -o Dir::ArchiveDir="${{ env.REPO_DIR }}" \
+                release dists/${dist} > dists/${dist}/Release
 
           echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --default-key ${{ secrets.GPG_KEY_ID }} --batch --yes --passphrase-fd 0 -abs -o dists/${dist}/Release.gpg dists/${dist}/Release
           echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --default-key ${{ secrets.GPG_KEY_ID }} --batch --yes --passphrase-fd 0 --clearsign -o dists/${dist}/InRelease dists/${dist}/Release
