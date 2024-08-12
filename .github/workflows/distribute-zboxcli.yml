@@ -185,13 +185,14 @@ jobs:
             mkdir -p ${{ env.REPO_DIR }}/pool/main/z/${{ env.APP_NAME }}/
             find ${{ env.DEB_DIR }} -name "*.deb"
             for deb in $(find ${{ env.DEB_DIR }} -name "*.deb"); do
-              cp $deb ${{ env.REPO_DIR }}/pool/main/z/${{ env.APP_NAME }}/
+              cp -u $deb ${{ env.REPO_DIR }}/pool/main/z/${{ env.APP_NAME }}/
             done
 
     - name: Update APT repo
       run: |
         cd ${{ env.REPO_DIR }}
         for dist in ${{ env.DISTRIBUTIONS }}; do
+          rm -rf dists/${dist}
           mkdir -p dists/${dist}
           for arch in ${{ env.ARCHITECTURES }}; do
               mkdir -p dists/${dist}/main/binary-${arch}
@@ -199,7 +200,7 @@ jobs:
               xargs -I {} apt-ftparchive -o Tree::dists/${dist}::Sections="main" \
                           -o Tree::dists/${dist}::Architectures="${arch}" \
                           -o Dir::ArchiveDir="${{ env.REPO_DIR }}" \
-                          packages {} > dists/${dist}/main/binary-${arch}/Packages
+                          packages {} >> dists/${dist}/main/binary-${arch}/Packages
           done
 
           apt-ftparchive -o APT::FTPArchive::Release::Origin="${{ env.APP_NAME }}" \
