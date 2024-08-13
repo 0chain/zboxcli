@@ -271,7 +271,8 @@ var blobberUpdateCmd = &cobra.Command{
 			if !ia {
 				ia = false
 			}
-			updateBlobber.IsRestricted = &ia
+			updateBlobber.IsRestricted = new(bool)
+			*updateBlobber.IsRestricted = false
 		}
 
 		if termsChanged {
@@ -290,10 +291,10 @@ var blobberUpdateCmd = &cobra.Command{
 }
 
 var resetBlobberStatsCmd = &cobra.Command{
-	Use:   "reset-blobber-stats",
-	Short: "Reset blobber stats",
-	Long:  `Reset blobber stats`,
-	Args:  cobra.MinimumNArgs(0),
+	Use:    "reset-blobber-stats",
+	Short:  "Reset blobber stats",
+	Long:   `Reset blobber stats`,
+	Args:   cobra.MinimumNArgs(0),
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		var (
@@ -359,12 +360,39 @@ var resetBlobberStatsCmd = &cobra.Command{
 	},
 }
 
+var repairPartitions = &cobra.Command{
+	Use:   "repair-partitions",
+	Short: "Repair partitions",
+	Long:  `Repair partitions`,
+	Args:  cobra.MinimumNArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		var partitionName string
+
+		flags := cmd.Flags()
+		if !flags.Changed("partition") {
+			log.Fatal("missing required 'partition' flag")
+		} else {
+			var err error
+			partitionName, err = flags.GetString("partition")
+			if err != nil {
+				log.Fatal("error in 'partition' flag: ", err)
+			}
+		}
+
+		if _, _, err := sdk.RepairPartitions(partitionName); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("repair validator partitions successfully")
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(scConfig)
 	rootCmd.AddCommand(lsBlobers)
 	rootCmd.AddCommand(blobberInfoCmd)
 	rootCmd.AddCommand(blobberUpdateCmd)
 	rootCmd.AddCommand(resetBlobberStatsCmd)
+	rootCmd.AddCommand(repairPartitions)
 
 	scConfig.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
 	lsBlobers.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
@@ -401,4 +429,7 @@ func init() {
 	resetBlobberStatsCmd.MarkFlagRequired("prev_saved_data")
 	resetBlobberStatsCmd.MarkFlagRequired("new_allocated")
 	resetBlobberStatsCmd.MarkFlagRequired("new_saved_data")
+
+	repairPartitions.Flags().String("partition", "", "partition ID")
+	repairPartitions.MarkFlagRequired("partition")
 }
