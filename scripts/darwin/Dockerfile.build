@@ -3,11 +3,35 @@
 FROM ubuntu:latest
 
 # setup osxcross
-RUN apt-get update && apt-get install -y clang cmake git patch python-is-python3 libssl-dev lzma-dev libxml2-dev xz-utils bzip2 cpio libbz2-dev zlib1g-dev
+RUN apt-get update && apt-get install -y clang cmake git patch python-is-python3 libssl-dev lzma-dev libxml2-dev xz-utils bzip2 cpio libbz2-dev zlib1g-dev wget libc6-dev
 RUN git clone https://github.com/tpoechtrager/osxcross.git
 WORKDIR /osxcross/tarballs
 RUN wget https://github.com/phracker/MacOSX-SDKs/releases/download/11.3/MacOSX11.3.sdk.tar.xz
 WORKDIR /osxcross
 ENV CC=clang
 ENV CXX=clang++
-RUN UNATTENDED=yes OSX_VERSION_MIN=12.0 ./build.sh
+RUN UNATTENDED=yes OSX_VERSION_MIN=11.3 ./build.sh
+
+ENV OSXCROSS_ROOT=/osxcross
+ENV PATH=$OSXCROSS_ROOT/target/bin:$PATH
+ENV GO111MODULE=on
+ENV CGO_ENABLED=1
+
+ARG VERSION
+
+# setup Go
+ENV GOLANG_VERSION=1.21.12
+ENV GOLANG_DOWNLOAD_URL=https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz
+RUN wget -q ${GOLANG_DOWNLOAD_URL} -O golang.tar.gz \
+    && tar -C /usr/local -xzf golang.tar.gz \
+    && rm golang.tar.gz
+ENV GOPATH=/go
+ENV PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
+# Verify Go installation
+RUN go version
+
+RUN mkdir -p "$GOPATH/src" "$GOPATH/bin"
+WORKDIR $GOPATH/src
+COPY . .
+RUN CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=amd64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${VERSION}" -o $GOPATH/bin/zboxcli-darwin-amd64 .
+RUN CC=o64-clang CXX=o64-clang++ GOOS=darwin GOARCH=arm64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${VERSION}" -o $GOPATH/bin/zboxcli-darwin-arm64 .
