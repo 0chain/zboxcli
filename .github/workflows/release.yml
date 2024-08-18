@@ -14,6 +14,10 @@ on:
         description: 'Create release as draft'
         required: false
         default: 'true'
+      prerelease:
+        description: 'Create release as prerelease'
+        required: false
+        default: 'false'
 
 env:
   GITHUB_TOKEN: ${{ secrets.GOSDK }}
@@ -37,7 +41,7 @@ jobs:
         tag_name: ${{ github.event.inputs.tag }}
         release_name: ${{ github.event.inputs.tag }}
         draft: ${{ github.event.inputs.draft }}
-        prerelease: false
+        prerelease: ${{ github.event.inputs.prerelease }}
 
   linux: 
     runs-on: ubuntu-latest
@@ -62,6 +66,7 @@ jobs:
     - name: Setup
       run : |
         mkdir -p ${{ env.OUTPUT_DIR }}
+        cp ${{ env.SRC_DIR }}/network/config.yaml ${{ env.OUTPUT_DIR }}
 
     - name: Build Docker image for linux/amd64
       run: |
@@ -84,7 +89,7 @@ jobs:
     - name: Create Zip File for linux/amd64
       run: |
         cd ${{ env.OUTPUT_DIR }}
-        zip -qq -r ${{ env.APP_NAME }}-linux-amd64.zip ${{ env.APP_NAME }}
+        zip -qq -r ${{ env.APP_NAME }}-linux-amd64.zip ${{ env.APP_NAME }} config.yaml
 
     - name: Upload Zip for Darwin/amd64
       uses: actions/upload-artifact@v3
@@ -113,7 +118,7 @@ jobs:
     - name: Create Zip File for linux/arm64
       run: |
         cd ${{ env.OUTPUT_DIR }}
-        zip -qq -r ${{ env.APP_NAME }}-linux-arm64.zip ${{ env.APP_NAME }}
+        zip -qq -r ${{ env.APP_NAME }}-linux-arm64.zip ${{ env.APP_NAME }} config.yaml
   
     - name: Upload Zip for Darwin/arm64
       uses: actions/upload-artifact@v3
@@ -165,6 +170,8 @@ jobs:
       run : |
         mkdir -p ${{ env.OUTPUT_DIR }}/amd64
         mkdir -p ${{ env.OUTPUT_DIR }}/arm64
+        cp ${{ env.SRC_DIR }}/network/config.yaml ${{ env.OUTPUT_DIR }}/amd64/
+        cp ${{ env.SRC_DIR }}/network/config.yaml ${{ env.OUTPUT_DIR }}/arm64/
 
     - name: Build Docker image
       run: |
@@ -188,7 +195,7 @@ jobs:
     - name: Create Zip File for darwin/amd64
       run: |
         cd ${{ env.OUTPUT_DIR }}/amd64
-        zip -qq -r ${{ env.APP_NAME }}-darwin-amd64.zip ${{ env.APP_NAME }}
+        zip -qq -r ${{ env.APP_NAME }}-darwin-amd64.zip ${{ env.APP_NAME }} config.yaml
 
     - name: Upload Zip for Darwin/amd64
       uses: actions/upload-artifact@v3
@@ -199,7 +206,7 @@ jobs:
     - name: Create Zip File for darwin/arm64
       run: |
         cd ${{ env.OUTPUT_DIR }}/arm64
-        zip -qq -r ${{ env.APP_NAME }}-darwin-arm64.zip ${{ env.APP_NAME }}
+        zip -qq -r ${{ env.APP_NAME }}-darwin-arm64.zip ${{ env.APP_NAME }} config.yaml
   
     - name: Upload Zip for Darwin/arm64
       uses: actions/upload-artifact@v3
