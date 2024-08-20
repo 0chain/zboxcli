@@ -66,7 +66,7 @@ jobs:
     - name: Setup
       run : |
         mkdir -p ${{ env.OUTPUT_DIR }}
-        cp ${{ env.SRC_DIR }}/network/config.yaml ${{ env.OUTPUT_DIR }}
+        cp ${{ env.SRC_DIR }}/cmd/config.yaml ${{ env.OUTPUT_DIR }}
 
     - name: Build Docker image for linux/amd64
       run: |
@@ -170,8 +170,8 @@ jobs:
       run : |
         mkdir -p ${{ env.OUTPUT_DIR }}/amd64
         mkdir -p ${{ env.OUTPUT_DIR }}/arm64
-        cp ${{ env.SRC_DIR }}/network/config.yaml ${{ env.OUTPUT_DIR }}/amd64/
-        cp ${{ env.SRC_DIR }}/network/config.yaml ${{ env.OUTPUT_DIR }}/arm64/
+        cp ${{ env.SRC_DIR }}/cmd/config.yaml ${{ env.OUTPUT_DIR }}/amd64/
+        cp ${{ env.SRC_DIR }}/cmd/config.yaml ${{ env.OUTPUT_DIR }}/arm64/
 
     - name: Build Docker image
       run: |
