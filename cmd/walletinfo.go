@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/0chain/gosdk/core/client"
 	"github.com/0chain/gosdk/core/encryption"
-	"github.com/0chain/gosdk/zboxcore/client"
 	"github.com/0chain/gosdk/zcncore"
 	"github.com/0chain/zboxcli/util"
 
@@ -48,11 +48,11 @@ var walletinfoCmd = &cobra.Command{
 			fmt.Println("Error getting the public key for encryption. ", err.Error())
 			return
 		}
-		data[0] = []string{client.GetClientPublicKey(), client.GetClientID(), encPubKey}
+		data[0] = []string{client.PublicKey(), client.ClientID(), encPubKey}
 		if doJSON {
 			j := make(map[string]string)
-			j["client_public_key"] = client.GetClientPublicKey()
-			j["client_id"] = client.GetClientID()
+			j["client_public_key"] = client.PublicKey()
+			j["client_id"] = client.ClientID()
 			j["encryption_public_key"] = encPubKey
 			util.PrintJSON(j)
 			return
@@ -70,7 +70,7 @@ var signCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		data, _ := cmd.Flags().GetString("data")
 		if data == "" {
-			data = client.GetClientID()
+			data = client.ClientID()
 		} else {
 			data = encryption.Hash(data)
 		}
