@@ -21,7 +21,7 @@ ARG VERSION
 
 # setup Go
 ENV GOLANG_VERSION=1.21.12
-ENV GOLANG_DOWNLOAD_URL=https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz
+ENV GOLANG_DOWNLOAD_URL=https://golang.org/dl/go${GOLANG_VERSION}.linux-arm64.tar.gz
 RUN wget -q ${GOLANG_DOWNLOAD_URL} -O golang.tar.gz \
     && tar -C /usr/local -xzf golang.tar.gz \
     && rm golang.tar.gz
