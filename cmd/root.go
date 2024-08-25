@@ -83,7 +83,7 @@ func initConfig() {
 	cfg, err := conf.LoadConfigFile(filepath.Join(configDir, cfgFile))
 	if err != nil {
 		fmt.Println("Can't read config:", err)
-		fmt.Println("WARNING: using default config...")
+		fmt.Println("using default config")
 		fmt.Printf("config: %v", configStr)
 		v := viper.New()
 		v.SetConfigType("yaml")
