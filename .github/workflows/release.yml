@@ -246,10 +246,8 @@ jobs:
     - name: Setup
       run : |
         New-Item -ItemType Directory -Force -Path "${{ env.OUTPUT_DIR }}\amd64"
-        New-Item -ItemType Directory -Force -Path "${{ env.OUTPUT_DIR }}\arm64"
         Copy-Item -Force -Path "${{ env.SRC_DIR }}\cmd\config.yaml" -Destination "${{ env.OUTPUT_DIR }}\amd64\"
-        Copy-Item -Force -Path "${{ env.SRC_DIR }}\cmd\config.yaml" -Destination "${{ env.OUTPUT_DIR }}\arm64\"
-
+        
     - name: Build ${{ env.APP_NAME }} for amd64
       run: |
         Set-Location -Path "${{ env.SRC_DIR }}"
@@ -263,19 +261,6 @@ jobs:
         go build -x -v -tags bn256 -ldflags "-X main.VersionStr=v${{ env.VERSION }}" -o ${{ env.OUTPUT_DIR }}\amd64\${{ env.APP_NAME }}.exe .
       shell: pwsh
 
-    - name: Build ${{ env.APP_NAME }} for arm64
-      run: |
-        Set-Location -Path "${{ env.SRC_DIR }}"
-        $env:CGO_ENABLED="1"
-        $env:CC="aarch64-w64-mingw32-gcc"
-        $env:CXX="aarch64-w64-mingw32-g++"
-        $env:GOOS="windows"
-        $env:GOARCH="arm64"
-        where aarch64-w64-mingw32-gcc
-        where aarch64-w64-mingw32-g++
-        go build -x -v -tags bn256 -ldflags "-X main.VersionStr=v${{ env.VERSION }}" -o ${{ env.OUTPUT_DIR }}\arm64\${{ env.APP_NAME }}.exe .
-      shell: pwsh
-      
     - name: Create Zip File for windows/amd64
       run: |
         Set-Location -Path "${{ env.OUTPUT_DIR }}\amd64"
@@ -285,18 +270,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.APP_NAME }}-windows-amd64
-        path: ${{ env.OUTPUT_DIR }}\amd64\${{ env.APP_NAME }}-windows-amd64.zip
-    
-    - name: Create Zip File for windows/arm64
-      run: |
-        Set-Location -Path "${{ env.OUTPUT_DIR }}\arm64"
-        Compress-Archive -Path ${{ env.APP_NAME }}.exe config.yaml -DestinationPath ${{ env.APP_NAME }}-windows-arm64.zip
-  
-    - name: Upload Zip for windows/arm64
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.APP_NAME }}-windows-arm64
-        path: ${{ env.OUTPUT_DIR }}\arm64\${{ env.APP_NAME }}-windows-arm64.zip  
+        path: ${{ env.OUTPUT_DIR }}\amd64\${{ env.APP_NAME }}-windows-amd64.zip  
 
     - name: Upload Release Asset for windows/amd64
       uses: actions/upload-release-asset@v1
@@ -308,13 +282,4 @@ jobs:
         asset_name: ${{ env.APP_NAME }}-windows-amd64.zip
         asset_content_type: application/zip
 
-    - name: Upload Release Asset for windows/arm64
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ needs.create_release.outputs.upload_url }}
-        asset_path: ${{ env.OUTPUT_DIR }}\arm64\${{ env.APP_NAME }}-windows-arm64.zip
-        asset_name: ${{ env.APP_NAME }}-windows-arm64.zip
-        asset_content_type: application/zip
     
