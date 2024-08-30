@@ -264,7 +264,7 @@ jobs:
     - name: Create Zip File for windows/amd64
       run: |
         Set-Location -Path "${{ env.OUTPUT_DIR }}\amd64"
-        Compress-Archive -Path ${{ env.APP_NAME }}.exe config.yaml -DestinationPath ${{ env.APP_NAME }}-windows-amd64.zip
+        Compress-Archive -Path @("${{ env.APP_NAME }}.exe", "config.yaml") -DestinationPath ${{ env.APP_NAME }}-windows-amd64.zip
     
     - name: Upload Zip for windows/amd64
       uses: actions/upload-artifact@v3
