@@ -253,13 +253,29 @@ jobs:
     - name: Build ${{ env.APP_NAME }} for amd64
       run: |
         Set-Location -Path "${{ env.SRC_DIR }}"
-        CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ GOOS=windows GOARCH=amd64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=v${{ env.VERSION }}" -o ${{ env.OUTPUT_DIR }}\amd64\${{ env.APP_NAME }}.exe .
+        $env:CGO_ENABLED="1"
+        $env:CC="x86_64-w64-mingw32-gcc"
+        $env:CXX="x86_64-w64-mingw32-g++"
+        $env:GOOS="windows"
+        $env:GOARCH="amd64"
+        where x86_64-w64-mingw32-gcc
+        where x86_64-w64-mingw32-g++
+        go build -x -v -tags bn256 -ldflags "-X main.VersionStr=v${{ env.VERSION }}" -o ${{ env.OUTPUT_DIR }}\amd64\${{ env.APP_NAME }}.exe .
+      shell: pwsh
 
     - name: Build ${{ env.APP_NAME }} for arm64
       run: |
         Set-Location -Path "${{ env.SRC_DIR }}"
-        CGO_ENABLED=1 CC=aarch64-w64-mingw32-gcc CXX=aarch64-w64-mingw32-g++ GOOS=windows GOARCH=arm64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=v${{ env.VERSION }}" -o ${{ env.OUTPUT_DIR }}\arm64\${{ env.APP_NAME }}.exe .
-    
+        $env:CGO_ENABLED="1"
+        $env:CC="aarch64-w64-mingw32-gcc"
+        $env:CXX="aarch64-w64-mingw32-g++"
+        $env:GOOS="windows"
+        $env:GOARCH="arm64"
+        where aarch64-w64-mingw32-gcc
+        where aarch64-w64-mingw32-g++
+        go build -x -v -tags bn256 -ldflags "-X main.VersionStr=v${{ env.VERSION }}" -o ${{ env.OUTPUT_DIR }}\arm64\${{ env.APP_NAME }}.exe .
+      shell: pwsh
+      
     - name: Create Zip File for windows/amd64
       run: |
         Set-Location -Path "${{ env.OUTPUT_DIR }}\amd64"
