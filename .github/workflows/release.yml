@@ -91,7 +91,7 @@ jobs:
         cd ${{ env.OUTPUT_DIR }}
         zip -qq -r ${{ env.APP_NAME }}-linux-amd64.zip ${{ env.APP_NAME }} config.yaml
 
-    - name: Upload Zip for Darwin/amd64
+    - name: Upload Zip for linux/amd64
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.APP_NAME }}-linux-amd64
@@ -120,7 +120,7 @@ jobs:
         cd ${{ env.OUTPUT_DIR }}
         zip -qq -r ${{ env.APP_NAME }}-linux-arm64.zip ${{ env.APP_NAME }} config.yaml
   
-    - name: Upload Zip for Darwin/arm64
+    - name: Upload Zip for linux/arm64
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.APP_NAME }}-linux-arm64
@@ -221,3 +221,84 @@ jobs:
         asset_path: ${{ env.OUTPUT_DIR }}/arm64/${{ env.APP_NAME }}-darwin-arm64.zip
         asset_name: ${{ env.APP_NAME }}-darwin-arm64.zip
         asset_content_type: application/zip
+
+  windows:
+    runs-on: windows-latest
+    needs: create_release
+    env:
+      SRC_DIR: ${{ github.workspace }}\src
+      OUTPUT_DIR: ${{ github.workspace }}\output
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        path: ${{ env.SRC_DIR }}
+    
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+
+    - name: Install MinGW for CGo
+      run: |
+        choco install mingw
+    
+    - name: Setup
+      run : |
+        New-Item -ItemType Directory -Force -Path "${{ env.OUTPUT_DIR }}\amd64"
+        New-Item -ItemType Directory -Force -Path "${{ env.OUTPUT_DIR }}\arm64"
+        Copy-Item -Force -Path "${{ env.SRC_DIR }}\cmd\config.yaml" -Destination "${{ env.OUTPUT_DIR }}\amd64\"
+        Copy-Item -Force -Path "${{ env.SRC_DIR }}\cmd\config.yaml" -Destination "${{ env.OUTPUT_DIR }}\arm64\"
+
+    - name: Build ${{ env.APP_NAME }} for amd64
+      run: |
+        Set-Location -Path "${{ env.SRC_DIR }}"
+        CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ GOOS=windows GOARCH=amd64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=v${{ env.VERSION }}" -o ${{ env.OUTPUT_DIR }}\amd64\${{ env.APP_NAME }}.exe .
+
+    - name: Build ${{ env.APP_NAME }} for arm64
+      run: |
+        Set-Location -Path "${{ env.SRC_DIR }}"
+        CGO_ENABLED=1 CC=aarch64-w64-mingw32-gcc CXX=aarch64-w64-mingw32-g++ GOOS=windows GOARCH=arm64 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=v${{ env.VERSION }}" -o ${{ env.OUTPUT_DIR }}\arm64\${{ env.APP_NAME }}.exe .
+    
+    - name: Create Zip File for windows/amd64
+      run: |
+        Set-Location -Path "${{ env.OUTPUT_DIR }}\amd64"
+        Compress-Archive -Path ${{ env.APP_NAME }}.exe config.yaml -DestinationPath ${{ env.APP_NAME }}-windows-amd64.zip
+    
+    - name: Upload Zip for windows/amd64
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.APP_NAME }}-windows-amd64
+        path: ${{ env.OUTPUT_DIR }}\amd64\${{ env.APP_NAME }}-windows-amd64.zip
+    
+    - name: Create Zip File for windows/arm64
+      run: |
+        Set-Location -Path "${{ env.OUTPUT_DIR }}\arm64"
+        Compress-Archive -Path ${{ env.APP_NAME }}.exe config.yaml -DestinationPath ${{ env.APP_NAME }}-windows-arm64.zip
+  
+    - name: Upload Zip for windows/arm64
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.APP_NAME }}-windows-arm64
+        path: ${{ env.OUTPUT_DIR }}\arm64\${{ env.APP_NAME }}-windows-arm64.zip  
+
+    - name: Upload Release Asset for windows/amd64
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create_release.outputs.upload_url }}
+        asset_path: ${{ env.OUTPUT_DIR }}\amd64\${{ env.APP_NAME }}-windows-amd64.zip
+        asset_name: ${{ env.APP_NAME }}-windows-amd64.zip
+        asset_content_type: application/zip
+
+    - name: Upload Release Asset for windows/arm64
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create_release.outputs.upload_url }}
+        asset_path: ${{ env.OUTPUT_DIR }}\arm64\${{ env.APP_NAME }}-windows-arm64.zip
+        asset_name: ${{ env.APP_NAME }}-windows-arm64.zip
+        asset_content_type: application/zip
+    
