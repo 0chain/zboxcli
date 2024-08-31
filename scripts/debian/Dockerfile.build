@@ -5,4 +5,4 @@ COPY go.mod go.sum .
 RUN go mod download
 COPY . .
 RUN go env
-RUN CGO_ENABLED=1 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=${VERSION} -linkmode 'external' -extldflags '-static'" -o /zbox .
+RUN CGO_ENABLED=1 go build -x -v -tags bn256 -ldflags "-X main.VersionStr=v${VERSION} -linkmode 'external' -extldflags '-static'" -o /zbox .
