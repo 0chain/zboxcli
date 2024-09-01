@@ -1,0 +1,90 @@
+name: Distribute zbox using choco
+
+on:
+  # Remove push trigger once tested
+  push:
+    branches:
+      - windows-build 
+
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version of zbox to release'
+        required: true
+        default: '1.0.0'
+
+env:
+  APP_NAME: zbox
+  PACKAGE_ID: zbox
+  APP_VERSION: '1.17.0' # Update to ${{ github.event.inputs.version }} once tested
+  GO_VERSION: '1.21'
+
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      SRC_DIR: ${{ github.workspace }}\src
+      OUTPUT_DIR: ${{ github.workspace }}\output
+      PACKAGE_DIR: ${{ github.workspace }}\package
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+            path: ${{ env.SRC_DIR }}
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+            go-version: ${{ env.GO_VERSION }}
+    
+      - name: Install MinGW for CGo
+        run: |
+            choco install mingw
+
+      - name: Setup
+        run : |
+            New-Item -ItemType Directory -Force -Path "${{ env.OUTPUT_DIR }}\amd64"
+            New-Item -ItemType Directory -Force -Path "${{ env.PACKAGE_DIR }}"
+            Copy-Item -Force -Path "${{ env.SRC_DIR }}\cmd\config.yaml" -Destination "${{ env.OUTPUT_DIR }}\amd64\"
+      
+      - name: Build ${{ env.APP_NAME }} for amd64
+        run: |
+            Set-Location -Path "${{ env.SRC_DIR }}"
+            $env:CGO_ENABLED="1"
+            $env:CC="x86_64-w64-mingw32-gcc"
+            $env:CXX="x86_64-w64-mingw32-g++"
+            $env:GOOS="windows"
+            $env:GOARCH="amd64"
+            where x86_64-w64-mingw32-gcc
+            where x86_64-w64-mingw32-g++
+            go build -x -v -tags bn256 -ldflags "-X main.VersionStr=v${{ env.APP_VERSION }}" -o ${{ env.OUTPUT_DIR }}\amd64\${{ env.APP_NAME }}.exe .
+        shell: pwsh
+
+      - name: Create .nuspec file
+        run: |
+            Set-Location "${{ env.PACKAGE_DIR }}"
+            $content = @"
+            <?xml version="1.0"?>
+            <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+                <metadata>
+                    <id>${{ env.PACKAGE_ID }}</id>
+                    <version>${{ env.APP_VERSION }}</version>
+                    <licenseUrl>https://github.com/0chain/zboxcli/blob/staging/LICENSE</licenseUrl>
+                    <projectUrl>https://github.com/0chain/zboxcli</projectUrl>
+                    <description>zbox is a command line interface (CLI) tool to understand the capabilities of Züs dStorage and prototype your app.</description>
+                </metadata>
+                <files>
+                    <file src="${{ env.OUTPUT_DIR }}\amd64\${{ env.APP_NAME }}.exe" target="tools\${{ env.APP_NAME }}.exe" />
+                </files>
+            </package>
+            "@
+            Set-Content -Path "${{ env.PACKAGE_ID }}.nuspec" -Value $content
+
+      - name: Pack Chocolatey Package
+        run: |
+          choco pack ${{ env.PACKAGE_ID }}.nuspec
+
+      - name: Push Chocolatey Package
+        run: |
+          choco push ${{ env.PACKAGE_ID }}.${{ env.APP_VERSION }}.nupkg --source https://push.chocolatey.org/ -k ${{ secrets.CHOCOLATEY_API_KEY }}
