@@ -211,6 +211,13 @@ func initConfig() {
 		os.Exit(1)
 	}
 
+	// set wallet info along whether split key is used
+	err = zcncore.SetWalletInfo(walletJSON, false)
+	if err != nil {
+		fmt.Println("Error in wallet info initialization", err)
+		os.Exit(1)
+	}
+
 	// additional settings depending network latency
 	blockchain.SetMaxTxnQuery(cfg.MaxTxnQuery)
 	blockchain.SetQuerySleepTime(cfg.QuerySleepTime)
