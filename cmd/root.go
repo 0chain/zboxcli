@@ -1,16 +1,19 @@
 package cmd
 
 import (
+	_ "embed"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/0chain/gosdk/core/conf"
 	"github.com/0chain/gosdk/core/logger"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
 	"github.com/0chain/gosdk/zboxcore/blockchain"
 	"github.com/0chain/zboxcli/util"
@@ -33,6 +36,9 @@ var bSilent bool
 var allocUnderRepair bool
 
 var walletJSON string
+
+//go:embed config.yaml
+var configStr string
 
 var rootCmd = &cobra.Command{
 	Use:   "zbox",
@@ -77,7 +83,20 @@ func initConfig() {
 	cfg, err := conf.LoadConfigFile(filepath.Join(configDir, cfgFile))
 	if err != nil {
 		fmt.Println("Can't read config:", err)
-		os.Exit(1)
+		fmt.Println("using default config")
+		fmt.Printf("config: %v", configStr)
+		v := viper.New()
+		v.SetConfigType("yaml")
+		err := v.ReadConfig(strings.NewReader(configStr))
+		if err != nil {
+			fmt.Println("error reading default config:", err)
+			os.Exit(1)
+		}
+		cfg, err = conf.LoadConfig(v)
+		if err != nil {
+			fmt.Println("error loading default config:", err)
+			os.Exit(1)
+		}
 	}
 
 	if networkFile == "" {
@@ -189,6 +208,13 @@ func initConfig() {
 		zcncore.ConvertToValue(txFee),
 	); err != nil {
 		fmt.Println("Error in sdk init", err)
+		os.Exit(1)
+	}
+
+	// set wallet info along whether split key is used
+	err = zcncore.SetWalletInfo(walletJSON, false)
+	if err != nil {
+		fmt.Println("Error in wallet info initialization", err)
 		os.Exit(1)
 	}
 
