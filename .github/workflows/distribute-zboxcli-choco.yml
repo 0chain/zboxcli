@@ -64,6 +64,9 @@ jobs:
       - name: Create .nuspec file
         run: |
             Set-Location -Path "${{ env.PACKAGE_DIR }}"
+            Write-Host "Current Directory After Set-Location:"
+            Get-Location
+            Write-Host "Creating .nuspec file..."
             $content = @"
             <?xml version="1.0"?>
             <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
@@ -86,7 +89,9 @@ jobs:
       - name: Pack Chocolatey Package
         run: |
           Get-Location
-          Get-ChildItem "${{ env.PACKAGE_DIR }}"    
+          Get-ChildItem "${{ env.PACKAGE_DIR }}"
+          Move-Item -Path "${{ env.PACKAGE_ID }}.nuspec" -Destination "${{ env.PACKAGE_DIR }}" 
+          Set-Location -Path "${{ env.PACKAGE_DIR }}"   
           choco pack ${{ env.PACKAGE_ID }}.nuspec
 
       - name: Push Chocolatey Package
