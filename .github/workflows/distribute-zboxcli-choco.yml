@@ -104,4 +104,9 @@ jobs:
 
       - name: Push Chocolatey Package
         run: |
-          choco push ${{ env.PACKAGE_ID }}.${{ env.APP_VERSION }}.nupkg --source https://push.chocolatey.org/ -k ${{ secrets.CHOCOLATEY_API_KEY }}
+            Set-Location -Path "${{ env.PACKAGE_DIR }}"
+            $location = Get-Location
+            Write-Host "Current Directory: $location"
+            $files = Get-ChildItem "${{ env.PACKAGE_DIR }}"
+            Write-Host "Files in Directory: $files"
+            choco push ${{ env.PACKAGE_ID }}.${{ env.APP_VERSION }}.nupkg --source https://push.chocolatey.org/ -k ${{ secrets.CHOCOLATEY_API_KEY }}
