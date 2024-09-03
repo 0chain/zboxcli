@@ -74,6 +74,8 @@ jobs:
                 <metadata>
                     <id>${{ env.PACKAGE_ID }}</id>
                     <version>${{ env.APP_VERSION }}</version>
+                    <authors>Saswata Basu</authors>
+                    <owners>Saswata Basu</owners>
                     <licenseUrl>https://github.com/0chain/zboxcli/blob/staging/LICENSE</licenseUrl>
                     <projectUrl>https://github.com/0chain/zboxcli</projectUrl>
                     <description>zbox is a command line interface (CLI) tool to understand the capabilities of Züs dStorage and prototype your app.</description>
