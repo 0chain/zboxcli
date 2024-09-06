@@ -61,6 +61,66 @@ jobs:
             go build -x -v -tags bn256 -ldflags "-X main.VersionStr=v${{ env.APP_VERSION }}" -o ${{ env.OUTPUT_DIR }}\amd64\${{ env.APP_NAME }}.exe .
         shell: pwsh
 
+      - name: Generate SHA256 Checksum
+        id: checksum
+        shell: pwsh
+        run: |
+            $checksum = Get-FileHash "${{ env.OUTPUT_DIR }}\amd64\${{ env.APP_NAME }}.exe" -Algorithm SHA256
+            Write-Output "::set-output name=checksum::$($checksum.Hash)"
+
+      - name: Create VERIFICATION.txt
+        shell: pwsh
+        run: |
+            Set-Location -Path "${{ env.PACKAGE_DIR }}"
+            $location = Get-Location
+            Write-Host "Current Directory: $location"
+            $files = Get-ChildItem "${{ env.PACKAGE_DIR }}"
+            Write-Host "Files in Directory: $files"
+
+            $verificationContent = @"
+            The binaries in this package were sourced from the official https://github.com/0chain/zboxcli repository.
+
+            Verification Steps:
+            1. The SHA256 checksum of the binary was calculated.
+            2. Users can verify the binary themselves by running the following command:
+            `Get-FileHash -Algorithm SHA256 ${{ env.APP_NAME }}.exe`
+
+            Expected checksum:
+            ${{ steps.checksum.outputs.checksum }}
+            "@
+
+            $verificationContent | Out-File -FilePath "VERIFICATION.txt" -Encoding utf8
+            Write-Host "Created VERIFICATION.txt file"
+            Get-ChildItem "${{ env.PACKAGE_DIR }}"
+
+            $fileContent = Get-Content -Path "VERIFICATION.txt"
+            Write-Host "File Content: $fileContent"
+
+      - name: Create Chocolatey Install Script
+        run: |
+            Set-Location -Path "${{ env.PACKAGE_DIR }}"
+            $location = Get-Location
+            Write-Host "Current Directory: $location"
+            $files = Get-ChildItem "${{ env.PACKAGE_DIR }}"
+            Write-Host "Files in Directory: $files"
+
+            $content = @'
+            $installDir = "$(Get-ToolsLocation)\zbox"
+            $envPath = [System.Environment]::GetEnvironmentVariable('Path', 'Machine')
+
+            if ($envPath -notlike "*$installDir*") {
+                Write-Host "Adding $installDir to PATH"
+                [System.Environment]::SetEnvironmentVariable('Path', "$envPath;$installDir", 'Machine')
+            }
+            '@
+
+            $content | Out-File -FilePath "chocolateyInstall.ps1" -Encoding utf8
+            Write-Host "Created chocolateyInstall.ps1 file"
+            Get-ChildItem "${{ env.PACKAGE_DIR }}"
+
+            $fileContent = Get-Content -Path "chocolateyInstall.ps1"
+            Write-Host "File Content: $fileContent"
+                  
       - name: Create .nuspec file
         run: |
             Set-Location -Path "${{ env.PACKAGE_DIR }}"
@@ -76,12 +136,20 @@ jobs:
                     <version>${{ env.APP_VERSION }}</version>
                     <authors>Saswata Basu</authors>
                     <owners>Saswata Basu</owners>
+                    <tags>zbox cloud storage cli windows golang</tags>
                     <licenseUrl>https://github.com/0chain/zboxcli/blob/staging/LICENSE</licenseUrl>
                     <projectUrl>https://github.com/0chain/zboxcli</projectUrl>
+                    <packageSourceUrl>https://github.com/0chain/zboxcli</packageSourceUrl>
+                    <releaseNotes>https://github.com/0chain/zboxcli/releases/latest</releaseNotes>
+                    <summary>zbox is a command line interface (CLI) tool to understand the capabilities of Züs dStorage and prototype your app.</summary>
                     <description>zbox is a command line interface (CLI) tool to understand the capabilities of Züs dStorage and prototype your app.</description>
+                    <title>zbox CLI</title>
                 </metadata>
                 <files>
                     <file src="${{ env.OUTPUT_DIR }}\amd64\${{ env.APP_NAME }}.exe" target="tools\${{ env.APP_NAME }}.exe" />
+                    <file src="${{ env.SRC_DIR }}\LICENSE" target="tools\LICENSE" />
+                    <file src="${{ env.PACKAGE_DIR }}\VERIFICATION.txt" target="tools\VERIFICATION.txt" />
+                    <file src="${{ env.PACKAGE_DIR }}\chocolateyInstall.ps1" target="tools\chocolateyInstall.ps1" />
                 </files>
             </package>
             "@
@@ -110,3 +178,19 @@ jobs:
             $files = Get-ChildItem "${{ env.PACKAGE_DIR }}"
             Write-Host "Files in Directory: $files"
             choco push ${{ env.PACKAGE_ID }}.${{ env.APP_VERSION }}.nupkg --source https://push.chocolatey.org/ -k ${{ secrets.CHOCOLATEY_API_KEY }}
+
+  verify-install:
+    runs-on: windows-latest
+    needs: build 
+
+    steps: 
+    - name: Install zbox via Chocolatey
+      run: choco install zbox --version {{ env.APP_VERSION }} --source="https://push.chocolatey.org/"
+    
+    - name: Verify zbox Installation
+      run: |
+        if (Get-Command zbox -ErrorAction SilentlyContinue) {
+          Write-Output "zbox is installed successfully!"
+        } else {
+          throw "zbox installation failed!"
+        }
