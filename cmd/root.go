@@ -127,6 +127,8 @@ func initConfig() {
 			walletFilePath = configDir + string(os.PathSeparator) + "wallet.json"
 		}
 
+		zcncore.InitSignatureScheme("bls0chain")
+
 		if _, err = os.Stat(walletFilePath); os.IsNotExist(err) {
 			wallet, err := zcncore.CreateWalletOffline()
 			if err != nil {
