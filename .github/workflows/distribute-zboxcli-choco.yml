@@ -1,11 +1,6 @@
 name: Distribute zbox using choco
 
 on:
-  # Remove push trigger once tested
-  push:
-    branches:
-      - windows-build 
-
   workflow_dispatch:
     inputs:
       version:
@@ -16,7 +11,7 @@ on:
 env:
   APP_NAME: zbox
   PACKAGE_ID: zbox
-  APP_VERSION: '1.17.0' # Update to ${{ github.event.inputs.version }} once tested
+  APP_VERSION: ${{ github.event.inputs.version }}
   GO_VERSION: '1.21'
 
 jobs:
@@ -178,19 +173,3 @@ jobs:
             $files = Get-ChildItem "${{ env.PACKAGE_DIR }}"
             Write-Host "Files in Directory: $files"
             choco push ${{ env.PACKAGE_ID }}.${{ env.APP_VERSION }}.nupkg --source https://push.chocolatey.org/ -k ${{ secrets.CHOCOLATEY_API_KEY }}
-
-  verify-install:
-    runs-on: windows-latest
-    needs: build 
-
-    steps: 
-    - name: Install zbox via Chocolatey
-      run: choco install zbox --version {{ env.APP_VERSION }} --source="https://push.chocolatey.org/"
-    
-    - name: Verify zbox Installation
-      run: |
-        if (Get-Command zbox -ErrorAction SilentlyContinue) {
-          Write-Output "zbox is installed successfully!"
-        } else {
-          throw "zbox installation failed!"
-        }
