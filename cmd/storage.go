@@ -78,7 +78,7 @@ var lsBlobers = &cobra.Command{
 		}
 		list, err := sdk.GetBlobbers(isActive, isStakable)
 		if err != nil {
-			log.Fatalf("Failed to get storage SC configurations: %v", err)
+			log.Fatalf("Failed to get blobbers: %v", err)
 		}
 
 		if doJSON {
