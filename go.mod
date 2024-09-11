@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/0chain/errors v1.0.3
-	github.com/0chain/gosdk v1.17.4-0.20240907144423-14c6c99c435b
+	github.com/0chain/gosdk v1.17.7-0.20240911131154-d83cf1845a1e
 	github.com/icza/bitio v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.6.0

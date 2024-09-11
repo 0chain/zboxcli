@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/0chain/gosdk/core/transaction"
 	"log"
 	"time"
 
@@ -23,7 +24,7 @@ var scConfig = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		doJSON, _ := cmd.Flags().GetBool("json")
 
-		var conf, err = sdk.GetStorageSCConfig()
+		var conf, err = transaction.GetConfig("storage_sc_config")
 		if err != nil {
 			log.Fatalf("Failed to get storage SC configurations: %v", err)
 		}
@@ -290,10 +291,10 @@ var blobberUpdateCmd = &cobra.Command{
 }
 
 var resetBlobberStatsCmd = &cobra.Command{
-	Use:   "reset-blobber-stats",
-	Short: "Reset blobber stats",
-	Long:  `Reset blobber stats`,
-	Args:  cobra.MinimumNArgs(0),
+	Use:    "reset-blobber-stats",
+	Short:  "Reset blobber stats",
+	Long:   `Reset blobber stats`,
+	Args:   cobra.MinimumNArgs(0),
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		var (
