@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/0chain/errors v1.0.3
-	github.com/0chain/gosdk v1.17.7-0.20240912204323-c9723ae708ba
+	github.com/0chain/gosdk v1.17.7-0.20240913155712-042f96bf0ab3
 	github.com/icza/bitio v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.6.0
@@ -84,4 +84,4 @@ require (
 )
 
 // temporary, for development
-// replace github.com/0chain/gosdk => ../gosdk
+replace github.com/0chain/gosdk => ../gosdk
