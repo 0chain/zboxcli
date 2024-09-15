@@ -11,7 +11,7 @@ import (
 
 // downloadCmd represents download directory command
 var downdirCmd = &cobra.Command{
-	Use:   "downdir",
+	Use:   "downloaddir",
 	Short: "download directory from blobbers",
 	Long:  `download directory from blobbers`,
 	Args:  cobra.MinimumNArgs(0),
