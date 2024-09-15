@@ -55,12 +55,12 @@ var downdirCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(downdirCmd)
-	downloadCmd.PersistentFlags().String("allocation", "", "Allocation ID")
-	downloadCmd.PersistentFlags().String("remotepath", "", "Remote path of directory to download")
-	downloadCmd.PersistentFlags().String("localpath", "", "Local path of directory to download")
-	downloadCmd.PersistentFlags().String("authticket", "", "Auth ticket fot the file to download if you dont own it")
+	downdirCmd.PersistentFlags().String("allocation", "", "Allocation ID")
+	downdirCmd.PersistentFlags().String("remotepath", "", "Remote path of directory to download")
+	downdirCmd.PersistentFlags().String("localpath", "", "Local path of directory to download")
+	downdirCmd.PersistentFlags().String("authticket", "", "Auth ticket fot the file to download if you dont own it")
 
-	downloadCmd.MarkFlagRequired("allocation")
-	downloadCmd.MarkFlagRequired("localpath")
-	downloadCmd.MarkFlagRequired("remotepath")
+	downdirCmd.MarkFlagRequired("allocation")
+	downdirCmd.MarkFlagRequired("localpath")
+	downdirCmd.MarkFlagRequired("remotepath")
 }
