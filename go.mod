@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/0chain/errors v1.0.3
-	github.com/0chain/gosdk v1.17.7-0.20240913203625-aa521ff941e2
+	github.com/0chain/gosdk v1.17.10-0.20240922210048-bdbd749b25b1
 	github.com/icza/bitio v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.6.0
@@ -37,7 +37,7 @@ require (
 	github.com/hashicorp/golang-lru/v2 v2.0.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/herumi/bls-go-binary v1.31.0 // indirect
-	github.com/hitenjain14/fasthttp v0.0.0-20240527123209-06019e79bff9 // indirect
+	github.com/hitenjain14/fasthttp v0.0.0-20240916135632-f9303a91736c // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/klauspost/compress v1.17.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.4 // indirect
