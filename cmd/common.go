@@ -6,7 +6,6 @@ import (
 	"os"
 	"sync"
 
-	"github.com/0chain/gosdk/zboxcore/sdk"
 	"gopkg.in/cheggaaa/pb.v1"
 )
 
@@ -51,20 +50,10 @@ func (s *StatusBar) Error(allocationID string, filePath string, op int, err erro
 	PrintError("Error in file operation:", errDetail)
 }
 
-func (s *StatusBar) CommitMetaCompleted(request, response string, err error) {
-	defer s.wg.Done()
-	if err != nil {
-		s.success = false
-		PrintError("Error in commitMetaTransaction." + err.Error())
-	} else {
-		s.success = true
-		fmt.Println("Commit Metadata successful, Response :", response)
-	}
-}
-
 func (s *StatusBar) RepairCompleted(filesRepaired int) {
 	defer s.wg.Done()
 	allocUnderRepair = false
+	s.success = true
 	fmt.Println("Repair file completed, Total files repaired: ", filesRepaired)
 }
 
@@ -101,23 +90,6 @@ func PrintError(v ...interface{}) {
 
 func PrintInfo(v ...interface{}) {
 	fmt.Fprintln(os.Stdin, v...)
-}
-
-func commitMetaTxn(path, crudOp, authTicket, lookupHash string, a *sdk.Allocation, fileMeta *sdk.ConsolidatedFileMeta, status *StatusBar) {
-	err := a.CommitMetaTransaction(path, crudOp, authTicket, lookupHash, fileMeta, status)
-	if err != nil {
-		PrintError("Commit failed.", err)
-		os.Exit(1)
-	}
-}
-
-func commitFolderTxn(operation, preValue, currValue string, a *sdk.Allocation) {
-	resp, err := a.CommitFolderChange(operation, preValue, currValue)
-	if err != nil {
-		PrintError("Commit failed.", err)
-		os.Exit(1)
-	}
-	fmt.Println("Commit Metadata successful, Response :", resp)
 }
 
 func init() {

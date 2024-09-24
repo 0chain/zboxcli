@@ -9,14 +9,12 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
-
-	"github.com/0chain/gosdk/zboxcore/blockchain"
 
 	"github.com/spf13/pflag"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
+	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )
 
@@ -24,6 +22,8 @@ var (
 	datashards, parityshards *int
 	size                     *int64
 	allocationFileName       *string
+	preferred_blobbers       []string
+	blobber_auth_tickets     []string
 )
 
 func getPriceRange(val string) (pr sdk.PriceRange, err error) {
@@ -60,8 +60,11 @@ var newallocationCmd = &cobra.Command{
 				return
 			}
 			lock, freeStorageMarker := processFreeStorageFlags(flags)
+			if lock < 0 {
+				log.Fatal("Only positive values are allowed for --lock")
+			}
 
-			allocationID, err := sdk.CreateFreeAllocation(freeStorageMarker, lock)
+			allocationID, _, err := sdk.CreateFreeAllocation(freeStorageMarker, lock)
 			if err != nil {
 				log.Fatal("Error creating free allocation: ", err)
 			}
@@ -75,8 +78,8 @@ var newallocationCmd = &cobra.Command{
 		}
 
 		var (
-			lock int64 // lock with given number of tokens
-			err  error //
+			lock uint64 // lock with given number of tokens
+			err  error  //
 		)
 
 		if !costOnly {
@@ -100,12 +103,33 @@ var newallocationCmd = &cobra.Command{
 		}
 		lock = zcncore.ConvertToValue(lockf)
 
+		const maxPrice = math.MaxUint64 / 100
 		var (
-			readPrice  = sdk.PriceRange{Min: 0, Max: math.MaxInt64}
-			writePrice = sdk.PriceRange{Min: 0, Max: math.MaxInt64}
-
-			mcct time.Duration = 1 * time.Hour
+			readPrice  = sdk.PriceRange{Min: 0, Max: maxPrice}
+			writePrice = sdk.PriceRange{Min: 0, Max: maxPrice}
 		)
+
+		if flags.Changed("preferred_blobbers") {
+			b, err := flags.GetString("preferred_blobbers")
+			if err != nil {
+				log.Fatal("invalid read_price value: ", err)
+			}
+			preferred_blobbers = strings.Split(b, ",")
+			for i, id := range preferred_blobbers {
+				preferred_blobbers[i] = strings.TrimSpace(id)
+			}
+		}
+
+		if flags.Changed("blobber_auth_tickets") {
+			b, err := flags.GetString("blobber_auth_tickets")
+			if err != nil {
+				log.Fatal("invalid read_price value: ", err)
+			}
+			blobber_auth_tickets = strings.Split(b, ",")
+			for i, id := range blobber_auth_tickets {
+				blobber_auth_tickets[i] = strings.TrimSpace(id)
+			}
+		}
 
 		if flags.Changed("read_price") {
 			rps, err := flags.GetString("read_price")
@@ -117,6 +141,11 @@ var newallocationCmd = &cobra.Command{
 				log.Fatal("invalid read_price value: ", err)
 			}
 			readPrice = pr
+		} else {
+			readPrice, err = sdk.GetReadPriceRange()
+			if err != nil {
+				log.Fatal("invalid read_price value: ", err)
+			}
 		}
 
 		if flags.Changed("write_price") {
@@ -129,30 +158,19 @@ var newallocationCmd = &cobra.Command{
 				log.Fatal("invalid write_price value: ", err)
 			}
 			writePrice = pr
-		}
-
-		if flags.Changed("mcct") {
-			if mcct, err = flags.GetDuration("mcct"); err != nil {
-				log.Fatal("invalid mcct value: ", err)
-			}
-			if mcct <= 1*time.Second {
-				log.Fatal("invalid mcct value < 1s")
+		} else {
+			writePrice, err = sdk.GetWritePriceRange()
+			if err != nil {
+				log.Fatal("invalid write_price value: ", err)
 			}
 		}
-
-		var expire time.Duration
-		if expire, err = flags.GetDuration("expire"); err != nil {
-			log.Fatal("invalid 'expire' flag: ", err)
-		}
-
-		var expireAt = time.Now().Add(expire).Unix()
 
 		if costOnly {
-			minCost, err := sdk.GetAllocationMinLock(*datashards, *parityshards, *size, expireAt, readPrice, writePrice, mcct)
+			minCost, err := sdk.GetAllocationMinLock(*datashards, *parityshards, *size, writePrice)
 			if err != nil {
 				log.Fatal("Error fetching cost: ", err)
 			}
-			log.Print("Cost for the given allocation: ", zcncore.ConvertToToken(minCost))
+			log.Print("Cost for the given allocation: ", zcncore.ConvertToToken(minCost), " ZCN")
 
 			return
 		}
@@ -163,10 +181,85 @@ var newallocationCmd = &cobra.Command{
 				log.Fatal("invalid owner value: ", err)
 			}
 		}
+
+		thirdPartyExtendable, _ := flags.GetBool("third_party_extendable")
+		isEnterprise, _ := flags.GetBool("enterprise")
+		force, _ := flags.GetBool("force")
+
+		// Read the file options flags
+		var fileOptionParams sdk.FileOptionsParameters
+		if flags.Changed("forbid_upload") {
+			forbidUpload, err := flags.GetBool("forbid_upload")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+			fileOptionParams.ForbidUpload.Changed = true
+			fileOptionParams.ForbidUpload.Value = forbidUpload
+		}
+		if flags.Changed("forbid_delete") {
+			forbidDelete, err := flags.GetBool("forbid_delete")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+			fileOptionParams.ForbidDelete.Changed = true
+			fileOptionParams.ForbidDelete.Value = forbidDelete
+		}
+		if flags.Changed("forbid_update") {
+			forbidUpdate, err := flags.GetBool("forbid_update")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+			fileOptionParams.ForbidUpdate.Changed = true
+			fileOptionParams.ForbidUpdate.Value = forbidUpdate
+		}
+		if flags.Changed("forbid_move") {
+			forbidMove, err := flags.GetBool("forbid_move")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+			fileOptionParams.ForbidMove.Changed = true
+			fileOptionParams.ForbidMove.Value = forbidMove
+		}
+		if flags.Changed("forbid_copy") {
+			forbidCopy, err := flags.GetBool("forbid_copy")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+			fileOptionParams.ForbidCopy.Changed = true
+			fileOptionParams.ForbidCopy.Value = forbidCopy
+		}
+		if flags.Changed("forbid_rename") {
+			forbidRename, err := flags.GetBool("forbid_rename")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+			fileOptionParams.ForbidRename.Changed = true
+			fileOptionParams.ForbidRename.Value = forbidRename
+		}
+
 		var allocationID string
 		if len(owner) == 0 {
-			allocationID, err = sdk.CreateAllocation(*datashards, *parityshards,
-				*size, expireAt, readPrice, writePrice, mcct, lock)
+			options := sdk.CreateAllocationOptions{
+				DataShards:   *datashards,
+				ParityShards: *parityshards,
+				Size:         *size,
+				ReadPrice: sdk.PriceRange{
+					Min: readPrice.Min,
+					Max: readPrice.Max,
+				},
+				WritePrice: sdk.PriceRange{
+					Min: writePrice.Min,
+					Max: writePrice.Max,
+				},
+				Lock:                 uint64(lock),
+				BlobberIds:           preferred_blobbers,
+				BlobberAuthTickets:   blobber_auth_tickets,
+				FileOptionsParams:    &fileOptionParams,
+				ThirdPartyExtendable: thirdPartyExtendable,
+				Force:                force,
+				IsEnterprise:         isEnterprise,
+			}
+			allocationID, _, _, err = sdk.CreateAllocationWith(options)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
@@ -181,8 +274,8 @@ var newallocationCmd = &cobra.Command{
 				}
 			}
 
-			allocationID, err = sdk.CreateAllocationForOwner(owner, ownerPublicKey, *datashards, *parityshards,
-				*size, expireAt, readPrice, writePrice, mcct, lock, blockchain.GetPreferredBlobbers())
+			allocationID, _, _, err = sdk.CreateAllocationForOwner(owner, ownerPublicKey, *datashards, *parityshards,
+				*size, readPrice, writePrice, lock, preferred_blobbers, blobber_auth_tickets, thirdPartyExtendable, isEnterprise, force, &fileOptionParams)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
@@ -193,15 +286,12 @@ var newallocationCmd = &cobra.Command{
 	},
 }
 
-func processFreeStorageFlags(flags *pflag.FlagSet) (int64, string) {
+func processFreeStorageFlags(flags *pflag.FlagSet) (uint64, string) {
 	if flags.Changed("read_price") {
 		log.Fatal("free storage, read_price is predefined")
 	}
 	if flags.Changed("write_price") {
 		log.Fatal("free storage, write_price is predefined")
-	}
-	if flags.Changed("mcct") {
-		log.Fatal("free storage, mcct is predefined")
 	}
 
 	filename, err := flags.GetString("free_storage")
@@ -224,10 +314,10 @@ func processFreeStorageFlags(flags *pflag.FlagSet) (int64, string) {
 
 func init() {
 	rootCmd.AddCommand(newallocationCmd)
-	datashards = newallocationCmd.PersistentFlags().Int("data", 2, "--data 2")
-	parityshards = newallocationCmd.PersistentFlags().Int("parity", 2, "--parity 2")
-	size = newallocationCmd.PersistentFlags().Int64("size", 2147483648, "--size 10000")
-	allocationFileName = newallocationCmd.PersistentFlags().String("allocationFileName", "allocation.txt", "--allocationFileName allocation.txt")
+	datashards = newallocationCmd.PersistentFlags().Int("data", 2, "the number of blobbers to be used as data shards")
+	parityshards = newallocationCmd.PersistentFlags().Int("parity", 2, "the number of blobber to be used as parity shards")
+	size = newallocationCmd.PersistentFlags().Int64("size", 2*GB, "the size of the allocation")
+	allocationFileName = newallocationCmd.PersistentFlags().String("allocationFileName", "allocation.txt", "name of the file in configDir to store the generated allocationID")
 	newallocationCmd.PersistentFlags().
 		Float64("lock", 0.0,
 			"lock write pool with given number of tokens, required")
@@ -237,11 +327,7 @@ func init() {
 	newallocationCmd.PersistentFlags().
 		String("write_price", "",
 			"select blobbers by provided write price range, use form 1.5-2.5, default is [0; inf)")
-	newallocationCmd.PersistentFlags().
-		Duration("expire", 720*time.Hour, "duration to allocation expiration")
-	newallocationCmd.PersistentFlags().
-		Duration("mcct", 1*time.Hour,
-			"max challenge completion time, optional, default 1h")
+
 	newallocationCmd.Flags().
 		Bool("usd", false,
 			"pass this option to give token value in USD")
@@ -256,11 +342,24 @@ func init() {
 	newallocationCmd.Flags().String("owner_public_key", "",
 		"public key of owner, user when creating an allocation for somone else")
 
+	newallocationCmd.Flags().String("name", "", "allocation name")
+	newallocationCmd.Flags().String("preferred_blobbers", "", "coma seperated list of preferred blobbers")
+	newallocationCmd.Flags().String("blobber_auth_tickets", "", "coma seperated list of blobber auth tickets")
+
+	newallocationCmd.Flags().Bool("force", false, "(default false) force to get blobbers even if required number of blobbers are not available (should be passed true in case of restricted blobbers)")
+	newallocationCmd.Flags().Bool("third_party_extendable", false, "(default false) specify if the allocation can be extended by users other than the owner")
+	newallocationCmd.Flags().Bool("enterprise", false, "(default false) specify if the allocation is for enterprise")
+	newallocationCmd.Flags().Bool("forbid_upload", false, "(default false) specify if users cannot upload to this allocation")
+	newallocationCmd.Flags().Bool("forbid_delete", false, "(default false) specify if the users cannot delete objects from this allocation")
+	newallocationCmd.Flags().Bool("forbid_update", false, "(default false) specify if the users cannot update objects in this allocation")
+	newallocationCmd.Flags().Bool("forbid_move", false, "(default false) specify if the users cannot move objects from this allocation")
+	newallocationCmd.Flags().Bool("forbid_copy", false, "(default false) specify if the users cannot copy object from this allocation")
+	newallocationCmd.Flags().Bool("forbid_rename", false, "(default false) specify if the users cannot rename objects in this allocation")
 }
 
 func storeAllocation(allocationID string) {
 
-	allocFilePath := getConfigDir() + "/" + *allocationFileName
+	allocFilePath := util.GetConfigDir() + string(os.PathSeparator) + *allocationFileName
 
 	file, err := os.Create(allocFilePath)
 	if err != nil {
@@ -269,6 +368,5 @@ func storeAllocation(allocationID string) {
 	}
 	defer file.Close()
 	//Only one allocation ID per file.
-	fmt.Fprintf(file, allocationID)
-
+	fmt.Fprint(file, allocationID)
 }

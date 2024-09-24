@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"sync"
 
+	"github.com/0chain/gosdk/constants"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/spf13/cobra"
 )
@@ -16,68 +16,38 @@ var deleteCmd = &cobra.Command{
 	Long:  `delete file from blobbers`,
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		fflags := cmd.Flags()                      // fflags is a *flag.FlagSet
-		if fflags.Changed("allocation") == false { // check if the flag "path" is set
+		fflags := cmd.Flags()              // fflags is a *flag.FlagSet
+		if !fflags.Changed("allocation") { // check if the flag "path" is set
 			PrintError("Error: allocation flag is missing") // If not, we'll let the user know
 			os.Exit(1)                                      // and return
 		}
-		if fflags.Changed("remotepath") == false {
+		if !fflags.Changed("remotepath") {
 			PrintError("Error: remotepath flag is missing")
 			os.Exit(1)
 		}
-		commit, _ := cmd.Flags().GetBool("commit")
+
 		allocationID := cmd.Flag("allocation").Value.String()
 		allocationObj, err := sdk.GetAllocation(allocationID)
 		if err != nil {
 			PrintError("Error fetching the allocation", err)
 			os.Exit(1)
 		}
-		remotepath := cmd.Flag("remotepath").Value.String()
+		remotePath := cmd.Flag("remotepath").Value.String()
+		skipCheck, _ := cmd.Flags().GetBool("skipcheck")
+		allocationObj.SetCheckStatus(skipCheck)
 
-		statsMap, err := allocationObj.GetFileStats(remotepath)
-		if err != nil {
-			PrintError("Error in getting information about the object." + err.Error())
-			os.Exit(1)
-		}
-
-		isFile := false
-		for _, v := range statsMap {
-			if v != nil {
-				isFile = true
-				break
-			}
-		}
-
-		var fileMeta *sdk.ConsolidatedFileMeta
-		if isFile && commit {
-			fileMeta, err = allocationObj.GetFileMeta(remotepath)
-			if err != nil {
-				PrintError("Failed to fetch metadata for the given file", err.Error())
-				os.Exit(1)
-			}
-		}
-
-		err = allocationObj.DeleteFile(remotepath)
+		err = allocationObj.DoMultiOperation([]sdk.OperationRequest{
+			{
+				OperationType: constants.FileOperationDelete,
+				RemotePath:    remotePath,
+			},
+		})
 		if err != nil {
 			PrintError("Delete failed.", err.Error())
 			os.Exit(1)
 		}
 
-		fmt.Println(remotepath + " deleted")
-
-		if commit {
-			fmt.Println("Commiting changes to blockchain ...")
-			if isFile {
-				wg := &sync.WaitGroup{}
-				statusBar := &StatusBar{wg: wg}
-				wg.Add(1)
-				commitMetaTxn(remotepath, "Delete", "", "", allocationObj, fileMeta, statusBar)
-				wg.Wait()
-			} else {
-				commitFolderTxn("Delete", remotepath, "", allocationObj)
-			}
-		}
-		return
+		fmt.Println(remotePath + " deleted")
 	},
 }
 
@@ -85,7 +55,8 @@ func init() {
 	rootCmd.AddCommand(deleteCmd)
 	deleteCmd.PersistentFlags().String("allocation", "", "Allocation ID")
 	deleteCmd.PersistentFlags().String("remotepath", "", "Remote path of the object to delete")
-	deleteCmd.Flags().Bool("commit", false, "pass this option to commit the metadata transaction")
+	deleteCmd.PersistentFlags().Bool("skipcheck", false, "Skip the repair check")
+
 	deleteCmd.MarkFlagRequired("allocation")
 	deleteCmd.MarkFlagRequired("remotepath")
 }

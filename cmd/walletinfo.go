@@ -15,14 +15,14 @@ import (
 
 var walletDecryptCmd = &cobra.Command{
 	Use:   "decrypt",
-	Short: "Decrypt text with passphase",
-	Long:  `Decrypt text with passphase`,
+	Short: "Decrypt text with passphrase",
+	Long:  `Decrypt text with passphrase`,
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		passphase, _ := cmd.Flags().GetString("passphase")
+		passphrase, _ := cmd.Flags().GetString("passphrase")
 		text, _ := cmd.Flags().GetString("text")
 
-		decrypted, err := zcncore.Decrypt(passphase, text)
+		decrypted, err := zcncore.Decrypt(passphrase, text)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -86,12 +86,12 @@ var signCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(walletinfoCmd)
-	walletinfoCmd.Flags().Bool("json", false, "pass this option to print response as json data")
+	walletinfoCmd.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
 
 	rootCmd.AddCommand(signCmd)
 	signCmd.Flags().String("data", "", "give data for signing, Default will be clientID")
 
 	rootCmd.AddCommand(walletDecryptCmd)
-	walletDecryptCmd.Flags().String("passphase", "", "Passphase to decrypt text")
+	walletDecryptCmd.Flags().String("passphrase", "", "Passphrase to decrypt text")
 	walletDecryptCmd.Flags().String("text", "", "Encrypted text")
 }

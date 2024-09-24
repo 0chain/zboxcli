@@ -9,15 +9,15 @@ import (
 
 var transferAllocationCmd = &cobra.Command{
 	Use:   "transferallocation",
-	Short: "Transfer an allocation between owners",
-	Long:  "Transfer an allocation between owners, only a curator can transfer an allocation",
+	Short: "Transfer an allocation from one account to another",
+	Long:  "Transfer an allocation between accounts, only current owner can transfer the allocation",
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		var err error
 		var flags = cmd.Flags()
 
 		if flags.Changed("allocation") == false {
-			log.Fatal("Error: curator flag is missing")
+			log.Fatal("Error: allocation flag is missing")
 		}
 		allocationId, err := flags.GetString("allocation")
 		if err != nil {
@@ -25,26 +25,26 @@ var transferAllocationCmd = &cobra.Command{
 		}
 
 		if flags.Changed("new_owner") == false {
-			log.Fatal("Error: curator flag is missing")
+			log.Fatal("Error: new_owner flag is missing")
 		}
 		newOwnerId, err := flags.GetString("new_owner")
 		if err != nil {
-			log.Fatal("invalid 'new_owner_id' flag: ", err)
+			log.Fatal("invalid 'new_owner' flag: ", err)
 		}
 
 		if flags.Changed("new_owner_key") == false {
-			log.Fatal("Error: curator flag is missing")
+			log.Fatal("Error: new_owner_key flag is missing")
 		}
 		newOwnerPublicKey, err := flags.GetString("new_owner_key")
 		if err != nil {
 			log.Fatal("invalid 'new_owner_key' flag: ", err)
 		}
 
-		_, err = sdk.CuratorTransferAllocation(allocationId, newOwnerId, newOwnerPublicKey)
+		_, _, err = sdk.TransferAllocation(allocationId, newOwnerId, newOwnerPublicKey)
 		if err != nil {
-			log.Fatal("Error adding curator:", err)
+			log.Fatal("Error transferring allocation:", err)
 		}
-		log.Print("transferred ownership of allocation " + allocationId + " to " + newOwnerId)
+		log.Println("transferred ownership of allocation " + allocationId + " to " + newOwnerId)
 	},
 }
 

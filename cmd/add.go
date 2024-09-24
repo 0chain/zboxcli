@@ -12,6 +12,7 @@ var addCmd = &cobra.Command{
 	Short: "Adds free storage assigner",
 	Long:  "Adds free storage assigner",
 	Args:  cobra.MinimumNArgs(0),
+	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		var err error
 		var flags = cmd.Flags()
@@ -33,11 +34,12 @@ var addCmd = &cobra.Command{
 			log.Fatal("invalid 'max' flag: ", err)
 		}
 
-		err = sdk.AddFreeStorageAssigner(name, key, limit, max)
+		_, _, err = sdk.AddFreeStorageAssigner(name, key, limit, max)
 		if err != nil {
 			log.Fatal("Error adding free storage assigner:", err)
 		}
-		log.Print(name + " added as free storage assigner")
+		log.Println(name + " added as free storage assigner")
+
 	},
 }
 

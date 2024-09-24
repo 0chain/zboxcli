@@ -38,65 +38,33 @@ var listCmd = &cobra.Command{
 				PrintError("Error: allocation flag is missing") // If not, we'll let the user know
 				os.Exit(1)                                      // and os.Exit(1)
 			}
+
 			allocationID := cmd.Flag("allocation").Value.String()
 			allocationObj, err := sdk.GetAllocation(allocationID)
 			if err != nil {
 				PrintError("Error fetching the allocation", err)
 				os.Exit(1)
 			}
+
 			remotepath := cmd.Flag("remotepath").Value.String()
 			ref, err := allocationObj.ListDir(remotepath)
 			if err != nil {
 				PrintError(err.Error())
 				os.Exit(1)
 			}
-			if doJSON {
-				util.PrintJSON(ref.Children)
-				return
-			}
-			header := []string{"Type", "Name", "Path", "Size", "Num Blocks", "Lookup Hash", "Is Encrypted", "Downloads payer"}
-			data := make([][]string, len(ref.Children))
-			for idx, child := range ref.Children {
-				size := strconv.FormatInt(child.Size, 10)
-				if child.Type == fileref.DIRECTORY {
-					size = ""
-				}
-				isEncrypted := ""
-				if child.Type == fileref.FILE {
-					if len(child.EncryptionKey) > 0 {
-						isEncrypted = "YES"
-					} else {
-						isEncrypted = "NO"
-					}
-				}
-				data[idx] = []string{
-					child.Type,
-					child.Name,
-					child.Path,
-					size,
-					strconv.FormatInt(child.NumBlocks, 10),
-					child.LookupHash,
-					isEncrypted,
-				}
-			}
-			util.WriteTable(os.Stdout, header, []string{}, data)
+
+			printListDirResult(doJSON, ref)
 		} else if len(authticket) > 0 {
 			allocationObj, err := sdk.GetAllocationFromAuthTicket(authticket)
 			if err != nil {
 				PrintError("Error fetching the allocation", err)
 				os.Exit(1)
 			}
+
 			at := sdk.InitAuthTicket(authticket)
-			isDir, err := at.IsDir()
-			if isDir && len(lookuphash) == 0 {
-				lookuphash, err = at.GetLookupHash()
-				if err != nil {
-					PrintError("Error getting the lookuphash from authticket", err)
-					os.Exit(1)
-				}
-			}
-			if !isDir {
-				PrintError("Invalid operation. Auth ticket is not for a directory")
+			lookuphash, err = at.GetLookupHash()
+			if err != nil {
+				PrintError("Error getting the lookuphash from authticket", err)
 				os.Exit(1)
 			}
 
@@ -106,32 +74,7 @@ var listCmd = &cobra.Command{
 				os.Exit(1)
 			}
 
-			if doJSON {
-				util.PrintJSON(ref.Children)
-				return
-			}
-			header := []string{"Type", "Name", "Size", "Num Blocks", "Lookup Hash", "Is Encrypted", "Downloads payer"}
-			data := make([][]string, len(ref.Children))
-			for idx, child := range ref.Children {
-				size := strconv.FormatInt(child.Size, 10)
-				isEncrypted := ""
-				if child.Type == fileref.FILE {
-					if len(child.EncryptionKey) > 0 {
-						isEncrypted = "YES"
-					} else {
-						isEncrypted = "NO"
-					}
-				}
-				data[idx] = []string{
-					child.Type,
-					child.Name,
-					size,
-					strconv.FormatInt(child.NumBlocks, 10),
-					child.LookupHash,
-					isEncrypted,
-				}
-			}
-			util.WriteTable(os.Stdout, header, []string{}, data)
+			printListDirResult(doJSON, ref)
 		}
 
 		return
@@ -156,29 +99,25 @@ var listAllCmd = &cobra.Command{
 			PrintError("Error fetching the allocation", err)
 			os.Exit(1)
 		}
-		ref, err := allocationObj.GetRemoteFileMap(nil)
+		ref, err := allocationObj.GetRemoteFileMap(nil, "/")
 		if err != nil {
 			PrintError(err.Error())
 			os.Exit(1)
 		}
 
 		type fileResp struct {
+			sdk.FileInfo
 			Name string `json:"name"`
 			Path string `json:"path"`
-			Type string `json:"type"`
-			Size int64  `json:"size"`
-			Hash string `json:"hash"`
 		}
 
 		fileResps := make([]fileResp, 0)
 		for path, data := range ref {
 			paths := strings.SplitAfter(path, "/")
 			var resp = fileResp{
-				Name: paths[len(paths)-1],
-				Path: path,
-				Type: data.Type,
-				Size: data.Size,
-				Hash: data.Hash,
+				Name:     paths[len(paths)-1],
+				Path:     path,
+				FileInfo: data,
 			}
 			fileResps = append(fileResps, resp)
 		}
@@ -194,10 +133,47 @@ func init() {
 	listCmd.PersistentFlags().String("remotepath", "", "Remote path to list from")
 	listCmd.PersistentFlags().String("authticket", "", "Auth ticket fot the file to download if you dont own it")
 	listCmd.PersistentFlags().String("lookuphash", "", "The remote lookuphash of the object retrieved from the list")
-	listCmd.Flags().Bool("json", false, "pass this option to print response as json data")
+	listCmd.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
 	listCmd.MarkFlagRequired("allocation")
 
 	rootCmd.AddCommand(listAllCmd)
 	listAllCmd.PersistentFlags().String("allocation", "", "Allocation ID")
 	listAllCmd.MarkFlagRequired("allocation")
+}
+
+func printListDirResult(outJson bool, ref *sdk.ListResult) {
+	if outJson {
+		util.PrintJSON(ref.Children)
+		return
+	}
+
+	header := []string{"Type", "Name", "Path", "Size", "Num Blocks", "Actual Size", "Actual Num Blocks", "Lookup Hash", "Is Encrypted"}
+	data := make([][]string, len(ref.Children))
+	for idx, child := range ref.Children {
+		size := strconv.FormatInt(child.Size, 10)
+		numBlocks := strconv.FormatInt(child.NumBlocks, 10)
+		actualSize := strconv.FormatInt(child.ActualSize, 10)
+		actualNumBlocks := strconv.FormatInt(child.ActualNumBlocks, 10)
+		isEncrypted := ""
+		if child.Type == fileref.FILE {
+			if len(child.EncryptionKey) > 0 {
+				isEncrypted = "YES"
+			} else {
+				isEncrypted = "NO"
+			}
+		}
+		data[idx] = []string{
+			child.Type,
+			child.Name,
+			child.Path,
+			size,
+			numBlocks,
+			actualSize,
+			actualNumBlocks,
+			child.LookupHash,
+			isEncrypted,
+		}
+	}
+
+	util.WriteTable(os.Stdout, header, []string{}, data)
 }
