@@ -166,13 +166,14 @@ func initConfig() {
 	}
 
 	//init the storage sdk with the known miners, sharders and client wallet info
-	if err = sdk.InitStorageSDK(
+	if err = client.InitSDK(
 		walletJSON,
 		cfg.BlockWorker,
 		cfg.ChainID,
 		cfg.SignatureScheme,
 		cfg.PreferredBlobbers,
 		nonce,
+		false, true,
 		zcncore.ConvertToValue(txFee),
 	); err != nil {
 		fmt.Println("Error in sdk init", err)
