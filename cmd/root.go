@@ -171,10 +171,9 @@ func initConfig() {
 		cfg.BlockWorker,
 		cfg.ChainID,
 		cfg.SignatureScheme,
-		cfg.PreferredBlobbers,
 		nonce,
 		false, true,
-		zcncore.ConvertToValue(txFee),
+		int(zcncore.ConvertToValue(txFee)),
 	); err != nil {
 		fmt.Println("Error in sdk init", err)
 		os.Exit(1)
