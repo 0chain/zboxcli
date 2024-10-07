@@ -187,6 +187,22 @@ var blobberUpdateCmd = &cobra.Command{
 			updateBlobber.Capacity = &changedCapacity
 		}
 
+		var delegateWallet string
+		if flags.Changed("delegate_wallet") {
+			if delegateWallet, err = flags.GetString("delegate_wallet"); err != nil {
+				log.Fatal(err)
+			}
+			updateBlobber.DelegateWallet = &delegateWallet
+		}
+
+		var storageVersion int
+		if flags.Changed("storage_version") {
+			if storageVersion, err = flags.GetInt("storage_version"); err != nil {
+				log.Fatal(err)
+			}
+			updateBlobber.StorageVersion = &storageVersion
+		}
+
 		terms := &sdk.UpdateTerms{}
 		var termsChanged bool
 		if flags.Changed("read_price") {
@@ -290,10 +306,10 @@ var blobberUpdateCmd = &cobra.Command{
 }
 
 var resetBlobberStatsCmd = &cobra.Command{
-	Use:   "reset-blobber-stats",
-	Short: "Reset blobber stats",
-	Long:  `Reset blobber stats`,
-	Args:  cobra.MinimumNArgs(0),
+	Use:    "reset-blobber-stats",
+	Short:  "Reset blobber stats",
+	Long:   `Reset blobber stats`,
+	Args:   cobra.MinimumNArgs(0),
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		var (
@@ -378,6 +394,8 @@ func init() {
 
 	buf := blobberUpdateCmd.Flags()
 	buf.String("blobber_id", "", "blobber ID, required")
+	buf.String("delegate_wallet", "", "delegate wallet, optional")
+	buf.Int("storage_version", 0, "update storage version, optional")
 	buf.Int64("capacity", 0, "update blobber capacity bid, optional")
 	buf.Float64("read_price", 0.0, "update read_price, optional")
 	buf.Float64("write_price", 0.0, "update write_price, optional")
