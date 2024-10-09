@@ -59,7 +59,6 @@ func init() {
 	downdirCmd.PersistentFlags().String("remotepath", "", "Remote path of directory to download")
 	downdirCmd.PersistentFlags().String("localpath", "", "Local path of directory to download")
 	downdirCmd.PersistentFlags().String("authticket", "", "Auth ticket fot the file to download if you dont own it")
-
 	downdirCmd.MarkFlagRequired("allocation")
 	downdirCmd.MarkFlagRequired("localpath")
 	downdirCmd.MarkFlagRequired("remotepath")
