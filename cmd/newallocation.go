@@ -24,6 +24,7 @@ var (
 	allocationFileName       *string
 	preferred_blobbers       []string
 	blobber_auth_tickets     []string
+	storage_version          int
 )
 
 func getPriceRange(val string) (pr sdk.PriceRange, err error) {
@@ -237,6 +238,15 @@ var newallocationCmd = &cobra.Command{
 			fileOptionParams.ForbidRename.Value = forbidRename
 		}
 
+		if flags.Changed("storage_version") {
+			storage_version, err = flags.GetInt("storage_version")
+			if err != nil {
+				log.Fatal("invalid storage_version: ", err)
+			}
+		} else {
+			storage_version = 2
+		}
+
 		var allocationID string
 		if len(owner) == 0 {
 			options := sdk.CreateAllocationOptions{
@@ -258,6 +268,7 @@ var newallocationCmd = &cobra.Command{
 				ThirdPartyExtendable: thirdPartyExtendable,
 				Force:                force,
 				IsEnterprise:         isEnterprise,
+				StorageVersion:       storage_version,
 			}
 			allocationID, _, _, err = sdk.CreateAllocationWith(options)
 			if err != nil {
@@ -355,6 +366,8 @@ func init() {
 	newallocationCmd.Flags().Bool("forbid_move", false, "(default false) specify if the users cannot move objects from this allocation")
 	newallocationCmd.Flags().Bool("forbid_copy", false, "(default false) specify if the users cannot copy object from this allocation")
 	newallocationCmd.Flags().Bool("forbid_rename", false, "(default false) specify if the users cannot rename objects in this allocation")
+
+	newallocationCmd.Flags().Int("storage_version", 2, "storage version for the allocation")
 }
 
 func storeAllocation(allocationID string) {
