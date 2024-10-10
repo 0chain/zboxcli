@@ -234,6 +234,15 @@ var blobberUpdateCmd = &cobra.Command{
 			stakePoolSettingChanged = true
 		}
 
+		if flags.Changed("delegate_Wallet") {
+			var dw string
+			if dw, err = flags.GetString("delegate_wallet"); err != nil {
+				log.Fatal(err)
+			}
+			stakePoolSettings.DelegateWallet = &dw
+			stakePoolSettingChanged = true
+		}
+
 		if flags.Changed("service_charge") {
 			var sc float64
 			if sc, err = flags.GetFloat64("service_charge"); err != nil {
@@ -272,6 +281,22 @@ var blobberUpdateCmd = &cobra.Command{
 				ia = false
 			}
 			updateBlobber.IsRestricted = &ia
+		}
+
+		var storageVersion int64
+		if flags.Changed("storage_version"){
+			if storageVersion, err = flags.GetInt64("storage_version"); err != nil{
+				log.Fatal(err)
+			}
+			updateBlobber.StorageVersion = &storageVersion
+		}
+
+		var managingWallet string
+		if flags.Changed("managing_wallet"){
+			if managingWallet, err = flags.GetString("managing_wallet"); err != nil{
+				log.Fatal(err)
+			}
+			updateBlobber.ManagingWallet = &managingWallet
 		}
 
 		if termsChanged {
@@ -389,6 +414,10 @@ func init() {
 	buf.Bool("not_available", true, "(default false) set blobber's availability for new allocations")
 	buf.Bool("is_restricted", true, "(default false) set is_restricted")
 	buf.String("url", "", "update the url of the blobber, optional")
+	buf.Int64("storage_version", 2, "storage version of the blobber, optional")
+	buf.String("delegate_wallet", "", "delegate wallet of the blobber, optional")
+	buf.String("managing_wallet", "", "managing wallet of the blobber, optional")
+
 	blobberUpdateCmd.MarkFlagRequired("blobber_id")
 
 	resetBlobberStatsCmd.Flags().String("blobber_id", "", "blobber_id is required")

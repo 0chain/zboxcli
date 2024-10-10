@@ -237,6 +237,22 @@ var newallocationCmd = &cobra.Command{
 			fileOptionParams.ForbidRename.Value = forbidRename
 		}
 
+		var storageVersion int64
+		if flags.Changed("storage_version") {
+			storageVersion, err = flags.GetInt64("storage_version")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+		}
+
+		var managingWallet string
+		if flags.Changed("managing_wallet") {
+			managingWallet, err = flags.GetString("managing_wallet")
+			if err != nil {
+				log.Fatal("invalid managing wallet: ", err)
+			}
+		}
+
 		var allocationID string
 		if len(owner) == 0 {
 			options := sdk.CreateAllocationOptions{
@@ -258,6 +274,8 @@ var newallocationCmd = &cobra.Command{
 				ThirdPartyExtendable: thirdPartyExtendable,
 				Force:                force,
 				IsEnterprise:         isEnterprise,
+				StorageVersion:       storageVersion,
+				ManagingWallet:       managingWallet,
 			}
 			allocationID, _, _, err = sdk.CreateAllocationWith(options)
 			if err != nil {
@@ -355,6 +373,10 @@ func init() {
 	newallocationCmd.Flags().Bool("forbid_move", false, "(default false) specify if the users cannot move objects from this allocation")
 	newallocationCmd.Flags().Bool("forbid_copy", false, "(default false) specify if the users cannot copy object from this allocation")
 	newallocationCmd.Flags().Bool("forbid_rename", false, "(default false) specify if the users cannot rename objects in this allocation")
+
+	newallocationCmd.Flags().String("storage_version", "", "storage version of the blobber")
+	newallocationCmd.Flags().String("managing_wallet", "", "managing wallet of the blobber")
+
 }
 
 func storeAllocation(allocationID string) {
