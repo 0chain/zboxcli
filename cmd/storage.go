@@ -291,13 +291,6 @@ var blobberUpdateCmd = &cobra.Command{
 			updateBlobber.StorageVersion = &storageVersion
 		}
 
-		var managingWallet string
-		if flags.Changed("managing_wallet"){
-			if managingWallet, err = flags.GetString("managing_wallet"); err != nil{
-				log.Fatal(err)
-			}
-			updateBlobber.ManagingWallet = &managingWallet
-		}
 
 		if termsChanged {
 			updateBlobber.Terms = terms
@@ -416,7 +409,6 @@ func init() {
 	buf.String("url", "", "update the url of the blobber, optional")
 	buf.Int64("storage_version", 2, "storage version of the blobber, optional")
 	buf.String("delegate_wallet", "", "delegate wallet of the blobber, optional")
-	buf.String("managing_wallet", "", "managing wallet of the blobber, optional")
 
 	blobberUpdateCmd.MarkFlagRequired("blobber_id")
 
