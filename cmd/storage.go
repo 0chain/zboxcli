@@ -299,15 +299,6 @@ var blobberUpdateCmd = &cobra.Command{
 			updateBlobber.IsRestricted = &ia
 		}
 
-		var storageVersion int64
-		if flags.Changed("storage_version"){
-			if storageVersion, err = flags.GetInt64("storage_version"); err != nil{
-				log.Fatal(err)
-			}
-			updateBlobber.StorageVersion = &storageVersion
-		}
-
-
 		if termsChanged {
 			updateBlobber.Terms = terms
 		}
