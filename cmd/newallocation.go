@@ -247,6 +247,14 @@ var newallocationCmd = &cobra.Command{
 			storage_version = 2
 		}
 
+		var managingWallet string
+		if flags.Changed("managing_wallet") {
+			managingWallet, err = flags.GetString("managing_wallet")
+			if err != nil {
+				log.Fatal("invalid managing wallet: ", err)
+			}
+		}
+
 		var allocationID string
 		if len(owner) == 0 {
 			options := sdk.CreateAllocationOptions{
@@ -269,6 +277,7 @@ var newallocationCmd = &cobra.Command{
 				Force:                force,
 				IsEnterprise:         isEnterprise,
 				StorageVersion:       storage_version,
+				ManagingWallet:       managingWallet,
 			}
 			allocationID, _, _, err = sdk.CreateAllocationWith(options)
 			if err != nil {
@@ -368,6 +377,8 @@ func init() {
 	newallocationCmd.Flags().Bool("forbid_rename", false, "(default false) specify if the users cannot rename objects in this allocation")
 
 	newallocationCmd.Flags().Int("storage_version", 2, "storage version for the allocation")
+	newallocationCmd.Flags().String("managing_wallet", "", "storage version for the allocation")
+
 }
 
 func storeAllocation(allocationID string) {
