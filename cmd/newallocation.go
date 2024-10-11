@@ -365,7 +365,7 @@ func init() {
 	newallocationCmd.Flags().Bool("forbid_copy", false, "(default false) specify if the users cannot copy object from this allocation")
 	newallocationCmd.Flags().Bool("forbid_rename", false, "(default false) specify if the users cannot rename objects in this allocation")
 
-	newallocationCmd.Flags().String("storage_version", "", "storage version of the blobber")
+	newallocationCmd.Flags().Int64("storage_version", 0, "storaage version of allocation")
 }
 
 func storeAllocation(allocationID string) {
