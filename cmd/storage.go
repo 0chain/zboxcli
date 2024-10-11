@@ -404,7 +404,7 @@ func init() {
 	buf := blobberUpdateCmd.Flags()
 	buf.String("blobber_id", "", "blobber ID, required")
 	buf.String("delegate_wallet", "", "delegate wallet, optional")
-	buf.Int("storage_version", 0, "update storage version, optional")
+	buf.Int64("storage_version", 0, "update storage version, optional")
 	buf.Int64("capacity", 0, "update blobber capacity bid, optional")
 	buf.Float64("read_price", 0.0, "update read_price, optional")
 	buf.Float64("write_price", 0.0, "update write_price, optional")
@@ -416,9 +416,6 @@ func init() {
 	buf.Bool("not_available", true, "(default false) set blobber's availability for new allocations")
 	buf.Bool("is_restricted", true, "(default false) set is_restricted")
 	buf.String("url", "", "update the url of the blobber, optional")
-	buf.Int64("storage_version", 2, "storage version of the blobber, optional")
-	buf.String("delegate_wallet", "", "delegate wallet of the blobber, optional")
-
 	blobberUpdateCmd.MarkFlagRequired("blobber_id")
 
 	resetBlobberStatsCmd.Flags().String("blobber_id", "", "blobber_id is required")
