@@ -237,6 +237,14 @@ var newallocationCmd = &cobra.Command{
 			fileOptionParams.ForbidRename.Value = forbidRename
 		}
 
+		var storageVersion int64
+		if flags.Changed("storage_version") {
+			storageVersion, err = flags.GetInt64("storage_version")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+		}
+
 		var allocationID string
 		if len(owner) == 0 {
 			options := sdk.CreateAllocationOptions{
@@ -258,6 +266,7 @@ var newallocationCmd = &cobra.Command{
 				ThirdPartyExtendable: thirdPartyExtendable,
 				Force:                force,
 				IsEnterprise:         isEnterprise,
+				StorageVersion:       storageVersion,
 			}
 			allocationID, _, _, err = sdk.CreateAllocationWith(options)
 			if err != nil {
@@ -355,6 +364,8 @@ func init() {
 	newallocationCmd.Flags().Bool("forbid_move", false, "(default false) specify if the users cannot move objects from this allocation")
 	newallocationCmd.Flags().Bool("forbid_copy", false, "(default false) specify if the users cannot copy object from this allocation")
 	newallocationCmd.Flags().Bool("forbid_rename", false, "(default false) specify if the users cannot rename objects in this allocation")
+
+	newallocationCmd.Flags().Int64("storage_version", 0, "storaage version of allocation")
 }
 
 func storeAllocation(allocationID string) {
