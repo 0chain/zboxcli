@@ -48,11 +48,11 @@ var walletinfoCmd = &cobra.Command{
 			fmt.Println("Error getting the public key for encryption. ", err.Error())
 			return
 		}
-		data[0] = []string{client.PublicKey(), client.ClientID(), encPubKey}
+		data[0] = []string{client.PublicKey(), client.Id(), encPubKey}
 		if doJSON {
 			j := make(map[string]string)
 			j["client_public_key"] = client.PublicKey()
-			j["client_id"] = client.ClientID()
+			j["client_id"] = client.Id()
 			j["encryption_public_key"] = encPubKey
 			util.PrintJSON(j)
 			return
@@ -70,7 +70,7 @@ var signCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		data, _ := cmd.Flags().GetString("data")
 		if data == "" {
-			data = client.ClientID()
+			data = client.Id()
 		} else {
 			data = encryption.Hash(data)
 		}
