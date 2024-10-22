@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/0chain/gosdk/core/transaction"
 	"log"
 	"time"
 
@@ -23,7 +24,7 @@ var scConfig = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		doJSON, _ := cmd.Flags().GetBool("json")
 
-		var conf, err = sdk.GetStorageSCConfig()
+		var conf, err = transaction.GetConfig("storage_sc_config")
 		if err != nil {
 			log.Fatalf("Failed to get storage SC configurations: %v", err)
 		}
@@ -77,7 +78,7 @@ var lsBlobers = &cobra.Command{
 		}
 		list, err := sdk.GetBlobbers(isActive, isStakable)
 		if err != nil {
-			log.Fatalf("Failed to get storage SC configurations: %v", err)
+			log.Fatalf("Failed to get blobbers: %v", err)
 		}
 
 		if doJSON {
