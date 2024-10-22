@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/0chain/gosdk/core/transaction"
 	"log"
 	"time"
 
@@ -23,7 +24,7 @@ var scConfig = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		doJSON, _ := cmd.Flags().GetBool("json")
 
-		var conf, err = sdk.GetStorageSCConfig()
+		var conf, err = transaction.GetConfig("storage_sc_config")
 		if err != nil {
 			log.Fatalf("Failed to get storage SC configurations: %v", err)
 		}
@@ -77,7 +78,7 @@ var lsBlobers = &cobra.Command{
 		}
 		list, err := sdk.GetBlobbers(isActive, isStakable)
 		if err != nil {
-			log.Fatalf("Failed to get storage SC configurations: %v", err)
+			log.Fatalf("Failed to get blobbers: %v", err)
 		}
 
 		if doJSON {
@@ -290,10 +291,10 @@ var blobberUpdateCmd = &cobra.Command{
 }
 
 var resetBlobberStatsCmd = &cobra.Command{
-	Use:   "reset-blobber-stats",
-	Short: "Reset blobber stats",
-	Long:  `Reset blobber stats`,
-	Args:  cobra.MinimumNArgs(0),
+	Use:    "reset-blobber-stats",
+	Short:  "Reset blobber stats",
+	Long:   `Reset blobber stats`,
+	Args:   cobra.MinimumNArgs(0),
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		var (
@@ -378,7 +379,7 @@ func init() {
 
 	buf := blobberUpdateCmd.Flags()
 	buf.String("blobber_id", "", "blobber ID, required")
-	buf.Int64("capacity", 0, "update blobber capacity bid, optional")
+	buf.Int64("capacity", 0, "	update blobber capacity bid, optional")
 	buf.Float64("read_price", 0.0, "update read_price, optional")
 	buf.Float64("write_price", 0.0, "update write_price, optional")
 	buf.Duration("max_offer_duration", 0*time.Second, "update max_offer_duration, optional")
