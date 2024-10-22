@@ -1,4 +1,4 @@
-name: Build, Distribute and Test zbox
+name: Distribute zbox using apt
 
 on:
   workflow_dispatch:

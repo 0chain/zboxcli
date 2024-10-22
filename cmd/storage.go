@@ -379,7 +379,7 @@ func init() {
 
 	buf := blobberUpdateCmd.Flags()
 	buf.String("blobber_id", "", "blobber ID, required")
-	buf.Int64("capacity", 0, "update blobber capacity bid, optional")
+	buf.Int64("capacity", 0, "	update blobber capacity bid, optional")
 	buf.Float64("read_price", 0.0, "update read_price, optional")
 	buf.Float64("write_price", 0.0, "update write_price, optional")
 	buf.Duration("max_offer_duration", 0*time.Second, "update max_offer_duration, optional")
