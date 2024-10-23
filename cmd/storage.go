@@ -250,6 +250,15 @@ var blobberUpdateCmd = &cobra.Command{
 			stakePoolSettingChanged = true
 		}
 
+		if flags.Changed("delegate_Wallet") {
+			var dw string
+			if dw, err = flags.GetString("delegate_wallet"); err != nil {
+				log.Fatal(err)
+			}
+			stakePoolSettings.DelegateWallet = &dw
+			stakePoolSettingChanged = true
+		}
+
 		if flags.Changed("service_charge") {
 			var sc float64
 			if sc, err = flags.GetFloat64("service_charge"); err != nil {
@@ -395,7 +404,7 @@ func init() {
 	buf := blobberUpdateCmd.Flags()
 	buf.String("blobber_id", "", "blobber ID, required")
 	buf.String("delegate_wallet", "", "delegate wallet, optional")
-	buf.Int("storage_version", 0, "update storage version, optional")
+	buf.Int64("storage_version", 0, "update storage version, optional")
 	buf.Int64("capacity", 0, "update blobber capacity bid, optional")
 	buf.Float64("read_price", 0.0, "update read_price, optional")
 	buf.Float64("write_price", 0.0, "update write_price, optional")
