@@ -87,7 +87,7 @@ jobs:
         tag_schema: semantic
 
     - name: 'Upload Artifact'
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: zbox-linux
         path: zbox
@@ -140,7 +140,7 @@ jobs:
           zip zbox-windows.zip zbox.exe libgcc_s_seh-1.dll libstdc++-6.dll libwinpthread-1.dll
 
       - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: zbox-windows.zip
           path: zbox-windows.zip
@@ -171,7 +171,7 @@ jobs:
         run: tar -czvf zbox-macos.tar.gz ./zbox
 
       - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: zbox-macos
           path: zbox
