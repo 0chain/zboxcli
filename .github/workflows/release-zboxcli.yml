@@ -22,7 +22,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Install deps
       run: |
@@ -126,7 +126,7 @@ jobs:
            go env -w "CC=/mingw64/bin/clang.exe"
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install
         run: make install
@@ -162,7 +162,7 @@ jobs:
           go-version: '1.20' # The Go version to download (if necessary) and use.
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install
         run: make install
