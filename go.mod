@@ -1,20 +1,21 @@
 module github.com/0chain/zboxcli
 
-go 1.21
+go 1.22.0
+
+toolchain go1.22.5
 
 require (
 	github.com/0chain/errors v1.0.3
-	github.com/0chain/gosdk v1.17.10-0.20241007201651-616a0bd61e84
+	github.com/0chain/gosdk v1.18.0-RC4
 	github.com/icza/bitio v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.6.0
 	github.com/spf13/pflag v1.0.5
-	github.com/spf13/viper v1.15.0
 	gopkg.in/cheggaaa/pb.v1 v1.0.28
 )
 
 require (
-	github.com/0chain/common v1.13.1-0.20240926135437-61b88d39bbbd // indirect
+	github.com/0chain/common v1.18.0 // indirect
 	github.com/Luzifer/go-openssl/v3 v3.1.0 // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/btcsuite/btcd v0.23.4 // indirect
@@ -59,6 +60,7 @@ require (
 	github.com/spf13/afero v1.9.3 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
+	github.com/spf13/viper v1.15.0 // indirect
 	github.com/subosito/gotenv v1.4.2 // indirect
 	github.com/tinylib/msgp v1.1.6 // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
@@ -73,10 +75,10 @@ require (
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
 	go.uber.org/zap v1.24.0 // indirect
-	golang.org/x/crypto v0.21.0 // indirect
-	golang.org/x/sync v0.7.0 // indirect
-	golang.org/x/sys v0.18.0 // indirect
-	golang.org/x/text v0.14.0 // indirect
+	golang.org/x/crypto v0.26.0 // indirect
+	golang.org/x/sync v0.8.0 // indirect
+	golang.org/x/sys v0.23.0 // indirect
+	golang.org/x/text v0.17.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
@@ -84,4 +86,4 @@ require (
 )
 
 // temporary, for development
-// replace github.com/0chain/gosdk => ../gosdk
+//replace github.com/0chain/gosdk => ../gosdk

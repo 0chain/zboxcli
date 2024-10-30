@@ -1,21 +1,19 @@
 package cmd
 
 import (
-	_ "embed"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/0chain/gosdk/core/conf"
 	"github.com/0chain/gosdk/core/logger"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 
-	"github.com/0chain/gosdk/zboxcore/blockchain"
+	"github.com/0chain/gosdk/core/client"
 	"github.com/0chain/zboxcli/util"
 
 	"github.com/0chain/gosdk/core/zcncrypto"
@@ -36,9 +34,6 @@ var bSilent bool
 var allocUnderRepair bool
 
 var walletJSON string
-
-//go:embed config.yaml
-var configStr string
 
 var rootCmd = &cobra.Command{
 	Use:   "zbox",
@@ -83,26 +78,12 @@ func initConfig() {
 	cfg, err := conf.LoadConfigFile(filepath.Join(configDir, cfgFile))
 	if err != nil {
 		fmt.Println("Can't read config:", err)
-		fmt.Println("using default config")
-		fmt.Printf("config: %v", configStr)
-		v := viper.New()
-		v.SetConfigType("yaml")
-		err := v.ReadConfig(strings.NewReader(configStr))
-		if err != nil {
-			fmt.Println("error reading default config:", err)
-			os.Exit(1)
-		}
-		cfg, err = conf.LoadConfig(v)
-		if err != nil {
-			fmt.Println("error loading default config:", err)
-			os.Exit(1)
-		}
+		os.Exit(1)
 	}
 
 	if networkFile == "" {
 		networkFile = "network.yaml"
 	}
-	network, _ := conf.LoadNetworkFile(filepath.Join(configDir, networkFile))
 
 	// syncing loggers
 	logger.SyncLoggers([]*logger.Logger{zcncore.GetLogger(), sdk.GetLogger()})
@@ -110,21 +91,8 @@ func initConfig() {
 	// set the log file
 	zcncore.SetLogFile("cmdlog.log", !bSilent)
 	sdk.SetLogFile("cmdlog.log", !bSilent)
-	sdk.SetMinSubmit(cfg.MinSubmit)
 
-	if network.IsValid() {
-		zcncore.SetNetwork(network.Miners, network.Sharders)
-		conf.InitChainNetwork(&conf.Network{
-			Miners:   network.Miners,
-			Sharders: network.Sharders,
-		})
-	}
-
-	err = zcncore.InitZCNSDK(cfg.BlockWorker, cfg.SignatureScheme,
-		zcncore.WithChainID(cfg.ChainID),
-		zcncore.WithMinSubmit(cfg.MinSubmit),
-		zcncore.WithMinConfirmation(cfg.MinConfirmation),
-		zcncore.WithConfirmationChainLength(cfg.ConfirmationChainLength))
+	err = client.Init(context.Background(), cfg)
 	if err != nil {
 		fmt.Println("Error initializing core SDK.", err)
 		os.Exit(1)
@@ -198,34 +166,17 @@ func initConfig() {
 	}
 
 	//init the storage sdk with the known miners, sharders and client wallet info
-	if err = sdk.InitStorageSDK(
+	if err = client.InitSDK(
 		walletJSON,
 		cfg.BlockWorker,
 		cfg.ChainID,
 		cfg.SignatureScheme,
-		cfg.PreferredBlobbers,
 		nonce,
-		zcncore.ConvertToValue(txFee),
+		false, true,
+		int(zcncore.ConvertToValue(txFee)),
 	); err != nil {
 		fmt.Println("Error in sdk init", err)
 		os.Exit(1)
-	}
-
-	// set wallet info along whether split key is used
-	err = zcncore.SetWalletInfo(walletJSON, false)
-	if err != nil {
-		fmt.Println("Error in wallet info initialization", err)
-		os.Exit(1)
-	}
-
-	// additional settings depending network latency
-	blockchain.SetMaxTxnQuery(cfg.MaxTxnQuery)
-	blockchain.SetQuerySleepTime(cfg.QuerySleepTime)
-
-	conf.InitClientConfig(&cfg)
-
-	if network.IsValid() {
-		sdk.SetNetwork(network.Miners, network.Sharders)
 	}
 
 	sdk.SetNumBlockDownloads(10)

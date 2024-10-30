@@ -77,7 +77,7 @@ var lsBlobers = &cobra.Command{
 		}
 		list, err := sdk.GetBlobbers(isActive, isStakable)
 		if err != nil {
-			log.Fatalf("Failed to get storage SC configurations: %v", err)
+			log.Fatalf("Failed to get blobbers: %v", err)
 		}
 
 		if doJSON {
@@ -306,10 +306,10 @@ var blobberUpdateCmd = &cobra.Command{
 }
 
 var resetBlobberStatsCmd = &cobra.Command{
-	Use:    "reset-blobber-stats",
-	Short:  "Reset blobber stats",
-	Long:   `Reset blobber stats`,
-	Args:   cobra.MinimumNArgs(0),
+	Use:   "reset-blobber-stats",
+	Short: "Reset blobber stats",
+	Long:  `Reset blobber stats`,
+	Args:  cobra.MinimumNArgs(0),
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		var (
