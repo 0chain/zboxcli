@@ -21,7 +21,7 @@ jobs:
           sudo apt -y install build-essential nghttp2 libnghttp2-dev libssl-dev containerd docker.io
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup gopath and gocache
         run: |
@@ -79,7 +79,7 @@ jobs:
            go env -w "CC=/mingw64/bin/clang.exe"
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install
         run: make install
@@ -115,7 +115,7 @@ jobs:
           go-version: '1.21'
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install
         run: make install

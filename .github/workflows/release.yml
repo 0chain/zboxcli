@@ -51,7 +51,7 @@ jobs:
       OUTPUT_DIR: ${{ github.workspace }}/output
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         path: ${{ env.SRC_DIR }}
     
@@ -154,7 +154,7 @@ jobs:
       OUTPUT_DIR: ${{ github.workspace }}/output
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         path: ${{ env.SRC_DIR }}
 
@@ -230,7 +230,7 @@ jobs:
       OUTPUT_DIR: ${{ github.workspace }}\output
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         path: ${{ env.SRC_DIR }}
     
