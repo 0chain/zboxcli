@@ -266,7 +266,7 @@ var newallocationCmd = &cobra.Command{
 				ThirdPartyExtendable: thirdPartyExtendable,
 				Force:                force,
 				IsEnterprise:         isEnterprise,
-				StorageVersion:       storageVersion,
+				StorageVersion:       int(storageVersion),
 			}
 			allocationID, _, _, err = sdk.CreateAllocationWith(options)
 			if err != nil {
