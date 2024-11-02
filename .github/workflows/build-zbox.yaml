@@ -21,7 +21,7 @@ jobs:
           sudo apt -y install build-essential nghttp2 libnghttp2-dev libssl-dev containerd docker.io
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup gopath and gocache
         run: |
@@ -40,7 +40,7 @@ jobs:
           make install
 
       - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: zbox-linux
           path: zbox
@@ -79,7 +79,7 @@ jobs:
            go env -w "CC=/mingw64/bin/clang.exe"
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install
         run: make install
@@ -93,7 +93,7 @@ jobs:
           zip zbox-windows.zip zbox.exe libgcc_s_seh-1.dll libstdc++-6.dll libwinpthread-1.dll
 
       - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: zbox-windows.zip
           path: zbox-windows.zip
@@ -115,13 +115,13 @@ jobs:
           go-version: '1.21'
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install
         run: make install
 
       - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: zbox-macos
           path: zbox

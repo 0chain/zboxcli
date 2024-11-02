@@ -49,7 +49,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         path: ${{ env.SRC_DIR }}
 
@@ -140,7 +140,7 @@ jobs:
       DEB_DIR: ${{ github.workspace }}/deb-files
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         path: ${{ env.SRC_DIR }}
 
@@ -263,7 +263,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         path: ${{ env.SRC_DIR }}
 
