@@ -385,12 +385,45 @@ var resetBlobberStatsCmd = &cobra.Command{
 	},
 }
 
+var resetVersionCmd = &cobra.Command{
+	Use:   "reset-version",
+	Short: "Reset blobber version",
+	Long:  `Reset blobber version`,
+	Args:  cobra.MinimumNArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		var (
+			flags = cmd.Flags()
+
+			blobberID string
+			err       error
+		)
+
+		if !flags.Changed("blobber_id") {
+			log.Fatal("missing required 'blobber_id' flag")
+		}
+		if blobberID, err = flags.GetString("blobber_id"); err != nil {
+			log.Fatal("error in 'blobber_id' flag: ", err)
+		}
+
+		snv := sdk.StorageNodeVersion{
+			Id: blobberID,
+		}
+
+		_, _, err = sdk.ResetBlobberVersion(&snv)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("reset blobber version successfully")
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(scConfig)
 	rootCmd.AddCommand(lsBlobers)
 	rootCmd.AddCommand(blobberInfoCmd)
 	rootCmd.AddCommand(blobberUpdateCmd)
 	rootCmd.AddCommand(resetBlobberStatsCmd)
+	rootCmd.AddCommand(resetVersionCmd)
 
 	scConfig.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
 	lsBlobers.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
@@ -429,4 +462,8 @@ func init() {
 	resetBlobberStatsCmd.MarkFlagRequired("prev_saved_data")
 	resetBlobberStatsCmd.MarkFlagRequired("new_allocated")
 	resetBlobberStatsCmd.MarkFlagRequired("new_saved_data")
+
+	resetVersionCmd.Flags().String("blobber_id", "", "blobber_id is required")
+	resetVersionCmd.MarkFlagRequired("blobber_id")
+
 }
