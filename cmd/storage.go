@@ -471,7 +471,7 @@ func init() {
 	buf := blobberUpdateCmd.Flags()
 	buf.String("blobber_id", "", "blobber ID, required")
 	buf.String("delegate_wallet", "", "delegate wallet, optional")
-	buf.Int64("storage_version", 0, "update storage version, optional")
+	buf.Int("storage_version", 0, "update storage version, optional")
 	buf.Int64("capacity", 0, "update blobber capacity bid, optional")
 	buf.Float64("read_price", 0.0, "update read_price, optional")
 	buf.Float64("write_price", 0.0, "update write_price, optional")
