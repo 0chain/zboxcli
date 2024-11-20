@@ -1,4 +1,4 @@
-FROM --platform=$TARGETPLATFORM golang:1.21 AS build
+FROM --platform=$TARGETPLATFORM golang:1.22 AS build
 ARG VERSION
 WORKDIR /src
 COPY go.mod go.sum .

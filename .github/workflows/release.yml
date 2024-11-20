@@ -23,7 +23,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.GOSDK }}
   VERSION: ${{ github.event.inputs.version }}
   APP_NAME: zbox
-  GO_VERSION: 1.21
+  GO_VERSION: 1.22
 
 jobs:
   create_release:
@@ -74,6 +74,7 @@ jobs:
         docker buildx build \
           --platform linux/amd64 \
           --build-arg VERSION=${{ env.VERSION }} \
+          --build-arg GO
           --tag ${{ env.APP_NAME }}-amd64 \
           --load \
           --output type=docker,dest=${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}-amd64.tar \
