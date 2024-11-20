@@ -11,7 +11,6 @@ on:
 env:
   APP_NAME: zbox
   APP_VERSION: ${{ github.event.inputs.version }}
-  GO_VERSION: 1.21.0
   REMOTE_SERVER: 5.9.151.246
   REMOTE_USER: root
 
