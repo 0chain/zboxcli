@@ -172,7 +172,7 @@ func initConfig() {
 		cfg.ChainID,
 		cfg.SignatureScheme,
 		nonce,
-		false, true,
+		false, true, false,
 		int(zcncore.ConvertToValue(txFee)),
 	); err != nil {
 		fmt.Println("Error in sdk init", err)
