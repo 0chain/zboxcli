@@ -167,16 +167,25 @@ func initConfig() {
 
 	//init the storage sdk with the known miners, sharders and client wallet info
 	if err = client.InitSDK(
-		walletJSON,
+		"{}",
 		cfg.BlockWorker,
 		cfg.ChainID,
 		cfg.SignatureScheme,
-		nonce,
-		false, true,
+		nonce, false,
 		int(zcncore.ConvertToValue(txFee)),
 	); err != nil {
 		fmt.Println("Error in sdk init", err)
 		os.Exit(1)
+	}
+
+	err = zcncore.SetGeneralWalletInfo(walletJSON, cfg.SignatureScheme)
+	if err != nil {
+		fmt.Println("Error in sdk init", err)
+		os.Exit(1)
+	}
+
+	if client.GetClient().IsSplit {
+		zcncore.RegisterZauthServer(cfg.ZauthServer)
 	}
 
 	sdk.SetNumBlockDownloads(10)
