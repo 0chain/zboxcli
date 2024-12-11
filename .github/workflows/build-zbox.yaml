@@ -162,12 +162,6 @@ jobs:
         run: |
           cd ${{ env.OUTPUT_DIR }}/arm64
           zip -qq -r macos-arm64-darwin-arm64.zip macos-arm64 config.yaml
-    
-      - name: Upload Zip for Darwin/arm64
-        uses: actions/upload-artifact@v3
-        with:
-          name: macos-arm64-darwin-arm64
-          path: ${{ env.OUTPUT_DIR }}/arm64/macos-arm64-darwin-arm64.zip  
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
