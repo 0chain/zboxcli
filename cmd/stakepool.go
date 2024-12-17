@@ -281,6 +281,7 @@ var spUnlock = &cobra.Command{
 		var (
 			flags        = cmd.Flags()
 			providerID   string
+			clientID     string
 			providerType sdk.ProviderType
 			fee          float64
 			err          error
@@ -310,13 +311,19 @@ var spUnlock = &cobra.Command{
 			log.Fatal("missing flag: one of 'blobber_id','validator_id' or authorizer_id is required")
 		}
 
+		if flags.Changed("client_id") {
+			if clientID, err = flags.GetString("client_id"); err != nil {
+				log.Fatalf("invalid 'client_id' flag: %v", err)
+			}
+		}
+
 		if flags.Changed("fee") {
 			if fee, err = flags.GetFloat64("fee"); err != nil {
 				log.Fatal("invalid 'fee' flag: ", err)
 			}
 		}
 
-		unlocked, _, err := sdk.StakePoolUnlock(providerType, providerID, zcncore.ConvertToValue(fee))
+		unlocked, _, err := sdk.StakePoolUnlock(providerType, providerID, clientID, zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to unlock tokens in stake pool: %v", err)
 		}
@@ -360,6 +367,7 @@ func init() {
 	spUnlock.PersistentFlags().String("blobber_id", "", "for given blobber")
 	spUnlock.PersistentFlags().String("validator_id", "", "for given validator")
 	spUnlock.PersistentFlags().String("authorizer_id", "", "for given authorizer")
+	spUnlock.PersistentFlags().String("client_id", "", "for given client")
 	spUnlock.PersistentFlags().Float64("fee", 0.0, "transaction fee, default 0")
 	spUnlock.MarkFlagRequired("tokens")
 }
