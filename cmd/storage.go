@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/0chain/gosdk/core/transaction"
 	"log"
 	"time"
+
+	"github.com/0chain/gosdk/core/transaction"
 
 	"github.com/0chain/gosdk/zboxcore/blockchain"
 
@@ -251,7 +252,7 @@ var blobberUpdateCmd = &cobra.Command{
 			stakePoolSettingChanged = true
 		}
 
-		if flags.Changed("delegate_Wallet") {
+		if flags.Changed("delegate_wallet") {
 			var dw string
 			if dw, err = flags.GetString("delegate_wallet"); err != nil {
 				log.Fatal(err)
