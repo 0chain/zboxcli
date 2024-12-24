@@ -394,7 +394,7 @@ func init() {
 If file exists, this will be used for comparison with remote.
 After sync complete, remote snapshot will be updated to the same file for next use.`)
 	syncCmd.PersistentFlags().StringArray("excludepath", []string{}, "Remote folder paths exclude to sync")
-	syncCmd.Flags().BoolP("verifydownload", "v", true, "pass this option to verify downloaded blocks")
+	syncCmd.Flags().BoolP("verifydownload", "v", false, "pass this option to verify downloaded blocks")
 
 	syncCmd.MarkFlagRequired("allocation")
 	syncCmd.MarkFlagRequired("localpath")
