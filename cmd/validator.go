@@ -169,6 +169,14 @@ var validatorUpdateCmd = &cobra.Command{
 			updateValidator.ServiceCharge = &sc
 		}
 
+		if flags.Changed("base_url") {
+			var baseURL string
+			if baseURL, err = flags.GetString("base_url"); err != nil {
+				log.Fatal(err)
+			}
+			updateValidator.BaseURL = &baseURL
+		}
+
 		if _, _, err = sdk.UpdateValidatorSettings(updateValidator); err != nil {
 			log.Fatal(err)
 		}
@@ -189,6 +197,7 @@ func init() {
 
 	buf := validatorUpdateCmd.Flags()
 	buf.String("validator_id", "", "validator ID, required")
+	buf.String("base_url", "", "Base url, optional")
 	buf.Float64("min_stake", 0.0, "update min_stake, optional")
 	buf.Float64("max_stake", 0.0, "update max_stake, optional")
 	buf.Int("num_delegates", 0, "update num_delegates, optional")
