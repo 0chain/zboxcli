@@ -139,6 +139,7 @@ var updateAllocationCmd = &cobra.Command{
 				"",
 				setThirdPartyExtendable,
 				&fileOptionParams,
+				"",
 				statusBar,
 			); err != nil {
 				allocUnderRepair = false
@@ -160,8 +161,10 @@ var updateAllocationCmd = &cobra.Command{
 				addBlobberAuthTicket,
 				removeBlobberId,
 				"",
+				"",
 				setThirdPartyExtendable,
 				&fileOptionParams,
+				"",
 			)
 			if err != nil {
 				log.Fatal("Error updating allocation:", err)

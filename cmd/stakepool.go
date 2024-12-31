@@ -316,7 +316,7 @@ var spUnlock = &cobra.Command{
 			}
 		}
 
-		unlocked, _, err := sdk.StakePoolUnlock(providerType, providerID, zcncore.ConvertToValue(fee))
+		unlocked, _, err := sdk.StakePoolUnlock(providerType, providerID, clientWallet.ClientID, zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to unlock tokens in stake pool: %v", err)
 		}
