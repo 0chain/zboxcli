@@ -81,6 +81,30 @@ func filterEmptyFiles(localPath string, lDiff []sdk.FileDiff) (filterDiff []sdk.
 	return
 }
 
+func filterVideoFiles(localPath string, lDiff []sdk.FileDiff) (filterDiff []sdk.FileDiff) {
+	localPath = strings.TrimRight(localPath, "/")
+	for _, f := range lDiff {
+		path := localPath + f.Path
+		parentPath := filepath.Dir(path)
+		videoPath := filepath.Dir(parentPath)
+		//get extension of directory name
+		parentPathExt := filepath.Ext(parentPath)
+		if parentPathExt == "" && filepath.Base(parentPath) != "preview" {
+			filterDiff = append(filterDiff, f)
+			continue
+		}
+		if filepath.Base(path) == "thumbnail_generated.jpg" || filepath.Base(path) == "0kb" {
+			continue
+		}
+
+		ext := filepath.Ext(videoPath)
+		if ext != ".mp4" && ext != ".mkv" && ext != ".avi" && ext != ".mov" && ext != ".flv" && ext != ".wmv" && ext != ".webm" {
+			filterDiff = append(filterDiff, f)
+		}
+	}
+	return
+}
+
 func startMultiUploadUpdate(allocationObj *sdk.Allocation, argsSlice []chunkedUploadArgs) error {
 	totalOperations := len(argsSlice)
 	if totalOperations == 0 {
@@ -220,6 +244,7 @@ var syncCmd = &cobra.Command{
 		}
 
 		lDiff = filterEmptyFiles(localpath, lDiff)
+		lDiff = filterVideoFiles(localpath, lDiff)
 
 		if len(lDiff) > 0 {
 			printTable(lDiff)
