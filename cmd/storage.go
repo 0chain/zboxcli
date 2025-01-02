@@ -385,6 +385,37 @@ var resetBlobberStatsCmd = &cobra.Command{
 	},
 }
 
+var fixValidatorUrl = &cobra.Command{
+	Use:   "fix-validator-url",
+	Short: "Fix validator url",
+	Long:  `Fix validator url`,
+	Args:  cobra.MinimumNArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		var (
+			validatorRequest = &sdk.FixValidatorRequest{}
+			validatorID      string
+
+			err error
+
+			flags = cmd.Flags()
+		)
+
+		if !flags.Changed("validator_id") {
+			log.Fatal("missing required 'validator_id' flag")
+		}
+		if validatorID, err = flags.GetString("validator_id"); err != nil {
+			log.Fatal("error in 'validator_id' flag: ", err)
+		}
+
+		validatorRequest.ValidatorID = validatorID
+
+		if _, _, err = sdk.ResetValidator(validatorRequest); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("validator url fixed successfully")
+	},
+}
+
 var resetVersionCmd = &cobra.Command{
 	Use:   "reset-version",
 	Short: "Reset blobber version",
@@ -457,6 +488,7 @@ func init() {
 	rootCmd.AddCommand(resetBlobberStatsCmd)
 	rootCmd.AddCommand(resetVersionCmd)
 	rootCmd.AddCommand(insertKilledProviderId)
+	rootCmd.AddCommand(fixValidatorUrl)
 
 	scConfig.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
 	lsBlobers.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
@@ -501,4 +533,7 @@ func init() {
 
 	insertKilledProviderId.Flags().String("id", "", "blobber_id is required")
 	insertKilledProviderId.MarkFlagRequired("id")
+
+	fixValidatorUrl.Flags().String("validator_id", "", "validator_id is required")
+	fixValidatorUrl.MarkFlagRequired("validator_id")
 }
