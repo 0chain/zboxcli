@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -12,7 +13,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/0chain/gosdk/zboxcore/blockchain"
+	"github.com/0chain/gosdk/core/client"
 	"github.com/0chain/zboxcli/util"
 
 	"github.com/0chain/gosdk/core/zcncrypto"
@@ -83,7 +84,6 @@ func initConfig() {
 	if networkFile == "" {
 		networkFile = "network.yaml"
 	}
-	network, _ := conf.LoadNetworkFile(filepath.Join(configDir, networkFile))
 
 	// syncing loggers
 	logger.SyncLoggers([]*logger.Logger{zcncore.GetLogger(), sdk.GetLogger()})
@@ -91,21 +91,8 @@ func initConfig() {
 	// set the log file
 	zcncore.SetLogFile("cmdlog.log", !bSilent)
 	sdk.SetLogFile("cmdlog.log", !bSilent)
-	sdk.SetMinSubmit(cfg.MinSubmit)
 
-	if network.IsValid() {
-		zcncore.SetNetwork(network.Miners, network.Sharders)
-		conf.InitChainNetwork(&conf.Network{
-			Miners:   network.Miners,
-			Sharders: network.Sharders,
-		})
-	}
-
-	err = zcncore.InitZCNSDK(cfg.BlockWorker, cfg.SignatureScheme,
-		zcncore.WithChainID(cfg.ChainID),
-		zcncore.WithMinSubmit(cfg.MinSubmit),
-		zcncore.WithMinConfirmation(cfg.MinConfirmation),
-		zcncore.WithConfirmationChainLength(cfg.ConfirmationChainLength))
+	err = client.Init(context.Background(), cfg)
 	if err != nil {
 		fmt.Println("Error initializing core SDK.", err)
 		os.Exit(1)
@@ -179,27 +166,26 @@ func initConfig() {
 	}
 
 	//init the storage sdk with the known miners, sharders and client wallet info
-	if err = sdk.InitStorageSDK(
-		walletJSON,
+	if err = client.InitSDK(
+		"{}",
 		cfg.BlockWorker,
 		cfg.ChainID,
 		cfg.SignatureScheme,
-		cfg.PreferredBlobbers,
-		nonce,
-		zcncore.ConvertToValue(txFee),
+		nonce, false,
+		int(zcncore.ConvertToValue(txFee)),
 	); err != nil {
 		fmt.Println("Error in sdk init", err)
 		os.Exit(1)
 	}
 
-	// additional settings depending network latency
-	blockchain.SetMaxTxnQuery(cfg.MaxTxnQuery)
-	blockchain.SetQuerySleepTime(cfg.QuerySleepTime)
+	err = zcncore.SetGeneralWalletInfo(walletJSON, cfg.SignatureScheme)
+	if err != nil {
+		fmt.Println("Error in sdk init", err)
+		os.Exit(1)
+	}
 
-	conf.InitClientConfig(&cfg)
-
-	if network.IsValid() {
-		sdk.SetNetwork(network.Miners, network.Sharders)
+	if client.GetClient().IsSplit {
+		zcncore.RegisterZauthServer(cfg.ZauthServer)
 	}
 
 	sdk.SetNumBlockDownloads(10)

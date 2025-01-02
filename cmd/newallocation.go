@@ -183,6 +183,7 @@ var newallocationCmd = &cobra.Command{
 		}
 
 		thirdPartyExtendable, _ := flags.GetBool("third_party_extendable")
+		isEnterprise, _ := flags.GetBool("enterprise")
 		force, _ := flags.GetBool("force")
 
 		// Read the file options flags
@@ -236,6 +237,14 @@ var newallocationCmd = &cobra.Command{
 			fileOptionParams.ForbidRename.Value = forbidRename
 		}
 
+		var storageVersion int64
+		if flags.Changed("storage_version") {
+			storageVersion, err = flags.GetInt64("storage_version")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+		}
+
 		var allocationID string
 		if len(owner) == 0 {
 			options := sdk.CreateAllocationOptions{
@@ -256,6 +265,8 @@ var newallocationCmd = &cobra.Command{
 				FileOptionsParams:    &fileOptionParams,
 				ThirdPartyExtendable: thirdPartyExtendable,
 				Force:                force,
+				IsEnterprise:         isEnterprise,
+				StorageVersion:       int(storageVersion),
 			}
 			allocationID, _, _, err = sdk.CreateAllocationWith(options)
 			if err != nil {
@@ -273,7 +284,7 @@ var newallocationCmd = &cobra.Command{
 			}
 
 			allocationID, _, _, err = sdk.CreateAllocationForOwner(owner, ownerPublicKey, *datashards, *parityshards,
-				*size, readPrice, writePrice, lock, preferred_blobbers, blobber_auth_tickets, thirdPartyExtendable, force, &fileOptionParams)
+				*size, readPrice, writePrice, lock, preferred_blobbers, blobber_auth_tickets, thirdPartyExtendable, isEnterprise, force, &fileOptionParams)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
@@ -346,12 +357,15 @@ func init() {
 
 	newallocationCmd.Flags().Bool("force", false, "(default false) force to get blobbers even if required number of blobbers are not available (should be passed true in case of restricted blobbers)")
 	newallocationCmd.Flags().Bool("third_party_extendable", false, "(default false) specify if the allocation can be extended by users other than the owner")
+	newallocationCmd.Flags().Bool("enterprise", false, "(default false) specify if the allocation is for enterprise")
 	newallocationCmd.Flags().Bool("forbid_upload", false, "(default false) specify if users cannot upload to this allocation")
 	newallocationCmd.Flags().Bool("forbid_delete", false, "(default false) specify if the users cannot delete objects from this allocation")
 	newallocationCmd.Flags().Bool("forbid_update", false, "(default false) specify if the users cannot update objects in this allocation")
 	newallocationCmd.Flags().Bool("forbid_move", false, "(default false) specify if the users cannot move objects from this allocation")
 	newallocationCmd.Flags().Bool("forbid_copy", false, "(default false) specify if the users cannot copy object from this allocation")
 	newallocationCmd.Flags().Bool("forbid_rename", false, "(default false) specify if the users cannot rename objects in this allocation")
+
+	newallocationCmd.Flags().Int64("storage_version", 0, "storaage version of allocation")
 }
 
 func storeAllocation(allocationID string) {

@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/0chain/gosdk/core/transaction"
 	"log"
 	"time"
 
@@ -23,7 +24,7 @@ var scConfig = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		doJSON, _ := cmd.Flags().GetBool("json")
 
-		var conf, err = sdk.GetStorageSCConfig()
+		var conf, err = transaction.GetConfig("storage_sc_config")
 		if err != nil {
 			log.Fatalf("Failed to get storage SC configurations: %v", err)
 		}
@@ -77,7 +78,7 @@ var lsBlobers = &cobra.Command{
 		}
 		list, err := sdk.GetBlobbers(isActive, isStakable)
 		if err != nil {
-			log.Fatalf("Failed to get storage SC configurations: %v", err)
+			log.Fatalf("Failed to get blobbers: %v", err)
 		}
 
 		if doJSON {
@@ -187,6 +188,22 @@ var blobberUpdateCmd = &cobra.Command{
 			updateBlobber.Capacity = &changedCapacity
 		}
 
+		var delegateWallet string
+		if flags.Changed("delegate_wallet") {
+			if delegateWallet, err = flags.GetString("delegate_wallet"); err != nil {
+				log.Fatal(err)
+			}
+			updateBlobber.DelegateWallet = &delegateWallet
+		}
+
+		var storageVersion int
+		if flags.Changed("storage_version") {
+			if storageVersion, err = flags.GetInt("storage_version"); err != nil {
+				log.Fatal(err)
+			}
+			updateBlobber.StorageVersion = &storageVersion
+		}
+
 		terms := &sdk.UpdateTerms{}
 		var termsChanged bool
 		if flags.Changed("read_price") {
@@ -231,6 +248,15 @@ var blobberUpdateCmd = &cobra.Command{
 				log.Fatal(err)
 			}
 			stakePoolSettings.NumDelegates = &nd
+			stakePoolSettingChanged = true
+		}
+
+		if flags.Changed("delegate_Wallet") {
+			var dw string
+			if dw, err = flags.GetString("delegate_wallet"); err != nil {
+				log.Fatal(err)
+			}
+			stakePoolSettings.DelegateWallet = &dw
 			stakePoolSettingChanged = true
 		}
 
@@ -390,12 +416,78 @@ var fixValidatorUrl = &cobra.Command{
 	},
 }
 
+var resetVersionCmd = &cobra.Command{
+	Use:   "reset-version",
+	Short: "Reset blobber version",
+	Long:  `Reset blobber version`,
+	Args:  cobra.MinimumNArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		var (
+			flags = cmd.Flags()
+
+			blobberID string
+			err       error
+		)
+
+		if !flags.Changed("blobber_id") {
+			log.Fatal("missing required 'blobber_id' flag")
+		}
+		if blobberID, err = flags.GetString("blobber_id"); err != nil {
+			log.Fatal("error in 'blobber_id' flag: ", err)
+		}
+
+		snv := sdk.StorageNodeIdField{
+			Id: blobberID,
+		}
+
+		_, _, err = sdk.ResetBlobberVersion(&snv)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("reset blobber version successfully")
+	},
+}
+
+var insertKilledProviderId = &cobra.Command{
+	Use:   "insert-killed-provider-id",
+	Short: "Insert killed provider id",
+	Long:  `Insert killed provider id`,
+	Args:  cobra.MinimumNArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		var (
+			flags = cmd.Flags()
+
+			blobberID string
+			err       error
+		)
+
+		if !flags.Changed("id") {
+			log.Fatal("missing required 'blobber_id' flag")
+		}
+		if blobberID, err = flags.GetString("id"); err != nil {
+			log.Fatal("error in 'id' flag: ", err)
+		}
+
+		snv := sdk.StorageNodeIdField{
+			Id: blobberID,
+		}
+
+		_, _, err = sdk.InsertKilledProviderID(&snv)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("insert killed id successfully")
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(scConfig)
 	rootCmd.AddCommand(lsBlobers)
 	rootCmd.AddCommand(blobberInfoCmd)
 	rootCmd.AddCommand(blobberUpdateCmd)
 	rootCmd.AddCommand(resetBlobberStatsCmd)
+	rootCmd.AddCommand(resetVersionCmd)
+	rootCmd.AddCommand(insertKilledProviderId)
 
 	scConfig.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
 	lsBlobers.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
@@ -409,6 +501,8 @@ func init() {
 
 	buf := blobberUpdateCmd.Flags()
 	buf.String("blobber_id", "", "blobber ID, required")
+	buf.String("delegate_wallet", "", "delegate wallet, optional")
+	buf.Int("storage_version", 0, "update storage version, optional")
 	buf.Int64("capacity", 0, "update blobber capacity bid, optional")
 	buf.Float64("read_price", 0.0, "update read_price, optional")
 	buf.Float64("write_price", 0.0, "update write_price, optional")
@@ -432,4 +526,10 @@ func init() {
 	resetBlobberStatsCmd.MarkFlagRequired("prev_saved_data")
 	resetBlobberStatsCmd.MarkFlagRequired("new_allocated")
 	resetBlobberStatsCmd.MarkFlagRequired("new_saved_data")
+
+	resetVersionCmd.Flags().String("blobber_id", "", "blobber_id is required")
+	resetVersionCmd.MarkFlagRequired("blobber_id")
+
+	insertKilledProviderId.Flags().String("id", "", "blobber_id is required")
+	insertKilledProviderId.MarkFlagRequired("id")
 }
