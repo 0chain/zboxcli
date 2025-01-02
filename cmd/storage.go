@@ -488,6 +488,7 @@ func init() {
 	rootCmd.AddCommand(resetBlobberStatsCmd)
 	rootCmd.AddCommand(resetVersionCmd)
 	rootCmd.AddCommand(insertKilledProviderId)
+	rootCmd.AddCommand(fixValidatorUrl)
 
 	scConfig.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
 	lsBlobers.Flags().Bool("json", false, "(default false) pass this option to print response as json data")
@@ -532,4 +533,7 @@ func init() {
 
 	insertKilledProviderId.Flags().String("id", "", "blobber_id is required")
 	insertKilledProviderId.MarkFlagRequired("id")
+
+	fixValidatorUrl.Flags().String("validator_id", "", "validator_id is required")
+	fixValidatorUrl.MarkFlagRequired("validator_id")
 }
