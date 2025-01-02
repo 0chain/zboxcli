@@ -6,7 +6,7 @@ toolchain go1.22.5
 
 require (
 	github.com/0chain/errors v1.0.3
-	github.com/0chain/gosdk v1.18.12-0.20241206200527-e3e37f887e16
+	github.com/0chain/gosdk v1.18.14-0.20250102115841-29fc60ff8d0e
 	github.com/icza/bitio v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.6.0
