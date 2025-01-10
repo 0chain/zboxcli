@@ -284,7 +284,7 @@ var newallocationCmd = &cobra.Command{
 			}
 
 			allocationID, _, _, err = sdk.CreateAllocationForOwner(owner, ownerPublicKey, *datashards, *parityshards,
-				*size, readPrice, writePrice, lock, preferred_blobbers, blobber_auth_tickets, thirdPartyExtendable, isEnterprise, force, &fileOptionParams)
+				*size, readPrice, writePrice, lock, preferred_blobbers, blobber_auth_tickets, thirdPartyExtendable, isEnterprise, force, &fileOptionParams, 0)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
