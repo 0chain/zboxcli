@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/0chain/gosdk/zcncore"
 	"log"
 	"time"
 
@@ -81,6 +82,11 @@ var lsBlobers = &cobra.Command{
 		if err != nil {
 			log.Fatalf("Failed to get blobbers: %v", err)
 		}
+
+		isActivated, err := zcncore.IsHardforkActivated("hermes")
+		log.Println("IsActivated: ", isActivated)
+		log.Fatal(err)
+		return
 
 		if doJSON {
 			util.PrintJSON(list)
