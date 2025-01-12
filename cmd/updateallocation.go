@@ -131,7 +131,6 @@ var updateAllocationCmd = &cobra.Command{
 			allocUnderRepair = true
 			if txnHash, err := allocationObj.UpdateWithRepair(
 				size,
-				0,
 				extend,
 				lock,
 				addBlobberId,
@@ -155,7 +154,6 @@ var updateAllocationCmd = &cobra.Command{
 		} else {
 			txnHash, _, err := sdk.UpdateAllocation(
 				size,
-				0,
 				extend,
 				allocID,
 				lock,
