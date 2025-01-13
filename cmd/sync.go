@@ -93,7 +93,7 @@ func filterVideoFiles(localPath string, lDiff []sdk.FileDiff) (filterDiff []sdk.
 			filterDiff = append(filterDiff, f)
 			continue
 		}
-		if filepath.Base(path) == "thumbnail_generated.jpg" || filepath.Base(path) == "0kb" {
+		if filepath.Base(path) == "thumbnail_generated.jpg" || filepath.Base(path) == "0kb" || (f.Type == "d" && filepath.Base(path) == "preview") {
 			continue
 		}
 
