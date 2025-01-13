@@ -399,6 +399,7 @@ var getDiffCmd = &cobra.Command{
 			PrintError("Error getting diff.", err)
 			os.Exit(1)
 		}
+		lDiff = filterVideoFiles(localpath, lDiff)
 
 		util.PrintJSON(lDiff)
 	},
