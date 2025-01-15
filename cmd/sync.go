@@ -307,7 +307,11 @@ var syncCmd = &cobra.Command{
 				fileMetas[f.Path] = fileMeta
 				// TODO: User confirm??
 				fmt.Printf("Deleting remote %s...\n", f.Path)
-				err = allocationObj.DeleteFile(f.Path)
+				opReq := sdk.OperationRequest{
+					RemotePath:    f.Path,
+					OperationType: constants.FileOperationDelete,
+				}
+				err = allocationObj.DoMultiOperation([]sdk.OperationRequest{opReq})
 				if err != nil {
 					PrintError("Error deleting remote file,", err.Error())
 				}
