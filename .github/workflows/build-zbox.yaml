@@ -104,8 +104,8 @@ jobs:
             rm -Recurse ${{github.workspace}}\*
         shell: powershell
 
-  build-macos:
-    name: Build-macos
+  build-macos-amd64:
+    name: Build-macos-amd64
     runs-on: macos-runner
     steps:
 
@@ -123,8 +123,51 @@ jobs:
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v3
         with:
-          name: zbox-macos
+          name: zbox-macos-amd64
           path: zbox
+          retention-days: 5
+
+      - name: cleanup workspace
+        run: |
+            rm -rf ./*
+
+  build-macos-arm64:
+    name: Build-macos-arm64
+    runs-on: macos-runner
+    env:
+      SRC_DIR: ${{ github.workspace }}/src
+      OUTPUT_DIR: ${{ github.workspace }}/output
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          path: ${{ env.SRC_DIR }}
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.22'
+
+      - name: Setup
+        run : |
+          mkdir -p ${{ env.OUTPUT_DIR }}/arm64
+          cp ${{ env.SRC_DIR }}/cmd/config.yaml ${{ env.OUTPUT_DIR }}/arm64/
+
+      - name: Build macos for arm64
+        run: |
+          cd ${{ env.SRC_DIR }}
+          CGO_ENABLED=1 CGO_CFLAGS="-mmacosx-version-min=12.0" CGO_LDFLAGS="-mmacosx-version-min=12.0" GOOS=darwin GOARCH=arm64 SDKROOT=$(xcrun --sdk macosx --show-sdk-path) go build -x -v -tags bn256 -ldflags "-X main.VersionStr=v${{ env.VERSION }}" -o ${{ env.OUTPUT_DIR }}/arm64/macos-arm64 .
+
+      - name: Create Zip File for darwin/arm64
+        run: |
+          cd ${{ env.OUTPUT_DIR }}/arm64
+          zip -qq -r macos-arm64-darwin-arm64.zip macos-arm64 config.yaml
+
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v3
+        with:
+          name: zbox-macos-arm64
+          path: ${{ env.OUTPUT_DIR }}/arm64/macos-arm64-darwin-arm64.zip
           retention-days: 5
 
       - name: cleanup workspace
