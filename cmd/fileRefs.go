@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk_common/zboxcore/fileref"
 	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )
@@ -25,10 +25,10 @@ func checkError(err error) {
 }
 
 var fileRefsCmd = &cobra.Command{
-	Use:   "recent-refs",
-	Short: "get list of recently added refs",
-	Long:  `get list of recently added refs`,
-	Args:  cobra.MinimumNArgs(0),
+	Use:    "recent-refs",
+	Short:  "get list of recently added refs",
+	Long:   `get list of recently added refs`,
+	Args:   cobra.MinimumNArgs(0),
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		page, err := cmd.Flags().GetUint("page")

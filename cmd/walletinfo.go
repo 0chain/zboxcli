@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/0chain/gosdk/core/client"
-	"github.com/0chain/gosdk/core/encryption"
-	"github.com/0chain/gosdk/zcncore"
+	"github.com/0chain/gosdk_common/core/client"
+	"github.com/0chain/gosdk_common/core/encryption"
+	"github.com/0chain/gosdk_common/zcncore"
 	"github.com/0chain/zboxcli/util"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"

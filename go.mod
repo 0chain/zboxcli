@@ -1,8 +1,8 @@
 module github.com/0chain/zboxcli
 
-go 1.22.0
+go 1.22.5
 
-toolchain go1.22.5
+toolchain go1.23.1
 
 require (
 	github.com/0chain/errors v1.0.3
@@ -16,6 +16,7 @@ require (
 
 require (
 	github.com/0chain/common v1.18.3 // indirect
+	github.com/0chain/gosdk_common v0.0.0-20250117135422-7c4f2f249631 // indirect
 	github.com/Luzifer/go-openssl/v3 v3.1.0 // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/btcsuite/btcd v0.23.4 // indirect
@@ -86,4 +87,4 @@ require (
 )
 
 // temporary, for development
-//replace github.com/0chain/gosdk => ../gosdk
+replace github.com/0chain/gosdk => ../egosdk

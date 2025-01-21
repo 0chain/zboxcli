@@ -63,10 +63,10 @@ var repairSize = &cobra.Command{
 	Long:  `gets only size to repair file to blobbers`,
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		fflags := cmd.Flags()                     
-		if !fflags.Changed("allocation") { 
+		fflags := cmd.Flags()
+		if !fflags.Changed("allocation") {
 			PrintError("Error: allocation flag is missing")
-			os.Exit(1)                                     
+			os.Exit(1)
 		}
 
 		repairPath := "/"

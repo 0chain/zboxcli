@@ -13,7 +13,7 @@ import (
 	"github.com/spf13/pflag"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
-	"github.com/0chain/gosdk/zcncore"
+	"github.com/0chain/gosdk_common/zcncore"
 	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )
