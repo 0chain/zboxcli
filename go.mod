@@ -7,6 +7,7 @@ toolchain go1.23.1
 require (
 	github.com/0chain/errors v1.0.3
 	github.com/0chain/gosdk v1.19.0-RC2.0.20250117164514-4933fa5602a5
+	github.com/0chain/gosdk_common v0.0.0-20250121151838-b0477651681e
 	github.com/icza/bitio v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.6.0
@@ -16,7 +17,6 @@ require (
 
 require (
 	github.com/0chain/common v1.18.3 // indirect
-	github.com/0chain/gosdk_common v0.0.0-20250117135422-7c4f2f249631 // indirect
 	github.com/Luzifer/go-openssl/v3 v3.1.0 // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/btcsuite/btcd v0.23.4 // indirect
