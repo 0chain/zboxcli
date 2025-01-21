@@ -12,10 +12,10 @@ import (
 )
 
 var getMptKeyCommand = &cobra.Command{
-	Use:   "get-mpt",
-	Short: "Directly view blockchain data",
-	Long:  `Directly view blockchain data from MPT key`,
-	Args:  cobra.MinimumNArgs(0),
+	Use:    "get-mpt",
+	Short:  "Directly view blockchain data",
+	Long:   `Directly view blockchain data from MPT key`,
+	Args:   cobra.MinimumNArgs(0),
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		if cmd.Flags().Changed("key") == false {

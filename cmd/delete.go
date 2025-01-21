@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/0chain/gosdk/constants"
 	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk_common/constants"
 	"github.com/spf13/cobra"
 )
 

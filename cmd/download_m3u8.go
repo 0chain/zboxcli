@@ -9,8 +9,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/0chain/gosdk/zboxcore/logger"
 	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk_common/zboxcore/logger"
 )
 
 // M3u8Downloader download files from blobber's dir, and build them into a local m3u8 playlist

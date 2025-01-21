@@ -12,10 +12,10 @@ import (
 
 // streamCmd represents upload command with --live flag
 var streamCmd = &cobra.Command{
-	Use:   "stream",
-	Short: "capture video and audio streaming form local devices, and upload",
-	Long:  "capture video and audio streaming form local devices, and upload",
-	Args:  cobra.MinimumNArgs(0),
+	Use:    "stream",
+	Short:  "capture video and audio streaming form local devices, and upload",
+	Long:   "capture video and audio streaming form local devices, and upload",
+	Args:   cobra.MinimumNArgs(0),
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags()              // fflags is a *flag.FlagSet

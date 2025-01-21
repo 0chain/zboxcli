@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/0chain/gosdk/constants"
-	"github.com/0chain/gosdk/core/pathutil"
 	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk_common/constants"
+	"github.com/0chain/gosdk_common/core/pathutil"
 	"github.com/spf13/cobra"
 )
 

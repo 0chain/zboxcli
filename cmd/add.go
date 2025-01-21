@@ -8,10 +8,10 @@ import (
 )
 
 var addCmd = &cobra.Command{
-	Use:   "add",
-	Short: "Adds free storage assigner",
-	Long:  "Adds free storage assigner",
-	Args:  cobra.MinimumNArgs(0),
+	Use:    "add",
+	Short:  "Adds free storage assigner",
+	Long:   "Adds free storage assigner",
+	Args:   cobra.MinimumNArgs(0),
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		var err error

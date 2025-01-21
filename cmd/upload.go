@@ -7,9 +7,9 @@ import (
 	"sync"
 
 	thrown "github.com/0chain/errors"
-	"github.com/0chain/gosdk/core/pathutil"
 	"github.com/0chain/gosdk/zboxcore/sdk"
-	"github.com/0chain/gosdk/zboxcore/zboxutil"
+	"github.com/0chain/gosdk_common/core/pathutil"
+	"github.com/0chain/gosdk_common/zboxcore/zboxutil"
 	"github.com/0chain/zboxcli/util"
 
 	"github.com/spf13/cobra"

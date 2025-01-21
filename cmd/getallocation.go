@@ -5,11 +5,11 @@ import (
 	"log"
 	"os"
 
-	"github.com/0chain/gosdk/core/common"
-	"github.com/0chain/gosdk/zboxcore/blockchain"
-	"github.com/0chain/gosdk/zboxcore/fileref"
-	"github.com/0chain/gosdk/zboxcore/logger"
 	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk_common/core/common"
+	"github.com/0chain/gosdk_common/zboxcore/blockchain"
+	"github.com/0chain/gosdk_common/zboxcore/fileref"
+	"github.com/0chain/gosdk_common/zboxcore/logger"
 	"github.com/0chain/zboxcli/util"
 
 	"github.com/spf13/cobra"

@@ -6,8 +6,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/0chain/gosdk/core/common"
 	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk_common/core/common"
 	"github.com/spf13/cobra"
 )
 
