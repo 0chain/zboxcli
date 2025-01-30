@@ -34,6 +34,7 @@ var bSilent bool
 var allocUnderRepair bool
 
 var walletJSON string
+var logFilePath string
 
 var rootCmd = &cobra.Command{
 	Use:   "zbox",
@@ -58,6 +59,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&cDir, "configDir", "", "configuration directory (default is $HOME/.zcn)")
 	rootCmd.PersistentFlags().BoolVar(&bSilent, "silent", false, "(default false) Do not show interactive sdk logs (shown by default)")
 	rootCmd.PersistentFlags().Float64Var(&txFee, "fee", 0, "transaction fee for the given transaction (if unset, it will be set to blockchain min fee)")
+	rootCmd.PersistentFlags().StringVar(&logFilePath, "log", "", "log file path (default is cmdlog.log)")
 }
 
 func Execute() {
@@ -89,8 +91,12 @@ func initConfig() {
 	logger.SyncLoggers([]*logger.Logger{zcncore.GetLogger(), sdk.GetLogger()})
 
 	// set the log file
-	zcncore.SetLogFile("cmdlog.log", !bSilent)
-	sdk.SetLogFile("cmdlog.log", !bSilent)
+	logPath := "cmdlog.log"
+	if logFilePath != "" {
+		logPath = logFilePath
+	}
+	zcncore.SetLogFile(logPath, !bSilent)
+	sdk.SetLogFile(logPath, !bSilent)
 
 	err = client.Init(context.Background(), cfg)
 	if err != nil {
