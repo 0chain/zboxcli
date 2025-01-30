@@ -59,7 +59,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&cDir, "configDir", "", "configuration directory (default is $HOME/.zcn)")
 	rootCmd.PersistentFlags().BoolVar(&bSilent, "silent", false, "(default false) Do not show interactive sdk logs (shown by default)")
 	rootCmd.PersistentFlags().Float64Var(&txFee, "fee", 0, "transaction fee for the given transaction (if unset, it will be set to blockchain min fee)")
-	rootCmd.PersistentFlags().StringVar(&logFilePath, "log", "", "log file path (default is cmdlog.log)")
+	rootCmd.PersistentFlags().StringVar(&logFilePath, "log", "cmdlog.log", "log file path (default is cmdlog.log)")
 }
 
 func Execute() {
