@@ -16,7 +16,7 @@ require (
 )
 
 require (
-	github.com/0chain/common v1.18.3 // indirect
+	github.com/0chain/common v1.18.3 // indirect; indirecnewallocationt
 	github.com/Luzifer/go-openssl/v3 v3.1.0 // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/btcsuite/btcd v0.23.4 // indirect
@@ -87,4 +87,4 @@ require (
 )
 
 // temporary, for development
-replace github.com/0chain/gosdk => github.com/0chain/egosdk v1.18.6-0.20250124075303-29a8e71af584
+replace github.com/0chain/gosdk => github.com/0chain/egosdk v1.18.6-0.20250201132858-9445d47d0b26
