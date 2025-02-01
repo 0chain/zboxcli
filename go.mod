@@ -87,4 +87,4 @@ require (
 )
 
 // temporary, for development
-replace github.com/0chain/gosdk => github.com/0chain/egosdk v1.18.6-0.20250201132858-9445d47d0b26
+replace github.com/0chain/gosdk => github.com/0chain/egosdk v1.18.6-0.20250201225505-de1ffc876e86
