@@ -81,6 +81,15 @@ var downloadCmd = &cobra.Command{
 		sdk.SetNumBlockDownloads(numBlocks)
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
+		if logFilePath != "" {
+			f, err := os.Create(logFilePath)
+			if err != nil {
+				PrintError("Error creating log file", err)
+				os.Exit(1)
+			}
+			defer f.Close()
+			statusBar.f = f
+		}
 		wg.Add(1)
 		var errE error
 		var allocationObj *sdk.Allocation
