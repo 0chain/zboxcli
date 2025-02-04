@@ -7,7 +7,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk_common/zboxcore/commonsdk"
 	"github.com/spf13/cobra"
 )
 
@@ -22,7 +22,7 @@ var getMptKeyCommand = &cobra.Command{
 			log.Fatal("Required Mpt key missing\n")
 		}
 		key := cmd.Flag("key").Value.String()
-		jsonBytes, err := sdk.GetMptData(key)
+		jsonBytes, err := commonsdk.GetMptData(key)
 		if err != nil {
 			log.Fatalf("Failed to get Mpt key: %v\n", err)
 		}

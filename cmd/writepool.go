@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk_common/zboxcore/commonsdk"
 	"github.com/0chain/gosdk_common/zcncore"
 	"github.com/spf13/cobra"
 )
@@ -51,7 +51,7 @@ var wpLock = &cobra.Command{
 			}
 		}
 
-		_, _, err = sdk.WritePoolLock(allocID, zcncore.ConvertToValue(tokens), zcncore.ConvertToValue(fee))
+		_, _, err = commonsdk.WritePoolLock(allocID, zcncore.ConvertToValue(tokens), zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to lock tokens in write pool: %v", err)
 		}
@@ -87,7 +87,7 @@ var wpUnlock = &cobra.Command{
 			}
 		}
 
-		_, _, err = sdk.WritePoolUnlock(allocID, zcncore.ConvertToValue(fee))
+		_, _, err = commonsdk.WritePoolUnlock(allocID, zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to unlock tokens in write pool: %v", err)
 		}

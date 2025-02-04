@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk_common/core/common"
+	"github.com/0chain/gosdk_common/zboxcore/commonsdk"
 	"github.com/0chain/zboxcli/util"
 
 	"github.com/spf13/cobra"
 )
 
-func printValidators(nodes []*sdk.Validator) {
+func printValidators(nodes []*commonsdk.Validator) {
 	if len(nodes) == 0 {
 		fmt.Println("no validators registered yet")
 		return
@@ -45,7 +45,7 @@ var lsValidators = &cobra.Command{
 			log.Fatalf("error parsing stakable flag: %v", err)
 		}
 
-		list, err := sdk.GetValidators(stakable)
+		list, err := commonsdk.GetValidators(stakable)
 		if err != nil {
 			log.Fatalf("Failed to get storage SC configurations: %v", err)
 		}
@@ -87,15 +87,15 @@ var validatorInfoCmd = &cobra.Command{
 			log.Fatal("error in 'validator_id' flag: ", err)
 		}
 
-		var validator *sdk.Validator
-		if validator, err = sdk.GetValidator(validatorID); err != nil {
+		var validator *commonsdk.Validator
+		if validator, err = commonsdk.GetValidator(validatorID); err != nil {
 			log.Fatal(err)
 		}
 
 		if json {
 			util.PrintJSON(validator)
 		} else {
-			printValidators([]*sdk.Validator{validator})
+			printValidators([]*commonsdk.Validator{validator})
 		}
 
 	},
@@ -123,11 +123,11 @@ var validatorUpdateCmd = &cobra.Command{
 		}
 
 		// If validator with ID does not exist, throw.
-		if _, err = sdk.GetValidator(validatorID); err != nil {
+		if _, err = commonsdk.GetValidator(validatorID); err != nil {
 			log.Fatal(err)
 		}
 
-		updateValidator := new(sdk.UpdateValidator)
+		updateValidator := new(commonsdk.UpdateValidator)
 		updateValidator.ID = common.Key(validatorID)
 		if flags.Changed("min_stake") {
 			var minStake float64
@@ -177,7 +177,7 @@ var validatorUpdateCmd = &cobra.Command{
 			updateValidator.BaseURL = &baseURL
 		}
 
-		if _, _, err = sdk.UpdateValidatorSettings(updateValidator); err != nil {
+		if _, _, err = commonsdk.UpdateValidatorSettings(updateValidator); err != nil {
 			log.Fatal(err)
 		}
 

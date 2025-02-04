@@ -8,6 +8,7 @@ import (
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk_common/core/common"
 	"github.com/0chain/gosdk_common/zboxcore/blockchain"
+	"github.com/0chain/gosdk_common/zboxcore/commonsdk"
 	"github.com/0chain/gosdk_common/zboxcore/fileref"
 	"github.com/0chain/gosdk_common/zboxcore/logger"
 	"github.com/0chain/zboxcli/util"
@@ -47,7 +48,7 @@ var getallocationCmd = &cobra.Command{
 			return "(not found)"
 		}
 
-		var priceRangeString = func(pr sdk.PriceRange) string {
+		var priceRangeString = func(pr commonsdk.PriceRange) string {
 			return fmt.Sprintf("%s-%s", common.Balance(pr.Min), common.Balance(pr.Max))
 		}
 

@@ -3,7 +3,7 @@ package cmd
 import (
 	"log"
 
-	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk_common/zboxcore/commonsdk"
 	"github.com/spf13/cobra"
 )
 
@@ -36,9 +36,9 @@ var collectRewards = &cobra.Command{
 
 		switch providerName {
 		case "blobber":
-			_, _, err = sdk.CollectRewards(providerId, sdk.ProviderBlobber)
+			_, _, err = commonsdk.CollectRewards(providerId, commonsdk.ProviderBlobber)
 		case "validator":
-			_, _, err = sdk.CollectRewards(providerId, sdk.ProviderValidator)
+			_, _, err = commonsdk.CollectRewards(providerId, commonsdk.ProviderValidator)
 		default:
 			log.Fatal("provider type must be blobber or validator")
 		}

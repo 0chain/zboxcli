@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk_common/zboxcore/commonsdk"
 	"github.com/spf13/cobra"
 )
 
@@ -49,7 +50,7 @@ and empties write pool moving left tokens to client.`,
 		// check out allocation first
 		allocShouldNotBeFinalized(allocID)
 
-		txnHash, _, err := sdk.FinalizeAllocation(allocID)
+		txnHash, _, err := commonsdk.FinalizeAllocation(allocID)
 		if err != nil {
 			// check again, a blobber can finalize it
 			allocShouldNotBeFinalized(allocID)
@@ -83,7 +84,7 @@ allocation flow.`,
 			log.Fatal("invalid 'allocation' flag: ", err)
 		}
 
-		txnHash, _, err := sdk.CancelAllocation(allocID)
+		txnHash, _, err := commonsdk.CancelAllocation(allocID)
 		if err != nil {
 			log.Fatal("Error canceling allocation:", err)
 		}

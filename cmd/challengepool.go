@@ -5,12 +5,12 @@ import (
 	"log"
 	"os"
 
-	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk_common/zboxcore/commonsdk"
 	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )
 
-func printChallengePoolInfo(info *sdk.ChallengePoolInfo) {
+func printChallengePoolInfo(info *commonsdk.ChallengePoolInfo) {
 	var header = []string{
 		"BALANCE", "START", "EXPIRE", "FINIALIZED",
 	}
@@ -49,8 +49,8 @@ var cpInfo = &cobra.Command{
 			log.Fatalf("can't get 'allocation' flag: %v", err)
 		}
 
-		var info *sdk.ChallengePoolInfo
-		if info, err = sdk.GetChallengePoolInfo(allocID); err != nil {
+		var info *commonsdk.ChallengePoolInfo
+		if info, err = commonsdk.GetChallengePoolInfo(allocID); err != nil {
 			log.Fatalf("Failed to get challenge pool info: %v", err)
 		}
 		if doJSON {

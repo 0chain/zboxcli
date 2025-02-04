@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk_common/zboxcore/commonsdk"
 	"github.com/spf13/cobra"
 )
 
@@ -20,7 +20,7 @@ var shutDownBlobberCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		blobberID := cmd.Flag("id").Value.String()
-		_, _, err := sdk.ShutdownProvider(sdk.ProviderBlobber, blobberID)
+		_, _, err := commonsdk.ShutdownProvider(commonsdk.ProviderBlobber, blobberID)
 		if err != nil {
 			log.Fatal("failed to shut down blobber", err)
 		}

@@ -13,6 +13,7 @@ import (
 	"github.com/spf13/pflag"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk_common/zboxcore/commonsdk"
 	"github.com/0chain/gosdk_common/zcncore"
 	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
@@ -26,7 +27,7 @@ var (
 	blobber_auth_tickets     []string
 )
 
-func getPriceRange(val string) (pr sdk.PriceRange, err error) {
+func getPriceRange(val string) (pr commonsdk.PriceRange, err error) {
 	var ss = strings.Split(val, "-")
 	if len(ss) != 2 {
 		err = fmt.Errorf("invalid price range format: %q", val)
@@ -64,7 +65,7 @@ var newallocationCmd = &cobra.Command{
 				log.Fatal("Only positive values are allowed for --lock")
 			}
 
-			allocationID, _, err := sdk.CreateFreeAllocation(freeStorageMarker, lock)
+			allocationID, _, err := commonsdk.CreateFreeAllocation(freeStorageMarker, lock)
 			if err != nil {
 				log.Fatal("Error creating free allocation: ", err)
 			}
@@ -105,8 +106,8 @@ var newallocationCmd = &cobra.Command{
 
 		const maxPrice = math.MaxUint64 / 100
 		var (
-			readPrice  = sdk.PriceRange{Min: 0, Max: maxPrice}
-			writePrice = sdk.PriceRange{Min: 0, Max: maxPrice}
+			readPrice  = commonsdk.PriceRange{Min: 0, Max: maxPrice}
+			writePrice = commonsdk.PriceRange{Min: 0, Max: maxPrice}
 		)
 
 		if flags.Changed("preferred_blobbers") {
@@ -166,12 +167,11 @@ var newallocationCmd = &cobra.Command{
 		}
 
 		if costOnly {
-			minCost, err := sdk.GetAllocationMinLock(*datashards, *parityshards, *size, writePrice)
+			minCost, err := commonsdk.GetAllocationMinLock(*datashards, *parityshards, *size, writePrice)
 			if err != nil {
 				log.Fatal("Error fetching cost: ", err)
 			}
 			log.Print("Cost for the given allocation: ", zcncore.ConvertToToken(minCost), " ZCN")
-
 			return
 		}
 
@@ -187,7 +187,7 @@ var newallocationCmd = &cobra.Command{
 		force, _ := flags.GetBool("force")
 
 		// Read the file options flags
-		var fileOptionParams sdk.FileOptionsParameters
+		var fileOptionParams commonsdk.FileOptionsParameters
 		if flags.Changed("forbid_upload") {
 			forbidUpload, err := flags.GetBool("forbid_upload")
 			if err != nil {
@@ -255,15 +255,15 @@ var newallocationCmd = &cobra.Command{
 
 		var allocationID string
 		if len(owner) == 0 {
-			options := sdk.CreateAllocationOptions{
+			options := commonsdk.CreateAllocationOptions{
 				DataShards:   *datashards,
 				ParityShards: *parityshards,
 				Size:         *size,
-				ReadPrice: sdk.PriceRange{
+				ReadPrice: commonsdk.PriceRange{
 					Min: readPrice.Min,
 					Max: readPrice.Max,
 				},
-				WritePrice: sdk.PriceRange{
+				WritePrice: commonsdk.PriceRange{
 					Min: writePrice.Min,
 					Max: writePrice.Max,
 				},
@@ -277,7 +277,7 @@ var newallocationCmd = &cobra.Command{
 				StorageVersion:       int(storageVersion),
 				AuthRoundExpiry:      authRoundExpiry,
 			}
-			allocationID, _, _, err = sdk.CreateAllocationWith(options)
+			allocationID, _, _, err = commonsdk.CreateAllocationWith(options)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
@@ -292,7 +292,7 @@ var newallocationCmd = &cobra.Command{
 				}
 			}
 
-			allocationID, _, _, err = sdk.CreateAllocationForOwner(owner, ownerPublicKey, "", *datashards, *parityshards,
+			allocationID, _, _, err = commonsdk.CreateAllocationForOwner(owner, ownerPublicKey, *datashards, *parityshards,
 				*size, readPrice, writePrice, lock, preferred_blobbers, blobber_auth_tickets, thirdPartyExtendable, isEnterprise, force, &fileOptionParams, authRoundExpiry)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)

@@ -7,7 +7,7 @@ toolchain go1.23.1
 require (
 	github.com/0chain/errors v1.0.3
 	github.com/0chain/gosdk v1.19.8
-	github.com/0chain/gosdk_common v0.0.0-20250124074147-1da9c7e420af
+	github.com/0chain/gosdk_common v0.0.0-20250204070817-3c82b7ad6a9f
 	github.com/icza/bitio v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.6.0
@@ -87,4 +87,4 @@ require (
 )
 
 // temporary, for development
-replace github.com/0chain/gosdk => github.com/0chain/egosdk v1.18.6-0.20250201225505-de1ffc876e86
+replace github.com/0chain/gosdk => github.com/0chain/egosdk v1.18.6-0.20250204071300-93191f4aa124

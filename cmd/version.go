@@ -28,7 +28,7 @@ var versionCmd = &cobra.Command{
 
 		fmt.Println("Version info:")
 		fmt.Println("\tzbox....: ", VersionStr)
-		fmt.Println("\tgosdk...: ", getVersion("github.com/0chain/gosdk"))
+		fmt.Println("\tgocommonsdk...: ", getVersion("github.com/0chain/gosdk"))
 	},
 }
 
