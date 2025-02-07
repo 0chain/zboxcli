@@ -119,6 +119,14 @@ var updateAllocationCmd = &cobra.Command{
 			fileOptionParams.ForbidRename.Value = forbidRename
 		}
 
+		var authRoundExpiry int64
+		if flags.Changed("auth_round_expiry") {
+			authRoundExpiry, err = flags.GetInt64("auth_round_expiry")
+			if err != nil {
+				log.Fatal("invalid auth_round_expiry: ", err)
+			}
+		}
+
 		if addBlobberId != "" {
 			allocationObj, err := sdk.GetAllocation(allocID)
 			if err != nil {
@@ -131,6 +139,7 @@ var updateAllocationCmd = &cobra.Command{
 			allocUnderRepair = true
 			if txnHash, err := allocationObj.UpdateWithRepair(
 				size,
+				authRoundExpiry,
 				extend,
 				lock,
 				addBlobberId,
@@ -154,6 +163,7 @@ var updateAllocationCmd = &cobra.Command{
 		} else {
 			txnHash, _, err := sdk.UpdateAllocation(
 				size,
+				authRoundExpiry,
 				extend,
 				allocID,
 				lock,
@@ -203,4 +213,5 @@ func init() {
 	updateAllocationCmd.Flags().Bool("forbid_copy", false, "(default false) specify if the users cannot copy object from this allocation")
 	updateAllocationCmd.Flags().Bool("forbid_rename", false, "(default false) specify if the users cannot rename objects in this allocation")
 
+	updateAllocationCmd.Flags().Int64("auth_round_expiry", 0, "auth round expiry in seconds")
 }
