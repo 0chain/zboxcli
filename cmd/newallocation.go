@@ -245,6 +245,14 @@ var newallocationCmd = &cobra.Command{
 			}
 		}
 
+		var authRoundExpiry int64
+		if flags.Changed("auth_round_expiry") {
+			authRoundExpiry, err = flags.GetInt64("auth_round_expiry")
+			if err != nil {
+				log.Fatal("invalid forbid_upload: ", err)
+			}
+		}
+
 		var allocationID string
 		if len(owner) == 0 {
 			options := sdk.CreateAllocationOptions{
@@ -267,6 +275,7 @@ var newallocationCmd = &cobra.Command{
 				Force:                force,
 				IsEnterprise:         isEnterprise,
 				StorageVersion:       int(storageVersion),
+				AuthRoundExpiry:      authRoundExpiry,
 			}
 			allocationID, _, _, err = sdk.CreateAllocationWith(options)
 			if err != nil {
@@ -284,7 +293,7 @@ var newallocationCmd = &cobra.Command{
 			}
 
 			allocationID, _, _, err = sdk.CreateAllocationForOwner(owner, ownerPublicKey, *datashards, *parityshards,
-				*size, readPrice, writePrice, lock, preferred_blobbers, blobber_auth_tickets, thirdPartyExtendable, isEnterprise, force, &fileOptionParams)
+				*size, readPrice, writePrice, lock, preferred_blobbers, blobber_auth_tickets, thirdPartyExtendable, isEnterprise, force, &fileOptionParams, authRoundExpiry)
 			if err != nil {
 				log.Fatal("Error creating allocation: ", err)
 			}
@@ -366,6 +375,7 @@ func init() {
 	newallocationCmd.Flags().Bool("forbid_rename", false, "(default false) specify if the users cannot rename objects in this allocation")
 
 	newallocationCmd.Flags().Int64("storage_version", 0, "storaage version of allocation")
+	newallocationCmd.Flags().Int64("auth_round_expiry", 0, "storaage version of allocation")
 }
 
 func storeAllocation(allocationID string) {
