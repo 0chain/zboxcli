@@ -81,6 +81,30 @@ func filterEmptyFiles(localPath string, lDiff []sdk.FileDiff) (filterDiff []sdk.
 	return
 }
 
+func filterVideoFiles(localPath string, lDiff []sdk.FileDiff) (filterDiff []sdk.FileDiff) {
+	localPath = strings.TrimRight(localPath, "/")
+	for _, f := range lDiff {
+		path := localPath + f.Path
+		parentPath := filepath.Dir(path)
+		videoPath := filepath.Dir(parentPath)
+		//get extension of directory name
+		parentPathExt := filepath.Ext(parentPath)
+		if parentPathExt == "" && filepath.Base(parentPath) != "preview" {
+			filterDiff = append(filterDiff, f)
+			continue
+		}
+		if filepath.Base(path) == "thumbnail_generated.jpg" || filepath.Base(path) == "0kb" || (f.Type == "d" && filepath.Base(path) == "preview") {
+			continue
+		}
+
+		ext := filepath.Ext(videoPath)
+		if ext != ".mp4" && ext != ".mkv" && ext != ".avi" && ext != ".mov" && ext != ".flv" && ext != ".wmv" && ext != ".webm" {
+			filterDiff = append(filterDiff, f)
+		}
+	}
+	return
+}
+
 func startMultiUploadUpdate(allocationObj *sdk.Allocation, argsSlice []chunkedUploadArgs) error {
 	totalOperations := len(argsSlice)
 	if totalOperations == 0 {
@@ -220,6 +244,7 @@ var syncCmd = &cobra.Command{
 		}
 
 		lDiff = filterEmptyFiles(localpath, lDiff)
+		lDiff = filterVideoFiles(localpath, lDiff)
 
 		if len(lDiff) > 0 {
 			printTable(lDiff)
@@ -282,7 +307,11 @@ var syncCmd = &cobra.Command{
 				fileMetas[f.Path] = fileMeta
 				// TODO: User confirm??
 				fmt.Printf("Deleting remote %s...\n", f.Path)
-				err = allocationObj.DeleteFile(f.Path)
+				opReq := sdk.OperationRequest{
+					RemotePath:    f.Path,
+					OperationType: constants.FileOperationDelete,
+				}
+				err = allocationObj.DoMultiOperation([]sdk.OperationRequest{opReq})
 				if err != nil {
 					PrintError("Error deleting remote file,", err.Error())
 				}
@@ -374,6 +403,7 @@ var getDiffCmd = &cobra.Command{
 			PrintError("Error getting diff.", err)
 			os.Exit(1)
 		}
+		lDiff = filterVideoFiles(localpath, lDiff)
 
 		util.PrintJSON(lDiff)
 	},
@@ -394,7 +424,7 @@ func init() {
 If file exists, this will be used for comparison with remote.
 After sync complete, remote snapshot will be updated to the same file for next use.`)
 	syncCmd.PersistentFlags().StringArray("excludepath", []string{}, "Remote folder paths exclude to sync")
-	syncCmd.Flags().BoolP("verifydownload", "v", true, "pass this option to verify downloaded blocks")
+	syncCmd.Flags().BoolP("verifydownload", "v", false, "pass this option to verify downloaded blocks")
 
 	syncCmd.MarkFlagRequired("allocation")
 	syncCmd.MarkFlagRequired("localpath")

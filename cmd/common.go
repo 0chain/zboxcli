@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"sync"
@@ -16,6 +17,10 @@ const (
 
 func (s *StatusBar) Started(allocationId, filePath string, op int, totalBytes int) {
 	s.b = pb.StartNew(totalBytes)
+	if s.f != nil {
+		s.b.Output = s.f
+		s.b.NotPrint = true
+	}
 	s.b.Set(0)
 }
 func (s *StatusBar) InProgress(allocationId, filePath string, op int, completedBytes int, data []byte) {
@@ -60,6 +65,7 @@ func (s *StatusBar) RepairCompleted(filesRepaired int) {
 type StatusBar struct {
 	b       *pb.ProgressBar
 	wg      *sync.WaitGroup
+	f       io.Writer
 	success bool
 }
 
