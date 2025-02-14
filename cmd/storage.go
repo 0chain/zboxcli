@@ -261,9 +261,9 @@ var blobberUpdateCmd = &cobra.Command{
 			stakePoolSettingChanged = true
 		}
 
-		if flags.Changed("delegate_wallet") {
+		if flags.Changed("managing_wallet") {
 			var mw string
-			if mw, err = flags.GetString("delegate_wallet"); err != nil {
+			if mw, err = flags.GetString("managing_wallet"); err != nil {
 				log.Fatal(err)
 			}
 			updateBlobber.ManagingWallet = &mw
