@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"encoding/json"
 	"os"
 	"strings"
@@ -161,6 +162,38 @@ var downloadCmd = &cobra.Command{
 				os.Exit(1)
 			}
 
+			meta, err := allocationObj.GetFileMeta(remotePath)
+			if err != nil {
+				PrintError("Error getting file meta", err)
+				os.Exit(1)
+			}
+			if meta.Type == fileref.DIRECTORY {
+				if meta.CustomMeta == "" {
+					PrintError("Use downloaddir command to download directory")
+					os.Exit(1)
+				}
+				customMetaMap := make(map[string]string)
+				err = json.Unmarshal([]byte(meta.CustomMeta), &customMetaMap)
+				if err != nil {
+					PrintError("Error unmarshalling custom meta", err)
+					os.Exit(1)
+				}
+				if customMetaMap["large_file"] != "" {
+					fh, err := os.Create(localPath)
+					if err != nil {
+						PrintError("Error creating the file", err)
+						os.Exit(1)
+					}
+					defer fh.Close()
+					err = allocationObj.DownloadLargeFile(context.Background(), fh, remotePath, "", statusBar)
+					if err != nil {
+						PrintError("Error downloading the file", err)
+						os.Exit(1)
+					} else {
+						return
+					}
+				}
+			}
 			if thumbnail {
 				errE = allocationObj.DownloadThumbnail(localPath, remotePath, verifyDownload, statusBar, true)
 			} else {
