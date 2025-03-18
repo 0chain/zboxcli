@@ -11,6 +11,7 @@ import (
 	"github.com/0chain/errors"
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk_common/constants"
+	"github.com/0chain/gosdk_common/zboxcore/commonsdk"
 	"github.com/0chain/gosdk_common/zboxcore/logger"
 	"github.com/0chain/gosdk_common/zboxcore/zboxutil"
 	"github.com/0chain/zboxcli/util"
@@ -224,7 +225,7 @@ var syncCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		fileMetas := make(map[string]*sdk.ConsolidatedFileMeta)
+		fileMetas := make(map[string]*commonsdk.ConsolidatedFileMeta)
 		wg := &sync.WaitGroup{}
 		// Create filter
 		filter := []string{".DS_Store", ".git"}

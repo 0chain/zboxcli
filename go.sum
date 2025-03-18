@@ -38,12 +38,12 @@ cloud.google.com/go/storage v1.14.0/go.mod h1:GrKmX003DSIwi9o29oFT7YDnHYwZoctc3f
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 github.com/0chain/common v1.18.3 h1:42dYOv2KyMTSanuS67iDtfv+ErbSRqR8NJ3MG72MwaI=
 github.com/0chain/common v1.18.3/go.mod h1:Lapu2Tj7z5Sm4r+X141e7vsz4NDODTEypeElYAP3iSw=
-github.com/0chain/egosdk v1.19.1-0.20250318121802-ba628432aced h1:k0/HQ7fai5yY/DozfhZonovMmd/jvazGwfqynX8NHGo=
-github.com/0chain/egosdk v1.19.1-0.20250318121802-ba628432aced/go.mod h1:Amew68knko9m3z7IUbz68WvH9SXKklg6Vf2d9hwbZYY=
+github.com/0chain/egosdk v1.19.1-0.20250318134101-026d9c8701a0 h1:igxYG064JQ/eFcFyQ9rTp4gNtYgN+uzINZFNtI6SncA=
+github.com/0chain/egosdk v1.19.1-0.20250318134101-026d9c8701a0/go.mod h1:QeTmIqfoxuQ6TRlcxMknPRRDr35l+U9uzLCRyenrIqs=
 github.com/0chain/errors v1.0.3 h1:QQZPFxTfnMcRdt32DXbzRQIfGWmBsKoEdszKQDb0rRM=
 github.com/0chain/errors v1.0.3/go.mod h1:xymD6nVgrbgttWwkpSCfLLEJbFO6iHGQwk/yeSuYkIc=
-github.com/0chain/gosdk_common v0.0.0-20250318121140-c82820c54dea h1:wHD0sD4TvrR4oEmDOwPmHpco9e+vigl3850MrQpBo50=
-github.com/0chain/gosdk_common v0.0.0-20250318121140-c82820c54dea/go.mod h1:+FBmkG4JocGmD+8gyE4kyst15p+3xm3Nf+nrg4cu5V4=
+github.com/0chain/gosdk_common v0.0.0-20250318134004-c9cbffc71102 h1:CKVvICaxGCK25rbOFLtjtO9GZKSpsiorXwudlVkH03Y=
+github.com/0chain/gosdk_common v0.0.0-20250318134004-c9cbffc71102/go.mod h1:+FBmkG4JocGmD+8gyE4kyst15p+3xm3Nf+nrg4cu5V4=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/DataDog/zstd v1.4.5 h1:EndNeuB0l9syBZhut0wns3gV1hL8zX8LIu6ZiVHWLIQ=

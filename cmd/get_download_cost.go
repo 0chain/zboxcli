@@ -6,6 +6,7 @@ import (
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk_common/core/common"
+	"github.com/0chain/gosdk_common/zboxcore/commonsdk"
 	"github.com/0chain/gosdk_common/zboxcore/fileref"
 	"github.com/spf13/cobra"
 )
@@ -31,7 +32,7 @@ func calculateDownloadCost(alloc *sdk.Allocation, fileSize int64, numBlocks int6
 	return balance
 }
 
-func downloadCost(alloc *sdk.Allocation, meta *sdk.ConsolidatedFileMeta, blocksPerMarker int) {
+func downloadCost(alloc *sdk.Allocation, meta *commonsdk.ConsolidatedFileMeta, blocksPerMarker int) {
 	if meta.Type != fileref.FILE {
 		log.Fatal("not a file")
 	}
@@ -105,7 +106,7 @@ var getDownloadCostCmd = &cobra.Command{
 
 		var (
 			alloc *sdk.Allocation
-			meta  *sdk.ConsolidatedFileMeta
+			meta  *commonsdk.ConsolidatedFileMeta
 		)
 
 		if remotePath != "" {
