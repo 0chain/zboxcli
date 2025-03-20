@@ -87,10 +87,10 @@ require (
 )
 
 // temporary, for development and egosdk testing
-//  replace github.com/0chain/gosdk => github.com/0chain/egosdk v1.19.1-0.20250318134101-026d9c8701a0
+replace github.com/0chain/gosdk => github.com/0chain/egosdk v1.19.1-0.20250318134101-026d9c8701a0
 
-replace github.com/0chain/gosdk => ../egosdk
+// replace github.com/0chain/gosdk => ../egosdk
 
-replace github.com/0chain/gosdk_common => ../gosdk_common
+// replace github.com/0chain/gosdk_common => ../gosdk_common
 
 // github.com/0chain/gosdk_common v0.0.0-20250318134004-c9cbffc71102
