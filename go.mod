@@ -92,5 +92,3 @@ replace github.com/0chain/gosdk => github.com/0chain/egosdk v1.19.1-0.2025031813
 // replace github.com/0chain/gosdk => ../egosdk
 
 // replace github.com/0chain/gosdk_common => ../gosdk_common
-
-// github.com/0chain/gosdk_common v0.0.0-20250318134004-c9cbffc71102
