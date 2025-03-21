@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/0chain/gosdk/core/common"
 	"github.com/0chain/gosdk/zboxcore/sdk"
@@ -42,12 +41,12 @@ var lsValidators = &cobra.Command{
 		doJSON, _ := cmd.Flags().GetBool("json")
 		stakable, err := cmd.Flags().GetBool("stakable")
 		if err != nil {
-			log.Fatalf("error parsing stakable flag: %v", err)
+			Fatalf("error parsing stakable flag: %v", err)
 		}
 
 		list, err := sdk.GetValidators(stakable)
 		if err != nil {
-			log.Fatalf("Failed to get storage SC configurations: %v", err)
+			Fatalf("Failed to get storage SC configurations: %v", err)
 		}
 
 		if doJSON {
@@ -75,21 +74,21 @@ var validatorInfoCmd = &cobra.Command{
 
 		if flags.Changed("json") {
 			if json, err = flags.GetBool("json"); err != nil {
-				log.Fatal("invalid 'json' flag: ", err)
+				Fatal("invalid 'json' flag: ", err)
 			}
 		}
 
 		if !flags.Changed("validator_id") {
-			log.Fatal("missing required 'validator_id' flag")
+			Fatal("missing required 'validator_id' flag")
 		}
 
 		if validatorID, err = flags.GetString("validator_id"); err != nil {
-			log.Fatal("error in 'validator_id' flag: ", err)
+			Fatal("error in 'validator_id' flag: ", err)
 		}
 
 		var validator *sdk.Validator
 		if validator, err = sdk.GetValidator(validatorID); err != nil {
-			log.Fatal(err)
+			Fatal(err)
 		}
 
 		if json {
@@ -115,16 +114,16 @@ var validatorUpdateCmd = &cobra.Command{
 		)
 
 		if !flags.Changed("validator_id") {
-			log.Fatal("missing required 'validator_id' flag")
+			Fatal("missing required 'validator_id' flag")
 		}
 
 		if validatorID, err = flags.GetString("validator_id"); err != nil {
-			log.Fatal("error in 'validator_id' flag: ", err)
+			Fatal("error in 'validator_id' flag: ", err)
 		}
 
 		// If validator with ID does not exist, throw.
 		if _, err = sdk.GetValidator(validatorID); err != nil {
-			log.Fatal(err)
+			Fatal(err)
 		}
 
 		updateValidator := new(sdk.UpdateValidator)
@@ -132,11 +131,11 @@ var validatorUpdateCmd = &cobra.Command{
 		if flags.Changed("min_stake") {
 			var minStake float64
 			if minStake, err = flags.GetFloat64("min_stake"); err != nil {
-				log.Fatal(err)
+				Fatal(err)
 			}
 			stake, err := common.ToBalance(minStake)
 			if err != nil {
-				log.Fatal(err)
+				Fatal(err)
 			}
 			updateValidator.MinStake = &stake
 		}
@@ -144,11 +143,11 @@ var validatorUpdateCmd = &cobra.Command{
 		if flags.Changed("max_stake") {
 			var maxStake float64
 			if maxStake, err = flags.GetFloat64("max_stake"); err != nil {
-				log.Fatal(err)
+				Fatal(err)
 			}
 			stake, err := common.ToBalance(maxStake)
 			if err != nil {
-				log.Fatal(err)
+				Fatal(err)
 			}
 			updateValidator.MaxStake = &stake
 		}
@@ -156,7 +155,7 @@ var validatorUpdateCmd = &cobra.Command{
 		if flags.Changed("num_delegates") {
 			var nd int
 			if nd, err = flags.GetInt("num_delegates"); err != nil {
-				log.Fatal(err)
+				Fatal(err)
 			}
 			updateValidator.NumDelegates = &nd
 		}
@@ -164,7 +163,7 @@ var validatorUpdateCmd = &cobra.Command{
 		if flags.Changed("service_charge") {
 			var sc float64
 			if sc, err = flags.GetFloat64("service_charge"); err != nil {
-				log.Fatal(err)
+				Fatal(err)
 			}
 			updateValidator.ServiceCharge = &sc
 		}
@@ -172,13 +171,13 @@ var validatorUpdateCmd = &cobra.Command{
 		if flags.Changed("base_url") {
 			var baseURL string
 			if baseURL, err = flags.GetString("base_url"); err != nil {
-				log.Fatal(err)
+				Fatal(err)
 			}
 			updateValidator.BaseURL = &baseURL
 		}
 
 		if _, _, err = sdk.UpdateValidatorSettings(updateValidator); err != nil {
-			log.Fatal(err)
+			Fatal(err)
 		}
 
 		fmt.Println("validator settings updated successfully")

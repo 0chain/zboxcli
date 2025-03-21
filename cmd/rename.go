@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/0chain/gosdk/constants"
@@ -41,7 +40,7 @@ var renameCmd = &cobra.Command{
 		destName := cmd.Flag("destname").Value.String()
 		oldName := pathutil.Dir(remotePath)
 		if oldName == destName {
-			fmt.Println(remotePath + " renamed")
+			PrintInfo(remotePath + " renamed")
 			return
 		}
 
@@ -56,7 +55,7 @@ var renameCmd = &cobra.Command{
 			PrintError("Rename failed.", err)
 			os.Exit(1)
 		}
-		fmt.Println(remotePath + " renamed")
+		PrintInfo(remotePath + " renamed")
 	},
 }
 

@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/0chain/gosdk/core/common"
 	"github.com/0chain/gosdk/zboxcore/fileref"
@@ -17,7 +16,7 @@ func calculateDownloadCost(alloc *sdk.Allocation, fileSize int64, numBlocks int6
 	for _, d := range alloc.BlobberDetails {
 		readPrice, err := d.Terms.ReadPrice.ToToken()
 		if err != nil {
-			log.Fatalf("failed to convert %v to token, %v", d.Terms.ReadPrice, err)
+			Fatalf("failed to convert %v to token, %v", d.Terms.ReadPrice, err)
 		}
 
 		cost += sizeInGB(numBlocks*fileref.CHUNK_SIZE) * float64(readPrice)
@@ -26,14 +25,14 @@ func calculateDownloadCost(alloc *sdk.Allocation, fileSize int64, numBlocks int6
 
 	balance, err := common.ToBalance(cost)
 	if err != nil {
-		log.Fatalf("failed to convert %v to balance, %v", cost, err)
+		Fatalf("failed to convert %v to balance, %v", cost, err)
 	}
 	return balance
 }
 
 func downloadCost(alloc *sdk.Allocation, meta *sdk.ConsolidatedFileMeta, blocksPerMarker int) {
 	if meta.Type != fileref.FILE {
-		log.Fatal("not a file")
+		Fatal("not a file")
 	}
 
 	shardSize := (meta.ActualFileSize + int64(alloc.DataShards) - 1) / int64(alloc.DataShards)
@@ -61,18 +60,18 @@ var getDownloadCostCmd = &cobra.Command{
 		)
 
 		if !fflags.Changed("allocation") {
-			log.Fatal("missing required 'allocation' flag")
+			Fatal("missing required 'allocation' flag")
 		}
 
 		allocID = cmd.Flag("allocation").Value.String()
 		blocksPerMarker, err := cmd.Flags().GetInt("blocks-per-marker")
 
 		if err != nil {
-			log.Fatal("invalid blocks-per-marker value: ", err)
+			Fatal("invalid blocks-per-marker value: ", err)
 		}
 
 		if blocksPerMarker <= 0 {
-			log.Fatal("blocks-per-marker value cannot be <= 0")
+			Fatal("blocks-per-marker value cannot be <= 0")
 		}
 
 		var (
@@ -83,24 +82,24 @@ var getDownloadCostCmd = &cobra.Command{
 
 		if fflags.Changed("remotepath") {
 			if remotePath, err = fflags.GetString("remotepath"); err != nil {
-				log.Fatal("invalid 'remotepath' flag: ", err)
+				Fatal("invalid 'remotepath' flag: ", err)
 			}
 		}
 
 		if fflags.Changed("authticket") {
 			if authTicket, err = fflags.GetString("authticket"); err != nil {
-				log.Fatal("invalid 'authticket' flag: ", err)
+				Fatal("invalid 'authticket' flag: ", err)
 			}
 		}
 
 		if fflags.Changed("lookuphash") {
 			if lookupHash, err = fflags.GetString("lookuphash"); err != nil {
-				log.Fatal("invalid 'lookuphash' flag: ", err)
+				Fatal("invalid 'lookuphash' flag: ", err)
 			}
 		}
 
 		if remotePath == "" && authTicket == "" {
-			log.Fatal("'remotepath' or 'authticket' flag required")
+			Fatal("'remotepath' or 'authticket' flag required")
 		}
 
 		var (
@@ -113,11 +112,11 @@ var getDownloadCostCmd = &cobra.Command{
 			// by remote path
 
 			if alloc, err = sdk.GetAllocation(allocID); err != nil {
-				log.Fatal("fetching the allocation: ", err)
+				Fatal("fetching the allocation: ", err)
 			}
 
 			if meta, err = alloc.GetFileMeta(remotePath); err != nil {
-				log.Fatal("can't get file meta: ", err)
+				Fatal("can't get file meta: ", err)
 			}
 
 			downloadCost(alloc, meta, blocksPerMarker)
@@ -128,19 +127,19 @@ var getDownloadCostCmd = &cobra.Command{
 
 		alloc, err = sdk.GetAllocationFromAuthTicket(authTicket)
 		if err != nil {
-			log.Fatal("can't get allocation object: ", err)
+			Fatal("can't get allocation object: ", err)
 		}
 		var at = sdk.InitAuthTicket(authTicket)
 
 		if lookupHash == "" {
 			if lookupHash, err = at.GetLookupHash(); err != nil {
-				log.Fatal("can't get lookup hash from auth ticket: ", err)
+				Fatal("can't get lookup hash from auth ticket: ", err)
 			}
 		}
 
 		meta, err = alloc.GetFileMetaFromAuthTicket(authTicket, lookupHash)
 		if err != nil {
-			log.Fatal("can't get file meta: ", err)
+			Fatal("can't get file meta: ", err)
 		}
 
 		downloadCost(alloc, meta, blocksPerMarker)

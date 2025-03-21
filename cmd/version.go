@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"runtime/debug"
 
 	"github.com/0chain/zboxcli/util"
@@ -26,9 +25,9 @@ var versionCmd = &cobra.Command{
 			return
 		}
 
-		fmt.Println("Version info:")
-		fmt.Println("\tzbox....: ", VersionStr)
-		fmt.Println("\tgosdk...: ", getVersion("github.com/0chain/gosdk"))
+		PrintInfo("Version info:")
+		PrintInfo("\tzbox....: ", VersionStr)
+		PrintInfo("\tgosdk...: ", getVersion("github.com/0chain/gosdk"))
 	},
 }
 
@@ -36,7 +35,7 @@ func getVersion(path string) string {
 	_ = bitio.NewReader
 	bi, ok := debug.ReadBuildInfo()
 	if !ok {
-		fmt.Println("Failed to read build info")
+		PrintInfo("Failed to read build info")
 		return ""
 	}
 

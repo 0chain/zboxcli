@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
@@ -42,16 +41,16 @@ var cpInfo = &cobra.Command{
 		doJSON, _ := cmd.Flags().GetBool("json")
 
 		if !flags.Changed("allocation") {
-			log.Fatal("missing required 'allocation' flag")
+			Fatal("missing required 'allocation' flag")
 		}
 
 		if allocID, err = flags.GetString("allocation"); err != nil {
-			log.Fatalf("can't get 'allocation' flag: %v", err)
+			Fatalf("can't get 'allocation' flag: %v", err)
 		}
 
 		var info *sdk.ChallengePoolInfo
 		if info, err = sdk.GetChallengePoolInfo(allocID); err != nil {
-			log.Fatalf("Failed to get challenge pool info: %v", err)
+			Fatalf("Failed to get challenge pool info: %v", err)
 		}
 		if doJSON {
 			util.PrintJSON(info)

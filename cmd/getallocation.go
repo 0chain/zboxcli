@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/0chain/gosdk/core/common"
@@ -32,7 +31,7 @@ var getallocationCmd = &cobra.Command{
 		alloc, err := sdk.GetAllocation(allocationID)
 		if err != nil {
 			logger.Logger.Error("Error fetching the allocation", err)
-			log.Fatal("Error fetching/verifying the allocation")
+			Fatal("Error fetching/verifying the allocation")
 		}
 		if doJSON {
 			util.PrintJSON(alloc)
@@ -53,11 +52,11 @@ var getallocationCmd = &cobra.Command{
 
 		blocksPerMarker, err := cmd.Flags().GetInt("blocks-per-marker")
 		if err != nil {
-			log.Fatal("invalid blocks-per-marker. Error: ", err)
+			Fatal("invalid blocks-per-marker. Error: ", err)
 		}
 
 		if blocksPerMarker <= 0 {
-			log.Fatal("invalid blocks-per-marker. Should be greater than 0")
+			Fatal("invalid blocks-per-marker. Should be greater than 0")
 		}
 
 		fmt.Println("allocation:")

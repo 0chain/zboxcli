@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/0chain/gosdk/core/transaction"
@@ -27,7 +26,7 @@ var scConfig = &cobra.Command{
 
 		var conf, err = transaction.GetConfig("storage_sc_config")
 		if err != nil {
-			log.Fatalf("Failed to get storage SC configurations: %v", err)
+			Fatalf("Failed to get storage SC configurations: %v", err)
 		}
 		if doJSON {
 			util.PrintJSON(conf)
@@ -70,7 +69,7 @@ var lsBlobers = &cobra.Command{
 		doAll, _ := cmd.Flags().GetBool("all")
 		isStakable, err := cmd.Flags().GetBool("stakable")
 		if err != nil {
-			log.Fatalf("err parsing in stakable flag: %v", err)
+			Fatalf("err parsing in stakable flag: %v", err)
 		}
 		// set is_active=true to get only active blobbers
 		isActive := true
@@ -79,7 +78,7 @@ var lsBlobers = &cobra.Command{
 		}
 		list, err := sdk.GetBlobbers(isActive, isStakable)
 		if err != nil {
-			log.Fatalf("Failed to get blobbers: %v", err)
+			Fatalf("Failed to get blobbers: %v", err)
 		}
 
 		if doJSON {
@@ -107,21 +106,21 @@ var blobberInfoCmd = &cobra.Command{
 
 		if flags.Changed("json") {
 			if json, err = flags.GetBool("json"); err != nil {
-				log.Fatal("invalid 'json' flag: ", err)
+				Fatal("invalid 'json' flag: ", err)
 			}
 		}
 
 		if !flags.Changed("blobber_id") {
-			log.Fatal("missing required 'blobber_id' flag")
+			Fatal("missing required 'blobber_id' flag")
 		}
 
 		if blobberID, err = flags.GetString("blobber_id"); err != nil {
-			log.Fatal("error in 'blobber_id' flag: ", err)
+			Fatal("error in 'blobber_id' flag: ", err)
 		}
 
 		var blob *sdk.Blobber
 		if blob, err = sdk.GetBlobber(blobberID); err != nil {
-			log.Fatal(err)
+			Fatal(err)
 		}
 
 		if json {
@@ -166,15 +165,15 @@ var blobberUpdateCmd = &cobra.Command{
 		)
 
 		if !flags.Changed("blobber_id") {
-			log.Fatal("missing required 'blobber_id' flag")
+			Fatal("missing required 'blobber_id' flag")
 		}
 
 		if blobberID, err = flags.GetString("blobber_id"); err != nil {
-			log.Fatal("error in 'blobber_id' flag: ", err)
+			Fatal("error in 'blobber_id' flag: ", err)
 		}
 
 		if _, err = sdk.GetBlobber(blobberID); err != nil {
-			log.Fatal(err)
+			Fatal(err)
 		}
 
 		updateBlobber := new(sdk.UpdateBlobber)
@@ -182,7 +181,7 @@ var blobberUpdateCmd = &cobra.Command{
 		if flags.Changed("capacity") {
 			var capacity int64
 			if capacity, err = flags.GetInt64("capacity"); err != nil {
-				log.Fatal(err)
+				Fatal(err)
 			}
 
 			changedCapacity := common.Size(capacity)
@@ -192,7 +191,7 @@ var blobberUpdateCmd = &cobra.Command{
 		var delegateWallet string
 		if flags.Changed("delegate_wallet") {
 			if delegateWallet, err = flags.GetString("delegate_wallet"); err != nil {
-				log.Fatal(err)
+				Fatal(err)
 			}
 			updateBlobber.DelegateWallet = &delegateWallet
 		}
@@ -200,7 +199,7 @@ var blobberUpdateCmd = &cobra.Command{
 		var storageVersion int
 		if flags.Changed("storage_version") {
 			if storageVersion, err = flags.GetInt("storage_version"); err != nil {
-				log.Fatal(err)
+				Fatal(err)
 			}
 			updateBlobber.StorageVersion = &storageVersion
 		}
@@ -210,11 +209,11 @@ var blobberUpdateCmd = &cobra.Command{
 		if flags.Changed("read_price") {
 			var rp float64
 			if rp, err = flags.GetFloat64("read_price"); err != nil {
-				log.Fatal(err)
+				Fatal(err)
 			}
 			readPriceBalance, err := common.ToBalance(rp)
 			if err != nil {
-				log.Fatal(err)
+				Fatal(err)
 			}
 			terms.ReadPrice = &readPriceBalance
 			termsChanged = true
@@ -223,11 +222,11 @@ var blobberUpdateCmd = &cobra.Command{
 		if flags.Changed("write_price") {
 			var wp float64
 			if wp, err = flags.GetFloat64("write_price"); err != nil {
-				log.Fatal(err)
+				Fatal(err)
 			}
 			writePriceBalance, err := common.ToBalance(wp)
 			if err != nil {
-				log.Fatal(err)
+				Fatal(err)
 			}
 			terms.WritePrice = &writePriceBalance
 			termsChanged = true
@@ -236,7 +235,7 @@ var blobberUpdateCmd = &cobra.Command{
 		if flags.Changed("max_offer_duration") {
 			var mod time.Duration
 			if mod, err = flags.GetDuration("max_offer_duration"); err != nil {
-				log.Fatal(err)
+				Fatal(err)
 			}
 			terms.MaxOfferDuration = &mod
 		}
@@ -246,7 +245,7 @@ var blobberUpdateCmd = &cobra.Command{
 		if flags.Changed("num_delegates") {
 			var nd int
 			if nd, err = flags.GetInt("num_delegates"); err != nil {
-				log.Fatal(err)
+				Fatal(err)
 			}
 			stakePoolSettings.NumDelegates = &nd
 			stakePoolSettingChanged = true
@@ -255,7 +254,7 @@ var blobberUpdateCmd = &cobra.Command{
 		if flags.Changed("delegate_wallet") {
 			var dw string
 			if dw, err = flags.GetString("delegate_wallet"); err != nil {
-				log.Fatal(err)
+				Fatal(err)
 			}
 			stakePoolSettings.DelegateWallet = &dw
 			stakePoolSettingChanged = true
@@ -264,7 +263,7 @@ var blobberUpdateCmd = &cobra.Command{
 		if flags.Changed("managing_wallet") {
 			var mw string
 			if mw, err = flags.GetString("managing_wallet"); err != nil {
-				log.Fatal(err)
+				Fatal(err)
 			}
 			updateBlobber.ManagingWallet = &mw
 		}
@@ -272,7 +271,7 @@ var blobberUpdateCmd = &cobra.Command{
 		if flags.Changed("service_charge") {
 			var sc float64
 			if sc, err = flags.GetFloat64("service_charge"); err != nil {
-				log.Fatal(err)
+				Fatal(err)
 			}
 			stakePoolSettings.ServiceCharge = &sc
 			stakePoolSettingChanged = true
@@ -281,7 +280,7 @@ var blobberUpdateCmd = &cobra.Command{
 		if flags.Changed("url") {
 			var url string
 			if url, err = flags.GetString("url"); err != nil {
-				log.Fatal(err)
+				Fatal(err)
 			}
 			updateBlobber.BaseURL = &url
 		}
@@ -289,7 +288,7 @@ var blobberUpdateCmd = &cobra.Command{
 		if flags.Changed("not_available") {
 			var na bool
 			if na, err = flags.GetBool("not_available"); err != nil {
-				log.Fatal(err)
+				Fatal(err)
 			}
 			if !na {
 				na = false
@@ -301,7 +300,7 @@ var blobberUpdateCmd = &cobra.Command{
 			var ia bool
 			// Check if the flag is set to true
 			if ia, err = flags.GetBool("is_restricted"); err != nil {
-				log.Fatal(err)
+				Fatal(err)
 			}
 			if !ia {
 				ia = false
@@ -318,7 +317,7 @@ var blobberUpdateCmd = &cobra.Command{
 		}
 
 		if _, _, err = sdk.UpdateBlobberSettings(updateBlobber); err != nil {
-			log.Fatal(err)
+			Fatal(err)
 		}
 		fmt.Println("blobber settings updated successfully")
 	},
@@ -343,38 +342,38 @@ var resetBlobberStatsCmd = &cobra.Command{
 		)
 
 		if !flags.Changed("blobber_id") {
-			log.Fatal("missing required 'blobber_id' flag")
+			Fatal("missing required 'blobber_id' flag")
 		}
 		if blobberID, err = flags.GetString("blobber_id"); err != nil {
-			log.Fatal("error in 'blobber_id' flag: ", err)
+			Fatal("error in 'blobber_id' flag: ", err)
 		}
 
 		if !flags.Changed("prev_allocated") {
-			log.Fatal("missing required 'prev_allocated' flag")
+			Fatal("missing required 'prev_allocated' flag")
 		}
 		if prevAllocated, err = flags.GetInt64("prev_allocated"); err != nil {
-			log.Fatal("error in 'prev_allocated' flag: ", err)
+			Fatal("error in 'prev_allocated' flag: ", err)
 		}
 
 		if !flags.Changed("prev_saved_data") {
-			log.Fatal("missing required 'prev_saved_data' flag")
+			Fatal("missing required 'prev_saved_data' flag")
 		}
 		if prevSavedData, err = flags.GetInt64("prev_saved_data"); err != nil {
-			log.Fatal("error in 'prev_saved_data' flag: ", err)
+			Fatal("error in 'prev_saved_data' flag: ", err)
 		}
 
 		if !flags.Changed("new_allocated") {
-			log.Fatal("missing required 'new_allocated' flag")
+			Fatal("missing required 'new_allocated' flag")
 		}
 		if newAllocated, err = flags.GetInt64("new_allocated"); err != nil {
-			log.Fatal("error in 'new_allocated' flag: ", err)
+			Fatal("error in 'new_allocated' flag: ", err)
 		}
 
 		if !flags.Changed("new_saved_data") {
-			log.Fatal("missing required 'new_saved_data' flag")
+			Fatal("missing required 'new_saved_data' flag")
 		}
 		if newSavedData, err = flags.GetInt64("new_saved_data"); err != nil {
-			log.Fatal("error in 'new_saved_data' flag: ", err)
+			Fatal("error in 'new_saved_data' flag: ", err)
 		}
 
 		resetBlobberStatsDto := &sdk.ResetBlobberStatsDto{
@@ -388,7 +387,7 @@ var resetBlobberStatsCmd = &cobra.Command{
 
 		_, _, err = sdk.ResetBlobberStats(resetBlobberStatsDto)
 		if err != nil {
-			log.Fatal(err)
+			Fatal(err)
 		}
 		fmt.Println("reset blobber stats successfully")
 	},
@@ -408,10 +407,10 @@ var resetVersionCmd = &cobra.Command{
 		)
 
 		if !flags.Changed("blobber_id") {
-			log.Fatal("missing required 'blobber_id' flag")
+			Fatal("missing required 'blobber_id' flag")
 		}
 		if blobberID, err = flags.GetString("blobber_id"); err != nil {
-			log.Fatal("error in 'blobber_id' flag: ", err)
+			Fatal("error in 'blobber_id' flag: ", err)
 		}
 
 		snv := sdk.StorageNodeIdField{
@@ -420,7 +419,7 @@ var resetVersionCmd = &cobra.Command{
 
 		_, _, err = sdk.ResetBlobberVersion(&snv)
 		if err != nil {
-			log.Fatal(err)
+			Fatal(err)
 		}
 		fmt.Println("reset blobber version successfully")
 	},
@@ -440,10 +439,10 @@ var insertKilledProviderId = &cobra.Command{
 		)
 
 		if !flags.Changed("id") {
-			log.Fatal("missing required 'blobber_id' flag")
+			Fatal("missing required 'blobber_id' flag")
 		}
 		if blobberID, err = flags.GetString("id"); err != nil {
-			log.Fatal("error in 'id' flag: ", err)
+			Fatal("error in 'id' flag: ", err)
 		}
 
 		snv := sdk.StorageNodeIdField{
@@ -452,7 +451,7 @@ var insertKilledProviderId = &cobra.Command{
 
 		_, _, err = sdk.InsertKilledProviderID(&snv)
 		if err != nil {
-			log.Fatal(err)
+			Fatal(err)
 		}
 		fmt.Println("insert killed id successfully")
 	},

@@ -1,9 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-	"log"
-
 	"github.com/0chain/gosdk/zboxcore/sdk"
 	"github.com/0chain/gosdk/zcncore"
 	"github.com/spf13/cobra"
@@ -26,36 +23,36 @@ var wpLock = &cobra.Command{
 		)
 
 		if !flags.Changed("allocation") {
-			log.Fatal("missing required 'allocation' flag")
+			Fatal("missing required 'allocation' flag")
 		}
 
 		if !flags.Changed("tokens") {
-			log.Fatal("missing required 'tokens' flag")
+			Fatal("missing required 'tokens' flag")
 		}
 
 		if allocID, err = flags.GetString("allocation"); err != nil {
-			log.Fatal("invalid 'allocation' flag: ", err)
+			Fatal("invalid 'allocation' flag: ", err)
 		}
 
 		if tokens, err = flags.GetFloat64("tokens"); err != nil {
-			log.Fatal("invalid 'tokens' flag: ", err)
+			Fatal("invalid 'tokens' flag: ", err)
 		}
 
 		if tokens < 0 {
-			log.Fatal("invalid token amount: negative")
+			Fatal("invalid token amount: negative")
 		}
 
 		if flags.Changed("fee") {
 			if fee, err = flags.GetFloat64("fee"); err != nil {
-				log.Fatal("invalid 'fee' flag: ", err)
+				Fatal("invalid 'fee' flag: ", err)
 			}
 		}
 
 		_, _, err = sdk.WritePoolLock(allocID, zcncore.ConvertToValue(tokens), zcncore.ConvertToValue(fee))
 		if err != nil {
-			log.Fatalf("Failed to lock tokens in write pool: %v", err)
+			Fatalf("Failed to lock tokens in write pool: %v", err)
 		}
-		fmt.Println("locked")
+		PrintInfo("locked")
 	},
 }
 
@@ -75,23 +72,23 @@ var wpUnlock = &cobra.Command{
 		)
 
 		if !flags.Changed("allocation") {
-			log.Fatal("missing required 'allocation' flag")
+			Fatal("missing required 'allocation' flag")
 		}
 		if allocID, err = flags.GetString("allocation"); err != nil {
-			log.Fatal("invalid 'allocation' flag: ", err)
+			Fatal("invalid 'allocation' flag: ", err)
 		}
 
 		if flags.Changed("fee") {
 			if fee, err = flags.GetFloat64("fee"); err != nil {
-				log.Fatal("invalid 'fee' flag: ", err)
+				Fatal("invalid 'fee' flag: ", err)
 			}
 		}
 
 		_, _, err = sdk.WritePoolUnlock(allocID, zcncore.ConvertToValue(fee))
 		if err != nil {
-			log.Fatalf("Failed to unlock tokens in write pool: %v", err)
+			Fatalf("Failed to unlock tokens in write pool: %v", err)
 		}
-		fmt.Println("unlocked")
+		PrintInfo("unlocked")
 	},
 }
 

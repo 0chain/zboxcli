@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"time"
 
@@ -28,7 +27,7 @@ var getUploadCostCmd = &cobra.Command{
 		)
 
 		if !fflags.Changed("allocation") {
-			log.Fatal("missing required 'allocation' flag")
+			Fatal("missing required 'allocation' flag")
 		}
 
 		allocID = cmd.Flag("allocation").Value.String()
@@ -36,39 +35,39 @@ var getUploadCostCmd = &cobra.Command{
 		var localPath string
 
 		if !fflags.Changed("localpath") {
-			log.Fatal("missing requried 'localpath' flag")
+			Fatal("missing requried 'localpath' flag")
 		}
 
 		if localPath, err = fflags.GetString("localpath"); err != nil {
-			log.Fatal("invalid 'localpath' flag: ", err)
+			Fatal("invalid 'localpath' flag: ", err)
 		}
 
 		if localPath == "" {
-			log.Fatal("empty local path")
+			Fatal("empty local path")
 		}
 
 		var fi os.FileInfo
 		if fi, err = os.Stat(localPath); err != nil {
-			log.Fatal(err)
+			Fatal(err)
 		}
 
 		if !fi.Mode().IsRegular() {
-			log.Fatal("not a regular file")
+			Fatal("not a regular file")
 		}
 
 		if duration, err = fflags.GetDuration("duration"); err != nil {
-			log.Fatal("invalid 'duration' flag:", err)
+			Fatal("invalid 'duration' flag:", err)
 		} else if duration < 0 {
-			log.Fatal("negative duration not allowed: ", duration)
+			Fatal("negative duration not allowed: ", duration)
 		}
 
 		if end, err = fflags.GetBool("end"); err != nil {
-			log.Fatal("invalid 'end' flag:", err)
+			Fatal("invalid 'end' flag:", err)
 		}
 
 		var alloc *sdk.Allocation
 		if alloc, err = sdk.GetAllocation(allocID); err != nil {
-			log.Fatal("fetching the allocation: ", err)
+			Fatal("fetching the allocation: ", err)
 		}
 
 		// until allocation ends
