@@ -3,7 +3,7 @@ package cmd
 import (
 	"log"
 
-	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk_common/zboxcore/commonsdk"
 	"github.com/spf13/cobra"
 )
 
@@ -23,7 +23,7 @@ var killValidatorCmd = &cobra.Command{
 			log.Fatal("invalid 'validator id flag: ", err)
 		}
 
-		_, _, err = sdk.KillProvider(validatorId, sdk.ProviderValidator)
+		_, _, err = commonsdk.KillProvider(validatorId, commonsdk.ProviderValidator)
 		if err != nil {
 			log.Fatal("failed to kill validator, id: "+validatorId, err)
 		}

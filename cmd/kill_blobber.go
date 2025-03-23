@@ -3,8 +3,7 @@ package cmd
 import (
 	"log"
 
-	"github.com/0chain/gosdk/zboxcore/sdk"
-
+	"github.com/0chain/gosdk_common/zboxcore/commonsdk"
 	"github.com/spf13/cobra"
 )
 
@@ -23,7 +22,7 @@ var killBlobberCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal("invalid 'blobber id flag: ", err)
 		}
-		_, _, err = sdk.KillProvider(blobberId, sdk.ProviderBlobber)
+		_, _, err = commonsdk.KillProvider(blobberId, commonsdk.ProviderBlobber)
 		if err != nil {
 			log.Fatal("failed to kill blobber "+blobberId, err)
 		}

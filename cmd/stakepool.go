@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/0chain/gosdk/zboxcore/sdk"
-	"github.com/0chain/gosdk/zcncore"
+	"github.com/0chain/gosdk_common/zboxcore/commonsdk"
+	"github.com/0chain/gosdk_common/zcncore"
 	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )
 
-func printStakePoolInfo(info *sdk.StakePoolInfo) {
+func printStakePoolInfo(info *commonsdk.StakePoolInfo) {
 	fmt.Println("pool id:           ", info.ID)
 	fmt.Println("balance:           ", info.Balance)
 	fmt.Println("total stake:       ", info.StakeTotal)
@@ -41,7 +41,7 @@ func printStakePoolInfo(info *sdk.StakePoolInfo) {
 	fmt.Println("  num_delegates:    ", info.Settings.NumDelegates)
 }
 
-func printStakePoolUserInfo(info *sdk.StakePoolUserInfo) {
+func printStakePoolUserInfo(info *commonsdk.StakePoolUserInfo) {
 	if len(info.Pools) == 0 {
 		fmt.Print("no delegate pools")
 		return
@@ -74,7 +74,7 @@ var spInfo = &cobra.Command{
 			flags        = cmd.Flags()
 			err          error
 			providerID   string
-			providerType sdk.ProviderType
+			providerType commonsdk.ProviderType
 		)
 
 		doJSON, _ := cmd.Flags().GetBool("json")
@@ -83,19 +83,19 @@ var spInfo = &cobra.Command{
 			if providerID, err = flags.GetString("blobber_id"); err != nil {
 				log.Fatalf("Error: cannot get the value of blobber_id")
 			} else {
-				providerType = sdk.ProviderBlobber
+				providerType = commonsdk.ProviderBlobber
 			}
 		} else if flags.Changed("validator_id") {
 			if providerID, err = flags.GetString("validator_id"); err != nil {
 				log.Fatalf("Error: cannot get the value of validator_id")
 			} else {
-				providerType = sdk.ProviderValidator
+				providerType = commonsdk.ProviderValidator
 			}
 		} else if flags.Changed("authorizer_id") {
 			if providerID, err = flags.GetString("authorizer_id"); err != nil {
 				log.Fatalf("Error: cannot get the value of authorizer_id")
 			} else {
-				providerType = sdk.ProviderAuthorizer
+				providerType = commonsdk.ProviderAuthorizer
 			}
 		}
 
@@ -103,8 +103,8 @@ var spInfo = &cobra.Command{
 			log.Fatal("Error: missing flag: one of 'blobber_id','validator_id' or authorizer_id is required")
 		}
 
-		var info *sdk.StakePoolInfo
-		if info, err = sdk.GetStakePoolInfo(providerType, providerID); err != nil {
+		var info *commonsdk.StakePoolInfo
+		if info, err = commonsdk.GetStakePoolInfo(providerType, providerID); err != nil {
 			log.Fatalf("Failed to get stake pool info: %v", err)
 		}
 		if doJSON {
@@ -178,9 +178,9 @@ var spUserInfo = &cobra.Command{
 }
 
 func getAndPrintStakePool(clientID string, doJSON bool, offset, limit int) (int, error) {
-	var info *sdk.StakePoolUserInfo
+	var info *commonsdk.StakePoolUserInfo
 	var err error
-	if info, err = sdk.GetStakePoolUserInfo(clientID, offset, limit); err != nil {
+	if info, err = commonsdk.GetStakePoolUserInfo(clientID, offset, limit); err != nil {
 		return 0, err
 	}
 	if doJSON {
@@ -202,7 +202,7 @@ var spLock = &cobra.Command{
 		var (
 			flags        = cmd.Flags()
 			providerID   string
-			providerType sdk.ProviderType
+			providerType commonsdk.ProviderType
 			tokens       float64
 			fee          float64
 			err          error
@@ -212,31 +212,31 @@ var spLock = &cobra.Command{
 			if providerID, err = flags.GetString("miner_id"); err != nil {
 				log.Fatalf("invalid 'miner_id' flag: %v", err)
 			} else {
-				providerType = sdk.ProviderMiner
+				providerType = commonsdk.ProviderMiner
 			}
 		} else if flags.Changed("sharder_id") {
 			if providerID, err = flags.GetString("sharder_id"); err != nil {
 				log.Fatalf("invalid 'sharder_id' flag: %v", err)
 			} else {
-				providerType = sdk.ProviderSharder
+				providerType = commonsdk.ProviderSharder
 			}
 		} else if flags.Changed("blobber_id") {
 			if providerID, err = flags.GetString("blobber_id"); err != nil {
 				log.Fatalf("invalid 'blobber_id' flag: %v", err)
 			} else {
-				providerType = sdk.ProviderBlobber
+				providerType = commonsdk.ProviderBlobber
 			}
 		} else if flags.Changed("validator_id") {
 			if providerID, err = flags.GetString("validator_id"); err != nil {
 				log.Fatalf("invalid 'validator_id' flag: %v", err)
 			} else {
-				providerType = sdk.ProviderValidator
+				providerType = commonsdk.ProviderValidator
 			}
 		} else if flags.Changed("authorizer_id") {
 			if providerID, err = flags.GetString("authorizer_id"); err != nil {
 				log.Fatalf("invalid 'authorizer_id' flag: %v", err)
 			} else {
-				providerType = sdk.ProviderAuthorizer
+				providerType = commonsdk.ProviderAuthorizer
 			}
 		} else if providerType == 0 || providerID == "" {
 			log.Fatal("missing flag: one of 'miner_id', 'sharder_id', 'blobber_id', 'validator_id', 'authorizer_id' is required")
@@ -261,7 +261,7 @@ var spLock = &cobra.Command{
 		}
 
 		var hash string
-		hash, _, err = sdk.StakePoolLock(providerType, providerID,
+		hash, _, err = commonsdk.StakePoolLock(providerType, providerID,
 			zcncore.ConvertToValue(tokens), zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to lock tokens in stake pool: %v", err)
@@ -281,7 +281,7 @@ var spUnlock = &cobra.Command{
 		var (
 			flags        = cmd.Flags()
 			providerID   string
-			providerType sdk.ProviderType
+			providerType commonsdk.ProviderType
 			fee          float64
 			err          error
 		)
@@ -290,19 +290,19 @@ var spUnlock = &cobra.Command{
 			if providerID, err = flags.GetString("blobber_id"); err != nil {
 				log.Fatalf("invalid 'blobber_id' flag: %v", err)
 			} else {
-				providerType = sdk.ProviderBlobber
+				providerType = commonsdk.ProviderBlobber
 			}
 		} else if flags.Changed("validator_id") {
 			if providerID, err = flags.GetString("validator_id"); err != nil {
 				log.Fatalf("invalid 'validator_id' flag: %v", err)
 			} else {
-				providerType = sdk.ProviderValidator
+				providerType = commonsdk.ProviderValidator
 			}
 		} else if flags.Changed("authorizer_id") {
 			if providerID, err = flags.GetString("authorizer_id"); err != nil {
 				log.Fatalf("invalid 'authorizer_id' flag: %v", err)
 			} else {
-				providerType = sdk.ProviderAuthorizer
+				providerType = commonsdk.ProviderAuthorizer
 			}
 		}
 
@@ -316,7 +316,7 @@ var spUnlock = &cobra.Command{
 			}
 		}
 
-		unlocked, _, err := sdk.StakePoolUnlock(providerType, providerID, clientWallet.ClientID, zcncore.ConvertToValue(fee))
+		unlocked, _, err := commonsdk.StakePoolUnlock(providerType, providerID, clientWallet.ClientID, zcncore.ConvertToValue(fee))
 		if err != nil {
 			log.Fatalf("Failed to unlock tokens in stake pool: %v", err)
 		}

@@ -10,10 +10,10 @@ import (
 // NOTE: This is for testing purpose only.
 
 var rollbackCmd = &cobra.Command{
-	Use:   "rollback",
-	Short: "rollback file to previous version",
-	Long:  `rollback file to previous version`,
-	Args:  cobra.MinimumNArgs(0),
+	Use:    "rollback",
+	Short:  "rollback file to previous version",
+	Long:   `rollback file to previous version`,
+	Args:   cobra.MinimumNArgs(0),
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		fflags := cmd.Flags()

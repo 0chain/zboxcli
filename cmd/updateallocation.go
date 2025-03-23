@@ -6,7 +6,8 @@ import (
 	"sync"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
-	"github.com/0chain/gosdk/zcncore"
+	"github.com/0chain/gosdk_common/zboxcore/commonsdk"
+	"github.com/0chain/gosdk_common/zcncore"
 	"github.com/spf13/cobra"
 )
 
@@ -69,7 +70,7 @@ var updateAllocationCmd = &cobra.Command{
 		setThirdPartyExtendable, _ := cmd.Flags().GetBool("set_third_party_extendable")
 
 		// Read the file options flags
-		var fileOptionParams sdk.FileOptionsParameters
+		var fileOptionParams commonsdk.FileOptionsParameters
 		if flags.Changed("forbid_upload") {
 			forbidUpload, err := flags.GetBool("forbid_upload")
 			if err != nil {

@@ -8,18 +8,19 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/0chain/gosdk/core/conf"
-	"github.com/0chain/gosdk/core/logger"
+	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk_common/core/conf"
+	"github.com/0chain/gosdk_common/core/logger"
+	"github.com/0chain/gosdk_common/zboxcore/commonsdk"
 
 	"github.com/spf13/cobra"
 
-	"github.com/0chain/gosdk/core/client"
+	"github.com/0chain/gosdk_common/core/client"
 	"github.com/0chain/zboxcli/util"
 
-	"github.com/0chain/gosdk/core/zcncrypto"
+	"github.com/0chain/gosdk_common/core/zcncrypto"
 
-	"github.com/0chain/gosdk/zboxcore/sdk"
-	"github.com/0chain/gosdk/zcncore"
+	"github.com/0chain/gosdk_common/zcncore"
 )
 
 var cfgFile string
@@ -88,16 +89,16 @@ func initConfig() {
 	}
 
 	// syncing loggers
-	logger.SyncLoggers([]*logger.Logger{zcncore.GetLogger(), sdk.GetLogger()})
+	logger.SyncLoggers([]*logger.Logger{zcncore.GetLogger(), commonsdk.GetLogger()})
 
 	// set the log file
 	logPath := "cmdlog.log"
 	zcncore.SetLogFile(logPath, !bSilent)
-	sdk.SetLogFile(logPath, !bSilent)
+	commonsdk.SetLogFile(logPath, !bSilent)
 
 	err = client.Init(context.Background(), cfg)
 	if err != nil {
-		fmt.Println("Error initializing core SDK.", err)
+		fmt.Println("Error initializing core sdk.", err)
 		os.Exit(1)
 	}
 

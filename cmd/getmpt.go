@@ -7,22 +7,22 @@ import (
 	"log"
 	"strings"
 
-	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk_common/zboxcore/commonsdk"
 	"github.com/spf13/cobra"
 )
 
 var getMptKeyCommand = &cobra.Command{
-	Use:   "get-mpt",
-	Short: "Directly view blockchain data",
-	Long:  `Directly view blockchain data from MPT key`,
-	Args:  cobra.MinimumNArgs(0),
+	Use:    "get-mpt",
+	Short:  "Directly view blockchain data",
+	Long:   `Directly view blockchain data from MPT key`,
+	Args:   cobra.MinimumNArgs(0),
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		if cmd.Flags().Changed("key") == false {
 			log.Fatal("Required Mpt key missing\n")
 		}
 		key := cmd.Flag("key").Value.String()
-		jsonBytes, err := sdk.GetMptData(key)
+		jsonBytes, err := commonsdk.GetMptData(key)
 		if err != nil {
 			log.Fatalf("Failed to get Mpt key: %v\n", err)
 		}

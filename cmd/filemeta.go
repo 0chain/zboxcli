@@ -4,8 +4,8 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/0chain/gosdk/zboxcore/fileref"
 	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk_common/zboxcore/fileref"
 	"github.com/0chain/zboxcli/util"
 	"github.com/spf13/cobra"
 )

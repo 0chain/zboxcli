@@ -5,12 +5,12 @@ import (
 	"log"
 	"time"
 
-	"github.com/0chain/gosdk/core/transaction"
+	"github.com/0chain/gosdk_common/core/transaction"
 
-	"github.com/0chain/gosdk/zboxcore/blockchain"
+	"github.com/0chain/gosdk_common/zboxcore/blockchain"
+	"github.com/0chain/gosdk_common/zboxcore/commonsdk"
 
-	"github.com/0chain/gosdk/core/common"
-	"github.com/0chain/gosdk/zboxcore/sdk"
+	"github.com/0chain/gosdk_common/core/common"
 	"github.com/0chain/zboxcli/util"
 
 	"github.com/spf13/cobra"
@@ -37,7 +37,7 @@ var scConfig = &cobra.Command{
 	},
 }
 
-func printBlobbers(nodes []*sdk.Blobber, isActive bool) {
+func printBlobbers(nodes []*commonsdk.Blobber, isActive bool) {
 	if len(nodes) == 0 {
 		if isActive {
 			fmt.Println("no active blobbers")
@@ -77,7 +77,7 @@ var lsBlobers = &cobra.Command{
 		if doAll {
 			isActive = false
 		}
-		list, err := sdk.GetBlobbers(isActive, isStakable)
+		list, err := commonsdk.GetBlobbers(isActive, isStakable)
 		if err != nil {
 			log.Fatalf("Failed to get blobbers: %v", err)
 		}
@@ -119,8 +119,8 @@ var blobberInfoCmd = &cobra.Command{
 			log.Fatal("error in 'blobber_id' flag: ", err)
 		}
 
-		var blob *sdk.Blobber
-		if blob, err = sdk.GetBlobber(blobberID); err != nil {
+		var blob *commonsdk.Blobber
+		if blob, err = commonsdk.GetBlobber(blobberID); err != nil {
 			log.Fatal(err)
 		}
 
@@ -173,11 +173,11 @@ var blobberUpdateCmd = &cobra.Command{
 			log.Fatal("error in 'blobber_id' flag: ", err)
 		}
 
-		if _, err = sdk.GetBlobber(blobberID); err != nil {
+		if _, err = commonsdk.GetBlobber(blobberID); err != nil {
 			log.Fatal(err)
 		}
 
-		updateBlobber := new(sdk.UpdateBlobber)
+		updateBlobber := new(commonsdk.UpdateBlobber)
 		updateBlobber.ID = common.Key(blobberID)
 		if flags.Changed("capacity") {
 			var capacity int64
@@ -205,7 +205,7 @@ var blobberUpdateCmd = &cobra.Command{
 			updateBlobber.StorageVersion = &storageVersion
 		}
 
-		terms := &sdk.UpdateTerms{}
+		terms := &commonsdk.UpdateTerms{}
 		var termsChanged bool
 		if flags.Changed("read_price") {
 			var rp float64
@@ -317,7 +317,7 @@ var blobberUpdateCmd = &cobra.Command{
 			updateBlobber.StakePoolSettings = stakePoolSettings
 		}
 
-		if _, _, err = sdk.UpdateBlobberSettings(updateBlobber); err != nil {
+		if _, _, err = commonsdk.UpdateBlobberSettings(updateBlobber); err != nil {
 			log.Fatal(err)
 		}
 		fmt.Println("blobber settings updated successfully")
@@ -377,7 +377,7 @@ var resetBlobberStatsCmd = &cobra.Command{
 			log.Fatal("error in 'new_saved_data' flag: ", err)
 		}
 
-		resetBlobberStatsDto := &sdk.ResetBlobberStatsDto{
+		resetBlobberStatsDto := &commonsdk.ResetBlobberStatsDto{
 			BlobberID:     blobberID,
 			PrevAllocated: prevAllocated,
 			PrevSavedData: prevSavedData,
@@ -386,7 +386,7 @@ var resetBlobberStatsCmd = &cobra.Command{
 		}
 		fmt.Println(*resetBlobberStatsDto)
 
-		_, _, err = sdk.ResetBlobberStats(resetBlobberStatsDto)
+		_, _, err = commonsdk.ResetBlobberStats(resetBlobberStatsDto)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -414,11 +414,11 @@ var resetVersionCmd = &cobra.Command{
 			log.Fatal("error in 'blobber_id' flag: ", err)
 		}
 
-		snv := sdk.StorageNodeIdField{
+		snv := commonsdk.StorageNodeIdField{
 			Id: blobberID,
 		}
 
-		_, _, err = sdk.ResetBlobberVersion(&snv)
+		_, _, err = commonsdk.ResetBlobberVersion(&snv)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -446,11 +446,11 @@ var insertKilledProviderId = &cobra.Command{
 			log.Fatal("error in 'id' flag: ", err)
 		}
 
-		snv := sdk.StorageNodeIdField{
+		snv := commonsdk.StorageNodeIdField{
 			Id: blobberID,
 		}
 
-		_, _, err = sdk.InsertKilledProviderID(&snv)
+		_, _, err = commonsdk.InsertKilledProviderID(&snv)
 		if err != nil {
 			log.Fatal(err)
 		}

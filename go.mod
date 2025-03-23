@@ -1,12 +1,13 @@
 module github.com/0chain/zboxcli
 
-go 1.22.0
+go 1.22.5
 
-toolchain go1.22.5
+toolchain go1.23.1
 
 require (
 	github.com/0chain/errors v1.0.3
-	github.com/0chain/gosdk v1.19.8
+	github.com/0chain/gosdk v1.19.11-0.20250318142516-45e2eb64f374
+	github.com/0chain/gosdk_common v0.0.0-20250318142402-b7bd1ebd4f66
 	github.com/icza/bitio v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.6.0
@@ -40,7 +41,7 @@ require (
 	github.com/herumi/bls-go-binary v1.31.0 // indirect
 	github.com/hitenjain14/fasthttp v0.0.0-20240916135632-f9303a91736c // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
-	github.com/klauspost/compress v1.17.0 // indirect
+	github.com/klauspost/compress v1.17.9 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.4 // indirect
 	github.com/klauspost/reedsolomon v1.11.8 // indirect
 	github.com/lithammer/shortuuid/v3 v3.0.7 // indirect
@@ -85,5 +86,9 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-// temporary, for development
-//replace github.com/0chain/gosdk => ../gosdk
+// temporary, for development and egosdk testing
+// replace github.com/0chain/gosdk => github.com/0chain/egosdk v1.19.1-0.20250318134101-026d9c8701a0
+
+// replace github.com/0chain/gosdk => ../egosdk
+
+// replace github.com/0chain/gosdk_common => ../gosdk_common
