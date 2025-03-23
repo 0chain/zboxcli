@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/0chain/gosdk/zboxcore/sdk"
@@ -19,18 +18,18 @@ var getMptKeyCommand = &cobra.Command{
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		if cmd.Flags().Changed("key") == false {
-			log.Fatal("Required Mpt key missing\n")
+			Fatal("Required Mpt key missing\n")
 		}
 		key := cmd.Flag("key").Value.String()
 		jsonBytes, err := sdk.GetMptData(key)
 		if err != nil {
-			log.Fatalf("Failed to get Mpt key: %v\n", err)
+			Fatalf("Failed to get Mpt key: %v\n", err)
 		}
 
 		var indented bytes.Buffer
 		err = json.Indent(&indented, jsonBytes, "", "\t")
 		if err != nil {
-			log.Fatalf("Result %s baddly formated: %v\n", string(jsonBytes), err)
+			Fatalf("Result %s baddly formated: %v\n", string(jsonBytes), err)
 		}
 
 		noBackSlash := strings.Replace(indented.String(), "\\", "", -1)

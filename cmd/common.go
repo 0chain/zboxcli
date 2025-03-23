@@ -95,7 +95,17 @@ func PrintError(v ...interface{}) {
 }
 
 func PrintInfo(v ...interface{}) {
-	fmt.Fprintln(os.Stdin, v...)
+	fmt.Fprintln(os.Stdout, v...)
+}
+
+func Fatal(v ...interface{}) {
+	fmt.Fprintln(os.Stderr, v...)
+	os.Exit(1)
+}
+
+func Fatalf(format string, v ...interface{}) {
+	fmt.Fprintf(os.Stderr, format, v...)
+	os.Exit(1)
 }
 
 func init() {
