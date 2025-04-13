@@ -40,6 +40,15 @@ var downdirCmd = &cobra.Command{
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
 		wg.Add(1)
+		if logFilePath != "" {
+			f, err := os.Create(logFilePath)
+			if err != nil {
+				PrintError("Error creating log file", err)
+				os.Exit(1)
+			}
+			defer f.Close()
+			statusBar.f = f
+		}
 		errE := allocationObj.DownloadDirectory(context.Background(), remotePath, localPath, authTicket, statusBar)
 		if errE == nil {
 			wg.Wait()
