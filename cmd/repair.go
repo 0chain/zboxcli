@@ -38,6 +38,9 @@ var startRepair = &cobra.Command{
 		}
 		localRootPath := cmd.Flag("rootpath").Value.String()
 		repairPath := cmd.Flag("repairpath").Value.String()
+		repairBatchSize, _ := cmd.Flags().GetInt("repairbatchsize")
+		sdk.RepairBatchSize = repairBatchSize
+		sdk.SetMultiOpBatchSize(repairBatchSize)
 
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
@@ -63,10 +66,10 @@ var repairSize = &cobra.Command{
 	Long:  `gets only size to repair file to blobbers`,
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		fflags := cmd.Flags()                     
-		if !fflags.Changed("allocation") { 
+		fflags := cmd.Flags()
+		if !fflags.Changed("allocation") {
 			PrintError("Error: allocation flag is missing")
-			os.Exit(1)                                     
+			os.Exit(1)
 		}
 
 		repairPath := "/"
@@ -106,6 +109,7 @@ func init() {
 	startRepair.PersistentFlags().String("allocation", "", "Allocation ID")
 	startRepair.PersistentFlags().String("rootpath", "", "File path for local files ")
 	startRepair.PersistentFlags().String("repairpath", "", "Path to repair")
+	startRepair.PersistentFlags().IntP("repairbatchsize", "rbs", 50, "Repair batch size")
 	startRepair.MarkFlagRequired("allocation")
 	startRepair.MarkFlagRequired("rootpath")
 	startRepair.MarkFlagRequired("repairpath")
