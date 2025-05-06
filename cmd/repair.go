@@ -109,7 +109,7 @@ func init() {
 	startRepair.PersistentFlags().String("allocation", "", "Allocation ID")
 	startRepair.PersistentFlags().String("rootpath", "", "File path for local files ")
 	startRepair.PersistentFlags().String("repairpath", "", "Path to repair")
-	startRepair.PersistentFlags().IntP("repairbatchsize", "rbs", 50, "Repair batch size")
+	startRepair.PersistentFlags().IntP("repairbatchsize", "b", 50, "Repair batch size")
 	startRepair.MarkFlagRequired("allocation")
 	startRepair.MarkFlagRequired("rootpath")
 	startRepair.MarkFlagRequired("repairpath")
