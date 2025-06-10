@@ -203,7 +203,7 @@ func initConfig() {
 		cfg.BlockWorker,
 		cfg.ChainID,
 		cfg.SignatureScheme,
-		cfg.PreferredBlobbers,
+		[]string{},
 		nonce,
 		zcncore.ConvertToValue(txFee),
 	); err != nil {
