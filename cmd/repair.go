@@ -41,6 +41,9 @@ var startRepair = &cobra.Command{
 		repairBatchSize, _ := cmd.Flags().GetInt("repairbatchsize")
 		sdk.RepairBatchSize = repairBatchSize
 		sdk.SetMultiOpBatchSize(repairBatchSize)
+		sdk.BatchSize = repairBatchSize
+		sdk.SetSaveProgress(false)
+		sdk.SetShouldTimeRequest(false)
 
 		wg := &sync.WaitGroup{}
 		statusBar := &StatusBar{wg: wg}
