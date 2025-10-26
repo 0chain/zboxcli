@@ -26,7 +26,7 @@ var collectRewards = &cobra.Command{
 		}
 
 		if !flags.Changed("provider_type") {
-			log.Fatal("missing tokens flag")
+			log.Fatal("missing provider_type flag")
 		}
 
 		providerName, err := flags.GetString("provider_type")
