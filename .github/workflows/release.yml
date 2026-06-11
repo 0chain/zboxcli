@@ -27,7 +27,7 @@ env:
 
 jobs:
   create_release:
-    runs-on: ubuntu-latest
+    runs-on: hetzner-build
     outputs:
       release_id: ${{ steps.create_release.outputs.id }}
       upload_url: ${{ steps.create_release.outputs.upload_url }}
@@ -43,8 +43,8 @@ jobs:
         draft: ${{ github.event.inputs.draft }}
         prerelease: ${{ github.event.inputs.prerelease }}
 
-  linux: 
-    runs-on: ubuntu-latest
+  linux:
+    runs-on: hetzner-build
     needs: create_release
     env:
       SRC_DIR: ${{ github.workspace }}/src
@@ -147,7 +147,7 @@ jobs:
         asset_content_type: application/zip
   
   darwin:
-    runs-on: macos-latest
+    runs-on: hetzner-build
     needs: create_release
     env:
       SRC_DIR: ${{ github.workspace }}/src
@@ -223,7 +223,7 @@ jobs:
         asset_content_type: application/zip
 
   windows:
-    runs-on: windows-latest
+    runs-on: hetzner-build
     needs: create_release
     env:
       SRC_DIR: ${{ github.workspace }}\src

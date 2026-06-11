@@ -1,13 +1,5 @@
 name: build-zbox
 on:
-  push:
-    branches:
-      - master
-      - sprint*
-      - staging
-    tags:
-      - 'v*.*.*'
-  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -106,7 +98,7 @@ jobs:
 
   build-macos:
     name: Build-macos
-    runs-on: macos-latest
+    runs-on: hetzner-build
     steps:
 
       - name: Setup go 1.21

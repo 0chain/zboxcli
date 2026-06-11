@@ -5,9 +5,7 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  push:
-    branches: [ master, staging, sprint* ]
-  pull_request:
+  workflow_dispatch:
 
 jobs:
   unit-test:
