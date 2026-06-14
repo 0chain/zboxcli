@@ -12,13 +12,11 @@
 name: "CodeQL"
 
 on:
-  schedule:
-    - cron: '33 2 * * 3'
-
+  workflow_dispatch:
 jobs:
   analyze:
     name: Analyze
-    runs-on: [self-hosted, build]
+    runs-on: [self-hosted, arc-runner]
     permissions:
       actions: read
       contents: read

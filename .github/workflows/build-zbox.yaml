@@ -98,7 +98,7 @@ jobs:
 
   build-macos:
     name: Build-macos
-    runs-on: hetzner-build
+    runs-on: [self-hosted, arc-runner]
     steps:
 
       - name: Setup go 1.21

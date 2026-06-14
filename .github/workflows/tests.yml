@@ -9,7 +9,7 @@ on:
 
 jobs:
   unit-test:
-    runs-on: [self-hosted, build]
+    runs-on: [self-hosted, arc-runner]
     steps:
       - name: Setup go 1.21
         uses: actions/setup-go@v5
@@ -29,7 +29,7 @@ jobs:
         run: make zboxcli-test
 
   build-linux:
-    runs-on: [self-hosted, build]
+    runs-on: [self-hosted, arc-runner]
     needs: unit-test
     steps:
       - name: Setup go 1.21
@@ -59,7 +59,7 @@ jobs:
   system-tests:
     if: github.event_name != 'workflow_dispatch'
     needs: build-linux
-    runs-on: [ tests-suite ]
+    runs-on: [self-hosted, arc-runner]
     timeout-minutes: 90
     steps:
 

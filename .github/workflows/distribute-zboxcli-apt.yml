@@ -16,7 +16,7 @@ env:
 
 jobs:
   build:
-    runs-on: [hetzner-build]
+    runs-on: [self-hosted, arc-runner]
     env:
       SRC_DIR: ${{ github.workspace }}/src
       OUTPUT_DIR: ${{ github.workspace }}/output
@@ -129,7 +129,7 @@ jobs:
         path: ${{ env.OUTPUT_DIR }}/${{ env.APP_NAME }}_${{ env.APP_VERSION }}~${{ matrix.distro.name }}_${{ matrix.arch.name }}.deb
 
   distribute:
-    runs-on: [hetzner-build]
+    runs-on: [self-hosted, arc-runner]
     needs: build
     env:
       DISTRIBUTIONS: bionic focal jammy noble bookworm bullseye buster
@@ -232,7 +232,7 @@ jobs:
     
 
   test:
-    runs-on: [hetzner-build]
+    runs-on: [self-hosted, arc-runner]
     needs: distribute
     env:
       SRC_DIR: ${{ github.workspace }}/src

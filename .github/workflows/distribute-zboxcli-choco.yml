@@ -16,7 +16,7 @@ env:
 
 jobs:
   build:
-    runs-on: hetzner-build
+    runs-on: [self-hosted, arc-runner]
     env:
       SRC_DIR: ${{ github.workspace }}\src
       OUTPUT_DIR: ${{ github.workspace }}\output
