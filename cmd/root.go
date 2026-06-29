@@ -184,7 +184,7 @@ func initConfig() {
 		cfg.BlockWorker,
 		cfg.ChainID,
 		cfg.SignatureScheme,
-		cfg.PreferredBlobbers,
+		nil, // gosdk conf.Config dropped PreferredBlobbers; InitStorageSDK still takes the arg
 		nonce,
 		zcncore.ConvertToValue(txFee),
 	); err != nil {
