@@ -6,7 +6,7 @@ toolchain go1.24.5
 
 require (
 	github.com/0chain/errors v1.0.3
-	github.com/0chain/gosdk v1.20.10-enterprise-1.0.20260629181455-27a37d4a677d
+	github.com/0chain/gosdk v1.20.10-enterprise-1.0.20260712204100-c89a0e936743
 	github.com/icza/bitio v1.1.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/spf13/cobra v1.6.0
