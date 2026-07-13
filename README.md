@@ -8,6 +8,7 @@ zbox is a command line interface (CLI) tool to understand the capabilities of ZÃ
   - [Getting Started](#getting-started)
     - [1. Installation](#1-installation)
     - [2. Run `zbox` commands](#2-run-zbox-commands)
+  - [Helper scripts](#helper-scripts)
   - [Running zbox](#running-zbox)
     - [Global Flags](#global-flags)
   - [Commands](#commands)
@@ -119,6 +120,34 @@ For machine requirements and pre-requisites, follow the guides below:
 ### 2. Run `zbox` commands
 
 The following steps assume that your terminal's working directory is inside the `zboxcli` repo.
+
+## Helper scripts
+
+`createAllocation.sh` automates setting up a fresh allocation by chaining the most common `zbox` sub-commands. It:
+
+- lists available blobbers and derives the optimal data/parity split for the count detected
+- locks tokens against each blobber with retry/backoff handling
+- creates a new allocation with the selected blobbers and surfaces the resulting allocation ID
+
+Run the script from the repo root (or point it at an existing `zbox` binary) after you have already configured your wallet and network:
+
+```sh
+./createAllocation.sh [--zbox-path PATH] [--tokens AMOUNT] [--lock AMOUNT]
+```
+
+| Flag | Description | Default |
+| --- | --- | --- |
+| `--zbox-path` | Path to the `zbox` binary to run. Use this if `zbox` is not in the current directory. | `./zbox` |
+| `--tokens` | Tokens to lock per blobber before creating the allocation. | `0.5` |
+| `--lock` | Total amount to lock when calling `newallocation`. | `0.5` |
+
+Additional behavior:
+
+- The script stops if blobbers cannot be listed or if allocation creation fails after the configured retries (default 3 attempts, 5â€¯s apart).
+- When blobber locking fails, the run continues so you can still attempt allocation creation, but the script warns about the number of failed locks.
+- Output includes every blobber ID selected, confirmation of each successful lock, and the final allocation details.
+
+You can edit the defaults near the top of `createAllocation.sh` if you need different retry counts, delays, or token amounts for your environment.
 
 ## Running zbox
 
